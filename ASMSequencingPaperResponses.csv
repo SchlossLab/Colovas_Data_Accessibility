@@ -1,0 +1,205 @@
+new_seq_data,availability,data_public_private,software_links,paper,keywords,submitter,comments
+No,No,,,https://journals.asm.org/doi/10.1128/aac.47.7.2125-2130.2003,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.00949-19,,armourc@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jb.00005-06,"sequence, sequencing",mlcoden@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.00007-22,,armourc@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jb.185.4.1384-1390.2003,,mlcoden@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.42.1.264-268.2004,,salucas@umich.edu,
+No,No,,GitHub,https://journals.asm.org/doi/10.1128/aem.06524-11,"sequence, sequencing, GenBank",masonar@umich.edu,"This is a short paper that compares two E. coli isolates that were previously isolated. There are no links to the two strains they are commenting on, but they may reference a main paper."
+No,Data availability,,Bitbucket,https://journals.asm.org/doi/10.1128/msystems.00185-21,"sequence, sequencing, NCBI, GenBank, nucleotide, ""accession number"", ""PATRIC resource""",pschloss@umich.edu,THis is a secondary data analysis paper. Didn't generate any data but does use data from PATRIC
+No,No,,,https://journals.asm.org/doi/10.1128/jb.01015-08,,mlcoden@umich.edu,promoter constructs and fragments referenced
+No,Data availability,,"GitHub, Figshare as a place to put image data - possibly others might use for sequence data",https://journals.asm.org/doi/10.1128/msystems.01323-20,,pschloss@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jb.00251-06,,mlcoden@umich.edu,"this paper is about transcriptomes, rna expression and microarrays"
+No,Methodology (in an opinion/commentary format article),,GitHub,https://journals.asm.org/doi/10.1128/msystems.00166-16,"sequence, sequencing, nucleotide, ""454""",pschloss@umich.edu,Secondary analysis paper without accession numbers. Link to GitHub for analysis and citations of original papers
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.01201-20,,armourc@umich.edu,"this is a review, that could potentially be a good filter for papers that do no have new sequence data"
+No,No,,,https://journals.asm.org/doi/10.1128/jb.06153-11,,mlcoden@umich.edu,"sequence of sRNA, not DNA (but data still not shown)"
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.01372-08,"sequence, sequencing, multilocus sequence typing",salucas@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.00193-18,,salucas@umich.edu,
+No,Data availability,,,https://journals.asm.org/doi/10.1128/jcm.00569-21,,salucas@umich.edu,"Paper has github  associated with data analysis code. ""All Ct values available upon request""."
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.00495-22,,armourc@umich.edu,this is a retraction
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.40.5.1656-1659.2002,,salucas@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.01233-20,,salucas@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.00777-12,,salucas@umich.edu,
+No,No,No links,,https://journals.asm.org/doi/10.1128/aac.00517-12,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.00813-10,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.01115-10,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.01435-06,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.masthead.57-2,,acollens@umich.edu,"Publication of the editorial board, not a manuscript"
+No,No,,,https://journals.asm.org/doi/10.1128/aac.46.6.1746-1754.2002,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.45.6.1941-1941.2001,,acollens@umich.edu,this is a correction
+No,No,,,https://journals.asm.org/doi/10.1128/aac.00169-21,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.01549-08,,acollens@umich.edu,
+No,"table with oligo sequences, refrence to base genome",No links,,https://journals.asm.org/doi/10.1128/aac.48.9.3579-3582.2004,"sequence, sequencing, nucleotide",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.00366-11,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.00118-06,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.45.1.203-207.2001,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aem.71.4.1899-1908.2005,"sequence, sequencing",acollens@umich.edu,
+No,Nucleotide sequence accession number(s),No links,,https://journals.asm.org/doi/10.1128/aem.02556-12,"sequence, sequencing, nucleotide, GenBank, ""accession number"", ""accession no.""",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.00198-22,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/spectrum.03301-22,"nucleotide, Illumina, ""accession number"", ""accession no."", GISAID",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/spectrum.03059-22,"sequence, sequencing, nucleotide",acollens@umich.edu,microscopy paper
+No,No,No links,,https://journals.asm.org/doi/10.1128/spectrum.04330-22,"sequence, sequencing, Illumina",acollens@umich.edu,
+No,No,No links,,https://journals.asm.org/doi/10.1128/mbio.02225-22,nucleotide,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.00044-22,,acollens@umich.edu,
+No,No,No links,,https://journals.asm.org/doi/10.1128/spectrum.03582-22,"sequence, sequencing, nucleotide",acollens@umich.edu,c. difficile strain indicator genes sequenced 
+No,No,No links,,https://journals.asm.org/doi/10.1128/spectrum.02112-22,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.00137-22,,acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00181-20,"sequence, sequencing, GenBank, nucleotide, MinION",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/msystems.00451-22,"sequence, sequencing, NCBI, Illumina, SRA",pschloss@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00204-21,"sequence, sequencing, GenBank, Illumina, DDBJ, ENA BioProject PRJNA deposited accession SRA",sovacool@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00867-21,"sequence, sequencing, GenBank, DDBJ, ENA",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01064-20,"sequence, sequencing, GenBank, nucleotide, Illumina",sovacool@umich.edu,
+Yes,"""Accession number(s)"", Also listed in column of table",Public,,https://journals.asm.org/doi/10.1128/msystems.00182-18,"sequence, sequencing, GenBank, nucleotide, Illumina, PacBio, ""DRA database""",pschloss@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00479-20,"sequence, sequencing, GenBank, nucleotide, Illumina, PacBio, MinION",sovacool@umich.edu,
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/jb.186.8.2355-2365.2004,"sequence, sequencing, GenBank, nucleotide, EMBL, DDBJ, accession numbers are listed, but links are not available",salucas@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01152-21,"sequence, sequencing, GenBank, ""accession numbers""",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00384-19,"sequence, sequencing, NCBI, GenBank, nucleotide, Illumina, DDBJ, ""accession number"", ENA SRA HiSeq",sovacool@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01063-20,"sequence, sequencing, NCBI, GenBank, Illumina, ""BioProject"" ""raw reads"" ""accession no."" ""sra no.""",sovacool@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00066-19,"sequence, sequencing, GenBank, PacBio, ""accession number""",sovacool@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01655-18,"GenBank, EMBL, DDBJ, ""accession number""",acollens@umich.edu,Accession numbers listed in Table 1
+Yes,Data availability,Private,,https://journals.asm.org/doi/10.1128/mbio.00186-20,data are available from the corresponding author upon request,armourc@umich.edu,"They constructed a plasmid and sequenced it to verify. From the methods: ""Plasmid constructs were verified by DNA sequencing"" but don't link to the sequencing (available upon request)"
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/jb.01451-12,"sequence, sequencing, GenBank, nucleotide, EMBL, DDBJ, ""accession number"", 454 Genome Sequencer FLXPlus platform",mlcoden@umich.edu,there isn't a direct link to the data but it lists the repository names and the accession number
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01103-19,"GenBank, Illumina, ""accession number"", genome",sovacool@umich.edu,
+Yes,Nucleotide sequence accession number(s),,,https://journals.asm.org/doi/10.1128/jcm.05439-11,"sequence, sequencing, EMBL",salucas@umich.edu,"Paper lists EMBL accession numbers, but no links"
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00474-22,"NCBI, GenBank, EMBL, DDBJ, ""accession number""",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00542-22,"sequence, sequencing, GenBank, Illumina, DDBJ, ""accession number"", ""DDBJ/ENA/GenBank"" ""BioProject""",sovacool@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00116-19,"sequence, sequencing, GenBank, Illumina, EMBL, DDBJ, SRA",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00010-22,"sequence, sequencing, NCBI, GenBank, PacBio, ""accession number""",sovacool@umich.edu,
+Yes,No,,,https://journals.asm.org/doi/10.1128/aem.71.12.8818-8824.2005,"sequence, sequencing",masonar@umich.edu,"The only mention of sequencing is in regards to confirming plasmid constructs, but no methods, links, or accession numbers are referenced. This paper is also from 2005, however."
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00244-22,"GenBank, listed in Table 1",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01288-20,"GenBank, Illumina, ""accession number"", ""SRA""",sovacool@umich.edu,
+Yes,Data availability,Public,GitHub,https://journals.asm.org/doi/10.1128/mbio.00354-22,"sequence, sequencing, NCBI, GenBank, nucleotide, Illumina, DDBJ, ENA, accession no., Short Read Archive",armourc@umich.edu,"Their wording suggests this might be re-use of data generated for a previous paper (example: ""Previously described in Tully et al. (6), DNA was extracted from filters using a phenol chloroform method (44) and paired-end sequencing was performed on an Illumina HiSeq 1000 at the Marine Biological Laboratory"")"
+Yes,No,,,https://journals.asm.org/doi/10.1128/jcm.42.6.2799-2801.2004,"sequence, sequencing",salucas@umich.edu,Sequencing was used to confirm the identity of PCR amplicons. Those sequences are not shared.
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01149-20,"sequence, sequencing, GenBank, Illumina, ""accession number"", ""SRA""",sovacool@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01073-22,"sequence, sequencing, GenBank, ""accession number"", BioProject, listed in Table 1",acollens@umich.edu,
+Yes,No,,,https://journals.asm.org/doi/10.1128/jb.188.8.2774-2779.2006,"sequence, sequencing, nucleotide",mlcoden@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00871-20,"ENA, BioSample, accession no.",acollens@umich.edu,
+Yes,"""Accession number(s)"" and ""DNA isolation and genome sequencing""",Public,,https://journals.asm.org/doi/10.1128/msystems.00190-16,"sequence, sequencing, GenBank, nucleotide, PacBio, ""accession number""",pschloss@umich.edu,Raw reads not available
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01158-20,"sequence, sequencing, NCBI, GenBank, nucleotide, Illumina, ""accession number"", ""BioProject"" ""BioSample"" ""raw reads""",sovacool@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00294-20,"sequence, sequencing, DDBJ, ""accession number"", SRA, Sequence Read Archive, BioProject",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00402-21,"sequence, sequencing, NCBI, GenBank, Illumina, ""accession number"", ""BioSample"" ""SRA"" ""BioProject""",sovacool@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/MRA.00349-21,"sequence, sequencing, GenBank, ""accession number"", listed in Table 1",acollens@umich.edu,correted article: https://journals.asm.org/doi/10.1128/MRA.00349-21
+Yes,No,Private,,https://journals.asm.org/doi/10.1128/mbio.00597-17,,armourc@umich.edu,"used sequencing to verify plasmid construct ""The resultant construct was verified by sequencing forward to correspond to isoform e of CNOT4"""
+Yes,No,,,https://journals.asm.org/doi/10.1128/jb.183.14.4389-4392.2001,"sequence, sequencing, GenBank, ""accession number""",mlcoden@umich.edu,genbank and accession number are included in an in-text citation of another group's research
+Yes,Data availability,Public,Code in supplementary material,https://journals.asm.org/doi/10.1128/msystems.01079-20,"sequence, sequencing, NCBI, GenBank, Illumina, ""accession number"", A lot of reference accession numbers beyond the primary data they generated",pschloss@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00751-21,"sequence, sequencing, NCBI, GenBank, nucleotide, Illumina, ""BioProject"" ""NASA GeneLab""",sovacool@umich.edu,
+Yes,No,,,https://journals.asm.org/doi/10.1128/aem.03004-20,"sequence, sequencing, NCBI, EMBL, JGI database",masonar@umich.edu,
+Yes,No,,,https://journals.asm.org/doi/10.1128/mbio.00225-17,"sequence, sequencing",armourc@umich.edu,"plasmid construct sequenced ""DNA sequencing was carried out at Eurofins, Huntsville, AL'"
+Yes,No,,,https://journals.asm.org/doi/10.1128/jcm.00728-10,"sequence, sequencing",salucas@umich.edu,
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/aac.00942-06,"sequence, sequencing, nucleotide, GenBank, EMBL, ENA, ""accession number"", ""accession no.""",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/aac.00277-21,"EMBL, ENA, ""accession number"", ""accession no."", BioProject, raw sequencing reads",acollens@umich.edu,
+Yes,Nucleotide sequence accession number(s),,,https://journals.asm.org/doi/10.1128/aac.48.9.3576-3578.2004,"GenBank, ""accession number"", ""accession no."", ABI PRISM 310 genetic analyzer",acollens@umich.edu,
+Yes,No,,,https://journals.asm.org/doi/10.1128/aac.01564-21,,acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/aac.02640-14,"sequence, sequencing, ""accession number"", ""accession no."", UniProt, GI number, RCSB Protien Data Bank [PDB]",acollens@umich.edu,protien alignment
+Yes,Oligonucleotide primers used in this study,,,https://journals.asm.org/doi/10.1128/aem.69.5.2864-2874.2003,"sequence, sequencing, nucleotide",acollens@umich.edu,
+Yes,TABLE 1. Candidate reference genes and genes of interest,,,https://journals.asm.org/doi/10.1128/aem.01736-09,"sequence, sequencing, nucleotide",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01234-22,"sequence, sequencing, nucleotide, PacBio, GenBank, EMBL, ENA, DDBJ, ""accession number"", ""accession no.""",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01098-22,"sequence, sequencing, nucleotide, Illumina, GenBank, NCBI, ""raw reads"", ""raw sequence reads"", BioProject, BioSample ",acollens@umich.edu,
+Yes,Data availability,,,https://journals.asm.org/doi/10.1128/mra.01240-22,"sequence, sequencing, nucleotide, Illumina, GenBank, NCBI, ""accession number"", ""accession no."", BioProject, SRA",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/spectrum.03761-22,"sequence, sequencing, nucleotide, Illumina, ""accession number"", ""accession no."", Gene Expression Omnibus database",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/msystems.00563-22,"sequence, sequencing, nucleotide, NCBI, ""accession number"", ""accession no."", ""raw reads"", ""raw sequence reads"", BioProject ID",acollens@umich.edu,"link was to correction article, these are for the corrected URL"
+Yes,Data availability,Public,GitHub,https://journals.asm.org/doi/10.1128/msystems.00563-22,"sequence, sequencing, nucleotide, EMBL, ENA, ""accession number"", ""accession no.""",acollens@umich.edu,
+Yes,No,,,https://journals.asm.org/doi/10.1128/spectrum.03301-22,"sequence, sequencing, nucleotide, Illumina, ""accession ID"", ""GISAID""",acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/spectrum.04648-22,"sequence, sequencing, nucleotide",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/spectrum.03167-22,"sequence, sequencing, nucleotide, Illumina, GenBank, NCBI, ""accession number"", ""accession no.""",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/spectrum.01906-22,"sequence, sequencing, nucleotide, NCBI, ""accession number"", ""accession no."", SRA",acollens@umich.edu,
+Yes,No,Public,,https://journals.asm.org/doi/10.1128/mbio.02815-22,"sequence, sequencing, nucleotide, Illumina, MinION, RefSeq",acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/aem.01753-22,"sequence, sequencing, nucleotide, GenBank, ""accession number"", ""accession no.""",acollens@umich.edu,
+Yes,Data availability,Private,GitHub,https://journals.asm.org/doi/10.1128/msystems.00904-22,"Illumina, ""raw reads"", ""raw sequence reads"", ""raw sequencing data""",acollens@umich.edu,"Code availability.
+An R notebook (101) with all necessary scripts and input files to generate all figures of this article are publicly available in the following GitHub repository: https://github.com/marioluisao/Compensatory-mechanisms-for-Antimicrobial-Resistance.
+Materials availability.
+Material requests may be directed to the corresponding author, Nitin S. Baliga (nitin.baliga@isbscience.org).
+Data availability.
+The data generated in this study are available in the following GitHub repository: https://github.com/marioluisao/Compensatory-mechanisms-for-Antimicrobial-Resistance."
+Yes,Data availability,,,https://journals.asm.org/doi/10.1128/spectrum.03729-22,"sequence, sequencing",acollens@umich.edu,The original contributions presented in the study are included in the article and in the supplemental material. Further inquiries can be directed to the corresponding author.
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/spectrum.03617-22,"NCBI, ""raw sequence files and associated metadata"", ""bioproject id""",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/spectrum.03617-22,"Raw sequence files and associated metadata, BioProject ID",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/spectrum.03404-22,"NCBI, ""accession number"", ""accession no."", ""sequence read archive""",acollens@umich.edu,
+Yes,Data availability,No links,,https://journals.asm.org/doi/10.1128/spectrum.03729-22,The original contributions presented in the study are included in the article and in the supplemental material. Further inquiries can be directed to the corresponding author.,acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/spectrum.03613-22,"sequence, sequencing",acollens@umich.edu,RNA-seq
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/spectrum.01973-22,"NCBI, ""accession number"", ""accession no."", ""raw data files""",acollens@umich.edu,"unliganded protein, aptamer, and protein-aptamer complexes is available at https://www.sasbdb.org/project/1396/kv4wukfdsj."
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/spectrum.02745-22,"NCBI, Accession numbers for the WGS data for the strains used in this study are listed in Table 1. All data used in this study are available in the article or supplementary tables.",acollens@umich.edu,"Data are publicly accessible at NCBI, accession numbers in table with links"
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01003-22,"GenBank, bioproject, SRA",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/msystems.00883-22,"NCBI, ""accession number"", ""accession no.""",acollens@umich.edu,
+Yes,Data availability,Public,GitHub,https://journals.asm.org/doi/10.1128/msystems.00893-22,"""accession number"", ""accession no."", Short Read Archive, SRA",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/spectrum.03242-22,"sequence, sequencing, NCBI, ""accession number"", ""accession no."", The data sets used and analyzed during the current study are available from the authors upon reasonable request; some have already been included in this article. ",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00661-22,"GenBank, NCBI, ""accession number"", ""accession no.""",acollens@umich.edu,"Seems like it would be classified as a ""reagent/quality control"" paper but they provide their data anyway"
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.01114-22,"GenBank, ""accession number"", ""accession no.""",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00960-22,"GenBank, NCBI, Table 1. , Sequence Read Archive",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00891-22,"Illumina, PacBio, GenBank, EMBL, ENA, DDBJ, raw data, BioProject",acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00891-22,"sequence, sequencing, Illumina, PacBio, GenBank, DDBJ, ""accession number"", ""accession no."", raw data are available under ",acollens@umich.edu,
+No,No,No links,,https://journals.asm.org/doi/10.1128/aac.46.2.425-433.2002,,acollens@umich.edu,
+Yes,No,,,https://journals.asm.org/doi/10.1128/aac.45.12.3635-3639.2001,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.45.12.3616-3622.2001,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aem.66.4.1724-1725.2000,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aem.66.8.3603-3607.2000,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aem.68.3.1280-1289.2002,,acollens@umich.edu,
+Yes,Nucleotide sequence accession number(s),,,https://journals.asm.org/doi/10.1128/aem.68.4.1955-1961.2002,"sequence, sequencing, GenBank, ""accession number"", ""accession no.""",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aem.67.3.1280-1283.2001,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aem.66.3.995-1000.2000,"sequence, sequencing, nucleotide, GenBank",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/iai.68.12.6946-6953.2000,,acollens@umich.edu,
+Yes,No,Public,,https://journals.asm.org/doi/10.1128/iai.70.1.163-170.2002,"sequence, sequencing, nucleotide, GenBank, ""accession number"", ""accession no."", Applied Biosystems",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mcb.01276-10,"sequence, sequencing, nucleotide",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mcb.05950-11,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mcb.06093-11,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/iai.05592-11,,acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/jcm.05113-11,"sequence, sequencing",acollens@umich.edu,"Mass Spectrometry sequencing, same cell types"
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/jb.05746-11,"GenBank, ""accession number"", ""accession no.""",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mcb.05734-11,,acollens@umich.edu,
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/aem.06540-11,"sequence, sequencing, nucleotide, GenBank",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.05361-11,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.05692-11,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aem.06782-11,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.00238-11,,acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/mcb.06448-11,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.00887-13,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jvi.02496-13,,acollens@umich.edu,corrected article
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/aem.02834-13,GenBank,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.v14i2.602,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.v14i2.612,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/iai.01264-13,,acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/jvi.03814-13,"sequence, sequencing, nucleotide, Roche 480",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aac.01958-13,,acollens@umich.edu,
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/mbio.00960-13,"sequence, sequencing, GenBank, ""accession number"", ""accession no.""",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mcb.00103-14,"sequence, sequencing",acollens@umich.edu,
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/aac.01452-15,"GenBank, ""accession number"", ""accession no."", INSDC database",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.00910-15,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.01269-15,,acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/jvi.01876-15,"sequence, sequencing, nucleotide",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.02103-15,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/iai.00624-15,,acollens@umich.edu,
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/mbio.01376-15,"NCBI, ""accession number"", ""accession no."", NCBI Gene Expression Omnibus",acollens@umich.edu,
+Yes,No,Private,,https://journals.asm.org/doi/10.1128/jvi.01955-15,data are available upon request,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jcm.02021-15,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/iai.00985-16,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/microbiolspec.tnmi7-0044-2017,"sequence, sequencing",acollens@umich.edu,
+Yes,No,,,https://journals.asm.org/doi/10.1128/msphere.00248-16,,acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/msphere.00060-17,"sequence, sequencing, nucleotide",acollens@umich.edu,
+Yes,Accession number(s).,Public,,https://journals.asm.org/doi/10.1128/msphere.00054-17,"sequence, sequencing, nucleotide, NCBI, NCBI GEO database",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/microbiolspec.tnmi7-0033-2016,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jb.05175-11,"sequence, sequencing, nucleotide",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.v12i1.260,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.v12i1.300,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aem.01713-10,"sequence, sequencing, NCBI",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jvi.02649-10,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/iai.00047-11,,acollens@umich.edu,
+Yes,No,,,https://journals.asm.org/doi/10.1128/jb.01072-10,"sequence, sequencing",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.00054-11,,acollens@umich.edu,Response to a letter. 
+Yes,Nucleotide sequence accession number(s),Public,,https://journals.asm.org/doi/10.1128/aem.02843-10,"sequence, sequencing, nucleotide, GenBank",acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/aac.01718-10,"sequence, sequencing",acollens@umich.edu,
+Yes,No,No links,,https://journals.asm.org/doi/10.1128/jb.00217-11,"sequence, sequencing",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/msystems.00189-17,"sequence, sequencing, nucleotide",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/msphere.00211-18,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/aem.00813-18,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.v19i2.1460,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.v19i2.1565,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/jmbe.v18i3.1349,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.01013-18,,acollens@umich.edu,
+Yes,Data availability,Public,,https://journals.asm.org/doi/10.1128/mra.00821-18,"PacBio, GenBank, NCBI, ""accession number"", ""accession no.""",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/iai.00303-18,,acollens@umich.edu,
+Yes,Accession number(s).,Public,,https://journals.asm.org/doi/10.1128/msystems.00047-18,"GenBank, ""accession number"", ""accession no.""",acollens@umich.edu,GenBank numbers in Table S2
+No,No,,,https://journals.asm.org/doi/10.1128/aac.01056-18,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/microbiolspec.rwr-0028-2018,"sequence, sequencing, nucleotide",acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.01204-18,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/msphere.00113-18,,acollens@umich.edu,
+No,No,,,https://journals.asm.org/doi/10.1128/mbio.00273-17,,acollens@umich.edu,
