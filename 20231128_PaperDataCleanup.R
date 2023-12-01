@@ -13,13 +13,17 @@ library(tidytext)
 #set working directory to directory "Colovas_Data_Accessibility"
 setwd("~/Documents/Schloss/Colovas_Data_Accessibility")
 
-#from downloaded google spreadsheet of manually assessed ASM manuscripts, create a dataframe of papers
+#from downloaded google spreadsheet of manually assessed ASM manuscripts, create a dataframe of manually assessed papers
 
-#manually_assessed_papers <- read_csv("ASMSequencingPaperResponses.csv")
+manually_assessed_papers <- read_csv("ASMSequencingPaperResponses.csv")
 
-#clean dataframe to exclude duplicates
-#papers_by_link <- arrange(manually_assessed_papers, paper) %>% 
- # distinct(paper, .keep_all = TRUE)
+#add column with clear statement of data availability
+manually_assessed_papers <- 
+  mutate(manually_assessed_papers, data_available = ifelse(availability != "No", "No Data Available", "Data Available") )
+
+#clean dataframe manually_assessed_papers to exclude duplicates
+manual_papers_byLink <- arrange(manually_assessed_papers, paper) %>% 
+  distinct(paper, .keep_all = TRUE)
 
 
 
@@ -27,29 +31,31 @@ setwd("~/Documents/Schloss/Colovas_Data_Accessibility")
 
 load("~/Documents/Schloss/Colovas_Data_Accessibility/seq_papers_20230505.RData")
 
-#using seq_papers dataframe, arrange by DOI, and remove duplicates
+#using seq_papers dataframe, arrange by link, and remove duplicates
 
-papers_byDOI <- arrange(seq_papers, doi) %>% 
+seq_papers_byLink <- arrange(seq_papers, paper) %>% 
   distinct(doi, .keep_all = TRUE)
 
-paper_text_byLink <-  arrange(seq_papers_texts, paper) %>% 
+#using seq_papers_texts dataframe to pull HTML text, arrange by link, and remove duplicates
+papers_HTML_byLink <-  arrange(seq_papers_texts, paper) %>% 
   distinct(paper, .keep_all = TRUE)
 
-papers_noDupes_allData_allLinks <-  inner_join(papers_byDOI, paper_text_byLink, by = "paper") %>% tibble()
-#papers_byDOI is a dataframe sorted by DOI with duplicates removed, removed 22 observations from the dataset
+#join all 3 dataframes for the most complete record of data for N=192 papers
 
-#count the number of papers containing new sequence data (No-273, Yes-205)
+papers_noDupes_allVars <-  inner_join(manual_papers_byLink, seq_papers_byLink, papers_HTML_byLink, by = "paper") %>% tibble()
 
-count(papers_noDupes_allData_allLinks, new_seq_data)
+#count the number of papers containing new sequence data (No-97, Yes-95, N=192)
+
+count(papers_noDupes_allVars, new_seq_data.x)
 
 #make sure dataframe is grouped by journal title (container.title)
-papers_noDupes_allData_allLinks %>% 
+papers_noDupes_allVars %>% 
   group_by(container.title) %>% 
   count()
 
 #use mutate to add data availability column to show text "Data Available" or "Data Not Available" 
-papers_noDupes_allData_allLinks <- 
-  mutate(papers_noDupes_allData_allLinks, data_available = ifelse(new_seq_data == "Yes", "Data Available", "No Data Available") )
+#papers_noDupes_allVars <- 
+ # mutate(papers_noDupes_allData_allLinks, data_available = ifelse(new_seq_data == "Yes", "Data Available", "No Data Available") )
 
 
 
