@@ -19,7 +19,7 @@ manually_assessed_papers <- read_csv("ASMSequencingPaperResponses.csv")
 
 #add column with clear statement of data availability
 manually_assessed_papers <- 
-  mutate(manually_assessed_papers, data_available = ifelse(availability != "No", "No Data Available", "Data Available") )
+  mutate(manually_assessed_papers, data_available = ifelse(availability != "No", "Data Available", "No Data Available") )
 
 #clean dataframe manually_assessed_papers to exclude duplicates
 manual_papers_byLink <- arrange(manually_assessed_papers, paper) %>% 
