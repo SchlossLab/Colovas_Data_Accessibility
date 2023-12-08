@@ -15,7 +15,9 @@ setwd("~/Documents/Schloss/Colovas_Data_Accessibility")
 
 #from downloaded google spreadsheet of manually assessed ASM manuscripts, create a dataframe of manually assessed papers
 
-manually_assessed_papers <- read_csv("ASMSequencingPaperResponses.csv")
+manually_assessed_papers <- read_csv("Adena_Stuff/ASMSequencingPaperResponses.csv") %>% 
+  distinct(paper, .keep_all = TRUE)
+  
 
 #add column with clear statement of data availability
 manually_assessed_papers <- 
@@ -24,6 +26,13 @@ manually_assessed_papers <-
 #clean dataframe manually_assessed_papers to exclude duplicates
 manual_papers_byLink <- arrange(manually_assessed_papers, paper) %>% 
   distinct(paper, .keep_all = TRUE)
+
+#find out which papers from seq_papers and manually_assessed_papers are the same, and which are not
+seq_papers <- seq_papers %>% distinct(paper, .keep_all = TRUE)
+
+ac_500_papers <- full_join(manually_assessed_papers, seq_papers, by = c("paper", "new_seq_data")) 
+
+
 
 
 
