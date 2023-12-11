@@ -11,13 +11,17 @@ library(purrr)
 library(tidytext)
 
 #set working directory to directory "Colovas_Data_Accessibility"
-setwd("~/Documents/Schloss/Colovas_Data_Accessibility")
+#setwd("~/Documents/Schloss/Colovas_Data_Accessibility")
 
 #from downloaded google spreadsheet of manually assessed ASM manuscripts, create a dataframe of manually assessed papers
 
 manually_assessed_papers <- read_csv("Adena_Stuff/ASMSequencingPaperResponses.csv") %>% 
   distinct(paper, .keep_all = TRUE)
   
+
+#Load .RData file containing seq_papers dataframe 
+
+load("~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/seq_papers_20230505.RData")
 
 #add column with clear statement of data availability
 manually_assessed_papers <- 
@@ -32,13 +36,9 @@ seq_papers <- seq_papers %>% distinct(paper, .keep_all = TRUE)
 
 ac_500_papers <- full_join(manually_assessed_papers, seq_papers, by = c("paper", "new_seq_data")) 
 
+#count data
+ac_500_papers %>% count(new_seq_data, availability)
 
-
-
-
-#Load .RData file containing seq_papers dataframe 
-
-load("~/Documents/Schloss/Colovas_Data_Accessibility/seq_papers_20230505.RData")
 
 #using seq_papers dataframe, arrange by link, and remove duplicates
 
