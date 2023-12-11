@@ -39,7 +39,7 @@ ac_500_papers <- full_join(manually_assessed_papers, seq_papers, by = c("paper",
 #count data
 ac_500_papers %>% count(new_seq_data, availability)
 
-
+write_csv(ac_500_papers, file = "ac_papers_tocheck.csv")
 #using seq_papers dataframe, arrange by link, and remove duplicates
 
 seq_papers_byLink <- arrange(seq_papers, paper) %>% 
