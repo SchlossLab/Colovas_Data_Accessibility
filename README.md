@@ -4,9 +4,9 @@ New repository for Data Accessibility project begun by Adena Collens. This proje
 
 ## Where Do I Go in the Repository? 
 
-1.  20231128_PaperDataCleanup.R to generate into your workspace all necesssary data from relevant files.
+1.  PaperDataCleanup.R shows how the "groundtruth.csv" file was generated to pull in all relevant metadata from necessary files. 
 
-2.  20231130_SummaryFigureGenerator.R to create summary figures regarding test case data.
+2.  TextScraping.R shows the text scraping process using package rvest to collect the text of all papers. 
 
 ### Other:
 

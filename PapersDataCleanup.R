@@ -1,12 +1,13 @@
-#20231128 data cleaning for unique papers from spreadsheet of 200 hand-assigned papers 
-#load seq_papers_20230505.Rdata from Adena Collins repository https://github.com/SchlossLab/Data_Accessibility/blob/main/data/seq_papers_20230505.RData
-#.RData contains 4 data frames
+# data cleaning for unique papers from spreadsheets of ~500 hand-assigned papers 
 
-#20231130 Replicate creation of papers dataframe from data from google drive file 
+#load seq_papers_20230505.Rdata from Adena Collins repository https://github.com/SchlossLab/Data_Accessibility/blob/main/data/seq_papers_20230505.RData
+#.RData contains 4 data frames, we will use seq_papers (500 papers)
+
+# Replicate creation of papers dataframe from data from google drive file of 200  manually checked papers
 #https://docs.google.com/spreadsheets/d/1D9lx5gpamhryRRdo7mZrlEzLMfOTFN0rT5UnR3a9omo/edit?usp=sharing
 
-# 202312-- merge data frame seq_papers(500 papers) from AC .RData file seq_papers_202340505.RData with
-# dataframe manually_assessed_papers, constructed from google sheet above
+# merge data frame seq_papers(500 papers) from AC .RData file seq_papers_202340505.RData with
+# dataframe manually_assessed_papers, constructed from google sheet link above
 
 #load necessary packages
 library(tidyverse)
