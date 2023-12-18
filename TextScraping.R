@@ -1,4 +1,8 @@
 
 library(tidyverse)
+library(rvest)
+library(polite)
 
-read_tsv("Data/ground_truth.csv")
+groundtruth <- read_csv("Data/groundtruth.csv")
+
+
