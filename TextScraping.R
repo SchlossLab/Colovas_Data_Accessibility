@@ -40,6 +40,9 @@ all_text <- c(test_abstract_text, test_body_text)
 all_text_string <- paste(all_text, collapse = " ") %>% 
   stringr::str_remove_all(pattern = regex("[[:digit:]]|[[:punct:]]|\\(.*\\)|=|\u00a0"))
 
+#removes all 'space' characters as well, but also removes a single space and smashes all text together
+#stringr::str_remove_all(pattern = regex("[[:digit:]]|[[:punct:]]|[[:space:]!s]|\\(.*\\)|=|\u00a0"))
+
 writeChar(all_text_string, "test_textscraping")
 
 str_view_all(all_text_string)
