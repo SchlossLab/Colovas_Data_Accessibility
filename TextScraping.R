@@ -38,7 +38,8 @@ test_body_text <- html_text(test_body)
 
 all_text <- c(test_abstract_text, test_body_text)
 all_text_string <- paste(all_text, collapse = " ") %>% 
-  stringr::str_remove_all(pattern = "[[:digit:]]+|[[:punct:]]|\\(.*\\)")
+  stringr::str_remove_all(pattern = regex("[[:digit:]]|[[:punct:]]|\\(.*\\)|=|\u00a0"))
 
 writeChar(all_text_string, "test_textscraping")
 
+str_view_all(all_text_string)
