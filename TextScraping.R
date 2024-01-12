@@ -26,13 +26,17 @@ test_url <- "https://journals.asm.org/doi/10.1128/aac.47.7.2125-2130.2003"
 
 test_abstract <- read_html(test_url, verbose = TRUE) %>%
   html_elements("section#abstract") %>%
-  html_elements("[role = paragraph]")
+  html_elements("[role = paragraph]") # %>%
+#  html_elements(":not(figcaption)") %>%
+#  html_elements(":not(#table)")
 
 test_abstract_text <- html_text(test_abstract)
 
 test_body <- read_html(test_url) %>%
   html_elements("section#bodymatter") %>%
-  html_elements("[role = paragraph]")
+  html_elements(":not(figcaption#text)") %>%
+  html_elements(":not(figure#table)") %>%
+  html_elements("[role = paragraph]") 
 
 test_body_text <- html_text(test_body)
 
