@@ -34,8 +34,9 @@ test_abstract_text <- html_text(test_abstract)
 
 test_body <- read_html(test_url) %>%
   html_elements("section#bodymatter") %>%
+  html_elements(":not(figure.table)") %>%
   html_elements(":not(figcaption#text)") %>%
-  html_elements(":not(figure#table)") %>%
+  html_elements(":not(figure.table.notes)") %>%
   html_elements("[role = paragraph]") 
 
 test_body_text <- html_text(test_body)
