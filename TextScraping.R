@@ -2,6 +2,7 @@
 library(tidyverse)
 library(rvest)
 library(tidytext)
+library(tibble)
 #library(polite)
 
 groundtruth <- read_csv("Data/groundtruth.csv")
@@ -52,3 +53,13 @@ all_text_string <- paste(all_text, collapse = " ") %>%
 writeChar(all_text_string, "test_textscraping")
 
 str_view_all(all_text_string)
+
+
+scraped_text <- tibble(readChar("test_textscraping", nchars = 14000))
+toTidyText <- unnest_tokens(scraped_text, col = "readChar")
+
+
+
+
+
+
