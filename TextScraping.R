@@ -1,7 +1,7 @@
 
 library(tidyverse)
 library(rvest)
-library(polite)
+#library(polite)
 
 groundtruth <- read_csv("Data/groundtruth.csv")
 
