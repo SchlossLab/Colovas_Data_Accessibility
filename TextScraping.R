@@ -18,7 +18,8 @@ groundtruth <- read_csv("Data/groundtruth.csv")
 
 #this doesn't get the abstract of the paper, do we want it separate or together?
 
-test_url <- "https://journals.asm.org/doi/10.1128/aac.47.7.2125-2130.2003"
+test1_url <- "https://journals.asm.org/doi/10.1128/aac.47.7.2125-2130.2003"
+test2_url <- "https://journals.asm.org/doi/10.1128/aac.00169-21"
 
 #use polite package to introduce yourself to the web host
 # 
@@ -26,7 +27,7 @@ test_url <- "https://journals.asm.org/doi/10.1128/aac.47.7.2125-2130.2003"
 #     user_agent = "University of Michigan Resercher, joannacolovas@gmail.com", 
 #     verbose = TRUE)
 
-test_abstract <- read_html(test_url, verbose = TRUE) %>%
+test_abstract <- read_html(test2_url, verbose = TRUE) %>%
   html_elements("section#abstract") %>%
   html_elements("[role = paragraph]") # %>%
 #  html_elements(":not(figcaption)") %>%
@@ -34,8 +35,8 @@ test_abstract <- read_html(test_url, verbose = TRUE) %>%
 
 test_abstract_text <- html_text2(test_abstract)
 
-test_body <- read_html(test_url) %>%
-  html_elements("section#bodymatter") %>%
+test_body <- read_html(test2_url) %>%
+  html_elements("section#bodymatter:not(.figure)") %>%
   html_elements(":not(.figure-wrap)") %>%
   html_elements(":not(figure.table)") %>%
   html_elements(":not(figcaption#text)") %>%
@@ -50,16 +51,11 @@ all_text_string <- paste(all_text, collapse = " ") %>%
 #removes all 'space' characters as well, but also removes a single space and smashes all text together
 #stringr::str_remove_all(pattern = regex("[[:digit:]]|[[:punct:]]|[[:space:]!s]|\\(.*\\)|=|\u00a0"))
 
-writeChar(all_text_string, "test_textscraping")
+writeChar(all_text_string, "test2_textscraping.txt")
 
 str_view_all(all_text_string)
 
 
-scraped_text <- tibble(readChar("test_textscraping", nchars = 14000))
-toTidyText <- unnest_tokens(scraped_text, col = "readChar")
-
-
-
-
-
+#scraped_text <- tibble(readChar("test_textscraping", nchars = 14000))
+#toTidyText <- unnest_tokens(scraped_text, col = "readChar")
 
