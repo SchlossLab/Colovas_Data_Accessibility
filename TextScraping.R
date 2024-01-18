@@ -3,6 +3,7 @@ library(tidyverse)
 library(rvest)
 library(tidytext)
 library(tibble)
+library(xml2)
 #library(polite)
 
 groundtruth <- read_csv("Data/groundtruth.csv")
@@ -27,7 +28,7 @@ test2_url <- "https://journals.asm.org/doi/10.1128/aac.00169-21"
 #     user_agent = "University of Michigan Resercher, joannacolovas@gmail.com", 
 #     verbose = TRUE)
 
-test_abstract <- read_html(test2_url, verbose = TRUE) %>%
+test_abstract <- read_html(test_url, verbose = TRUE) %>%
   html_elements("section#abstract") %>%
   html_elements("[role = paragraph]") # %>%
 #  html_elements(":not(figcaption)") %>%
@@ -35,8 +36,8 @@ test_abstract <- read_html(test2_url, verbose = TRUE) %>%
 
 test_abstract_text <- html_text2(test_abstract)
 
-test_body <- read_html(test2_url) %>%
-  html_elements("section#bodymatter:not(.figure)") %>%
+test_body <- read_html(test_url) %>%
+  html_elements("section#bodymatter") %>%
   html_elements(":not(.figure-wrap)") %>%
   html_elements(":not(figure.table)") %>%
   html_elements(":not(figcaption#text)") %>%
@@ -56,6 +57,7 @@ writeChar(all_text_string, "test2_textscraping.txt")
 str_view_all(all_text_string)
 
 
-#scraped_text <- tibble(readChar("test_textscraping", nchars = 14000))
-#toTidyText <- unnest_tokens(scraped_text, col = "readChar")
+scraped_text <- read_xml("test_textscraping.txt")
+scraped_text_tibble <- as_tibble(scraped_text)
+toTidyText <- unnest_tokens(scraped_text)
 
