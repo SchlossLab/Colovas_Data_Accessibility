@@ -68,3 +68,22 @@ groundtruth <-
 
 #rewrite csv for trusted "ground truth" file
 write_csv(groundtruth, file = "Data/groundtruth.csv")
+
+#add year published column 
+groundtruth_year <- 
+  lapply(groundtruth$published.print, function(x) {
+
+if (grepl("/", x)) {
+        year.published = paste0("20", str_sub(x, -2, -1), collapse = "" )
+  }
+ 
+ else {
+        year.published = substring(x, 1, 4)
+  }
+})
+
+
+
+mutate(groundtruth, 
+       year.published = as.Date(groundtruth_year)
+       )
