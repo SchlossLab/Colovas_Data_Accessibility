@@ -11,7 +11,7 @@
 
 #load necessary packages
 library(tidyverse)
-library(purrr)
+#library(purrr)
 library(tidytext)
 
 
@@ -54,3 +54,17 @@ ac_papers_tocheck <-
 
 #write csv for trusted "ground truth" file
 write_csv(ac_papers_tocheck, file = "Data/groundtruth.csv")
+
+#filter dataset to remove MCB papers (ASM sold MCB) 
+groundtruth <- read_csv("Data/groundtruth.csv")
+
+count(groundtruth, container.title)
+
+groundtruth <-  arrange(groundtruth, container.title)
+
+groundtruth <- 
+  filter(groundtruth, container.title != "Molecular and Cellular Biology") %>% 
+  filter(groundtruth, container.title != "is.na()")
+
+#rewrite csv for trusted "ground truth" file
+write_csv(groundtruth, file = "Data/groundtruth.csv")
