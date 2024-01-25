@@ -70,20 +70,25 @@ groundtruth <-
 write_csv(groundtruth, file = "Data/groundtruth.csv")
 
 #add year published column 
-groundtruth_year <- 
-  lapply(groundtruth$published.print, function(x) {
 
-if (grepl("/", x)) {
-        year.published = paste0("20", str_sub(x, -2, -1), collapse = "" )
+groundtruth_year <- function(df) {
+    
+if (grepl("/", df$published.print)) {
+        year.published <-  paste0("20", str_sub(df$published.print, -2, -1), collapse = "" )
   }
  
  else {
-        year.published = substring(x, 1, 4)
-  }
-})
+        year.published <-  substring(df$published.print, 1, 4)
+ }
+ 
+  year.published.date <- map_chr(year.published, paste0)
+  
+  year.published.date <-  year(year.published.date) 
+  
+  return(year.published.date)
+}
 
 
 
 mutate(groundtruth, 
-       year.published = as.Date(groundtruth_year)
-       )
+   year.published =  groundtruth_year(groundtruth))
