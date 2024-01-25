@@ -6,7 +6,6 @@
 
 #load necessary packages
 library(tidyverse)
-library(ggplot2)
 
 groundtruth <- read_csv("Data/groundtruth.csv")
 
@@ -69,10 +68,11 @@ Sequencing Data with Data Available (N=181)") +
 
 NewSequencingData_AvgCitationsPlot
 ggsave(NewSequencingData_AvgCitationsPlot, filename = "NewSequencingData_AvgCitationsPlot.tiff" )
-          
+
 
 #create and save graph showing average number of citations if data is presented and is/not available, by year
 sortbyYear <-  arrange(papers_data_available, by = year.published)
+sortbyYear$year.published <- as.character(sortbyYear$year.published)
 
 NewSequencingData_AvgCitationsPlot_byYear <- 
   ggplot(data = sortbyYear, aes( x = year.published,
@@ -92,3 +92,21 @@ Sequencing Data with Data Available (N=181)") +
 NewSequencingData_AvgCitationsPlot_byYear
 ggsave(NewSequencingData_AvgCitationsPlot_byYear, filename = "NewSequencingData_AvgCitationsPlot_byYear.tiff" )
 
+#filter for only papers with data available, count data by year 
+
+NewSequencingData_AvailablePlot_byYear <- 
+  ggplot(data = sortbyYear, aes( x = year.published,
+                                            fill = data_available)) + 
+  geom_bar(position = "dodge") +
+  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
+  labs( y = "Manuscript Count", 
+        x = "Year Published", 
+        fill = "Is the new sequencing
+      data available?",
+        title = "Subset of Manually-Assessed Sequencing 
+Manuscripts Across ASM Journals Containing New 
+Sequencing Data (N=181)") +
+  scale_fill_manual(values = c("blue", "red"))
+
+NewSequencingData_AvailablePlot_byYear
+ggsave(NewSequencingData_AvailablePlot_byYear, filename = "NewSequencingData_AvailablePlot_byYear.tiff" )

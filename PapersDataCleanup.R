@@ -77,3 +77,6 @@ groundtruth_year$year.published <- as.character(groundtruth_year$year.published)
 
 write_csv(groundtruth_year, file = "Data/groundtruth.csv")
 
+groundtruth$year.published <- as.character(groundtruth$year.published)
+
+write_csv(groundtruth, file = "Data/groundtruth.csv")
