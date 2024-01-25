@@ -70,7 +70,25 @@ Sequencing Data with Data Available (N=181)") +
 NewSequencingData_AvgCitationsPlot
 ggsave(NewSequencingData_AvgCitationsPlot, filename = "NewSequencingData_AvgCitationsPlot.tiff" )
           
-    
-#year published as date
 
+#create and save graph showing average number of citations if data is presented and is/not available, by year
+sortbyYear <-  arrange(papers_data_available, by = year.published)
+
+NewSequencingData_AvgCitationsPlot_byYear <- 
+  ggplot(data = sortbyYear, aes( x = year.published,
+                                            fill = data_available,
+                                            y = is.referenced.by.count)) + 
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
+  labs( y = "Number of Citations via CrossRef", 
+        x = "Year Published", 
+        fill = "Is there sequencing
+      data available?",
+        title = "Average Number of Citations for Subset of Manually-Assessed 
+Sequencing Manuscripts Across ASM Journals Containing New 
+Sequencing Data with Data Available (N=181)") +
+  scale_fill_manual(values = c("blue", "red"))
+
+NewSequencingData_AvgCitationsPlot_byYear
+ggsave(NewSequencingData_AvgCitationsPlot_byYear, filename = "NewSequencingData_AvgCitationsPlot_byYear.tiff" )
 

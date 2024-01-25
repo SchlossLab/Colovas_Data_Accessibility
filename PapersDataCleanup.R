@@ -73,7 +73,7 @@ write_csv(groundtruth, file = "Data/groundtruth.csv")
 groundtruth_year <- groundtruth %>% 
   mutate(year.published = case_when(str_detect(published.print, "/") ~ str_c("20", str_sub(published.print, start = -2, -1)), str_detect(published.print, "-") ~ substring(published.print, 1, 4) ))      
 
-groundtruth_year$year.published <- as.numeric(as.character(groundtruth_year$year.published))
+groundtruth_year$year.published <- as.character(groundtruth_year$year.published)
 
 write_csv(groundtruth_year, file = "Data/groundtruth.csv")
 
