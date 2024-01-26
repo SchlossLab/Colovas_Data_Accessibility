@@ -39,16 +39,33 @@ output: beamer_presentation
 ![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NewSequencingData_AvailablePlot_byYear.png)
 
 ## Do papers with sequencing data available have more citations based on year published?
-
+-   Do we need more papers for the training set based on the composition of the current training set?
 ![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NewSequencingData_AvgCitationsPlot_byYear.png)
 
-## Current and Next Steps
+## Webscraping Status
+- Test script works to eliminate table and figure captions using rvest and XML2! (Thanks Greg!)
+- Some remaining issues for web scraping:
+    -   Headings still in scrape (h2 and h3)
+		-   Hyphen removal using [:punct:] smashes some words together
+		-   Some special characters still appear
 
--   Web scraping with the elimination of figure and table captions using package rvest
-    -   Issue: current selectors do not eliminate figure and table captions
-    -   Investigate rvest functions for correct "not" operator
-    -   Comb page HTML tags for more precise selectors of what we DO want from the web page
-    -   Several more test papers from ASM to determine if function works as intended
--   Do we want the text scraped without HTML tags or keep them?
-    -   Does removing them later pose a problem?
--   Do we need more papers for the training set based on the composition of the current training set?
+
+## Next Steps - Tidy Text
+
+-   Tackle converting example scraped text into tidy text format (one token/line)
+    -   readLines() %>% unnest_tokens()
+    -   allows for greater use of tidytext package, helps compute metrics and work with text
+-   Anti join with stop words df to remove common words
+    -   could also remove words < 3 letters/characters (AC did, would probably get rid of special characters)
+    -   can also make custom df of stop words to remove
+-   Does word frequency matter for each paper or just collectively for each larger grouping (ie contains new data or has data available)
+    - if word frequency doesn't matter for each paper, we can remove duplicate words and make dfs smaller
+    
+## Next Steps - Storage and GL
+
+-   Storage of tidy text data frames for each paper, dependent somewhat on size
+-   Purrring for scraping and cleaning of all paper texts from the groundtruth dataset
+    -   GL scripting and polite package
+    -   ensure correct conda env is active
+    -   polite must be installed in R, not able to install using conda env
+    
