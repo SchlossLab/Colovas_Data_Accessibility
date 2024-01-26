@@ -24,7 +24,7 @@ NewSequencingDataPlot <-
   scale_fill_manual(values = c("red", "blue"))
 
 NewSequencingDataPlot
-ggsave(NewSequencingDataPlot, filename = "NewSequencingDataPlot.tiff" )
+ggsave(NewSequencingDataPlot, filename = "Adena_Stuff/NewSequencingDataPlot.png" )
 
 #create and save graph showing number of sequencing papers across ASM journals with data available
 
@@ -47,7 +47,7 @@ Sequencing Data (N=181)") +
  scale_fill_manual(values = c("blue", "red"))
 
 NewSequencingData_AvailablePlot
-ggsave(NewSequencingData_AvailablePlot, filename = "NewSequencingData_AvailablePlot.tiff" )
+ggsave(NewSequencingData_AvailablePlot, filename = "Adena_Stuff/NewSequencingData_AvailablePlot.png" )
         
 
 #create and save graph showing average number of citations if data is presented and is/not available
@@ -67,7 +67,7 @@ Sequencing Data with Data Available (N=181)") +
   scale_fill_manual(values = c("blue", "red"))
 
 NewSequencingData_AvgCitationsPlot
-ggsave(NewSequencingData_AvgCitationsPlot, filename = "NewSequencingData_AvgCitationsPlot.tiff" )
+ggsave(NewSequencingData_AvgCitationsPlot, filename = "Adena_Stuff/NewSequencingData_AvgCitationsPlot.png" )
 
 
 #create and save graph showing average number of citations if data is presented and is/not available, by year
@@ -90,7 +90,7 @@ Sequencing Data with Data Available (N=181)") +
   scale_fill_manual(values = c("blue", "red"))
 
 NewSequencingData_AvgCitationsPlot_byYear
-ggsave(NewSequencingData_AvgCitationsPlot_byYear, filename = "NewSequencingData_AvgCitationsPlot_byYear.tiff" )
+ggsave(NewSequencingData_AvgCitationsPlot_byYear, filename = "Adena_Stuff/NewSequencingData_AvgCitationsPlot_byYear.png" )
 
 #filter for only papers with data available, count data by year 
 
@@ -109,4 +109,4 @@ Sequencing Data (N=181)") +
   scale_fill_manual(values = c("blue", "red"))
 
 NewSequencingData_AvailablePlot_byYear
-ggsave(NewSequencingData_AvailablePlot_byYear, filename = "NewSequencingData_AvailablePlot_byYear.tiff" )
+ggsave(NewSequencingData_AvailablePlot_byYear, filename = "Adena_Stuff/NewSequencingData_AvailablePlot_byYear.png" )

@@ -1,0 +1,21 @@
+---
+title: "Data Accessibility Update"
+author: "Joanna Colovas"
+date: '20240129'
+output: beamer_presentation
+---
+
+## Project Goals
+
+-   Report statistics on the number of citations per paper as a function of data availability from the 12 ASM journals to answer question "Does making publication data available increase citation index of publications?"
+
+## Completed Tasks
+
+-   Create "groundtruth.csv" file of N=446 papers with complete metadata from 12 ASM journals
+-   "Manually-coded"/manually assessed (with help from Adena and lab!) each paper to determine if it was a "New Sequencing Paper" or not, and if "Data Available."
+-   Creation of summary figures for the groundtruth dataset on its composition
+-   Separation of papers by journal and by year based on data availability
+
+## New Sequencing Data
+
+![New Sequencing Data](~Colovas_Data_Accessibiity/Adena_Stuff/NewSequencingDataPlot.png)
