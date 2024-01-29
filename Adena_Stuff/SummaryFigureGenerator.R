@@ -110,3 +110,68 @@ Sequencing Data (N=181)") +
 
 NewSequencingData_AvailablePlot_byYear
 ggsave(NewSequencingData_AvailablePlot_byYear, filename = "Adena_Stuff/NewSequencingData_AvailablePlot_byYear.png" )
+
+
+#filter for only papers without data available 
+papers_nodata_available <-  filter(groundtruth, new_seq_data == "No") 
+count(papers_nodata_available, container.title)
+
+#create and save graph showing average number of citations if data is presented and is/not available, by year
+sortbyYear_no <-  arrange(papers_nodata_available, by = year.published)
+sortbyYear_no$year.published <- as.character(sortbyYear_no$year.published)
+
+NoNewSequencingData_AvgCitationsPlot_byYear <- 
+  ggplot(data = sortbyYear_no, aes( x = year.published,
+                                 fill = data_available,
+                                 y = is.referenced.by.count)) + 
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
+  labs( y = "Number of Citations via CrossRef", 
+        x = "Year Published", 
+        fill = "Is there sequencing
+      data available?",
+        title = "Average Number of Citations for Subset of Manually-Assessed 
+Sequencing Manuscripts Across ASM Journals NOT Containing New 
+Sequencing Data with Data Available (N=265)") +
+  scale_fill_manual(values = c("blue", "red"))
+
+NoNewSequencingData_AvgCitationsPlot_byYear
+ggsave(NoNewSequencingData_AvgCitationsPlot_byYear, filename = "Adena_Stuff/NoNewSequencingData_AvgCitationsPlot_byYear.png" )
+
+#filter for only papers without new seuqencing data, count data by year 
+
+NoNewSequencingData_AvailablePlot_byYear <- 
+  ggplot(data = sortbyYear_no, aes( x = year.published,
+                                 fill = data_available)) + 
+  geom_bar(position = "dodge") +
+  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
+  labs( y = "Manuscript Count", 
+        x = "Year Published", 
+        fill = "Is there new sequencing
+      data available?",
+        title = "Subset of Manually-Assessed Sequencing 
+Manuscripts Across ASM Journals NOT Containing New 
+Sequencing Data (N=265)") +
+  scale_fill_manual(values = c("blue", "red"))
+
+NoNewSequencingData_AvailablePlot_byYear
+ggsave(NoNewSequencingData_AvailablePlot_byYear, filename = "Adena_Stuff/NoNewSequencingData_AvailablePlot_byYear.png" )
+
+
+#filter for only papers without new seuqencing data, count data by journal
+NoNewSequencingData_AvailablePlot <- 
+  ggplot(data = papers_nodata_available, aes( x = container.title,
+                                            fill = data_available)) + 
+  geom_bar(position = "dodge") +
+  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
+  labs( y = "Manuscript Count", 
+        x = "ASM Journal", 
+        fill = "Is there new sequencing
+      data available?",
+        title = "Subset of Manually-Assessed Sequencing 
+Manuscripts Across ASM Journals Containing New 
+Sequencing Data (N=265)") +
+  scale_fill_manual(values = c("blue", "red"))
+
+NoNewSequencingData_AvailablePlot
+ggsave(NoNewSequencingData_AvailablePlot, filename = "Adena_Stuff/NoNewSequencingData_AvailablePlot.png" )
