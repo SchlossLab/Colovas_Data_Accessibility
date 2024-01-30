@@ -26,21 +26,36 @@ output: beamer_presentation
 
 ![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NewSequencingDataPlot.png)
 
+## Distribution of papers with new sequencing data by year
+![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NewSequencingDataPlot_byYear.png)
+
+
 ## Of papers with new sequencing data, how many contain publicly available data?
 
 ![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NewSequencingData_AvailablePlot.png)
 
-## Do papers with sequencing data available have more citations?
+
+## Distribution of papers WITHOUT new sequencing data
+
+![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NoNewSequencingData_AvailablePlot.png)
+
+## Do papers with sequencing data available have more citations? 
 
 ![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NewSequencingData_AvgCitationsPlot.png)
 
-## Does the number of papers with data available change based on date published?
+## Does the number of sequencing papers with data available change based on date published?
 
 ![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NewSequencingData_AvailablePlot_byYear.png)
 
-## Do papers with sequencing data available have more citations based on year published?
+## Distribution of nonsequencing papers by date published
+![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NoNewSequencingData_AvailablePlot_byYear.png)
+
+## Do new sequencing papers with sequencing data available have more citations based on year published?
 -   Do we need more papers for the training set based on the composition of the current training set?
 ![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NewSequencingData_AvgCitationsPlot_byYear.png)
+
+## Do nonsequencing papers have more citations based on year published?
+![](~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/NoNewSequencingData_AvgCitationsPlot_byYear.png)
 
 ## Webscraping Status
 - Test script works to eliminate table and figure captions using rvest and XML2! (Thanks Greg!)
