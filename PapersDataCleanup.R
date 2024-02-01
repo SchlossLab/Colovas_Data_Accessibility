@@ -80,3 +80,34 @@ write_csv(groundtruth_year, file = "Data/groundtruth.csv")
 groundtruth$year.published <- as.character(groundtruth$year.published)
 
 write_csv(groundtruth, file = "Data/groundtruth.csv")
+
+#add more papers to groundtruth dataset from papers with metadata from seq_papers_bib
+
+#load AC .RData file 
+load("~/Documents/Schloss/Colovas_Data_Accessibility/Adena_Stuff/seq_papers_20230505.RData")
+
+#make sure papers are distinct
+seq_papers_bib <- seq_papers_bib %>% distinct(paper, .keep_all = TRUE)
+
+#antijoin with groundtruth
+seq_papers_bib_nogroundtruth <- anti_join(seq_papers_bib, groundtruth, by = join_by(paper))
+
+#write dataset to .csv file for manual manipulation
+write_csv(seq_papers_bib_nogroundtruth, file = "Data/seq_papers_bib_1300.csv")
+
+#manually add 54 papers from seq_papers_bib_nogroundtruth (aka 1300 papers dataset) to a second sheet of the doc
+groundtruth_toadd <- read_csv("Data/add_to500.csv")
+
+#full join of datasets
+groundtruth_500 <- full_join(groundtruth, groundtruth_toadd) 
+
+#add year published and write to file to 
+
+groundtruth_500 <- groundtruth_500 %>% 
+  mutate(year.published = case_when(str_detect(published.print, "/") ~ str_c("20", str_sub(published.print, start = -2, -1)), str_detect(published.print, "-") ~ substring(published.print, 1, 4) ))      
+
+write_csv(groundtruth_500, file = "Data/groundtruth_500.csv")
+
+# to be done after columns manually coded
+groundtruth_500 <- groundtruth_500 %>% 
+  mutate(data_available = ifelse(availability != "No", "Data Available", "No Data Available") )
