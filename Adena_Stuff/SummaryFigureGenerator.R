@@ -20,7 +20,7 @@ NewSequencingDataPlot <-
           fill = "Is there new 
   sequencing data?",
           title = "Status of Manually-Assessed Sequencing Manuscripts
-  Across ASM Journals Containing New Sequencing Data (N=446)")  +
+  Across ASM Journals Containing New Sequencing Data (N=500)")  +
   scale_fill_manual(values = c("red", "blue"))
 
 NewSequencingDataPlot
@@ -43,7 +43,7 @@ NewSequencingData_AvailablePlot <-
       data available?",
           title = "Subset of Manually-Assessed Sequencing 
 Manuscripts Across ASM Journals Containing New 
-Sequencing Data (N=181)") +
+Sequencing Data (N=199)") +
  scale_fill_manual(values = c("blue", "red"))
 
 NewSequencingData_AvailablePlot
@@ -63,7 +63,7 @@ NewSequencingData_AvgCitationsPlot <-
       data available?",
         title = "Average Number of Citations for Subset of Manually-Assessed 
 Sequencing Manuscripts Across ASM Journals Containing New 
-Sequencing Data with Data Available (N=181)") +
+Sequencing Data with Data Available (N=199)") +
   scale_fill_manual(values = c("blue", "red"))
 
 NewSequencingData_AvgCitationsPlot
@@ -86,7 +86,7 @@ NewSequencingData_AvgCitationsPlot_byYear <-
       data available?",
         title = "Average Number of Citations for Subset of Manually-Assessed 
 Sequencing Manuscripts Across ASM Journals Containing New 
-Sequencing Data with Data Available (N=181)") +
+Sequencing Data with Data Available (N=199)") +
   scale_fill_manual(values = c("blue", "red"))
 
 NewSequencingData_AvgCitationsPlot_byYear
@@ -105,7 +105,7 @@ NewSequencingData_AvailablePlot_byYear <-
       data available?",
         title = "Subset of Manually-Assessed Sequencing 
 Manuscripts Across ASM Journals Containing New 
-Sequencing Data (N=181)") +
+Sequencing Data (N=199)") +
   scale_fill_manual(values = c("blue", "red"))
 
 NewSequencingData_AvailablePlot_byYear
@@ -132,7 +132,7 @@ NoNewSequencingData_AvgCitationsPlot_byYear <-
       data available?",
         title = "Average Number of Citations for Subset of Manually-Assessed 
 Sequencing Manuscripts Across ASM Journals NOT Containing New 
-Sequencing Data with Data Available (N=265)") +
+Sequencing Data with Data Available (N=301)") +
   scale_fill_manual(values = c("blue", "red"))
 
 NoNewSequencingData_AvgCitationsPlot_byYear
@@ -151,7 +151,7 @@ NoNewSequencingData_AvailablePlot_byYear <-
       data available?",
         title = "Subset of Manually-Assessed Sequencing 
 Manuscripts Across ASM Journals NOT Containing New 
-Sequencing Data (N=265)") +
+Sequencing Data (N=301)") +
   scale_fill_manual(values = c("blue", "red"))
 
 NoNewSequencingData_AvailablePlot_byYear
@@ -170,7 +170,7 @@ NoNewSequencingData_AvailablePlot <-
       data available?",
         title = "Subset of Manually-Assessed Sequencing 
 Manuscripts Across ASM Journals Containing New 
-Sequencing Data (N=265)") +
+Sequencing Data (N=301)") +
   scale_fill_manual(values = c("blue", "red"))
 
 NoNewSequencingData_AvailablePlot
@@ -187,7 +187,7 @@ NewSequencingDataPlot_byYear <-
         fill = "Is there new 
   sequencing data?",
         title = "Distribution by Year of Manually-Assessed Sequencing Manuscripts
-  Across ASM Journals Containing New Sequencing Data (N=446)")  +
+  Across ASM Journals Containing New Sequencing Data (N=500)")  +
   scale_fill_manual(values = c("red", "blue"))
 
 NewSequencingDataPlot_byYear

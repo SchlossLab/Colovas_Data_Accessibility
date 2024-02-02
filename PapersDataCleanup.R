@@ -108,6 +108,12 @@ groundtruth_500 <- groundtruth_500 %>%
 
 write_csv(groundtruth_500, file = "Data/groundtruth_500.csv")
 
-# to be done after columns manually coded
+# to be done after columns manually coded and loaded back into R
+groundtruth_500 <- read_csv("Data/groundtruth_500.csv") 
+
 groundtruth_500 <- groundtruth_500 %>% 
   mutate(data_available = ifelse(availability != "No", "Data Available", "No Data Available") )
+
+#load groundtruth_500 into the groundtruth file 
+write_csv(groundtruth_500, file = "Data/groundtruth.csv")
+
