@@ -9,17 +9,22 @@ library(xml2)
 
 
 #example papers for testing the scraping functions
-test1_url <- "https://journals.asm.org/doi/10.1128/aac.47.7.2125-2130.2003"
+#test1_url <- "https://journals.asm.org/doi/10.1128/aac.47.7.2125-2130.2003"
 test2_url <- "https://journals.asm.org/doi/10.1128/aac.00169-21"
 
+test1_url <- "https-::journals.asm.org:doi:10.1128:aac.47.7.2125-2130.2003.html"
 
 test_abstract <- read_html(test1_url) %>%
   html_elements("section#abstract") %>%
-  html_elements("[role = paragraph]") 
+  html_elements("[role = paragraph]") %>% 
+  html_text()
 
 
 main_body <- read_html(test1_url) %>%
- html_elements("section#bodymatter")
+ html_elements("section#bodymatter") 
+#%>% 
+ # html_text
+
 
 test_body <- main_body %>%
   html_elements(css = ".table > *") %>%
@@ -46,3 +51,5 @@ all_text_string <- paste(
 print(all_text_string)
 writeChar(all_text_string, "test1_textscraping.txt")
 
+tibble(text = c(as.character(test_abstract), as.character(main_body))) %>% 
+  unnest_tokens(word, text, format = "html")
