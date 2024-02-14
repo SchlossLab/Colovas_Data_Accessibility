@@ -46,9 +46,3 @@ all_text_string <- paste(
 print(all_text_string)
 writeChar(all_text_string, "test1_textscraping.txt")
 
-
-
-
-# scraped_text <- read_xml("test_textscraping.txt")
-# scraped_text_tibble <- as_tibble(scraped_text)
-# toTidyText <- unnest_tokens(scraped_text)
