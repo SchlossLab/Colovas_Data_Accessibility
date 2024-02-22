@@ -3,6 +3,7 @@ library(rvest)
 library(tidytext)
 library(tibble)
 library(xml2)
+library(jsonlite)
 #library(polite)
 
 #groundtruth <- read_csv("Data/groundtruth.csv")
@@ -54,12 +55,23 @@ test_body_without_figures <- main_body %>%
 # print(all_text_string)
 # writeChar(all_text_string, "test1_textscraping.txt")
 
-cleaned_tokenized_paper <- tibble(text = c(as.character(test_abstract), as.character(main_body))) %>% 
+cleaned_paper <- tibble(text = c(as.character(test_abstract), as.character(main_body)))
+test1_json  <- toJSON(cleaned_paper)
+test1_fromJSON <- fromJSON(test1_json) %>% tibble()
+
+cleaned_tokenized_paper <- test1_fromJSON %>% 
   unnest_tokens(word, text, format = "html") %>% 
   arrange() %>% 
   filter(nchar(word) > 3) %>% 
   anti_join(., stop_words, by = "word") %>% 
   count(word)
+
+# cleaned_tokenized_paper <- tibble(text = c(as.character(test_abstract), as.character(main_body))) %>% 
+#   unnest_tokens(word, text, format = "html") %>% 
+#   arrange() %>% 
+#   filter(nchar(word) > 3) %>% 
+#   anti_join(., stop_words, by = "word") %>% 
+#   count(word)
 
 #Function for token counting pipeline (from TidyingText.R)
 count_words <- function(file_name, min_word_length = 3) {
