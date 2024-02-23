@@ -48,13 +48,19 @@ webscrape <- function(doi) {
 #Function for token counting pipeline (from TidyingText.R)
 create_tokens <- function(html_text, min_word_length = 3) {
   html_text %>%
-    as_tibble() %>% 
-    unnest_tokens(word, value) %>% 
+  unnest_tokens(word, text, format = "html") %>% 
     arrange() %>% 
     filter(nchar(word) > min_word_length) %>% 
     anti_join(., stop_words, by = "word") %>% 
     count(word)
 }
+
+# cleaned_tokenized_paper <- test1_fromJSON %>% 
+#   unnest_tokens(word, text, format = "html") %>% 
+#   arrange() %>% 
+#   filter(nchar(word) > 3) %>% 
+#   anti_join(., stop_words, by = "word") %>% 
+#   count(word)
 
 prepare_data <- function(data, file_path = "Data/data.json", n_tokens = 1)
 {

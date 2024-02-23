@@ -38,6 +38,7 @@ test_body_without_figures <- main_body %>%
    html_children() %>%
    xml_remove()
 
+paper_html <- paste(test_abstract, main_body) %>% tibble()
 #function for cleaning of HTML text from previous code refactor to remove all html tags, greedy function
 #not needed using the unnest_tokens() function on html 
 # cleanHTML <- function(htmlString) {
