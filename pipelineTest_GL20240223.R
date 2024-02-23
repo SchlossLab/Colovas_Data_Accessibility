@@ -63,14 +63,14 @@ prepare_data <- function(data, file_path = "Data/data.json", n_tokens = 1)
   if(file.exists(file_path))
   {
     json_data <- fromJSON(file_path)
-    tibble_data <- map(json_data$html_text,
+    tibble_data <- lapply(json_data$html_text,
                        create_tokens)
     df <- data.frame(json_data$paper, json_data$html_text, tibble_data)
   }
   else
   {
-    webscraped_data <- map(data$paper, webscrape)
-    tibble_data <- map(webscraped_data, create_tokens)
+    webscraped_data <- lapply(data$paper, webscrape)
+    tibble_data <- lapply(webscraped_data, create_tokens)
     df <- data.frame(data$paper, webscraped_data
     , tibble_data)
   }
@@ -81,3 +81,6 @@ prepare_data <- function(data, file_path = "Data/data.json", n_tokens = 1)
 
 gt_subset_30 <- read_csv("Data/gt_subset_30.csv")
 prepare_data(gt_subset_30)
+
+test1_url <- "https-::journals.asm.org:doi:10.1128:aac.47.7.2125-2130.2003.html"
+
