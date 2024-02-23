@@ -48,9 +48,9 @@ webscrape <- function(doi) {
 #Function for token counting pipeline (from TidyingText.R)
 create_tokens <- function(html_text, min_word_length = 3) {
   html_text %>%
-  unnest_tokens(word, text, format = "html") %>% 
+  unnest_tokens(., word, ".", format = "html") %>% 
     arrange() %>% 
-    filter(nchar(word) > min_word_length) %>% 
+    filter(nchar(word) > 3) %>% 
     anti_join(., stop_words, by = "word") %>% 
     count(word)
 }
@@ -77,8 +77,8 @@ prepare_data <- function(data, file_path = "Data/data.json", n_tokens = 1)
   {
     webscraped_data <- lapply(data$paper, webscrape)
     tibble_data <- lapply(webscraped_data, create_tokens)
-    df <- data.frame(data$paper, webscraped_data
-    , tibble_data)
+    tibble_data <- lapply(tibble_data, as.data.frame)
+    df <- data.frame(data$paper, webscraped_data, tibble_data)
   }
   json_data <- toJSON(df)
   save(json_data, file=file_path)
