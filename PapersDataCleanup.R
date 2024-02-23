@@ -117,3 +117,8 @@ groundtruth_500 <- groundtruth_500 %>%
 #load groundtruth_500 into the groundtruth file 
 write_csv(groundtruth_500, file = "Data/groundtruth.csv")
 
+
+#subset groundtruth to 30 observations as a test case
+groundtruth <- read_csv("Data/groundtruth.csv")
+gt_subset_30 <- slice_sample(groundtruth, n = 30)
+write_csv(gt_subset_30, file = "Data/gt_subset_30.csv")
