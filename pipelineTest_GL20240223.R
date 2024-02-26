@@ -38,12 +38,6 @@ webscrape <- function(doi) {
   
 }
 
-#here will need map statement to webscrape for each doi, and then a mutate to add it to the df as a column with the text in it
-#does it need a map or just a mutate? 
-
-# mutate(data,
-#        paper_html = webscrape(data$paper))
-
 
 #Function for token counting pipeline (from TidyingText.R)
 create_tokens <- function(html_text, min_word_length = 3) {
@@ -55,22 +49,17 @@ create_tokens <- function(html_text, min_word_length = 3) {
     count(word)
 }
 
-# cleaned_tokenized_paper <- test1_fromJSON %>% 
-#   unnest_tokens(word, text, format = "html") %>% 
-#   arrange() %>% 
-#   filter(nchar(word) > 3) %>% 
-#   anti_join(., stop_words, by = "word") %>% 
-#   count(word)
 
+#20240226 if file exists does not retrieve data correctly to update with new tokenization
 prepare_data <- function(data, file_path = "Data/gt_subset_30_data.json", n_tokens = 1){
   json_data <- 0
   df <- 0
   if(file.exists(file_path))
   {
-    json_data <- fromJSON(file_path)
-    tibble_data <- lapply(json_data$html_text,
-                       create_tokens)
-    df <- lst(json_data$paper, json_data$html_text, tibble_data)
+    json_data <- read_json(file_path)
+    json_data <- unserializeJSON(json_data[[1]])
+    tibble_data <- lapply("json_data$html_text", create_tokens)
+    df <- lst(paper, html_text, tibble_data)
   }
   else
   {
@@ -78,7 +67,7 @@ prepare_data <- function(data, file_path = "Data/gt_subset_30_data.json", n_toke
     tibble_data <- lapply(webscraped_data, create_tokens) 
     df <- lst(data$paper, webscraped_data, tibble_data)
   }
-  json_data <- toJSON(df)
+  json_data <- serializeJSON(df, pretty = TRUE)
   write_json(json_data, path = file_path)
   return (json_data)
 }
@@ -89,4 +78,3 @@ prepare_data(gt_subset_30)
 #prepare_data(head(gt_subset_30, 2))
 
 #test1_url <- "https-::journals.asm.org:doi:10.1128:aac.47.7.2125-2130.2003.html"
-
