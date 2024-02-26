@@ -62,8 +62,7 @@ create_tokens <- function(html_text, min_word_length = 3) {
 #   anti_join(., stop_words, by = "word") %>% 
 #   count(word)
 
-prepare_data <- function(data, file_path = "Data/data.json", n_tokens = 1)
-{
+prepare_data <- function(data, file_path = "Data/gt_subset_30_data.json", n_tokens = 1){
   json_data <- 0
   df <- 0
   if(file.exists(file_path))
@@ -71,22 +70,23 @@ prepare_data <- function(data, file_path = "Data/data.json", n_tokens = 1)
     json_data <- fromJSON(file_path)
     tibble_data <- lapply(json_data$html_text,
                        create_tokens)
-    df <- data.frame(json_data$paper, json_data$html_text, tibble_data)
+    df <- lst(json_data$paper, json_data$html_text, tibble_data)
   }
   else
   {
     webscraped_data <- lapply(data$paper, webscrape)
-    tibble_data <- lapply(webscraped_data, create_tokens)
-    tibble_data <- lapply(tibble_data, as.data.frame)
-    df <- data.frame(data$paper, webscraped_data, tibble_data)
+    tibble_data <- lapply(webscraped_data, create_tokens) 
+    df <- lst(data$paper, webscraped_data, tibble_data)
   }
   json_data <- toJSON(df)
-  save(json_data, file=file_path)
+  write_json(json_data, path = file_path)
   return (json_data)
 }
 
 gt_subset_30 <- read_csv("Data/gt_subset_30.csv")
 prepare_data(gt_subset_30)
 
-test1_url <- "https-::journals.asm.org:doi:10.1128:aac.47.7.2125-2130.2003.html"
+#prepare_data(head(gt_subset_30, 2))
+
+#test1_url <- "https-::journals.asm.org:doi:10.1128:aac.47.7.2125-2130.2003.html"
 
