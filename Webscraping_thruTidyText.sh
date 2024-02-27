@@ -58,6 +58,6 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
-R CMD BATCH Webscraping_thruTidyText_20240227.R Webscraping_thruTidyText_20240227.out
+R CMD BATCH Webscraping_thruTidyText.R Webscraping_thruTidyText.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!
