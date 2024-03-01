@@ -14,23 +14,26 @@ library(crul)
 #load data function from json file 
 #read and de-serialize json 
 
-
+json_data <- read_json("Data/gt_subset_30_data.json")
 
 #extract links from pre-scraped html
 extract_links <- function(file_path) {
  #this works to get the data out of the json format 
-  json_data <- read_json(file_path)
+ # json_data <- read_json(file_path) (commented out for test purposes)
   json_data <- unserializeJSON(json_data[[1]])
+  
+  #turns unserialized data into 2 column dataframe paper, text
   json_unserialized <- tibble(paper = json_data$`data$paper`, 
                        text = paste(json_data$webscraped_data))
   
-
-  #actually doing anything with the paper texts does not
-  json_link <- map(json_unserialized$text, html_elements, css = "a")
-  
-  links <- read_html(json_unserialized$text) %>% 
-    html_elements(css = "a") %>% 
-    tibble()
+  #turns unserialized paper text into a readable format and extracts the links into their own two column nested list
+  json_unserialized$text <- map(json_unserialized$text, read_html)                   
+  json_paper_links <- tibble(paper = json_unserialized$paper, 
+                        links = map(json_unserialized$text, html_elements, css = "a"))
+  json_paper_links$links <- map(json_paper_links$links, paste0)
+ 
+  #unnests and pivots longer the list of links to have each link as a row with the parent paper
+  links_list <- unnest_longer(json_paper_links, col = links)
   
   return(links)
   
