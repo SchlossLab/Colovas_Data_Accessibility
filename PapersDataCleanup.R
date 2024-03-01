@@ -122,3 +122,22 @@ write_csv(groundtruth_500, file = "Data/groundtruth.csv")
 groundtruth <- read_csv("Data/groundtruth.csv")
 gt_subset_30 <- slice_sample(groundtruth, n = 30)
 write_csv(gt_subset_30, file = "Data/gt_subset_30.csv")
+
+
+#subset groundtruth into 4 smaller dfs for model building 
+# 2x per variable (y/n) new_seq_data, and availability
+groundtruth <- read_csv("Data/groundtruth.csv")
+
+#new_seq_data 2 dfs 
+gt_newseq_yes <- filter(groundtruth, new_seq_data == "Yes" )
+write_csv(gt_newseq_yes, file = "Data/gt_newseq_yes.csv")
+gt_newseq_no <- filter(groundtruth, new_seq_data == "No" )
+write_csv(gt_newseq_no, file = "Data/gt_newseq_no.csv")  
+  
+#available 2 dfs 
+gt_availability_yes <- filter(groundtruth, availability == "Yes" )
+write_csv(gt_availability_yes, file = "Data/gt_availability_yes.csv")
+gt_availability_no <- filter(groundtruth, availability == "No" )
+write_csv(gt_availability_no, file = "Data/gt_availability_no.csv")    
+  
+  
