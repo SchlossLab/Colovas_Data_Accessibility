@@ -16,8 +16,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=1g
-#SBATCH --time=10:00:00
+#SBATCH --mem-per-cpu=2g
+#SBATCH --time=15:00:00
 
  
 
@@ -58,6 +58,6 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
-R CMD BATCH ../Webscraping_thruTidyText.R Slurm/Webscraping_thruTidyText.out
+R CMD BATCH Webscraping_thruTidyText.R Slurm/Webscraping_thruTidyText_4xdf.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!
