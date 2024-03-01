@@ -12,15 +12,17 @@ library(crul)
 #library(xml2)
 
 #load data function from json file 
-#read and de-serialize json 
 
-json_data <- read_json("Data/gt_subset_30_data.json")
+
 
 #extract links from pre-scraped html
-extract_links <- function(file_path) {
+#extract_links <- function(file_path) {
  #this works to get the data out of the json format 
  # json_data <- read_json(file_path) (commented out for test purposes)
-  json_data <- unserializeJSON(json_data[[1]])
+ 
+ #read and de-serialize json 
+ json_data <- read_json("Data/gt_subset_30_data.json") 
+ json_data <- unserializeJSON(json_data[[1]])
   
   #turns unserialized data into 2 column dataframe paper, text
   json_unserialized <- tibble(paper = json_data$`data$paper`, 
@@ -35,9 +37,14 @@ extract_links <- function(file_path) {
   #unnests and pivots longer the list of links to have each link as a row with the parent paper
   links_list <- unnest_longer(json_paper_links, col = links)
   
-  return(links)
+  #extract only papers with 'https' in the link
+  links_list_short <- links_list %>% 
+    filter(str_detect(links, "https"))
   
-}
+
+#    return(links)
+#   
+# }
 
 
 
