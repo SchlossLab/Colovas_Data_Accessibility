@@ -72,6 +72,15 @@ prepare_data <- function(data, file_path, n_tokens = 1){
   return (json_data)
 }
 
-groundtruth <- read_csv("Data/groundtruth.csv")
-prepare_data(groundtruth, "Data/groundtruth.json")
+#groundtruth <- read_csv("Data/groundtruth.csv")
+#prepare_data(groundtruth, "Data/groundtruth.json")
 
+gt_newseq_yes <- read_csv("Data/gt_newseq_yes.csv")
+gt_newseq_no <- read_csv("Data/gt_newseq_no.csv")
+gt_availability_yes <- read_csv("Data/gt_availability_yes.csv")
+gt_availability_no <- read_csv("Data/gt_availability_no.csv")
+
+prepare_data(gt_newseq_yes, "Data/gt_newseq_yes.json")
+prepare_data(gt_newseq_no, "Data/gt_newseq_no.json")
+prepare_data(gt_availability_yes, "Data/gt_availability_yes.json")
+prepare_data(gt_availability_no, "Data/gt_availability_no.json")
