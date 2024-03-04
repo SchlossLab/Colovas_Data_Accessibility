@@ -44,9 +44,15 @@ library(crul)
   #split links into the link itself, and the text displayed on the website
   links_list_short <- mutate(links_list_short, 
                              link_only = str_split_i(links_list_short$links, "%5C%22", 2), 
-                             link_text = str_split_i(links_list_short$links, ">", 2),
+                             link_text = str_split_i(links_list_short$links, ">", 2))
+  
+  links_list_short <- mutate(links_list_short, 
                              link_text = str_remove(links_list_short$link_text, "</a"))
-
+  
+  user_links <- links_list_short %>% 
+    filter(str_equal(links_list_short$link_only, links_list_short$link_text))
+    
+    
 #    return(links)
 #   
 # }
