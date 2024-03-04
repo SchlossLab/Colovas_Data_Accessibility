@@ -41,6 +41,11 @@ library(crul)
   links_list_short <- links_list %>% 
     filter(str_detect(links, "https"))
   
+  #split links into the link itself, and the text displayed on the website
+  links_list_short <- mutate(links_list_short, 
+                             link_only = str_split_i(links_list_short$links, "%5C%22", 2), 
+                             link_text = str_split_i(links_list_short$links, ">", 2),
+                             link_text = str_remove(links_list_short$link_text, "</a"))
 
 #    return(links)
 #   
