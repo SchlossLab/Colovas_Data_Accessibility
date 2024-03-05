@@ -54,11 +54,12 @@ extract_links <- function(file_path) {
 
 }
 
-json_data <- extract_links("Data/gt_subset_30_data.json") 
-
-newseqyes_links <- extract_links("Data/gt_newseq_yes.json")
 
 groundtruth_links <- extract_links("Data/groundtruth.json")
-
 write_csv(groundtruth_links, "Data/groundtruth_links.csv")
+link_count <- count(groundtruth_links, by = paper)
+link_count <- rename(link_count, paper = "by", link_count = "n")
+groundtruth <- read_csv("Data/groundtruth.csv")
+groundtruth_linkcount <- left_join(link_count, groundtruth, by = "paper")
+write_csv(groundtruth_linkcount, "Data/groundtruth_linkcount.csv")
 
