@@ -14,16 +14,30 @@ json_data <- unserializeJSON(json_data[[1]])
 json_unserialized <- tibble(paper = json_data$`data$paper`, 
                             text_tibble = json_data$tibble_data)
 
-#use unnest_longer to make each word part of the same list
-papers_long <- unnest_longer(json_unserialized, col = text_tibble)
-#papers_long <- rename(papers_long, word = "text_tibble$word", n = "text_tibble$n")
+#use unnest to make each word part of the same list
+papers_long <- unnest(json_unserialized, col = text_tibble)
 
-total_words <- papers_long %>% group_by(paper) %>% summarize(total = sum(text_tibble$n))
+#calculate the total number of words in each paper
+total_words <- papers_long %>% group_by(paper) %>% summarize(total = sum(n))
 
+#join the number of words in each paper to the paper link(DOI) and sort in descending order
 paper_words <- left_join(papers_long, total_words)
+paper_words <- arrange(paper_words, desc(n))
 
-paper_words <- arrange(paper_words, desc(text_tibble$n))
-#paper_words <- rename(paper_words, word = "text_tibble$word", n = "text_tibble$n")
+#calculate the tf-idf for each word in each document in the collection 
+paper_words_tf_idf <- bind_tf_idf(paper_words, word, paper, n)
 
-#this function doesn't work bc the names of the columns are too funky 
-paper_words_tf_idf <- paper_words %>% bind_tf_idf(word, document = "paper", "text_tibble$n")
+#sort by paper and tf-idf
+paper_words_tf_idf <- arrange(paper_words_tf_idf, paper, desc(tf_idf))
+
+
+#do it ungrouped, resume from before line 20
+
+#join the number of words in each paper to the paper link(DOI) and sort in descending order
+total_words_ungrouped <- mutate(paper_words, 
+                                total = sum(n))
+total_words_ungrouped <- arrange(total_words_ungrouped , desc(n))
+
+#calculate the tf-idf for each word in each document in the collection 
+overall_tf_idf <- bind_tf_idf(total_words_ungrouped, word, paper, n)
+
