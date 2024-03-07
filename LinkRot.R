@@ -6,7 +6,7 @@ library(tidyverse)
 library(rvest)
 library(tidytext)
 library(jsonlite)
-library(crul)
+library(httr2)
 #rvest imports these as dependencies
 #library(tibble)
 #library(xml2)
@@ -63,3 +63,25 @@ groundtruth <- read_csv("Data/groundtruth.csv")
 groundtruth_linkcount <- left_join(link_count, groundtruth, by = "paper")
 write_csv(groundtruth_linkcount, "Data/groundtruth_linkcount.csv")
 
+
+#function for retreiving the HTML status of a website using httr2 instead of crul 
+#20240307 EOD error in index 23, 
+#caused by error in 'req_perform()' failed to perform HTTP request
+#caused by error in 'curl::curl_fetch_memory()' could not resolve host bm.angis.org.au
+
+get_site_status <- function(websiteurl) {
+  
+  response <- request(websiteurl) %>% 
+    req_options(followlocation = FALSE) %>%
+    req_error(is_error = ~ FALSE) %>% req_perform() 
+  numeric_response <- resp_status(response) 
+  return(numeric_response)
+  
+}
+
+
+#load files 
+groundtruth_linkcount <- read_csv("Data/groundtruth_linkcount.csv")
+groundtruth_links <- read_csv("Data/groundtruth_links.csv")
+
+groundtruth_links$link_status <- map(groundtruth_links$link_address, get_site_status)
