@@ -52,6 +52,9 @@ tfidf_overall <- function(jsonfile){
   return(overall_tf_idf)
   
 }
+
+#make this a function call to create and save both versions!
+
 #gt_subset_30
 #gt_ss30_tfidf <- tfidf_bypaper("Data/gt_subset_30_data.json")
 #gt_ss30_tfidf_overall <- tfidf_overall("Data/gt_subset_30_data.json")
@@ -89,3 +92,5 @@ newseq_yes_tfiidf_overall <- tfidf_overall("Data/gt_newseq_yes.json")
 write_csv(newseq_yes_tfidf, "Data/newseq_yes_tfidf.csv")
 write_csv(newseq_yes_tfiidf_overall, 
   "Data/newseq_yes_tfiidf_overall.csv")
+
+
