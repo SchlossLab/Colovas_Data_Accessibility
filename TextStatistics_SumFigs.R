@@ -35,48 +35,33 @@ ggsave(topWords_gtss30, filename = "Figures/topWords_gtss30.png" )
 
 create_topwords_fig <- function(filename) {
   #read in data for group overall
-  filename_tfidf_overall <- read_csv("Data/filename_tfidf_overall.csv")
+  tfidf_overall <- read_csv(str_glue("Data/{filename}_tfidf_overall.csv"))
   
-  #grab the top 3 words for each of the papers, and then the top 100 overall
-  filename_overall <- top_n(filename_tfidf_overall, 100, tf_idf)
-  
-  #graph word, n occurrences(x), vs tf-idf(y)? 
-  topWords_filename <- 
-    ggplot(data = full_stats, aes(x = n, y = tf_idf, label = word)) +
-    geom_point(position="jitter") +
-    geom_text(size = 2, nudge_y = 0.005 ) +
-    labs(x = "Number of occurrences of word",
-         y = "Inverse document frequency(higher=more value)", 
-         title = "Predictive value of word in filename")
-  
-  topWords_filename
-  ggsave(topWords_filename, filename = "Figures/topWords_filename.png" )
-}
-
-
-#dataset_names <- c("availability_no", "availability_yes", "gt", "newseq_no", "newseq_yes", "gt_ss30")
-
-#for (name in dataset_names){
-#  create_topwords_fig(dataset_names[name])
-#}
-
-#need to fix this function so that it works for all of the figures
-create_topwords_fig("availability_no")
-
-#read in data for group overall
-  filename_tfidf_overall <- read_csv("Data/availability_no_tfidf_overall.csv")
-  
-  #grab the top 3 words for each of the papers, and then the top 100 overall
-  filename_overall <- top_n(filename_tfidf_overall, 100, tf_idf)
+  # top 100 overall
+  top100_overall <- top_n(tfidf_overall, 100, tf_idf)
   
   #graph word, n occurrences(x), vs tf-idf(y)? 
   topWords <- 
-    ggplot(data = full_stats, aes(x = n, y = tf_idf, label = word)) +
+    ggplot(data = top100_overall, aes(x = n, y = tf_idf, label = word)) +
     geom_point(position="jitter") +
     geom_text(size = 2, nudge_y = 0.005 ) +
     labs(x = "Number of occurrences of word",
          y = "Inverse document frequency(higher=more value)", 
-         title = "Predictive value of word in availability = No")
+         title = str_glue("Predictive value of word in {filename}"))
   
   topWords
-  ggsave(topWords, filename = "Figures/availability_no_filename.png" )
+  ggsave(topWords, filename = str_glue("Figures/topWords_{filename}.png"))
+}
+
+
+
+#dataset_names <- c("availability_no", "availability_yes", 
+#"gt", "newseq_no", "newseq_yes", "gt_ss30")
+
+
+create_topwords_fig("availability_no")
+create_topwords_fig("availability_yes")
+create_topwords_fig("newseq_no")
+create_topwords_fig("newseq_yes")
+create_topwords_fig("gt")
+
