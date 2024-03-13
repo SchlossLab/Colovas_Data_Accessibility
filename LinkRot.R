@@ -64,10 +64,7 @@ groundtruth_linkcount <- left_join(link_count, groundtruth, by = "paper")
 write_csv(groundtruth_linkcount, "Data/groundtruth_linkcount.csv")
 
 
-#function for retreiving the HTML status of a website using httr2 instead of crul 
-#20240307 EOD error in index 23, 
-#caused by error in 'req_perform()' failed to perform HTTP request
-#caused by error in 'curl::curl_fetch_memory()' could not resolve host bm.angis.org.au
+#function for retrieving the HTML status of a website using httr2 instead of crul 
 
 get_site_status <- function(websiteurl) {
 
@@ -81,12 +78,6 @@ get_site_status <- function(websiteurl) {
   
 }
 
-
-#get_site_status for https://bm.angis.org.au/
-bad <- "https://bm.angis.org.au/"
-good <- "https://umich.edu"
-get_site_status(bad)
-get_site_status(good)
 
 #load files 
 groundtruth_linkcount <- read_csv("Data/groundtruth_linkcount.csv")
