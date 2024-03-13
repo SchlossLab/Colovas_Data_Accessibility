@@ -70,15 +70,23 @@ write_csv(groundtruth_linkcount, "Data/groundtruth_linkcount.csv")
 #caused by error in 'curl::curl_fetch_memory()' could not resolve host bm.angis.org.au
 
 get_site_status <- function(websiteurl) {
+
+  response <- tryCatch( {request(websiteurl) %>% 
+    req_options(followlocation = TRUE) %>%
+    req_error(is_error = ~ FALSE) %>% 
+    req_perform()}, error = \(x){list(status_code = 404) } )
   
-  response <- request(websiteurl) %>% 
-    req_options(followlocation = FALSE) %>%
-    req_error(is_error = ~ FALSE) %>% req_perform() 
-  numeric_response <- resp_status(response) 
+  numeric_response <- response$status_code
   return(numeric_response)
   
 }
 
+
+#get_site_status for https://bm.angis.org.au/
+bad <- "https://bm.angis.org.au/"
+good <- "https://umich.edu"
+get_site_status(bad)
+get_site_status(good)
 
 #load files 
 groundtruth_linkcount <- read_csv("Data/groundtruth_linkcount.csv")
