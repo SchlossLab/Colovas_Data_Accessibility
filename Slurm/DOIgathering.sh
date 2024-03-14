@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name= doi_gathering
+#SBATCH --job-name=doigathering
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
@@ -26,7 +26,7 @@
 ####    special hardware, like large memory nodes or GPUs.
 
 #SBATCH --account=pschloss1
-#SBATCH --partition=largemem
+#SBATCH --partition=standard
 
 #### #### ####  These are the least frequently changing options
 
