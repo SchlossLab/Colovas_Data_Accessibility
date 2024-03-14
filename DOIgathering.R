@@ -18,13 +18,26 @@ journal_acronym <- c("AAC", "AEM", "I&I", "JB", "JCB", "JMBE", "JV", "mBio", "MR
 
 asm_journals <- tibble(journal_name, journal_acronym, issn)
 
-#crossref query for 1 journal for 1 years worth of papers
-#AAC for year 2000
+#function to gather all DOIs from Y2K
 
-aac_y2000 <- cr_journals(issn = asm_journals$issn[1], 
-                         .progress = "time", 
-                         limit=20, 
-                         works = TRUE,
-                filter = list(from_pub_date = "2000", until_pub_date = "2001"))
+gather_dois <- function(issn_no) {
+ #crossref query
+  metadata_list <- cr_journals(issn = issn_no, 
+              works = TRUE,
+              sort = "published-print",
+              order = "desc",
+              cursor = "*", 
+              filter = list(from_pub_date = "2000"))
+ 
+  #get only metadata part of the list 
+  metadata <- metadata_list[["data"]]
+  
+  #save as an RDS file
+  saveRDS(metadata_list, str_glue("Data/{issn_no}_metadata.RDS"))
+  
+}
+
+walk(asm_journals$issn, gather_dois)
+
 
 
