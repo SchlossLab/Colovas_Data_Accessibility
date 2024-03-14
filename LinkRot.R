@@ -83,4 +83,5 @@ get_site_status <- function(websiteurl) {
 groundtruth_linkcount <- read_csv("Data/groundtruth_linkcount.csv")
 groundtruth_links <- read_csv("Data/groundtruth_links.csv")
 
-groundtruth_links$link_status <- map(groundtruth_links$link_address, get_site_status)
+groundtruth_links$link_status <- map_int(groundtruth_links$link_address, get_site_status)
+write_csv(groundtruth_links, "Data/groundtruth_links.csv")
