@@ -25,7 +25,8 @@ gather_dois <- function(issn_no) {
   metadata_list <- cr_journals(issn = issn_no, 
               works = TRUE,
               sort = "published-print",
-              order = "desc",
+              order = "asc",
+              cursor_max = 25000,
               cursor = "*", 
               filter = list(from_pub_date = "2000"))
  
