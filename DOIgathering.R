@@ -26,7 +26,7 @@ gather_dois <- function(issn_no) {
               works = TRUE,
               sort = "published-print",
               order = "asc",
-              cursor_max = 25000,
+              cursor_max = 50000,
               cursor = "*", 
               filter = list(from_pub_date = "2000"))
  
@@ -34,7 +34,7 @@ gather_dois <- function(issn_no) {
   metadata <- metadata_list[["data"]]
   
   #save as an RDS file
-  saveRDS(metadata_list, str_glue("Data/{issn_no}_metadata.RDS"))
+  saveRDS(metadata, str_glue("Data/{issn_no}_metadata.RDS"))
   
 }
 
