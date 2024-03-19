@@ -57,7 +57,7 @@ Type 'q()' to quit R.
 +               works = TRUE,
 +               sort = "published-print",
 +               order = "asc",
-+               cursor_max = 25000,
++               cursor_max = 50000,
 +               cursor = "*", 
 +               filter = list(from_pub_date = "2000"))
 +  
@@ -65,8 +65,17 @@ Type 'q()' to quit R.
 +   metadata <- metadata_list[["data"]]
 +   
 +   #save as an RDS file
-+   saveRDS(metadata_list, str_glue("Data/{issn_no}_metadata.RDS"))
++   saveRDS(metadata, str_glue("Data/{issn_no}_metadata.RDS"))
 +   
 + }
 > 
 > walk(asm_journals$issn, gather_dois)
+Warning message:
+504 (server error): /journals/1098-5336/works - NA 
+> 
+> 
+> 
+> 
+> proc.time()
+     user    system   elapsed 
+ 2704.789    24.524 28678.313 
