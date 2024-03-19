@@ -40,6 +40,8 @@ gather_dois <- function(issn_no) {
 
 walk(asm_journals$issn, gather_dois)
 
+#redo doi gathering for 1098-5336, AEM
+gather_dois(asm_journals$issn[2])
 
 #add column in df for the metadata filename
 asm_journals <- mutate(asm_journals,
