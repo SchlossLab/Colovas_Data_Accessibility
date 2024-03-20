@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name=doigathering
+#SBATCH --job-name=aemdoi
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
@@ -15,9 +15,9 @@
 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=2
-#SBATCH --mem-per-cpu=4g
-#SBATCH --time=02-00:00:00
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=2g
+#SBATCH --time=04:00:00
 
  
 
@@ -58,6 +58,6 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
-R CMD BATCH DOIgathering.R Slurm/20240315_doigathering.out
+R CMD BATCH AEM_doigathering.R Slurm/20240320_doigathering.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!
