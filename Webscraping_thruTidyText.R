@@ -49,24 +49,21 @@ create_tokens <- function(html_text, min_word_length = 3) {
     count(word)
 }
 
+retokenize <- function(data, file_path, n_tokens = 1) {
+  if(file.exists(file_path)){
+      json_data <- read_json(file_path)
+      json_data <- unserializeJSON(json_data[[1]])
+      json_data$tibble_data <- map(json_data$webscraped_data, create_tokens)
+  }
+}
 
 #20240226 if file exists does not retrieve data correctly to update with new tokenization
-prepare_data <- function(data, file_path, n_tokens = 1){
-  json_data <- 0
-  df <- 0
-  if(file.exists(file_path))
-  {
-    json_data <- read_json(file_path)
-    json_data <- unserializeJSON(json_data[[1]])
-    tibble_data <- lapply("json_data$html_text", create_tokens)
-    df <- lst(paper, html_text, tibble_data)
-  }
-  else
-  {
-    webscraped_data <- lapply(data$paper, webscrape)
-    tibble_data <- lapply(webscraped_data, create_tokens) 
-    df <- lst(data$paper, webscraped_data, tibble_data)
-  }
+prepare_data <- function(data, file_path){
+ 
+  webscraped_data <- lapply(data$paper, webscrape)
+  tibble_data <- lapply(webscraped_data, create_tokens) 
+  df <- lst(data$paper, webscraped_data, tibble_data)
+  
   json_data <- serializeJSON(df, pretty = TRUE)
   write_json(json_data, path = file_path)
   return (json_data)
@@ -88,10 +85,4 @@ prepare_data(gt_availability_no, "Data/gt_availability_no.json")
 gt_ss30 <- read_csv("Data/gt_subset_30.csv")
 prepare_data(gt_ss30, "Data/gt_subset_30_data.json" )
 
-#test the half of the prepare_data function for if the file exists
-file_path <- "Data/gt_subset_30_data.json"
-if(file.exists(file_path))
-  json_data <- read_json(file_path)
-  json_data <- unserializeJSON(json_data[[1]])
-  tibble_data <- map(json_data$html_text, create_tokens) #this line does not work!
-  df <- lst(paper, html_text, tibble_data)
+
