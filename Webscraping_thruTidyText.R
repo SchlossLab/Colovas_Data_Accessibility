@@ -84,3 +84,14 @@ prepare_data(gt_newseq_yes, "Data/gt_newseq_yes.json")
 prepare_data(gt_newseq_no, "Data/gt_newseq_no.json")
 prepare_data(gt_availability_yes, "Data/gt_availability_yes.json")
 prepare_data(gt_availability_no, "Data/gt_availability_no.json")
+
+gt_ss30 <- read_csv("Data/gt_subset_30.csv")
+prepare_data(gt_ss30, "Data/gt_subset_30_data.json" )
+
+#test the half of the prepare_data function for if the file exists
+file_path <- "Data/gt_subset_30_data.json"
+if(file.exists(file_path))
+  json_data <- read_json(file_path)
+  json_data <- unserializeJSON(json_data[[1]])
+  tibble_data <- map(json_data$html_text, create_tokens) #this line does not work!
+  df <- lst(paper, html_text, tibble_data)
