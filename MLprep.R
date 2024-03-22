@@ -17,6 +17,7 @@ json_data <- unserializeJSON(json_data[[1]])
 #20230321 we actually want json_unserialized to be a df with each paper, 
 #the variable in question/its status, and the entire text in one place
 #how we do that?idk 
+#will need to pull variable from GT? or just fill in based on which dataset it's from??
 json_unserialized <- tibble(paper = json_data$`data$paper`, 
                             text_tibble = json_data$tibble_data)
 papers_long <- unnest(json_unserialized, col = text_tibble)
