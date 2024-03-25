@@ -11,8 +11,8 @@ library(jsonlite)
 #load data
 
 
-
-#function for reading html, remove figs/tables, and concatenate abstract and body (using rvest, xml2)
+#function for reading html, remove figs/tables, 
+#and concatenate abstract and body (using rvest, xml2)
 webscrape <- function(doi) {
   
   abstract <- read_html(doi) %>%
@@ -49,25 +49,43 @@ create_tokens <- function(html_text, min_word_length = 3) {
     count(word)
 }
 
+
+#function to re-tokenize webscraped data by diff number/type of tokens
 retokenize <- function(data, file_path, n_tokens = 1) {
   if(file.exists(file_path)){
       json_data <- read_json(file_path)
       json_data <- unserializeJSON(json_data[[1]])
       json_data$tibble_data <- map(json_data$webscraped_data, create_tokens)
   }
+  return(json_data)
 }
 
-#20240226 if file exists does not retrieve data correctly to update with new tokenization
+
+#function for unnesting/unlisting tokens for ml modeling
+unlist_tokens <- function(tibble_data){
+  unlisted_tokens <- map(tibble_data, uncount, weights = n) %>% 
+    map(., unlist, use.names = FALSE)
+ 
+   return(unlisted_tokens)
+}
+
+
+#function for creating json file of data
 prepare_data <- function(data, file_path){
  
-  webscraped_data <- lapply(data$paper, webscrape)
-  tibble_data <- lapply(webscraped_data, create_tokens) 
-  df <- lst(data$paper, webscraped_data, tibble_data)
+  webscraped_data <- map(data$paper, webscrape)
+  tibble_data <- map(webscraped_data, create_tokens) 
+  unlisted_tokens <- map(tibble_data, )
+  df <- lst(data$paper, data$new_seq_data, data$availability, 
+            webscraped_data, tibble_data, unlisted_tokens)
   
   json_data <- serializeJSON(df, pretty = TRUE)
   write_json(json_data, path = file_path)
   return (json_data)
 }
+
+
+#work on making this a loop so that i don't have to do it 100 times by myself
 
 #groundtruth <- read_csv("Data/groundtruth.csv")
 #prepare_data(groundtruth, "Data/groundtruth.json")
