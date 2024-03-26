@@ -51,11 +51,12 @@ create_tokens <- function(html_text, min_word_length = 3) {
 
 
 #function to re-tokenize webscraped data by diff number/type of tokens
+# 20240326 this doesn't actaully work, create_tokens does not take an n_tokens arguement
 retokenize <- function(data, file_path, n_tokens = 1) {
   if(file.exists(file_path)){
       json_data <- read_json(file_path)
       json_data <- unserializeJSON(json_data[[1]])
-      json_data$tibble_data <- map(json_data$webscraped_data, create_tokens)
+      json_data$tibble_data <- lapply(json_data$webscraped_data, create_tokens)
   }
   return(json_data)
 }
@@ -63,25 +64,26 @@ retokenize <- function(data, file_path, n_tokens = 1) {
 
 #function for unnesting/unlisting tokens for ml modeling
 unlist_tokens <- function(tibble_data){
-  unlisted_tokens <- map(tibble_data, uncount, weights = n) %>% 
-    map(., unlist, use.names = FALSE)
+  tibble_data <- tibble(tibble_data)
+  unlisted_tokens <- lapply(tibble_data, uncount, weights = "n")
+  uncounted_tokens <- lapply(unlisted_tokens, unlist, use.names = FALSE)
  
-   return(unlisted_tokens)
-}
+   return(uncounted_tokens)
+  }
 
 
 #function for creating json file of data
 prepare_data <- function(data, file_path){
  
-  webscraped_data <- map(data$paper, webscrape)
-  tibble_data <- map(webscraped_data, create_tokens) 
-  unlisted_tokens <- map(tibble_data, )
+  webscraped_data <- lapply(data$paper, webscrape)
+  tibble_data <- lapply(webscraped_data, create_tokens) 
+  unlisted_tokens <- lapply(tibble_data, unlist_tokens)
   df <- lst(data$paper, data$new_seq_data, data$availability, 
             webscraped_data, tibble_data, unlisted_tokens)
   
   json_data <- serializeJSON(df, pretty = TRUE)
   write_json(json_data, path = file_path)
-  return (json_data)
+  return(json_data)
 }
 
 
@@ -101,6 +103,8 @@ prepare_data(gt_availability_yes, "Data/gt_availability_yes.json")
 prepare_data(gt_availability_no, "Data/gt_availability_no.json")
 
 gt_ss30 <- read_csv("Data/gt_subset_30.csv")
-prepare_data(gt_ss30, "Data/gt_subset_30_data.json" )
+prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
+
+prepare_data(head(gt_ss30, 2), "Data/gt_subset_30_data.json")
 
 
