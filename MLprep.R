@@ -12,14 +12,22 @@ jsonfile <- "Data/gt_subset_30_data.json"
 json_data <- read_json(jsonfile)  
 json_data <- unserializeJSON(json_data[[1]])
 
-#2 column dataframe, unnest makes each word part of the same list
+tibble_data <- lapply(json_data$webscraped_data, create_tokens)
+unlisted_tokens <- lapply(tibble_data, unlist_tokens)
 
-#20230321 we actually want json_unserialized to be a df with each paper, 
-#the variable in question/its status, and the entire text in one place
-#how we do that?idk 
-#will need to pull variable from GT? or just fill in based on which dataset it's from??
+unlist_tokens <- function(tibble_data){
+  tibble_length <- length(tibble_data)
+  
+  for(i in seq_along(1:tibble_length)) {
+    tibble <- tibble_data[[i]]
+    unlisted_tokens[[i]] <- lapply(tibble, uncount, weights = "n") 
+    unnested_tokens[[i]] <- lapply(unlisted_tokens[[i]], unlist, use.names = FALSE)
+  }
+  
+  return(unnested_tokens)
+}
 
-#makes df of paper and text tibble
+
 json_unserialized <- tibble(paper = json_data$`data$paper`, 
                             text_tibble = json_data$tibble_data)
 json_unserialized$unnested <- map(json_unserialized$text_tibble, uncount, weights = n) %>% 
@@ -28,12 +36,20 @@ json_unserialized$unnested <- map(json_unserialized$text_tibble, uncount, weight
 
 #practice unnesting 
 
-one_tibble <- json_unserialized$text_tibble[[1]]
-
+one_tibble <- tibble_data[[1]]
 ot_unnested <- uncount(one_tibble, weights = n)
+ot_unlisted <- unlist(ot_unnested, use.names = FALSE)
 
-ot_unlisted <- unlist(ot_unnested)
-  
-papers_long <- unnest(json_unserialized, col = text_tibble)
+one_tibble <- tibble_data[[1:2]]
+ot_unnested <- lapply(one_tibble, uncount, weights = n)
+ot_unlisted <- unlist(ot_unnested, use.names = FALSE)
 
+j <- seq_along(1:2)
+
+for(i in seq_along(1:2)) {
+  unlisted_tokens[[i]] <- lapply(one_tibble[i], uncount, weights = "n") 
+  unlisted_tokens[[i]]
+  unnested_tokens[[i]] <- lapply(unlisted_tokens[i], unlist, use.names = FALSE)
+  unnested_tokens[[i]]
+}i f
 
