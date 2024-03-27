@@ -102,6 +102,5 @@ prepare_data(gt_availability_no, "Data/gt_availability_no.json")
 gt_ss30 <- read_csv("Data/gt_subset_30.csv")
 prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
 
-prepare_data(head(gt_ss30, 2), "Data/gt_subset_30_data.json")
 
 
