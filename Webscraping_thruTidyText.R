@@ -64,12 +64,10 @@ retokenize <- function(data, file_path, n_tokens = 1) {
 
 #function for unnesting/unlisting tokens for ml modeling
 unlist_tokens <- function(tibble_data){
-  tibble_data <- tibble(tibble_data)
-  unlisted_tokens <- lapply(tibble_data, uncount, weights = "n")
-  uncounted_tokens <- lapply(unlisted_tokens, unlist, use.names = FALSE)
- 
-   return(uncounted_tokens)
-  }
+  unlisted_tokens <- map(tibble_data, uncount, weights = tibble_data$n) 
+  unnested_tokens <- map(unlisted_tokens, unlist, use.names = FALSE)
+  return(unnested_tokens)
+}
 
 
 #function for creating json file of data

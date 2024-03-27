@@ -12,18 +12,13 @@ jsonfile <- "Data/gt_subset_30_data.json"
 json_data <- read_json(jsonfile)  
 json_data <- unserializeJSON(json_data[[1]])
 
+#takes ~3 minutes to run for 30 samples 
 tibble_data <- lapply(json_data$webscraped_data, create_tokens)
 unlisted_tokens <- lapply(tibble_data, unlist_tokens)
 
 unlist_tokens <- function(tibble_data){
-  tibble_length <- length(tibble_data)
-  
-  for(i in seq_along(1:tibble_length)) {
-    tibble <- tibble_data[[i]]
-    unlisted_tokens[[i]] <- lapply(tibble, uncount, weights = "n") 
-    unnested_tokens[[i]] <- lapply(unlisted_tokens[[i]], unlist, use.names = FALSE)
-  }
-  
+  unlisted_tokens <- map(tibble_data, uncount, weights = tibble_data$n) 
+  unnested_tokens <- map(unlisted_tokens, unlist, use.names = FALSE)
   return(unnested_tokens)
 }
 
