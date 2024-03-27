@@ -14,12 +14,11 @@ json_data <- unserializeJSON(json_data[[1]])
 
 #takes ~3 minutes to run for 30 samples 
 tibble_data <- lapply(json_data$webscraped_data, create_tokens)
-unlisted_tokens <- lapply(tibble_data, unlist_tokens)
+unlisted_tokens <- unlist_tokens(tibble_data)
 
 unlist_tokens <- function(tibble_data){
-  unlisted_tokens <- map(tibble_data, uncount, weights = tibble_data$n) 
-  unnested_tokens <- map(unlisted_tokens, unlist, use.names = FALSE)
-  return(unnested_tokens)
+  map(tibble_data, ~uncount(.x, n)) %>%  
+    map(unlist, use.names = FALSE)
 }
 
 

@@ -64,9 +64,8 @@ retokenize <- function(data, file_path, n_tokens = 1) {
 
 #function for unnesting/unlisting tokens for ml modeling
 unlist_tokens <- function(tibble_data){
-  unlisted_tokens <- map(tibble_data, uncount, weights = tibble_data$n) 
-  unnested_tokens <- map(unlisted_tokens, unlist, use.names = FALSE)
-  return(unnested_tokens)
+  map(tibble_data, ~uncount(.x, n)) %>%  
+    map(unlist, use.names = FALSE)
 }
 
 
@@ -75,7 +74,7 @@ prepare_data <- function(data, file_path){
  
   webscraped_data <- lapply(data$paper, webscrape)
   tibble_data <- lapply(webscraped_data, create_tokens) 
-  unlisted_tokens <- lapply(tibble_data, unlist_tokens)
+  unlisted_tokens <- unlist_tokens(tibble_data)
   df <- lst(data$paper, data$new_seq_data, data$availability, 
             webscraped_data, tibble_data, unlisted_tokens)
   
