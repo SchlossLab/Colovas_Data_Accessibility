@@ -5,6 +5,7 @@
 library(tidyverse)
 library(tidytext)
 library(jsonlite)
+library(mikropml)
 
 #read and unserialize json file
 jsonfile <- "Data/gt_subset_30_data.json"
@@ -16,10 +17,25 @@ json_tibble <- tibble(paper = json_data$`data$paper`,
                       new_seq_data = json_data$`data$new_seq_data`,
                       text_tibble = json_data$tibble_data)
 
+# new column for new_seq_data as binary outcome
+# json_tibble <- mutate(json_tibble, 
+#                      new_seq_data_binary = ifelse(new_seq_data == "Yes", 1, 0))
+
+# new column for paper as paper_doi
+json_tibble <- rename(json_tibble, paper_doi = paper)
+
 #need to pull out text tibble so that each word appears by paper
-tidy_tibble <- unnest(json_tibble, cols = c(new_seq_data, text_tibble))
+tidy_tibble <- unnest(json_tibble, cols = text_tibble)
 
 #implement sparse matrix
-sparse_matrix <- cast_sparse(tidy_tibble, paper, word, n)
+#sparse_matrix <- cast_sparse(tidy_tibble, paper, column = new_seq_data_binary, word, n)
+
+matrix <- pivot_wider(tidy_tibble, id_cols = c(paper_doi, new_seq_data), names_from = word, 
+                      values_from = n, names_sort = TRUE)
+matrix <- select(matrix, !paper_doi)
+
+ml_model <- run_ml(matrix, method = "glmnet",  outcome_colname = "new_seq_data", seed = 2000)
+
+write(ml_model, "Data/gtss30_glmnet_20240329.txt")
 
   
