@@ -58,6 +58,6 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
-R CMD BATCH MLprep.R Slurm/20240401_mlprep.out
+R CMD BATCH MLprep.R Slurm/20240401_mlprep_gtss30_1205pm.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!

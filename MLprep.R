@@ -31,11 +31,10 @@ tidy_tibble <- unnest(json_tibble, cols = text_tibble)
 #sparse_matrix <- cast_sparse(tidy_tibble, paper, column = new_seq_data_binary, word, n)
 
 matrix <- pivot_wider(tidy_tibble, id_cols = c(paper_doi, new_seq_data), names_from = word, 
-                      values_from = n, names_sort = TRUE)
+                      values_from = n, names_sort = TRUE, values_fill = 0)
 matrix <- select(matrix, !paper_doi)
 
 ml_model <- run_ml(matrix, method = "glmnet",  outcome_colname = "new_seq_data", seed = 2000)
 
-write(ml_model, "Data/gtss30_glmnet_20240329.txt")
-
+ml_model$trained_model
   
