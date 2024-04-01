@@ -1,0 +1,117 @@
+
+R version 4.3.3 (2024-02-29) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-conda-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #prep dataset for ML modeling 
+> #
+> #
+> #library statements
+> library(tidyverse)
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.4.4     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+> library(tidytext)
+> library(jsonlite)
+
+Attaching package: ‘jsonlite’
+
+The following object is masked from ‘package:purrr’:
+
+    flatten
+
+> library(mikropml)
+> 
+> #read and unserialize json file
+> jsonfile <- "Data/gt_subset_30_data.json"
+> json_data <- read_json(jsonfile)  
+> json_data <- unserializeJSON(json_data[[1]])
+> 
+> #set up dataset for 1 ML model; paper, new_seq_data, text_tibble
+> json_tibble <- tibble(paper = json_data$`data$paper`,
++                       new_seq_data = json_data$`data$new_seq_data`,
++                       text_tibble = json_data$tibble_data)
+> 
+> # new column for new_seq_data as binary outcome
+> # json_tibble <- mutate(json_tibble, 
+> #                      new_seq_data_binary = ifelse(new_seq_data == "Yes", 1, 0))
+> 
+> # new column for paper as paper_doi
+> json_tibble <- rename(json_tibble, paper_doi = paper)
+> 
+> #need to pull out text tibble so that each word appears by paper
+> tidy_tibble <- unnest(json_tibble, cols = text_tibble)
+> 
+> #implement sparse matrix
+> #sparse_matrix <- cast_sparse(tidy_tibble, paper, column = new_seq_data_binary, word, n)
+> 
+> matrix <- pivot_wider(tidy_tibble, id_cols = c(paper_doi, new_seq_data), names_from = word, 
++                       values_from = n, names_sort = TRUE)
+> matrix <- select(matrix, !paper_doi)
+> 
+> ml_model <- run_ml(matrix, method = "glmnet",  outcome_colname = "new_seq_data", seed = 2000)
+Using 'new_seq_data' as the outcome column.
+Training the model...
+Loading required package: lattice
+
+Attaching package: ‘caret’
+
+The following object is masked from ‘package:mikropml’:
+
+    compare_models
+
+The following object is masked from ‘package:purrr’:
+
+    lift
+
+Something is wrong; all the AUC metric values are missing:
+    logLoss         AUC          prAUC        Accuracy       Kappa    
+ Min.   : NA   Min.   : NA   Min.   : NA   Min.   : NA   Min.   : NA  
+ 1st Qu.: NA   1st Qu.: NA   1st Qu.: NA   1st Qu.: NA   1st Qu.: NA  
+ Median : NA   Median : NA   Median : NA   Median : NA   Median : NA  
+ Mean   :NaN   Mean   :NaN   Mean   :NaN   Mean   :NaN   Mean   :NaN  
+ 3rd Qu.: NA   3rd Qu.: NA   3rd Qu.: NA   3rd Qu.: NA   3rd Qu.: NA  
+ Max.   : NA   Max.   : NA   Max.   : NA   Max.   : NA   Max.   : NA  
+ NA's   :6     NA's   :6     NA's   :6     NA's   :6     NA's   :6    
+       F1       Sensitivity   Specificity  Pos_Pred_Value Neg_Pred_Value
+ Min.   : NA   Min.   : NA   Min.   : NA   Min.   : NA    Min.   : NA   
+ 1st Qu.: NA   1st Qu.: NA   1st Qu.: NA   1st Qu.: NA    1st Qu.: NA   
+ Median : NA   Median : NA   Median : NA   Median : NA    Median : NA   
+ Mean   :NaN   Mean   :NaN   Mean   :NaN   Mean   :NaN    Mean   :NaN   
+ 3rd Qu.: NA   3rd Qu.: NA   3rd Qu.: NA   3rd Qu.: NA    3rd Qu.: NA   
+ Max.   : NA   Max.   : NA   Max.   : NA   Max.   : NA    Max.   : NA   
+ NA's   :6     NA's   :6     NA's   :6     NA's   :6      NA's   :6     
+   Precision       Recall    Detection_Rate Balanced_Accuracy
+ Min.   : NA   Min.   : NA   Min.   : NA    Min.   : NA      
+ 1st Qu.: NA   1st Qu.: NA   1st Qu.: NA    1st Qu.: NA      
+ Median : NA   Median : NA   Median : NA    Median : NA      
+ Mean   :NaN   Mean   :NaN   Mean   :NaN    Mean   :NaN      
+ 3rd Qu.: NA   3rd Qu.: NA   3rd Qu.: NA    3rd Qu.: NA      
+ Max.   : NA   Max.   : NA   Max.   : NA    Max.   : NA      
+ NA's   :6     NA's   :6     NA's   :6      NA's   :6        
+Error: Stopping
+In addition: There were 50 or more warnings (use warnings() to see the first 50)
+Execution halted
