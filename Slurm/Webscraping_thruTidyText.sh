@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name=df4x_webscraping
+#SBATCH --job-name=gtjson
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
@@ -17,7 +17,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=2g
-#SBATCH --time=15:00:00
+#SBATCH --time=4:00:00
 
  
 
@@ -58,6 +58,6 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
-R CMD BATCH Webscraping_thruTidyText.R Slurm/Webscraping_thruTidyText_4xdf.out
+R CMD BATCH Webscraping_thruTidyText.R Slurm/Webscraping_thruTidyText_20240401_.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!
