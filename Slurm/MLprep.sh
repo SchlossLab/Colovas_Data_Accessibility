@@ -16,7 +16,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=2g
+#SBATCH --mem-per-cpu=20g
 #SBATCH --time=12:00:00
 
  
@@ -58,6 +58,6 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
-R CMD BATCH MLprep.R Slurm/20240401_mlprep_gtss30_1205pm.out
+R CMD BATCH MLprep.R Slurm/20240402_mlprep_gt_newseqdata_glmnet.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!

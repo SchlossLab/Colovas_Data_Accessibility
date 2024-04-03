@@ -8,7 +8,7 @@ library(jsonlite)
 library(mikropml)
 
 #read and unserialize json file
-jsonfile <- "Data/gt_subset_30_data.json"
+jsonfile <- "Data/groundtruth.json"
 json_data <- read_json(jsonfile)  
 json_data <- unserializeJSON(json_data[[1]])
 
@@ -17,9 +17,6 @@ json_tibble <- tibble(paper = json_data$`data$paper`,
                       new_seq_data = json_data$`data$new_seq_data`,
                       text_tibble = json_data$tibble_data)
 
-# new column for new_seq_data as binary outcome
-# json_tibble <- mutate(json_tibble, 
-#                      new_seq_data_binary = ifelse(new_seq_data == "Yes", 1, 0))
 
 # new column for paper as paper_doi
 json_tibble <- rename(json_tibble, paper_doi = paper)
@@ -36,5 +33,6 @@ matrix <- select(matrix, !paper_doi)
 
 ml_model <- run_ml(matrix, method = "glmnet",  outcome_colname = "new_seq_data", seed = 2000)
 
+ml_model
 ml_model$trained_model
   
