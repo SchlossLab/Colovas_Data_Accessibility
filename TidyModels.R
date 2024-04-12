@@ -13,10 +13,9 @@ library(textrecipes)
 #library(rpart.plot) #may need for visualization?
 #library(vip) #may need for visualization?
 
-#read in data (groundtruth)
 
-#read and unserialize json file
-jsonfile <- "Data/groundtruth.json"
+#read and unserialize json file (gtss30)
+jsonfile <- "Data/gt_subset_30_data.json"
 json_data <- read_json(jsonfile)  
 json_data <- unserializeJSON(json_data[[1]])
 
@@ -26,8 +25,12 @@ json_tibble <- tibble(paper_doi = json_data$`data$paper`,
                       availability = json_data$`data$availability`,
                       paper_html = json_data$webscraped_data)
 
-json_tibble <- unnest_wider(json_tibble, col = paper_html) %>% 
+json_tibble <- unnest_wider(json_tibble, col = paper_html, strict = TRUE) %>% 
   rename(., paper_html = ".")
+
+#json_tibble$paper_html <- map(json_tibble$paper_html, unnest, cols = paper_html)
+
+ 
 
 #set seed
 set.seed(1028)
@@ -44,9 +47,12 @@ gt_test <- testing(data_split)
 
 #begin recipes
 gt_recipe <- 
-  recipe(new_seq_data ~ html_text, data = gt_train) %>% 
-  step_tokenize(paper_html) %>% 
+  recipe(new_seq_data ~ paper_html, data = gt_train) %>% 
+  step_tokenize(paper_html, options = list(format = "html")) %>% 
+  step_stem(paper_html) %>% 
   step_stopwords(paper_html) %>% 
-  step_stem(paper_html)
+  step_ngram(paper_html, min_num_tokens = 1, num_tokens = 3) %>% 
+  show_tokens()
+  
   
   
