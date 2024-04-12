@@ -5,6 +5,7 @@
 library(tidymodels)
 library(jsonlite)
 library(textrecipes)
+library(spacyr)
 #may or may not need the following packages, IDK yet
 #library(discrim) #may need for bayes model
 #library(broom.mixed) #converting bayesian models to tidy tibble
@@ -25,12 +26,9 @@ json_tibble <- tibble(paper_doi = json_data$`data$paper`,
                       availability = json_data$`data$availability`,
                       paper_html = json_data$webscraped_data)
 
-json_tibble <- unnest_wider(json_tibble, col = paper_html, strict = TRUE) %>% 
+json_tibble <- unnest(json_tibble, col = paper_html) %>%
   rename(., paper_html = ".")
 
-#json_tibble$paper_html <- map(json_tibble$paper_html, unnest, cols = paper_html)
-
- 
 
 #set seed
 set.seed(1028)
@@ -48,11 +46,12 @@ gt_test <- testing(data_split)
 #begin recipes
 gt_recipe <- 
   recipe(new_seq_data ~ paper_html, data = gt_train) %>% 
-  step_tokenize(paper_html, options = list(format = "html")) %>% 
-  step_stem(paper_html) %>% 
+  step_tokenize(paper_html) %>% 
+ # step_stem(paper_html) %>% 
   step_stopwords(paper_html) %>% 
   step_ngram(paper_html, min_num_tokens = 1, num_tokens = 3) %>% 
-  show_tokens()
-  
+  show_tokens(paper_html)
+
+head(gt_recipe, 2) 
   
   
