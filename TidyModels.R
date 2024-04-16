@@ -24,7 +24,8 @@ json_data <- unserializeJSON(json_data[[1]])
 
 
 
-#set up dataset for 1 ML model; paper, new_seq_data, text_tibble
+#set up dataset for 1 ML model; 4 vars
+#paper, new_seq_data, availability text_tibble
 json_tibble <- tibble(paper_doi = json_data$`data$paper`,
                       new_seq_data = json_data$`data$new_seq_data`,
                       availability = json_data$`data$availability`,
@@ -56,7 +57,8 @@ gt_test <- testing(data_split)
 #begin recipes
 gt_recipe <- 
   recipe(new_seq_data ~ paper_html, data = gt_train) %>% 
-  step_tokenize(paper_html) %>% 
+  step_tokenize(paper_html, engine = "spacyr", 
+                options = list(strip_punct = TRUE)) %>% 
   step_lemma(paper_html) %>% 
   step_stopwords(paper_html) %>% 
   step_ngram(paper_html, min_num_tokens = 1, num_tokens = 3) %>% 
