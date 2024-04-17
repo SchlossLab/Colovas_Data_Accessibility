@@ -5,6 +5,8 @@
 library(tidymodels)
 library(jsonlite)
 library(textrecipes)
+library(stringr)
+library(hunspell) #may need as a tokenizer
 library(spacyr) #for lemmatization 
 
 #may or may not need the following packages, IDK yet
@@ -38,11 +40,21 @@ json_tibble <- unnest_wider(json_tibble, paper_html, names_sep = "") %>%
   select(c(-paper_html.1, -paper_html.2))
 
 #check status
-str(json_tibble)
+str(json_tibble$paper_html)
 
+#remove HTML tags, punctuation, numerics from text 
+prep_html <- function(html) {
+ html <- read_html(html) %>% html_text()
+ html <- str_remove(html, '[[:punct:] ]+')
+ html <- str_remove(html, '[[:digit:] ]+')
+}
+
+json_tibble$paper_html <- map_chr(json_tibble$paper_html, prep_html)
+
+#remove numbers and punctuation
 
 #set seed
-set.seed(1028)
+set.seed(102899)
 
 #set new_seq_data and availability as factors
 gt_data <- json_tibble %>% 
@@ -54,16 +66,33 @@ data_split <- initial_split(gt_data, strata = new_seq_data)
 gt_train <- training(data_split)
 gt_test <- testing(data_split)
 
+
 #begin recipes
 gt_recipe <- 
   recipe(new_seq_data ~ paper_html, data = gt_train) %>% 
-  step_tokenize(paper_html, engine = "spacyr", 
-                options = list(strip_punct = TRUE)) %>% 
-  step_lemma(paper_html) %>% 
+  step_tokenize(paper_html, engine = "spacyr") %>% 
+  # step_stem(paper_html, custom_stemmer = hunspell_parse, 
+  #           options = list(format = "html")) %>% 
   step_stopwords(paper_html) %>% 
+  step_lemma(paper_html) %>% 
   step_ngram(paper_html, min_num_tokens = 1, num_tokens = 3) %>% 
   show_tokens(paper_html)
 
 head(gt_recipe, 2) 
   
-  
+
+
+#unnest_tokens(format = "html") uses tokenizer "hunspell" 
+#hunspell_parse generates tokens with pkg hunspell
+tokens <- hunspell_parse(json_tibble$paper_html[1], format = "html") %>% 
+  unlist()
+
+#hunspell_stem stems(actually looks more like a lemm to me)
+#hunspell_stem REMOVES words that it cannot find the stems for!
+stems <- hunspell_stem(tokens)
+
+#rvest support to remove html tags before we tokenize instead
+library(rvest)
+one_html <- json_tibble$paper_html[1]
+
+clean_html <- read_html(one_html) %>% html_text()
