@@ -6,6 +6,7 @@ library(tidymodels)
 library(jsonlite)
 library(textrecipes)
 library(stringr)
+library(rvest) #for text cleanup
 library(hunspell) #may need as a tokenizer
 library(spacyr) #for lemmatization 
 
@@ -18,13 +19,10 @@ library(spacyr) #for lemmatization
 #library(vip) #may need for visualization?
 
 
-
 #read and unserialize json file (gtss30)
 jsonfile <- "Data/gt_subset_30_data.json"
 json_data <- read_json(jsonfile)  
 json_data <- unserializeJSON(json_data[[1]])
-
-
 
 #set up dataset for 1 ML model; 4 vars
 #paper, new_seq_data, availability text_tibble
@@ -42,16 +40,39 @@ json_tibble <- unnest_wider(json_tibble, paper_html, names_sep = "") %>%
 #check status
 str(json_tibble$paper_html)
 
-#remove HTML tags, punctuation, numerics from text 
+#remove HTML tags, punctuation, digits from text 
+#20240418 - this function doesn't work because the whitespace 
+# characters still exist and become tokens
 prep_html <- function(html) {
- html <- read_html(html) %>% html_text()
- html <- str_remove(html, '[[:punct:] ]+')
- html <- str_remove(html, '[[:digit:] ]+')
+  
+  html <- read_html(html) %>% html_text()
+  html <- str_replace_all(html, '[[:punct:]]', " ")
+  html <- str_replace_all(html, '[[:digit:]]', " ")
+  html <- str_replace_all(html, '[[:space:]]', " ")
 }
 
-json_tibble$paper_html <- map_chr(json_tibble$paper_html, prep_html)
+json_tibble_prepped <- json_tibble
+json_tibble_prepped$paper_html <- map_chr(json_tibble$paper_html, prep_html)
 
-#remove numbers and punctuation
+# -------------trying to fix function prep_html-----------------------
+
+#unnest_tokens(format = "html") uses tokenizer "hunspell" 
+#hunspell_parse generates tokens with pkg hunspell
+tokens <- hunspell_parse(one_html, format = "html") %>% 
+  cbind() 
+one_chr <- unnest_wider(tokens)
+
+#hunspell_stem stems(actually looks more like a lemm to me)
+#hunspell_stem REMOVES words that it cannot find the stems for!
+stems <- hunspell_stem(tokens)
+
+#rvest support to remove html tags before we tokenize instead
+
+one_html <- json_tibble$paper_html[1]
+
+clean_html <- read_html(one_html) %>% html_text()
+
+#--------------end of function troubleshooting------------------------
 
 #set seed
 set.seed(102899)
@@ -78,21 +99,7 @@ gt_recipe <-
   step_ngram(paper_html, min_num_tokens = 1, num_tokens = 3) %>% 
   show_tokens(paper_html)
 
-head(gt_recipe, 2) 
+head(gt_recipe, 1) 
   
 
 
-#unnest_tokens(format = "html") uses tokenizer "hunspell" 
-#hunspell_parse generates tokens with pkg hunspell
-tokens <- hunspell_parse(json_tibble$paper_html[1], format = "html") %>% 
-  unlist()
-
-#hunspell_stem stems(actually looks more like a lemm to me)
-#hunspell_stem REMOVES words that it cannot find the stems for!
-stems <- hunspell_stem(tokens)
-
-#rvest support to remove html tags before we tokenize instead
-library(rvest)
-one_html <- json_tibble$paper_html[1]
-
-clean_html <- read_html(one_html) %>% html_text()
