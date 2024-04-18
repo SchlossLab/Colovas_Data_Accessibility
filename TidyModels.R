@@ -41,38 +41,16 @@ json_tibble <- unnest_wider(json_tibble, paper_html, names_sep = "") %>%
 str(json_tibble$paper_html)
 
 #remove HTML tags, punctuation, digits from text 
-#20240418 - this function doesn't work because the whitespace 
-# characters still exist and become tokens
+#tokenize using hunspell with format = html and then paste
 prep_html <- function(html) {
-  
-  html <- read_html(html) %>% html_text()
-  html <- str_replace_all(html, '[[:punct:]]', " ")
-  html <- str_replace_all(html, '[[:digit:]]', " ")
-  html <- str_replace_all(html, '[[:space:]]', " ")
+  tokens <- hunspell_parse(html, format = "html") %>%  
+    unlist() %>% 
+    paste0(collapse = " ")
+  return(tokens)
 }
 
-json_tibble_prepped <- json_tibble
-json_tibble_prepped$paper_html <- map_chr(json_tibble$paper_html, prep_html)
+json_tibble$paper_html <- map_chr(json_tibble$paper_html, prep_html)
 
-# -------------trying to fix function prep_html-----------------------
-
-#unnest_tokens(format = "html") uses tokenizer "hunspell" 
-#hunspell_parse generates tokens with pkg hunspell
-tokens <- hunspell_parse(one_html, format = "html") %>% 
-  cbind() 
-one_chr <- unnest_wider(tokens)
-
-#hunspell_stem stems(actually looks more like a lemm to me)
-#hunspell_stem REMOVES words that it cannot find the stems for!
-stems <- hunspell_stem(tokens)
-
-#rvest support to remove html tags before we tokenize instead
-
-one_html <- json_tibble$paper_html[1]
-
-clean_html <- read_html(one_html) %>% html_text()
-
-#--------------end of function troubleshooting------------------------
 
 #set seed
 set.seed(102899)
@@ -89,17 +67,16 @@ gt_test <- testing(data_split)
 
 
 #begin recipes
+#can tune num_tokens = tune()
 gt_recipe <- 
   recipe(new_seq_data ~ paper_html, data = gt_train) %>% 
   step_tokenize(paper_html, engine = "spacyr") %>% 
-  # step_stem(paper_html, custom_stemmer = hunspell_parse, 
-  #           options = list(format = "html")) %>% 
-  step_stopwords(paper_html) %>% 
+  step_stopwords(paper_html, stopword_source = "smart") %>% 
   step_lemma(paper_html) %>% 
-  step_ngram(paper_html, min_num_tokens = 1, num_tokens = 3) %>% 
+  step_ngram(paper_html, min_num_tokens = 1, num_tokens = tune()) %>% 
   show_tokens(paper_html)
 
-head(gt_recipe, 1) 
+head(gt_recipe, 2) 
   
 
 
