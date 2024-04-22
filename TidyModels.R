@@ -43,16 +43,36 @@ str(json_tibble$paper_html)
 
 #remove HTML tags, punctuation, digits from text 
 #tokenize using hunspell with format = html and then paste
-#is there a better way to remove this and 
-#actually get rid of the space characters? >> for mob code weds? 
-prep_html <- function(html) {
+prep_html_hunspell <- function(html) {
   tokens <- hunspell_parse(html, format = "html") %>%  
     unlist() %>% 
     paste0(collapse = " ")
   return(tokens)
 }
 
-json_tibble$paper_html <- map_chr(json_tibble$paper_html, prep_html)
+#str_replace_all- remove HTML tags, punctuation, digits from text 
+prep_html_str <- function(html) {
+  
+  html <- read_html(html) %>% html_text()
+  html <- str_replace_all(html, '[[:punct:]]', " ")
+  html <- str_replace_all(html, '[[:digit:]]', " ")
+  html <- str_replace_all(html, '[[:space:]]', " ")
+}
+
+#20240422 - this takes at least 5 - 10 mins for 30 samples
+#need to parallelize or work on fxn to make it faster
+#can also consider doing it within the OG script files 
+#when we unnnest tokens instead of sorting immediately, can put back together? 
+# is there a better way to think about this 
+
+#use microbenchmark::microbenchmark on these
+#json_tibble$paper_html <- 
+#this one takes at least an hour?? idk how i managed to break this 
+  microbenchmark::microbenchmark(map_chr(json_tibble$paper_html, prep_html_hunspell))
+#this one takes about 2 minutes which is great news
+  microbenchmark::microbenchmark(map_chr(json_tibble$paper_html, prep_html_str))
+#
+
 
 #------------------split and nesting of data/folds--------------------
 
@@ -88,14 +108,15 @@ nested_resample
 #OR is there a test/training set to use for this? 
 #20240419 - why can't the recipe find the cols it needs? 
 gt_recipe <- 
-  recipe(new_seq_data ~ paper_html, data = nested_resample) %>% 
+  recipe(new_seq_data ~ paper_html, data = gt_test) %>% 
   # Do not use paper_doi and availability as predictors
   update_role(paper_doi, new_role = "id") %>%
   update_role(availability, new_role = "id") %>%
   step_tokenize(paper_html, engine = "spacyr") %>% 
   step_stopwords(paper_html, stopword_source = "smart") %>% 
   step_lemma(paper_html) %>% 
-  step_ngram(paper_html, min_num_tokens = 1, num_tokens = tune()) %>% 
+  #can change num_tokens = tune()
+  step_ngram(paper_html, min_num_tokens = 1, num_tokens = 3) %>% 
   show_tokens(paper_html)
 
 head(gt_recipe, 2) 
