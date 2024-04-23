@@ -41,8 +41,10 @@ json_tibble <- unnest_wider(json_tibble, paper_html, names_sep = "") %>%
 #check status to make sure column is not still a list
 str(json_tibble$paper_html)
 
+#20240422 - this one doesn't actually work even though it worked last week
 #remove HTML tags, punctuation, digits from text 
 #tokenize using hunspell with format = html and then paste
+# 1+ hour benchmark, does not work? microbenchmark::microbenchmark
 prep_html_hunspell <- function(html) {
   tokens <- hunspell_parse(html, format = "html") %>%  
     unlist() %>% 
@@ -51,6 +53,7 @@ prep_html_hunspell <- function(html) {
 }
 
 #str_replace_all- remove HTML tags, punctuation, digits from text 
+# 1 min benchmark using microbenchmark::microbenchmark
 prep_html_str <- function(html) {
   
   html <- read_html(html) %>% html_text()
@@ -59,19 +62,8 @@ prep_html_str <- function(html) {
   html <- str_replace_all(html, '[[:space:]]', " ")
 }
 
-#20240422 - this takes at least 5 - 10 mins for 30 samples
-#need to parallelize or work on fxn to make it faster
-#can also consider doing it within the OG script files 
-#when we unnnest tokens instead of sorting immediately, can put back together? 
-# is there a better way to think about this 
-
-#use microbenchmark::microbenchmark on these
-#json_tibble$paper_html <- 
-#this one takes at least an hour?? idk how i managed to break this 
-  microbenchmark::microbenchmark(map_chr(json_tibble$paper_html, prep_html_hunspell))
-#this one takes about 2 minutes which is great news
-  microbenchmark::microbenchmark(map_chr(json_tibble$paper_html, prep_html_str))
-#
+#clean up html text 
+json_tibble$paper_html <- map_chr(json_tibble$paper_html, prep_html_str)
 
 
 #------------------split and nesting of data/folds--------------------
@@ -84,42 +76,79 @@ gt_data <- json_tibble %>%
   mutate(new_seq_data = factor(new_seq_data), 
          availability = factor(availability))
 
+#--------------initial split of data----------------
 
 #initial split of data into training and test data 
-#20240419- i think i still need this even though it's a nested sample
-data_split <- initial_split(gt_data, strata = new_seq_data)
+data_split <- initial_split(gt_data, strata = new_seq_data, prop = 0.8)
 gt_train <- training(data_split)
 gt_test <- testing(data_split)
-
-#nested resampling of data using methods from mikropml
-#20240419- can we specify what proportion goes into each re-sample? ie 80/20?
-nested_resample <- nested_cv(gt_train, 
-                             outside = vfold_cv(repeats = 10, strata = new_seq_data), 
-                             inside = bootstraps(times = 10))
-nested_resample
+head(gt_train, 3)
 
 
-#---------------------modeling-------------------------------
+#------recipes for dataset prep--------------------
 
-#------recipes for dataset prep-------
+#i think that i need to do the recipe BEFORE i do all the folds 
 
-#can tune num_tokens = tune()
-#20240419 - do i need to use data = nested_resample?  
-#OR is there a test/training set to use for this? 
-#20240419 - why can't the recipe find the cols it needs? 
+#20240423 - update_role provides an error 
+#"Error in `update_role()`: ! Can't select columns that don't exist.
+#commented out show_tokens() : cannot bake a tuneable recipe
+
 gt_recipe <- 
-  recipe(new_seq_data ~ paper_html, data = gt_test) %>% 
+  recipe(new_seq_data ~ paper_html, data = gt_train) %>% 
   # Do not use paper_doi and availability as predictors
-  update_role(paper_doi, new_role = "id") %>%
-  update_role(availability, new_role = "id") %>%
+  # update_role(paper_doi, new_role = "id") %>%
+  # update_role(availability, new_role = "id") %>%
   step_tokenize(paper_html, engine = "spacyr") %>% 
   step_stopwords(paper_html, stopword_source = "smart") %>% 
   step_lemma(paper_html) %>% 
   #can change num_tokens = tune()
-  step_ngram(paper_html, min_num_tokens = 1, num_tokens = 3) %>% 
-  show_tokens(paper_html)
+  step_ngram(paper_html, min_num_tokens = 1, num_tokens = tune()) #%>% 
+  #show_tokens(paper_html)
 
 head(gt_recipe, 2) 
+
+# ------------------tune recipe----------------------------------
+
+#generate set of tuning values (only will tune 1, 2, 3 tokens)
+tuning_grid <- grid_regular(num_tokens(), levels = 3)
+tuning_grid
+
+#create tuning folds to tune parameter
+tuning_folds <- vfold_cv(gt_train)
+
+#need a model + workflow object to tune parameter
+#random forest using engine randomForest
+tuning_model <- rand_forest() %>% 
+  set_engine("randomForest") %>% 
+  set_mode("classification")
+  
+tuning_wf <- workflow() %>% 
+  add_recipe(gt_recipe) %>% 
+  add_model(tuning_model)
+  
+#libary(sparklyr)
+
+#tune the parameter
+tuned_tokens <- tune_grid(tuning_wf,
+  resamples = tuning_folds, 
+  grid = tuning_grid)
+
+
+# -----------------nested resampling--------------------------------
+
+#nested resampling of data using methods from mikropml
+#20240419- can we specify what proportion goes into each re-sample? ie 80/20?
+nested_resample <- nested_cv(gt_train, 
+                             outside = vfold_cv(repeats = 5, 
+                                                strata = new_seq_data), 
+                             inside = vfold_cv(repeats = 5, 
+                                               strata = new_seq_data))
+nested_resample
+
+
+#---------------------modeling------------------------------------------
+
+
   
 #-----------model(s)------------
 
