@@ -93,6 +93,8 @@ head(gt_train, 3)
 #"Error in `update_role()`: ! Can't select columns that don't exist.
 #commented out show_tokens() : cannot bake a tuneable recipe
 
+library(text2vec)
+
 gt_recipe <- 
   recipe(new_seq_data ~ paper_html, data = gt_train) %>% 
   # Do not use paper_doi and availability as predictors
@@ -102,25 +104,32 @@ gt_recipe <-
   step_stopwords(paper_html, stopword_source = "smart") %>% 
   step_lemma(paper_html) %>% 
   #can change num_tokens = tune()
-  step_ngram(paper_html, min_num_tokens = 1, num_tokens = tune()) #%>% 
-  #show_tokens(paper_html)
+  step_ngram(paper_html, min_num_tokens = 1, num_tokens = tune()) %>% 
+  step_texthash(paper_html)
+
+#%>% #show_tokens(paper_html)
 
 head(gt_recipe, 2) 
 
 # ------------------tune recipe----------------------------------
 
 #generate set of tuning values (only will tune 1, 2, 3 tokens)
-tuning_grid <- grid_regular(num_tokens(), levels = 3)
+tuning_grid <- crossing(num_tokens = c(1, 2, 3), 
+                        penalty = 10^seq(-3, 0, length = 5), 
+                        mixture = c(0.01, 0.25, 0.50, 0.75, 1))
 tuning_grid
 
 #create tuning folds to tune parameter
 tuning_folds <- vfold_cv(gt_train)
+tuning_folds
 
 #need a model + workflow object to tune parameter
-#random forest using engine randomForest
-tuning_model <- rand_forest() %>% 
-  set_engine("randomForest") %>% 
-  set_mode("classification")
+#logistic regression using glmnet
+tuning_model <- 
+  logistic_reg(penalty = tune(), 
+               mixture = tune()) %>% 
+  set_engine("glmnet") 
+tuning_model
   
 tuning_wf <- workflow() %>% 
   add_recipe(gt_recipe) %>% 
@@ -128,16 +137,17 @@ tuning_wf <- workflow() %>%
   
 #libary(sparklyr)
 
-#tune the parameter
-tuned_tokens <- tune_grid(tuning_wf,
-  resamples = tuning_folds, 
-  grid = tuning_grid)
+# #tune the parameter
+# tuned_tokens <- tune_grid(tuning_wf,
+#   resamples = tuning_folds, 
+#   grid = tuning_grid)
 
 
 # -----------------nested resampling--------------------------------
 
 #nested resampling of data using methods from mikropml
-#20240419- can we specify what proportion goes into each re-sample? ie 80/20?
+#20240419 - can we specify what proportion goes into each re-sample? ie 80/20?
+#20240423 - "! Nested resampling is not currently supported with tune."
 nested_resample <- nested_cv(gt_train, 
                              outside = vfold_cv(repeats = 5, 
                                                 strata = new_seq_data), 
@@ -147,7 +157,12 @@ nested_resample
 
 
 #---------------------modeling------------------------------------------
-
+# #tune the parameter
+#20240423 - warning: No event observations were detected in `truth` with event level 'No'.
+#There were issues with some computations A: x1
+tuned_tokens <- tune_grid(tuning_wf,
+  resamples = tuning_folds,
+  grid = tuning_grid)
 
   
 #-----------model(s)------------
