@@ -8,7 +8,7 @@ library(jsonlite)
 library(mikropml)
 
 #read and unserialize json file
-jsonfile <- "Data/groundtruth.json"
+jsonfile <- "Data/gt_subset_30_data.json"
 json_data <- read_json(jsonfile)  
 json_data <- unserializeJSON(json_data[[1]])
 
@@ -27,9 +27,13 @@ tidy_tibble <- unnest(json_tibble, cols = text_tibble)
 #implement sparse matrix
 #sparse_matrix <- cast_sparse(tidy_tibble, paper, column = new_seq_data_binary, word, n)
 
+#20240424 - export this 'matrix' like object and use mikropml vinegettes on data preprocessing
+#also a section on hyper parameter tunings 
+#kelly has a snakemake for mikropml as well, with template 
 matrix <- pivot_wider(tidy_tibble, id_cols = c(paper_doi, new_seq_data), names_from = word, 
                       values_from = n, names_sort = TRUE, values_fill = 0)
 matrix <- select(matrix, !paper_doi)
+
 
 ml_model <- run_ml(matrix, method = "glmnet",  outcome_colname = "new_seq_data", seed = 2000)
 

@@ -116,7 +116,7 @@ head(gt_recipe, 2)
 #generate set of tuning values (only will tune 1, 2, 3 tokens)
 tuning_grid <- crossing(num_tokens = c(1, 2, 3), 
                         penalty = 10^seq(-3, 0, length = 5), 
-                        mixture = c(0.01, 0.25, 0.50, 0.75, 1))
+                        mixture = c(0, 0.50, 1))
 tuning_grid
 
 #create tuning folds to tune parameter
@@ -134,13 +134,14 @@ tuning_model
 tuning_wf <- workflow() %>% 
   add_recipe(gt_recipe) %>% 
   add_model(tuning_model)
+tuning_wf
   
 #libary(sparklyr)
 
-# #tune the parameter
-# tuned_tokens <- tune_grid(tuning_wf,
-#   resamples = tuning_folds, 
-#   grid = tuning_grid)
+#tune the parameter
+tuned_tokens <- tune_grid(tuning_wf,
+  resamples = nested_resample,
+  grid = tuning_grid)
 
 
 # -----------------nested resampling--------------------------------
@@ -148,11 +149,13 @@ tuning_wf <- workflow() %>%
 #nested resampling of data using methods from mikropml
 #20240419 - can we specify what proportion goes into each re-sample? ie 80/20?
 #20240423 - "! Nested resampling is not currently supported with tune."
+#20240424 - this is a triple split if the data is 
 nested_resample <- nested_cv(gt_train, 
-                             outside = vfold_cv(repeats = 5, 
-                                                strata = new_seq_data), 
-                             inside = vfold_cv(repeats = 5, 
-                                               strata = new_seq_data))
+                             outside = vfold_cv(repeats = 5,
+                                                strata = new_seq_data))
+                             # inside = vfold_cv(repeats = 5, 
+                             #                   strata = new_seq_data))
+nested_resample
 nested_resample
 
 
