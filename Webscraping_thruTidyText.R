@@ -8,6 +8,7 @@ library(tidytext)
 library(tibble)
 library(xml2)
 library(jsonlite)
+library(textstem) #for stemming text variables
 #load data
 
 
@@ -44,7 +45,8 @@ create_tokens <- function(html_text, min_word_length = 3) {
   html_text %>%
   unnest_tokens(., word, ".", format = "html") %>% 
     arrange() %>% 
-    filter(nchar(word) > 3) %>% 
+    lemmatize_words() %>% 
+    filter(nchar(word) > min_word_length) %>% 
     anti_join(., stop_words, by = "word") %>% 
     count(word)
 }
@@ -89,6 +91,9 @@ prepare_data <- function(data, file_path){
 groundtruth <- read_csv("Data/groundtruth.csv")
 prepare_data(groundtruth, "Data/groundtruth.json")
 
+gt_ss30 <- read_csv("Data/gt_subset_30.csv")
+prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
+
 #gt_newseq_yes <- read_csv("Data/gt_newseq_yes.csv")
 #gt_newseq_no <- read_csv("Data/gt_newseq_no.csv")
 #gt_availability_yes <- read_csv("Data/gt_availability_yes.csv")
@@ -99,8 +104,7 @@ prepare_data(groundtruth, "Data/groundtruth.json")
 #prepare_data(gt_availability_yes, "Data/gt_availability_yes.json")
 #prepare_data(gt_availability_no, "Data/gt_availability_no.json")
 
-#gt_ss30 <- read_csv("Data/gt_subset_30.csv")
-#prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
+
 
 
 

@@ -6,6 +6,7 @@ library(tidyverse)
 library(tidytext)
 library(jsonlite)
 library(mikropml)
+library(textstem) #for stemming text variables
 
 #read and unserialize json file
 jsonfile <- "Data/gt_subset_30_data.json"
