@@ -31,12 +31,14 @@ tidy_tibble <- unnest(json_tibble, cols = text_tibble)
 #20240424 - export this 'matrix' like object and use mikropml vinegettes on data preprocessing
 #also a section on hyper parameter tunings 
 #kelly has a snakemake for mikropml as well, with template 
-matrix <- pivot_wider(tidy_tibble, id_cols = c(paper_doi, new_seq_data), names_from = word, 
+data_tibble <- pivot_wider(tidy_tibble, id_cols = c(paper_doi, new_seq_data), names_from = word, 
                       values_from = n, names_sort = TRUE, values_fill = 0)
-matrix <- select(matrix, !paper_doi)
+data_tibble <- select(data_tibble, !paper_doi)
 
-
-ml_model <- run_ml(matrix, method = "glmnet",  outcome_colname = "new_seq_data", seed = 2000)
+prepped_data <- preprocess_data(data_tibble, outcome_colname = "new_seq_data")
+prepped_data$dat_transformed
+  
+ml_model <- run_ml(prepped_data$dat_transformed, method = "glmnet",  outcome_colname = "new_seq_data", seed = 2000)
 
 ml_model
 ml_model$trained_model
