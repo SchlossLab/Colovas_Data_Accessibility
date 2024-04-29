@@ -41,12 +41,14 @@ webscrape <- function(doi) {
 
 
 #Function for token counting pipeline (from TidyingText.R)
-create_tokens <- function(html_text, min_word_length = 3) {
+#20240429 - add ngrams arguement, but now you can't filter for stopwords, 
+#check this out in Rstudio to see what it looks like in the middle of the process
+create_tokens <- function(html_text, min_word_length = 3, ngrams = 1) {
   html_text %>%
-  unnest_tokens(., word, ".", format = "html") %>% 
+  unnest_ngrams(., word, ".", format = "html", n = ngrams) %>% 
     arrange() %>% 
     lemmatize_words() %>% 
-    filter(nchar(word) > min_word_length) %>% 
+    filter(nchar(word) > min_word_length) %>%  
     anti_join(., stop_words, by = "word") %>% 
     count(word)
 }
