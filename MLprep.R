@@ -1,5 +1,8 @@
 #prep dataset for ML modeling 
 #
+# 20240429 MLprep.R of groundtruth, groundtruth_subset30
+# using mikropml and model glmnet to train model to predict
+# variable new_seq_data
 #
 #library statements
 library(tidyverse)
@@ -42,9 +45,6 @@ json_to_tibble <- function(json_data) {
 # #need to pull out text tibble so that each word appears by paper
 # tidy_tibble <- unnest(json_tibble, cols = text_tibble)
 
-#implement sparse matrix
-#sparse_matrix <- cast_sparse(tidy_tibble, paper, column = new_seq_data_binary, word, n)
-
 #20240424 - export this 'matrix' like object and use mikropml vinegettes on data preprocessing
 #also a section on hyper parameter tunings 
 #kelly has a snakemake for mikropml as well, with template 
@@ -60,7 +60,8 @@ json_to_tibble <- function(json_data) {
 # ml_model
 # ml_model$trained_model
 
-
+##implement sparse matrix **not used in current workflow***
+#sparse_matrix <- cast_sparse(tidy_tibble, paper, column = new_seq_data_binary, word, n)
 
 #gtss30 intial model
 gtss30 <- use_json("Data/gt_subset_30_data.json")
@@ -81,7 +82,7 @@ groundtruth <- json_to_tibble(groundtruth)
 prepped_data_gt <- preprocess_data(groundtruth, outcome_colname = "new_seq_data")
 prepped_data_gt$dat_transformed
 
-ml_model_gtss30 <- run_ml(prepped_data_gt$dat_transformed, 
+ml_model_gt <- run_ml(prepped_data_gt$dat_transformed, 
                           method = "glmnet",  outcome_colname = "new_seq_data", 
                           seed = 2000)
 ml_model_gt
