@@ -72,8 +72,49 @@ unlist_tokens <- function(tibble_data){
     map(unlist, use.names = FALSE)
 }
 
+##-------------test for create_tokens--------------------------------
+use_json <- function(jsonfile){
+  json_data <- read_json(jsonfile)
+  json_data <- unserializeJSON(json_data[[1]])
+}
+
+create_tokens_test <- function(html_text, min_word_length = 3, ngrams = 1) {
+  html_text %>%
+    unnest_ngrams(., word, ".", format = "html", n = ngrams) %>% 
+    lemmatize_words() %>% 
+    anti_join(., stop_words, by = "word") %>% 
+    # arrange() %>% 
+    filter(nchar(word) > min_word_length) %>%  
+    count(word)
+}
+json_data <- use_json("Data/gt_subset_30_data.json")
+
+
+json_tibble <- tibble(paper_doi = json_data$`data$paper`,
+                      new_seq_data = json_data$`data$new_seq_data`,
+                      availability = json_data$`data$availability`,
+                      paper_html = json_data$`webscraped_data`)
+
+#fixed unnesting 20240416
+json_tibble <- unnest_wider(json_tibble, paper_html, names_sep = "") %>% 
+  unnest_wider(paper_html., names_sep = "") %>% 
+  mutate(paper_html = paste0(paper_html.1, paper_html.2)) %>% 
+  select(c(-paper_html.1, -paper_html.2))
+
+one_html <- json_tibble$paper_html[[1]]
+
+tokens <- create_tokens_test(one_html, 2, 1)
+tokens
+
+
+
+
+
+
+#-----------end of test-------------------------------------------------
 
 #function for creating json file of data
+#add year published, and journal name 
 prepare_data <- function(data, file_path){
  
   webscraped_data <- lapply(data$paper, webscrape)
