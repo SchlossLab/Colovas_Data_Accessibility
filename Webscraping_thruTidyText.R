@@ -41,14 +41,12 @@ webscrape <- function(doi) {
 
 
 #Function for token counting pipeline (from TidyingText.R)
-#20240429 - add ngrams arguement, but now you can't filter for stopwords, 
-#check this out in Rstudio to see what it looks like in the middle of the process
-create_tokens <- function(html_text, min_word_length = 3, ngrams = 1) {
+
+create_tokens <- function(html_text, min_word_length = 3) {
   html_text %>%
-  unnest_ngrams(., word, ".", format = "html", n = ngrams) %>% 
+    unnest_tokens(., word, ".", format = "html") %>% 
     arrange() %>% 
-    lemmatize_words() %>% 
-    filter(nchar(word) > min_word_length) %>%  
+    filter(nchar(word) > 3) %>% 
     anti_join(., stop_words, by = "word") %>% 
     count(word)
 }
@@ -87,6 +85,23 @@ create_tokens_test <- function(html_text, min_word_length = 3, ngrams = 1) {
     filter(nchar(word) > min_word_length) %>%  
     count(word)
 }
+
+create_tokens_old <- function(html_text, min_word_length = 3) {
+  tokens <-  html_text %>%
+    unnest_tokens(., word, ".", format = "html") %>% 
+    filter(nchar(word) > min_word_length) %>% 
+    anti_join(., stop_words, by = "word") 
+#20240501 - can't get the lemmatiziation to work on the list
+  # may need to re-build entire function
+  for (i in seq_along(1:length(tokens))){
+    tokens_lemma[[i]] <- map_chr(tokens[[i]][[1]], lemmatize_words)
+  }
+  
+ # tokens <- count(word)
+}
+
+tokens <- create_tokens_old(json_data@paper_html, 2)
+
 json_data <- use_json("Data/gt_subset_30_data.json")
 
 
@@ -103,12 +118,27 @@ json_tibble <- unnest_wider(json_tibble, paper_html, names_sep = "") %>%
 
 one_html <- json_tibble$paper_html[[1]]
 
-tokens <- create_tokens_test(one_html, 2, 1)
-tokens
+tokens_test <- create_tokens_test(one_html, 2, 1)
+tokens_test
 
+#creates tokens in a nested list form... my favorite 
+tokens <- create_tokens_old(json_tibble$paper_html, 2)
+tokens <- lapply(json_data$`webscraped_data`, 
+                 create_tokens_old, 
+                 min_word_length = 2)
+#can't get lemmatization to work on the nested column 
+tokens_tibble <- tibble(tokens)
+one_set_tokens <- tokens[[1]]
 
+one_lemma <- map(one_set_tokens, lemmatize_words)
 
+tokens_lemma <- map(tokens_tibble$tokens[[]][[]], lemmatize_words)
 
+for (i in seq_along(1:length(tokens_tibble$tokens))){
+    tokens_lemma[[i]] <- map_chr(tokens_tibble$tokens[[i]][[1]], lemmatize_words)
+}
+
+tokens_lemma <- tibble(tokens_lemma)
 
 
 #-----------end of test-------------------------------------------------
