@@ -9,6 +9,8 @@ library(tibble)
 library(xml2)
 library(jsonlite)
 library(textstem) #for stemming text variables
+library(tm) #for text manipulation
+
 #load data
 
 
@@ -76,69 +78,46 @@ use_json <- function(jsonfile){
   json_data <- unserializeJSON(json_data[[1]])
 }
 
-create_tokens_test <- function(html_text, min_word_length = 3, ngrams = 1) {
-  html_text %>%
-    unnest_ngrams(., word, ".", format = "html", n = ngrams) %>% 
-    lemmatize_words() %>% 
-    anti_join(., stop_words, by = "word") %>% 
-    # arrange() %>% 
-    filter(nchar(word) > min_word_length) %>%  
-    count(word)
-}
-
-create_tokens_old <- function(html_text, min_word_length = 3) {
-  tokens <-  html_text %>%
-    unnest_tokens(., word, ".", format = "html") %>% 
-    filter(nchar(word) > min_word_length) %>% 
-    anti_join(., stop_words, by = "word") 
-#20240501 - can't get the lemmatiziation to work on the list
-  # may need to re-build entire function
-  for (i in seq_along(1:length(tokens))){
-    tokens_lemma[[i]] <- map_chr(tokens[[i]][[1]], lemmatize_words)
-  }
-  
- # tokens <- count(word)
-}
-
-tokens <- create_tokens_old(json_data@paper_html, 2)
-
 json_data <- use_json("Data/gt_subset_30_data.json")
-
 
 json_tibble <- tibble(paper_doi = json_data$`data$paper`,
                       new_seq_data = json_data$`data$new_seq_data`,
                       availability = json_data$`data$availability`,
                       paper_html = json_data$`webscraped_data`)
 
-#fixed unnesting 20240416
 json_tibble <- unnest_wider(json_tibble, paper_html, names_sep = "") %>% 
   unnest_wider(paper_html., names_sep = "") %>% 
   mutate(paper_html = paste0(paper_html.1, paper_html.2)) %>% 
   select(c(-paper_html.1, -paper_html.2))
 
-one_html <- json_tibble$paper_html[[1]]
+#function to remove all unnecessary characters using pkg tm
+prep_html_tm <- function(html) {
+  html <- read_html(html) %>% html_text()
+  html <- stripWhitespace(html)
+  html <- removeNumbers(html)
+  html <- removePunctuation(html)
+  html <- lemmatize_strings(html)
+}
+json_tibble$paper_text <- map_chr(json_tibble$paper_html, prep_html_tm)
+json_tibble$tokens <- map(json_tibble$paper_text, create_tokens_test)
 
-tokens_test <- create_tokens_test(one_html, 2, 1)
-tokens_test
 
-#creates tokens in a nested list form... my favorite 
-tokens <- create_tokens_old(json_tibble$paper_html, 2)
-tokens <- lapply(json_data$`webscraped_data`, 
-                 create_tokens_old, 
-                 min_word_length = 2)
-#can't get lemmatization to work on the nested column 
-tokens_tibble <- tibble(tokens)
-one_set_tokens <- tokens[[1]]
-
-one_lemma <- map(one_set_tokens, lemmatize_words)
-
-tokens_lemma <- map(tokens_tibble$tokens[[]][[]], lemmatize_words)
-
-for (i in seq_along(1:length(tokens_tibble$tokens))){
-    tokens_lemma[[i]] <- map_chr(tokens_tibble$tokens[[i]][[1]], lemmatize_words)
+create_tokens_test <- function(paper_text, min_word_length = 3, ngrams = 1) {
+  paper_text <- paper_text %>% 
+    unnest_tokens(., word, paper_text, token = "ngrams", n = ngrams) %>% 
+    anti_join(., stop_words, by = "word") %>% 
+    # arrange() %>% 
+    filter(nchar(word) > min_word_length) %>%  
+    count(word)
 }
 
-tokens_lemma <- tibble(tokens_lemma)
+#practice code to see how functions work on 1 item vs list of items
+
+one_html <- json_tibble$paper_html[[1]]
+two_html <- list(json_tibble$paper_html[[1]], 
+                 json_tibble$paper_html[[2]], 
+                 json_tibble$paper_html[[3]])
+
 
 
 #-----------end of test-------------------------------------------------
