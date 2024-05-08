@@ -78,10 +78,32 @@ get_site_status <- function(websiteurl) {
   
 }
 
-
 #load files 
 groundtruth_linkcount <- read_csv("Data/groundtruth_linkcount.csv")
 groundtruth_links <- read_csv("Data/groundtruth_links.csv")
 
 groundtruth_links$link_status <- map_int(groundtruth_links$link_address, get_site_status)
 write_csv(groundtruth_links, "Data/groundtruth_links.csv")
+
+
+# 20240508 - count data for types of links using groundtruth_links.csv
+#want to count number of links that have .com, .org, .gov, .edu, etc
+#also want to count website type git, doi, zenodo, figshare, datadryad
+groundtruth_links <- groundtruth_links %>% 
+  mutate(hostname = map_chr(link_address, \(x)url_parse(x)$hostname), 
+         hostname = str_replace(hostname, "^www.", ""),
+         domain = str_replace(hostname, ".*\\.(.*)", "\\1"), 
+         website_type = case_when(str_detect(hostname, "\\.com") ~ "com", 
+                                  str_detect(hostname,"\\.edu") ~ "edu",
+                                  str_detect(hostname,"\\.gov") ~ "gov",
+                                  str_detect(hostname,"\\.org") ~ "org",
+                                  TRUE ~ "other")
+         )
+
+
+#create dataset joining groundtruth_links and groundtruth_linkcount 
+#to have all paper metadata in the same place
+#20240508 - pat says that the best way to do this is 
+# actually just the way i had it, as two "relational databases" 
+gt_all_links_with_metadata <- left_join(groundtruth_links, groundtruth_linkcount, by = "paper")
+write_csv(gt_all_links_with_metadata, "Data/gt_all_links_with_metadata.csv")
