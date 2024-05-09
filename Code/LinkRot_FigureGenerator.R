@@ -90,7 +90,7 @@ LinkType <-
   ) + 
   geom_bar(stat = "count") +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
-  labs( y = "Number of Manuscripts Containing Links", 
+  labs( y = "Number of External User-Added Links", 
         x = "Year Published",
         title = "Number of External User-Added  
         Links by Domain Type and Status (N=270)", 
@@ -99,8 +99,26 @@ LinkType
 
 ggsave(LinkType, filename = "Figures/link_type_status.png")
 
+#plot hostame of deadlinks
+error_only <- filter(gt_all_links_with_metadata, link_status != 200)
 
-#plot status of "more permanent links" 
+error_only_hostname <- 
+  ggplot(
+    data = error_only, 
+    mapping = aes(y = hostname, fill = as.factor(link_status))
+  ) + 
+  geom_bar(stat = "count") +
+  labs( x = "Number of Links", 
+        y = "Website Hostname",
+        title = "Number of External User-Added  
+        Links by Hostname and Status (N=29 of 270)", 
+        fill = "Link Status") 
+error_only_hostname
+
+ggsave(error_only_hostname, filename = "Figures/error_only_hostname.png")
+
+
+#plot status of "more permanent hostname links" 
 long_lasting <- filter(gt_all_links_with_metadata, 
                        grepl("doi|git|figshare|datadryad|zenodo|asm", hostname))
 
@@ -110,7 +128,6 @@ long_lasting_status <-
     mapping = aes(y = hostname, fill = as.factor(link_status))
   ) + 
   geom_bar(stat = "count") +
- # theme(axis.text.y = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( x = "Number of Links", 
         y = "Website Hostname",
         title = "Number of External User-Added  

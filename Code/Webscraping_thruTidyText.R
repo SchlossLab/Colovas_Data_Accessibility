@@ -1,5 +1,6 @@
-# GL test script for smaller subset (N=30) of groundtruth (gt_subset_30)
-# goals: read html, removal of figures and tables, save html, tokenize paper, send each thing to a json file
+# Webscraping through tidy text
+# goals: read html, removal of figures and tables, 
+# save html, tokenize paper, send each thing to a json file
 #
 #library statements
 library(tidyverse)
@@ -11,9 +12,6 @@ library(jsonlite)
 library(textstem) #for stemming text variables
 library(tm) #for text manipulation
 library(tokenizers) #for text tokenization
-
-#load data
-
 
 #function for reading html, remove figs/tables, 
 #and concatenate abstract and body (using rvest, xml2)
@@ -93,13 +91,6 @@ prepare_data <- function(data, file_path){
 gt_ss30 <- read_csv("Data/gt_subset_30.csv")
 prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
 
-
-
 # groundtruth <- read_csv("Data/groundtruth.csv")
 # prepare_data(groundtruth, "Data/groundtruth.json")
-
-
-
-
-
 
