@@ -81,9 +81,15 @@ get_site_status <- function(websiteurl) {
 #load files 
 groundtruth_linkcount <- read_csv("Data/groundtruth_linkcount.csv")
 groundtruth_links <- read_csv("Data/groundtruth_links.csv")
+gt_all_links_with_metadata <- read_csv("Data/gt_all_links_with_metadata.csv")
 
 groundtruth_links$link_status <- map_int(groundtruth_links$link_address, get_site_status)
 write_csv(groundtruth_links, "Data/groundtruth_links.csv")
+
+#create dataset joining groundtruth_links and groundtruth_linkcount 
+#to have all paper metadata in the same place
+gt_all_links_with_metadata <- left_join(groundtruth_links, groundtruth_linkcount, by = "paper")
+write_csv(gt_all_links_with_metadata, "Data/gt_all_links_with_metadata.csv")
 
 
 # 20240508 - count data for types of links using groundtruth_links.csv
@@ -99,11 +105,23 @@ groundtruth_links <- groundtruth_links %>%
                                   str_detect(hostname,"\\.org") ~ "org",
                                   TRUE ~ "other")
          )
+#write to file
+write_csv(groundtruth_links, "Data/groundtruth_links.csv")
 
 
-#create dataset joining groundtruth_links and groundtruth_linkcount 
-#to have all paper metadata in the same place
-#20240508 - pat says that the best way to do this is 
-# actually just the way i had it, as two "relational databases" 
-gt_all_links_with_metadata <- left_join(groundtruth_links, groundtruth_linkcount, by = "paper")
-write_csv(gt_all_links_with_metadata, "Data/gt_all_links_with_metadata.csv")
+#count links of each website type 
+status_type <- count(gt_all_links_with_metadata, hostname, link_status, website_type) %>% arrange(-n)
+error_only <- filter(status_type, link_status != 200)
+
+#filter for "long lasting" website types
+#also want to count website type git, doi, zenodo, figshare, datadryad, and asm
+long_lasting <- select(gt_all_links_with_metadata, paper, link_address, link_status, domain, hostname, container.title) %>% 
+  filter(grepl("doi|git|figshare|datadryad|zenodo|asm", hostname))
+
+count(long_lasting, link_status)
+long_lasting_bypaper <- count(long_lasting, container.title, link_status)
+
+
+
+
+

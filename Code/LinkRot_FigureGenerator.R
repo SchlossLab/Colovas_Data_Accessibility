@@ -8,6 +8,7 @@ library(tidyverse)
 groundtruth <- read_csv("Data/groundtruth.csv")
 groundtruth_links <- read_csv("Data/groundtruth_links.csv")
 groundtruth_linkcount <- read_csv("Data/groundtruth_linkcount.csv")
+gt_all_links_with_metadata <- read_csv("Data/gt_all_links_with_metadata.csv")
 
 #group articles by the journal they were found in
 journal_tally <- groundtruth_linkcount %>% group_by(container.title) %>% tally()
@@ -97,3 +98,24 @@ LinkType <-
 LinkType
 
 ggsave(LinkType, filename = "Figures/link_type_status.png")
+
+
+#plot status of "more permanent links" 
+long_lasting <- filter(gt_all_links_with_metadata, 
+                       grepl("doi|git|figshare|datadryad|zenodo|asm", hostname))
+
+long_lasting_status <- 
+  ggplot(
+    data = long_lasting, 
+    mapping = aes(y = hostname, fill = as.factor(link_status))
+  ) + 
+  geom_bar(stat = "count") +
+ # theme(axis.text.y = element_text(angle = 75, vjust = 1, hjust=1)) +
+  labs( x = "Number of Links", 
+        y = "Website Hostname",
+        title = "Number of External User-Added  
+        Links by Hostname and Status (N=109)", 
+        fill = "Link Status") 
+long_lasting_status
+
+ggsave(long_lasting_status, filename = "Figures/long_lasting_status.png")
