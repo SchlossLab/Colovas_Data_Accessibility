@@ -16,7 +16,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=2g
+#SBATCH --mem-per-cpu=16g
 #SBATCH --time=4:00:00
 
  
@@ -25,7 +25,7 @@
 ####    These will change if you work on multiple projects, or need
 ####    special hardware, like large memory nodes or GPUs.
 
-#SBATCH --account=pschloss1
+#SBATCH --account=pschloss99
 #SBATCH --partition=standard
 
 #### #### ####  These are the least frequently changing options
@@ -58,6 +58,6 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
-R CMD BATCH Webscraping_thruTidyText.R Slurm/Webscraping_thruTidyText_20240401_.out
+R CMD BATCH Code/Webscraping_thruTidyText.R Slurm/Webscraping_thruTidyText_20240509_gt_.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!
