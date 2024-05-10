@@ -23,9 +23,11 @@ use_json <- function(jsonfile){
 # json_data <- unserializeJSON(json_data[[1]])
 
 json_to_tibble <- function(json_data) {
- json_tibble <- tibble(paper_doi = json_data$`data$paper`,
+ json_tibble <- tibble(paper_doi = json_data$`paper_doi`,
          new_seq_data = json_data$`data$new_seq_data`,
-         text_tibble = json_data$tibble_data) 
+         text_tibble = json_data$`paper_tokens`,
+         journal = json_data$`journal`, 
+         year_published = json_data$`year_published`) 
  
  tidy_tibble <- unnest(json_tibble, cols = text_tibble)
  
@@ -36,32 +38,21 @@ json_to_tibble <- function(json_data) {
  return(data_tibble)
 }
 
+#----------------20240510----fix script for gtss30--------------------------
+json_data <- gtss30
+json_tibble <- tibble(paper_doi = json_data$`paper_doi`,
+                      new_seq_data = json_data$`data$new_seq_data`,
+                      text_tibble = json_data$`paper_tokens`,
+                      journal = json_data$`journal`, 
+                      year_published = json_data$`year_published`) 
 
-# #set up dataset for 1 ML model; paper, new_seq_data, text_tibble
-# json_tibble <- tibble(paper_doi = json_data$`data$paper`,
-#                       new_seq_data = json_data$`data$new_seq_data`,
-#                       text_tibble = json_data$tibble_data)
-# 
-# #need to pull out text tibble so that each word appears by paper
-# tidy_tibble <- unnest(json_tibble, cols = text_tibble)
+json_tibble_untouched <- json_tibble
+json_tibble$text_tibble <- map(json_tibble$text_tibble, unlist)
 
-#20240424 - export this 'matrix' like object and use mikropml vinegettes on data preprocessing
-#also a section on hyper parameter tunings 
-#kelly has a snakemake for mikropml as well, with template 
-# data_tibble <- pivot_wider(tidy_tibble, id_cols = c(paper_doi, new_seq_data), names_from = word, 
-#                       values_from = n, names_sort = TRUE, values_fill = 0) 
-# data_tibble <- select(data_tibble, !paper_doi)
 
-# prepped_data <- preprocess_data(data_tibble, outcome_colname = "new_seq_data")
-# prepped_data$dat_transformed
-#   
-# ml_model <- run_ml(prepped_data$dat_transformed, method = "glmnet",  outcome_colname = "new_seq_data", seed = 2000)
-# 
-# ml_model
-# ml_model$trained_model
 
-##implement sparse matrix **not used in current workflow***
-#sparse_matrix <- cast_sparse(tidy_tibble, paper, column = new_seq_data_binary, word, n)
+#------------------------end---------------------------------------------
+
 
 #gtss30 intial model
 gtss30 <- use_json("Data/gt_subset_30_data.json")
@@ -75,14 +66,15 @@ ml_model_gtss30 <- run_ml(prepped_data_gtss30$dat_transformed,
                    seed = 2000)
 ml_model_gtss30
 
-#groundtruth intial model
-groundtruth <- use_json("Data/groundtruth.json")
-groundtruth <- json_to_tibble(groundtruth)
-
-prepped_data_gt <- preprocess_data(groundtruth, outcome_colname = "new_seq_data")
-prepped_data_gt$dat_transformed
-
-ml_model_gt <- run_ml(prepped_data_gt$dat_transformed, 
-                          method = "glmnet",  outcome_colname = "new_seq_data", 
-                          seed = 2000)
-ml_model_gt
+# #groundtruth intial model
+# #20240510 gt is living on GL right now so because it is too large
+# groundtruth <- use_json("Data/groundtruth.json")
+# groundtruth <- json_to_tibble(groundtruth)
+# 
+# prepped_data_gt <- preprocess_data(groundtruth, outcome_colname = "new_seq_data")
+# prepped_data_gt$dat_transformed
+# 
+# ml_model_gt <- run_ml(prepped_data_gt$dat_transformed, 
+#                           method = "glmnet",  outcome_colname = "new_seq_data", 
+#                           seed = 2000)
+# ml_model_gt
