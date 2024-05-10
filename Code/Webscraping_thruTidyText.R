@@ -42,6 +42,7 @@ webscrape <- function(doi) {
 
 #function to remove all unnecessary HTML characters using pkg tm
 prep_html_tm <- function(html) {
+  html <- as.character(html)
   html <- read_html(html) %>% html_text()
   html <- stripWhitespace(html)
   html <- removeNumbers(html)
@@ -68,29 +69,32 @@ prepare_data <- function(data, file_path){
   clean_text <- lapply(webscraped_data, prep_html_tm)
   paper_tokens <- lapply(clean_text, tokenize_ngrams, n_min = 1, n = 3,
                          stopwords = stopwords::stopwords("en"))
-  unlisted_tokens <- lapply(paper_tokens, unlist)
+  # remove unlisted tokens col to make json smaller
+  # unlisted_tokens <- lapply(paper_tokens, unlist)
   
-  if (data$year.published == FALSE) {
-    mutate(year.published = case_when(
-      str_detect(published.print, "/") ~ str_c("20", str_sub(published.print, start = -2, -1)), 
-      str_detect(published.print, "-") ~ substring(published.print, 1, 4))) 
-  }
+ # if ("year.published" %in% colnames(data) == FALSE) {
+ #   mutate(data, 
+ #   year.published = case_when(
+ #     str_detect(published.print, "/") ~ str_c("20", str_sub(published.print, start = -2, -1)), 
+ #     str_detect(published.print, "-") ~ substring(published.print, 1, 4))) 
+ # }
   
-  df <- lst(paper_doi = data$paper, data$new_seq_data, data$availability,
-            paper_html = webscraped_data, clean_text, paper_tokens, unlisted_tokens,
-            journal = data$container.title, year_published = data$year.published)
+  df <- lst(paper_doi = data$paper,
+            paper_html = webscraped_data, 
+            paper_tokens)
+           # journal = data$container.title, year_published = data$year.published)
   
   json_data <- serializeJSON(df, pretty = TRUE)
   write_json(json_data, path = file_path)
-  return(json_data)
+  #return(json_data) 
 }
 
 
 #call functions on small and large datasets, start with small gt_ss30
 
-gt_ss30 <- read_csv("Data/gt_subset_30.csv")
-prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
+#gt_ss30 <- read_csv("Data/gt_subset_30.csv")
+#prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
 
-# groundtruth <- read_csv("Data/groundtruth.csv")
-# prepare_data(groundtruth, "Data/groundtruth.json")
+groundtruth <- read_csv("Data/groundtruth.csv")
+prepare_data(groundtruth, "Data/groundtruth.json")
 
