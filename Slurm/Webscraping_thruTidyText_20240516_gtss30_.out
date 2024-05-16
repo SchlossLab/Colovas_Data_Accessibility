@@ -1,0 +1,189 @@
+
+R version 4.3.3 (2024-02-29) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-conda-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> # Webscraping through tidy text
+> # goals: read html, removal of figures and tables, 
+> # save html, tokenize paper, send each thing to a json file
+> #
+> #library statements
+> library(tidyverse)
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.4.4     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+> library(rvest)
+
+Attaching package: ‘rvest’
+
+The following object is masked from ‘package:readr’:
+
+    guess_encoding
+
+> library(tidytext)
+> library(tibble)
+> library(xml2)
+> library(jsonlite)
+
+Attaching package: ‘jsonlite’
+
+The following object is masked from ‘package:purrr’:
+
+    flatten
+
+> library(textstem) #for stemming text variables
+Loading required package: koRpus.lang.en
+Loading required package: koRpus
+Loading required package: sylly
+For information on available language packages for 'koRpus', run
+
+  available.koRpus.lang()
+
+and see ?install.koRpus.lang()
+
+
+Attaching package: ‘koRpus’
+
+The following object is masked from ‘package:readr’:
+
+    tokenize
+
+> library(tm) #for text manipulation
+Loading required package: NLP
+
+Attaching package: ‘NLP’
+
+The following object is masked from ‘package:ggplot2’:
+
+    annotate
+
+
+Attaching package: ‘tm’
+
+The following object is masked from ‘package:koRpus’:
+
+    readTagged
+
+> library(tokenizers) #for text tokenization
+> 
+> #function for reading html, remove figs/tables, 
+> #and concatenate abstract and body (using rvest, xml2)
+> webscrape <- function(doi) {
++   
++   abstract <- read_html(doi) %>%
++     html_elements("section#abstract") %>%
++     html_elements("[role = paragraph]") 
++   
++   body <- read_html(doi) %>%
++     html_elements("section#bodymatter") 
++   
++   body_notables <- body %>%
++     html_elements(css = ".table > *") %>%
++     html_children() %>%
++     xml_remove()
++   
++   body_nofigures <- body %>%
++     html_elements(css = ".figure-wrap > *") %>%
++     html_children() %>%
++     xml_remove()
++   
++   paper_html <- paste0(abstract, body) %>% tibble()
++   
++   return(paper_html)
++   
++ }
+> 
+> #function to remove all unnecessary HTML characters using pkg tm
+> prep_html_tm <- function(html) {
++   html <- as.character(html)
++   html <- read_html(html) %>% html_text()
++   html <- stripWhitespace(html)
++   html <- removeNumbers(html)
++   html <- removePunctuation(html)
++   html <- lemmatize_strings(html)
++ }
+> 
+> 
+> # #Function for token creating
+> # #20240507 - can just lapply this function on the dataset
+> # create_tokens <- function(paper_text, ngrams = 3) {
+> #   paper_text %>% 
+> #     tokenize_ngrams(., n = ngrams, n_min = 1, 
+> #                     stopwords = stopwords::stopwords("en"))
+> # }
+> 
+> 
+> 
+> #function for creating json file of data
+> #add year published, and journal name 
+> prepare_data <- function(data, file_path_gz){
++   
++   webscraped_data <- lapply(data$paper, webscrape)
++   clean_text <- lapply(webscraped_data, prep_html_tm)
++   paper_tokens <- lapply(clean_text, tokenize_ngrams, n_min = 1, n = 3,
++                          stopwords = stopwords::stopwords("en"))
++  #20240516 add unlisted tokens col back if gzipped to see approx size
++   unlisted_tokens <- lapply(paper_tokens, unlist)
++   
++  # if ("year.published" %in% colnames(data) == FALSE) {
++  #   mutate(data, 
++  #   year.published = case_when(
++  #     str_detect(published.print, "/") ~ str_c("20", str_sub(published.print, start = -2, -1)), 
++  #     str_detect(published.print, "-") ~ substring(published.print, 1, 4))) 
++  # }
++   
++   df <- lst(paper_doi = data$paper,
++             paper_html = webscraped_data, 
++             paper_tokens = unlisted_tokens, 
++             journal = data$container.title,
++             year_published = data$year.published)
++   
++   csv_df <- write.csv(df, file = file_path_gz, 
++                       col.names = TRUE, row.names = FALSE, )
++ 
++ }
+> 
+> 
+> #call functions on small and large datasets, start with small gt_ss30
+> 
+> gt_ss30 <- read_csv("Data/gt_subset_30.csv")
+Rows: 30 Columns: 41
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (29): paper, new_seq_data, availability, data_public_private, keywords, ...
+dbl (11): ...10, issue, member, prefix, score, reference.count, references.c...
+lgl  (1): software_links
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+> prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
+Error in (function (..., row.names = NULL, check.rows = FALSE, check.names = TRUE,  : 
+  arguments imply differing number of rows: 9984, 7188, 522, 11385, 20982, 1587, 1530, 2391, 900, 8679, 27321, 22008, 2073, 2325, 25383, 10005, 19497, 21483, 23778, 11835, 7461, 2520, 15612, 31404, 8166, 1245, 8742, 7782, 3687, 25308
+Calls: prepare_data ... as.data.frame -> as.data.frame.list -> do.call -> <Anonymous>
+In addition: Warning message:
+In write.csv(df, file = file_path_gz, col.names = TRUE, row.names = FALSE,  :
+  attempt to set 'col.names' ignored
+Execution halted

@@ -69,8 +69,8 @@ prepare_data <- function(data, file_path_gz){
   clean_text <- lapply(webscraped_data, prep_html_tm)
   paper_tokens <- lapply(clean_text, tokenize_ngrams, n_min = 1, n = 3,
                          stopwords = stopwords::stopwords("en"))
- #20240516 add unlisted tokens col back if gzipped to see approx size
-  unlisted_tokens <- lapply(paper_tokens, unlist)
+ #20240516 removes unlisted tokens col
+ # unlisted_tokens <- lapply(paper_tokens, unlist)
   
  # if ("year.published" %in% colnames(data) == FALSE) {
  #   mutate(data, 
@@ -81,7 +81,7 @@ prepare_data <- function(data, file_path_gz){
   
   df <- lst(paper_doi = data$paper,
             paper_html = webscraped_data, 
-            paper_tokens = unlisted_tokens, 
+            paper_tokens = paper_tokens, 
             journal = data$container.title,
             year_published = data$year.published)
   
@@ -94,7 +94,7 @@ prepare_data <- function(data, file_path_gz){
 #call functions on small and large datasets, start with small gt_ss30
 
 gt_ss30 <- read_csv("Data/gt_subset_30.csv")
-prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
+prepare_data(gt_ss30, "Data/gt_subset_30_data.csv.gz")
 
 #groundtruth <- read_csv("Data/groundtruth.csv")
 #prepare_data(groundtruth, "Data/groundtruth.json")
