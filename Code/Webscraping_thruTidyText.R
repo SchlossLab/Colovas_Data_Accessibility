@@ -86,7 +86,7 @@ prepare_data <- function(data, file_path_gz){
             year_published = data$year.published)
   
   csv_df <- write.csv(df, file = file_path_gz, 
-                      col.names = TRUE, row.names = FALSE, )
+                      col.names = TRUE, row.names = FALSE )
 
 }
 
@@ -99,3 +99,22 @@ prepare_data(gt_ss30, "Data/gt_subset_30_data.csv.gz")
 #groundtruth <- read_csv("Data/groundtruth.csv")
 #prepare_data(groundtruth, "Data/groundtruth.json")
 
+
+#-----------------------fix code for df assembly and write csv------------------
+
+#load gtss30 file, i want html only pretty much 
+jsonfile <- "Data/gt_subset_30_data.json"
+json_data <- read_json(jsonfile)  
+json_data <- unserializeJSON(json_data[[1]])
+
+json_tibble <- lst(paper_doi = json_data$`paper_doi`,
+                      new_seq_data = json_data$`data$new_seq_data`,
+                      text_tibble = json_data$`paper_tokens`,
+                      journal = json_data$`journal`, 
+                      year_published = json_data$`year_published`) 
+
+
+
+
+
+#---------------------------end-------------------------------------------------
