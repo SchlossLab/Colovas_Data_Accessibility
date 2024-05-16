@@ -63,14 +63,14 @@ prep_html_tm <- function(html) {
 
 #function for creating json file of data
 #add year published, and journal name 
-prepare_data <- function(data, file_path){
+prepare_data <- function(data, file_path_gz){
   
   webscraped_data <- lapply(data$paper, webscrape)
   clean_text <- lapply(webscraped_data, prep_html_tm)
   paper_tokens <- lapply(clean_text, tokenize_ngrams, n_min = 1, n = 3,
                          stopwords = stopwords::stopwords("en"))
-  # remove unlisted tokens col to make json smaller
-  # unlisted_tokens <- lapply(paper_tokens, unlist)
+ #20240516 add unlisted tokens col back if gzipped to see approx size
+  unlisted_tokens <- lapply(paper_tokens, unlist)
   
  # if ("year.published" %in% colnames(data) == FALSE) {
  #   mutate(data, 
@@ -81,20 +81,21 @@ prepare_data <- function(data, file_path){
   
   df <- lst(paper_doi = data$paper,
             paper_html = webscraped_data, 
-            paper_tokens)
-           # journal = data$container.title, year_published = data$year.published)
+            paper_tokens = unlisted_tokens, 
+            journal = data$container.title,
+            year_published = data$year.published)
   
-  json_data <- serializeJSON(df, pretty = TRUE)
-  write_json(json_data, path = file_path)
-  #return(json_data) 
+  csv_df <- write.csv(df, file = file_path_gz, 
+                      col.names = TRUE, row.names = FALSE, )
+
 }
 
 
 #call functions on small and large datasets, start with small gt_ss30
 
-#gt_ss30 <- read_csv("Data/gt_subset_30.csv")
-#prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
+gt_ss30 <- read_csv("Data/gt_subset_30.csv")
+prepare_data(gt_ss30, "Data/gt_subset_30_data.json")
 
-groundtruth <- read_csv("Data/groundtruth.csv")
-prepare_data(groundtruth, "Data/groundtruth.json")
+#groundtruth <- read_csv("Data/groundtruth.csv")
+#prepare_data(groundtruth, "Data/groundtruth.json")
 
