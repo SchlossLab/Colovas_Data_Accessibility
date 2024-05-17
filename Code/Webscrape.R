@@ -8,7 +8,7 @@ library(rvest)
 library(tidytext)
 library(tibble)
 library(xml2)
-#library(jsonlite) #shouldn't need jsonlite anymore
+
 
 
 #function for reading html, remove figs/tables, 
@@ -48,6 +48,10 @@ webscrape_save_html <- function(data, file_path_gz){
   write.csv(df, file = file_path_gz, row.names = FALSE)
 }
 
+# call function for snakemake use
+dataset <- read_csv(snakemake.input[0])
+webscrape_save_html(dataset, snakemake.output[0])
+
 
 # call function on small dataset
 
@@ -61,10 +65,10 @@ webscrape_save_html <- function(data, file_path_gz){
 
 # call function on larger dataset
 
-groundtruth <- read_csv("Data/groundtruth.csv")
-webscrape_save_html(groundtruth, "Data/groundtruth.csv.gz")
+#groundtruth <- read_csv("Data/groundtruth.csv")
+#webscrape_save_html(groundtruth, "Data/groundtruth.csv.gz")
 
 #load csv
 
-gt_webscrape <- read_csv("Data/groundtruth.csv.gz")
-head(gt_webscrape, 2)
+#gt_webscrape <- read_csv("Data/groundtruth.csv.gz")
+#head(gt_webscrape, 2)
