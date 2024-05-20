@@ -6,9 +6,7 @@
 library(tidyverse)
 library(rvest)
 library(tidytext)
-library(tibble)
 library(xml2)
-
 
 
 #function for reading html, remove figs/tables, 
