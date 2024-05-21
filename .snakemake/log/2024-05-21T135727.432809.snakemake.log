@@ -1,0 +1,37 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job          count
+---------  -------
+cleanHTML        1
+webscrape        1
+total            2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue May 21 13:57:29 2024]
+localrule webscrape:
+    input: Data/groundtruth.csv
+    output: Data/groundtruth.csv.gz
+    jobid: 1
+    reason: Code has changed since last execution
+    wildcards: datasets=groundtruth
+    resources: tmpdir=/tmp
+
+RuleException:
+CalledProcessError in file /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile, line 9:
+Command 'set -euo pipefail;  Rscript --vanilla /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/scripts/tmpttc3jp18.Webscrape.R' returned non-zero exit status 1.
+[Tue May 21 13:57:45 2024]
+Error in rule webscrape:
+    jobid: 1
+    input: Data/groundtruth.csv
+    output: Data/groundtruth.csv.gz
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-05-21T135727.432809.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
