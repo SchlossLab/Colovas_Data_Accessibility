@@ -56,17 +56,9 @@ webscrape_save_html(dataset, snakemake.output[0])
 #gt_ss30 <- read_csv("Data/gt_subset_30.csv")
 #webscrape_save_html(gt_ss30, "Data/gt_subset_30_data.csv.gz")
 
-#load csv
-
-#gtss30_webscrape <- read_csv("Data/gt_subset_30_data.csv.gz")
-#head(gtss30_webscrape, 2)
 
 # call function on larger dataset
 
 #groundtruth <- read_csv("Data/groundtruth.csv")
 #webscrape_save_html(groundtruth, "Data/groundtruth.csv.gz")
 
-#load csv
-
-#gt_webscrape <- read_csv("Data/groundtruth.csv.gz")
-#head(gt_webscrape, 2)
