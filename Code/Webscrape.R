@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 # Webscrape.R
 # take paper DOI list and webscrape paper HTML 
 #
@@ -8,6 +10,10 @@ library(rvest)
 library(tidytext)
 library(xml2)
 
+#command line inputs
+input <- commandArgs(trailingOnly = TRUE)
+input_file <- input[1]
+output_file <- input[2]
 
 #function for reading html, remove figs/tables, 
 #and concatenate abstract and body (using rvest, xml2)
@@ -47,8 +53,8 @@ webscrape_save_html <- function(data, file_path_gz){
 }
 
 # call function for snakemake use
-dataset <- read_csv(snakemake.input[0])
-webscrape_save_html(dataset, snakemake.output[0])
+dataset <- read_csv(input_file)
+webscrape_save_html(dataset, output_file)
 
 
 # call function on small dataset

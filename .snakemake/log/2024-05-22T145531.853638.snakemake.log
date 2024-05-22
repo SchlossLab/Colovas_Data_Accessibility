@@ -1,0 +1,40 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job          count
+---------  -------
+targets          1
+webscrape        1
+total            2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed May 22 14:55:32 2024]
+localrule webscrape:
+    input: Data/groundtruth.csv, Code/Webscrape.R
+    output: Data/groundtruth_html.csv.gz
+    jobid: 2
+    reason: Missing output files: Data/groundtruth_html.csv.gz
+    wildcards: datasets=groundtruth
+    resources: tmpdir=/tmp
+
+[Wed May 22 15:10:44 2024]
+Finished job 2.
+1 of 2 steps (50%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed May 22 15:10:44 2024]
+localrule targets:
+    input: Data/gt_subset_30_html.csv.gz, Data/groundtruth_html.csv.gz
+    jobid: 0
+    reason: Input files updated by another job: Data/groundtruth_html.csv.gz
+    resources: tmpdir=/tmp
+
+[Wed May 22 15:10:44 2024]
+Finished job 0.
+2 of 2 steps (100%) done
+Complete log: .snakemake/log/2024-05-22T145531.853638.snakemake.log

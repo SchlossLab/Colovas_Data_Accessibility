@@ -1,0 +1,39 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job          count
+---------  -------
+cleanHTML        1
+targets          1
+total            2
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed May 22 15:04:24 2024]
+localrule cleanHTML:
+    input: Data/gt_subset_30_html.csv.gz, Code/cleanHTML.R
+    output: Data/gt_subset_30_clean_html.csv.gz
+    jobid: 1
+    reason: Missing output files: Data/gt_subset_30_clean_html.csv.gz
+    wildcards: datasets=gt_subset_30
+    resources: tmpdir=/tmp
+
+[Wed May 22 15:04:24 2024]
+Error in rule cleanHTML:
+    jobid: 1
+    input: Data/gt_subset_30_html.csv.gz, Code/cleanHTML.R
+    output: Data/gt_subset_30_clean_html.csv.gz
+    shell:
+        
+        Code/cleanHTML.R Data/gt_subset_30_html.csv.gz Data/gt_subset_30_clean_html.csv.gz
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-05-22T150424.664387.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

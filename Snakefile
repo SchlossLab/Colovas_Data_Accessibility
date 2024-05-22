@@ -1,17 +1,32 @@
 configfile: "config.yaml"
 
+rule targets:
+    input: 
+        "Data/gt_subset_30_clean_html.csv.gz",
+         "Data/groundtruth_clean_html.csv.gz"
+
+
 rule webscrape:
     input: 
-        "Data/{datasets}.csv"
+       csv = "Data/{datasets}.csv",
+       rscript = "Code/Webscrape.R"
     output: 
         "Data/{datasets}_html.csv.gz"
-    script: 
-        "Code/Webscrape.R"
+    shell: 
+        """
+        {input.rscript} {input.csv} {output}
+        """
+
+        
 
 rule cleanHTML: 
     input:
-      "Data/{datasets}_html.csv.gz"
+      html = "Data/{datasets}_html.csv.gz",
+      rscript = "Code/cleanHTML.R"
     output: 
         "Data/{datasets}_clean_html.csv.gz"
-    script: 
-        "Code/cleanHTML.R"
+    shell: 
+        """
+        {input.rscript} {input.html} {output}
+        """
+        

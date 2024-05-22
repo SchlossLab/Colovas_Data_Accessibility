@@ -1,0 +1,36 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job          count
+---------  -------
+webscrape        1
+total            1
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Wed May 22 14:21:35 2024]
+localrule webscrape:
+    input: Data/gt_subset_30.csv
+    output: Data/gt_subset_30_html.csv.gz
+    jobid: 0
+    reason: Missing output files: Data/gt_subset_30_html.csv.gz
+    wildcards: datasets=gt_subset_30
+    resources: tmpdir=/tmp
+
+RuleException:
+CalledProcessError in file /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile, line 9:
+Command 'set -euo pipefail;  Rscript --vanilla /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/scripts/tmpat88iyhp.Webscrape.R' returned non-zero exit status 1.
+[Wed May 22 14:21:49 2024]
+Error in rule webscrape:
+    jobid: 0
+    input: Data/gt_subset_30.csv
+    output: Data/gt_subset_30_html.csv.gz
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-05-22T142133.279109.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
