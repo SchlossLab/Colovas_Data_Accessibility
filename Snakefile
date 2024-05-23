@@ -29,4 +29,15 @@ rule cleanHTML:
         """
         {input.rscript} {input.html} {output}
         """
-        
+
+
+rule tokenize: 
+    input:
+      html = "Data/{datasets}_clean_html.csv.gz",
+      rscript = "Code/tokenize.R"
+    output: 
+        "Data/{datasets}_tokens.csv.gz"
+    shell: 
+        """
+        {input.rscript} {input.html} {output}
+        """      
