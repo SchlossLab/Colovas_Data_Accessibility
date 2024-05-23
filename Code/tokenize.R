@@ -34,8 +34,9 @@ clean_text <- select(clean_text, !"clean_html")
 #unnesting makes long 2 col df with doi and each token in col 2
 clean_text <- unnest(clean_text, cols = paper_tokens)
 
-#want to count occurrences of each token
-clean_text <- add_count(clean_text, paper_tokens, name = "frequency") %>% unique()
+#want to count occurrences of each token and remove duplicate tokens
+clean_text <- add_count(clean_text, paper_tokens, name = "frequency")
+clean_text <- unique(clean_text)
 
 # save files 
 write.csv(clean_text, 
