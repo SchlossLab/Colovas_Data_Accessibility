@@ -35,6 +35,7 @@ clean_text <- select(clean_text, !"clean_html")
 clean_text <- unnest(clean_text, cols = paper_tokens)
 
 #want to count occurrences of each token and remove duplicate tokens
+clean_text <- group_by(clean_text, paper_doi)
 clean_text <- add_count(clean_text, paper_tokens, name = "frequency")
 clean_text <- unique(clean_text)
 
