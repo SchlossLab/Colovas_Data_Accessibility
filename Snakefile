@@ -2,8 +2,8 @@ configfile: "config.yaml"
 
 rule targets:
     input: 
-        "Data/gt_subset_30_clean_html.csv.gz",
-         "Data/groundtruth_clean_html.csv.gz"
+        "Data/gt_subset_30_tokens.csv.gz",
+        "Data/groundtruth_tokens.csv.gz"
 
 
 rule webscrape:
