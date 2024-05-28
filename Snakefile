@@ -45,11 +45,12 @@ rule tokenize:
 rule ml_prep: 
     input: 
         tokens = "Data/{datasets}_tokens.csv.gz",
-        rscript = "Code/****FILENAME*****", 
+        rscript = "Code/MLprep.R", 
         metadata = "Data/{datasets}.csv"
-    output: 
+        ml_vars = "{ml_variables}"
+    output: ***i don't think this will actually be the output****
         "Data/{datasets}_ml_prep.csv.gz"
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {output}
+        {input.rscript} {input.metadata} {input.ml_vars} {input.tokens} {output}
         """  

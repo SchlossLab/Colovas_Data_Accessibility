@@ -1,3 +1,8 @@
 datasets: 
   groundtruth: Data/groundtruth.csv
   gt_subset_30: Data/gt_subset_30.csv
+  
+ml_variables: 
+  new_seq_data
+  availability
+  
