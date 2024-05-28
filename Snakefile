@@ -3,7 +3,7 @@ configfile: "config.yaml"
 rule targets:
     input: 
         "Data/gt_subset_30_tokens.csv.gz",
-        "Data/groundtruth_tokens.csv.gz"
+       # "Data/groundtruth_tokens.csv.gz"
 
 
 rule webscrape:
@@ -42,15 +42,15 @@ rule tokenize:
         {input.rscript} {input.html} {output}
         """      
 
-rule ml_prep: 
-    input: 
-        tokens = "Data/{datasets}_tokens.csv.gz",
-        rscript = "Code/MLprep.R", 
-        metadata = "Data/{datasets}.csv"
-        ml_vars = "{ml_variables}"
-    output: ***i don't think this will actually be the output****
-        "Data/{datasets}_ml_prep.csv.gz"
-    shell:
-        """
-        {input.rscript} {input.metadata} {input.ml_vars} {input.tokens} {output}
-        """  
+# rule ml_prep: 
+#     input: 
+#         tokens = "Data/{datasets}_tokens.csv.gz",
+#         rscript = "Code/MLprep.R", 
+#         metadata = "Data/{datasets}.csv"
+#         ml_vars = "{ml_variables}"
+#     output: ***i don't think this will actually be the output****
+#         "Data/{datasets}_ml_prep.csv.gz"
+#     shell:
+#         """
+#         {input.rscript} {input.metadata} {input.ml_vars} {input.tokens} {output}
+#         """  
