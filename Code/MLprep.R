@@ -98,9 +98,13 @@ metadata <- read.csv(metadata)
 # clean_text <- read.csv("Data/gt_subset_30_tokens.csv.gz")
 # metadata <- read.csv("Data/gt_subset_30.csv")
 
+# 20240529 - need to filter clean_text to remove any 1 character tokens
+clean_text_filtered <- filter(clean_text$paper_tokens, length(paper_tokens) > 1)
+
 # set up the format of the clean_text dataframe 
 
 clean_tibble <- pivot_wider(clean_text, id_cols = c(paper_doi),
                            names_from = paper_tokens, values_from = frequency,
-                           names_sort = TRUE, values_fill = 0) #%>%
+                           names_sort = TRUE, values_fill = 0) 
+
 data_tibble <- select(data_tibble, !paper_doi)
