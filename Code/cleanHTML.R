@@ -21,10 +21,13 @@ output_file <- input[2]
 prep_html_tm <- function(html) {
   html <- as.character(html)
   html <- read_html(html) %>% html_text()
+  html <- str_to_lower(html)
   html <- stripWhitespace(html)
-  html <- removeNumbers(html)
+  html <- removeNumbers(html, ucp = FALSE)
+  html <- removeNumbers(html, ucp = TRUE)
   html <- removePunctuation(html)
   html <- lemmatize_strings(html)
+  html <- str_remove_all(html, "[[94|126]]" )
 }
 
 # 20240521 - need to update this with more accurate snakefiles
