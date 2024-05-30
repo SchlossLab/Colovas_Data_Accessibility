@@ -1,0 +1,56 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Job stats:
+job          count
+---------  -------
+cleanHTML        1
+targets          1
+tokenize         1
+total            3
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu May 30 12:13:06 2024]
+localrule cleanHTML:
+    input: Data/gt_subset_30_html.csv.gz, Code/cleanHTML.R
+    output: Data/gt_subset_30_clean_html.csv.gz
+    jobid: 2
+    reason: Updated input files: Data/gt_subset_30_html.csv.gz
+    wildcards: datasets=gt_subset_30
+    resources: tmpdir=/tmp
+
+[Thu May 30 12:13:19 2024]
+Finished job 2.
+1 of 3 steps (33%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu May 30 12:13:19 2024]
+localrule tokenize:
+    input: Data/gt_subset_30_clean_html.csv.gz, Code/tokenize.R
+    output: Data/gt_subset_30_tokens.csv.gz
+    jobid: 1
+    reason: Input files updated by another job: Data/gt_subset_30_clean_html.csv.gz
+    wildcards: datasets=gt_subset_30
+    resources: tmpdir=/tmp
+
+[Thu May 30 12:13:31 2024]
+Finished job 1.
+2 of 3 steps (67%) done
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu May 30 12:13:31 2024]
+localrule targets:
+    input: Data/gt_subset_30_tokens.csv.gz
+    jobid: 0
+    reason: Input files updated by another job: Data/gt_subset_30_tokens.csv.gz
+    resources: tmpdir=/tmp
+
+[Thu May 30 12:13:31 2024]
+Finished job 0.
+3 of 3 steps (100%) done
+Complete log: .snakemake/log/2024-05-30T121304.940374.snakemake.log
