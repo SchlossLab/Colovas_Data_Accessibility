@@ -25,12 +25,20 @@ prep_html_tm <- function(html) {
   html <- stripWhitespace(html)
   html <- removeNumbers(html, ucp = FALSE)
   html <- removeNumbers(html, ucp = TRUE)
+  html <- str_remove_all(html, "[[:digit:]]")
   html <- removePunctuation(html)
   html <- lemmatize_strings(html)
-  html <- str_remove_all(html, "[[94|126]]" )
+  #html <- str_remove_all(html, "[[94|126|131|226|227]]")
+  html <- str_remove_all(html, "â\\u0080\\u0089")
+  html <- str_remove_all(html, "â\u0080\u0093")
+  html <- str_remove_all(html, "â\u0088\u0092")
+  html <- str_remove_all(html, "â\u0080\u0094")
+  html <- str_remove_all(html, "â\u0080\u0099")
+  html <- str_remove_all(html, "â\u0080\u009")
+  html <- str_remove_all(html, "ã\u0097")
 }
 
-# 20240521 - need to update this with more accurate snakefiles
+# apply functions using snakemake input
 webscraped_data <- read.csv(html)
 webscraped_data$clean_html <- lapply(webscraped_data$paper_html, prep_html_tm)
 webscraped_data <- select(webscraped_data, !"paper_html")
