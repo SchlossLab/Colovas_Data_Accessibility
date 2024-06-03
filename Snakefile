@@ -42,13 +42,16 @@ rule tokenize:
         {input.rscript} {input.html} {output}
         """      
 
-rule ml_prep:
-    input:
-        tokens = "Data/{datasets}_tokens.csv.gz",
-        rscript = "Code/MLprep.R",
-        metadata = "Data/{datasets}.csv"
-        ml_vars = "{ml_variables}"
-    shell:
-        """
-        {input.rscript} {input.metadata} {input.ml_vars} {input.tokens} {output}
-        """
+# rule ml_prep:
+#     input:
+#         tokens = "Data/{datasets}_tokens.csv.gz",
+#         rscript = "Code/MLprep.R",
+#         metadata = "Data/{datasets}.csv"
+#         ml_vars = "{ml_variables}"
+#     shell:
+#         """
+#         {input.rscript} {input.metadata} {input.ml_vars} {input.tokens} {output}
+#         """
+
+rule link_rot: 
+  
