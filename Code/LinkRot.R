@@ -10,9 +10,14 @@ library(httr2)
 
 
 # load data from snakemake input
+# {input.rscript}  {input.html} {input.metadata} {output.all_links} 
+# {output.unique_links} {output.metadata_links}
 input <- commandArgs(trailingOnly = TRUE)
 html <- input[1]
-output_file <- input[2]
+metadata_file <- input[2]
+alllinks_output <- input[3]
+uniquelinks_output <- input[4]
+metadatalinks_output <- input[5]
 
 
 # load data for local trials
@@ -57,22 +62,46 @@ extract_links <- function(html) {
   csv_links <- csv_links_list_short %>% 
     filter(str_equal(csv_links_list_short$link_address, csv_links_list_short$link_text))
   
-  #gets only unique links
-  csv_links <- unique(csv_links)
+  # #gets only unique links
+  # csv_links <- unique(csv_links)
   
-  #returns unique links
+  #returns all links
   return(csv_links)
   
 }
 
+# run function to get all links from dataset and write to file
+file_links <- extract_links(html)
+write_csv(file_links, alllinks_output)
+# get only unique file links from dataset and write to file
+unique_file_links <- unique(file_links)
 
-groundtruth_links <- extract_links(html)
-write_csv(groundtruth_links, "Data/groundtruth_links.csv")
+# 20240604 - do we need to save the unique links? 
+# do we need to save the link count diffs or the version with the metadata? 
 
-link_count <- count(groundtruth_links, by = paper)
-link_count <- rename(link_count, paper = "by", link_count = "n")
-groundtruth <- read_csv("Data/groundtruth.csv")
-groundtruth_linkcount <- left_join(link_count, groundtruth, by = "paper")
+link_count_total_by_paper <- count(file_links, by = paper)
+link_count_total_by_paper <- 
+  rename(link_count_total_by_paper, paper = "by", link_count = "n")
+
+link_count_unique <- full_join(link_count_total_by_paper, unique_link_count, by = "paper")
+link_count_unique <- link_count_unique %>% 
+  mutate(difference = link_count - unique_n)
+
+link_count_by_link <- count(file_links, by = link_address, paper)
+
+unique_link_count <- count(unique_file_links, by = paper)
+unique_link_count <- 
+  rename(unique_link_count, paper = "by", unique_n = "n")
+
+# load metadata 
+metadata <- read_csv(metadata_file)
+#groundtruth <- read_csv("Data/groundtruth.csv")
+
+# join metadata with the link count data and write to file with link counts
+file_linkcount <- left_join(file_links, metadata, by = join_by("paper_doi", "paper"))
+write_csv(file_linkcount, "Data/groundtruth_linkcount.csv")
+
+# groundtruth_linkcount <- left_join(link_count, groundtruth, by = "paper")
 write_csv(groundtruth_linkcount, "Data/groundtruth_linkcount.csv")
 
 

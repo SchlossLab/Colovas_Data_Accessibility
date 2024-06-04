@@ -54,4 +54,16 @@ rule tokenize:
 #         """
 
 rule link_rot: 
-  
+    input:
+        html = "Data/{datasets}_html.csv.gz",
+        rscript = "Code/LinkRot.R",
+        metadata = "Data/{datasets}.csv"
+    output: 
+        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz"
+        unique_links = "Data/linkrot/{datasets}_uniquelinks.csv.gz"
+        metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
+    shell:
+        """
+        {input.rscript}  {input.html} {input.metadata} {output.all_links} 
+        {output.unique_links} {output.metadata_links}
+        """
