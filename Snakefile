@@ -65,5 +65,5 @@ rule link_rot:
     shell:
         """
         {input.rscript}  {input.html} {input.metadata} {output.all_links} 
-        {output.unique_links} {output.metadata_links}
+        {output.metadata_links}
         """
