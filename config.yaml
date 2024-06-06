@@ -6,3 +6,10 @@ ml_variables:
   new_seq_data
   availability
   
+method: 
+  glmnet
+  rf
+  rpart2
+  xgbTree
+  
+nseeds: 10

@@ -1,9 +1,12 @@
 configfile: "config.yaml"
 
+start_seed = 2000
+seeds = range(start_seed, start_seed + nseeds)
+
 rule targets:
     input: 
-        "Data/gt_subset_30_tokens.csv.gz",
-       # "Data/groundtruth_tokens.csv.gz"
+      "Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.Rds"
+      
 
 
 rule webscrape:
@@ -42,16 +45,49 @@ rule tokenize:
         {input.rscript} {input.html} {output}
         """      
 
-# rule ml_prep:
-#     input:
-#         tokens = "Data/{datasets}_tokens.csv.gz",
-#         rscript = "Code/MLprep.R",
-#         metadata = "Data/{datasets}.csv"
-#         ml_vars = "{ml_variables}"
-#     shell:
+rule ml_prep:
+    input:
+        tokens = "Data/{datasets}_tokens.csv.gz",
+        rscript = "Code/MLprep.R",
+        metadata = "Data/{datasets}.csv",
+        ml_vars = "{ml_variables}"
+    output: 
+        "Data/{datasets}_preprocessed.Rds"
+    shell:
+        """
+        {input.rscript} {input.metadata} {input.ml_vars} {input.tokens} {output}
+        """
+
+rule train_ml_set_seed:
+    input:
+        rds = "Data/{datasets}_preprocessed.Rds"
+        seed = 2000,
+        ml_vars = "{ml_variables}",
+        rscript = "Code/trainML.R",
+   output:
+        model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_model.Rds",
+        perf="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_performance.csv"
+    shell:
+        """
+        {input.rscript} {input.rds} {input.seed} {input.ml_vars}
+        {output.model} {output.perf}
+        """
+
+
+# rule train_ml:
+#     input: 
+#         rds = "Data/{datasets}_preprocessed.Rds"
+#         seed = 
+#    output:
+#         model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_model.Rds",
+#         perf="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_performance.csv",
+#         # test="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_test-data.csv",
+#     shell: 
 #         """
-#         {input.rscript} {input.metadata} {input.ml_vars} {input.tokens} {output}
+#         {input.rscript} {input.rds} {input.seed} {input.ml_vars} 
+#         {output.model} {output.perf}
 #         """
+        
 
 rule link_rot: 
     input:

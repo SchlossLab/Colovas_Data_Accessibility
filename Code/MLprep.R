@@ -52,12 +52,11 @@ full_ml <- select(full_ml, !paper)
 
 # use mikropml::preprocess_data on dataset
 full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake)
-# colnames(full_ml_pre$dat_transformed)
 
-# run model using mikropml::run_ml
-ml_model <- run_ml(full_ml_pre$dat_transformed,
-                          method = "glmnet",  outcome_colname = ml_var_snake,
-                          find_feature_importance = TRUE, 
-                          seed = 2000)
-ml_model
+# save preprocessed data as an RDS file 
+saveRDS(full_ml_pre, file = output_file)
+
+
+
+
 
