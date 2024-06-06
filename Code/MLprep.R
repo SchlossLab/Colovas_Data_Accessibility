@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 #prep dataset for ML modeling 
 #
 # 20240429 MLprep.R of groundtruth, groundtruth_subset30
@@ -17,12 +18,12 @@ library(mikropml)
 # load files
 
 # for snakemake implementation
-# {input.rscript} {input.metadata} {input.ml_vars} {input.tokens} {output}
+# {input.rscript} {input.metadata} {input.tokens} {wildcard.ml_variables} {output.rds}
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- input[1]
-ml_var_snake <- input[2]
+ml_var_snake <- input[3]
 ml_var <- c("paper", ml_var_snake, "container.title")
-clean_csv <- input[3]
+clean_csv <- input[2]
 output_file <- input[4]
 clean_text <- read.csv(clean_csv)
 metadata <- read.csv(metadata)

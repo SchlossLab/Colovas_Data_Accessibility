@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 # trainML.R
 #
 #
@@ -15,7 +16,7 @@ library(mikropml)
 input <- commandArgs(trailingOnly = TRUE)
 rds <- input[1]
 data_processed <- readRDS(rds)
-seed <- input[2]
+seed <- as.numeric(input[2])
 ml_var_snake <- input[3]
 output_model <- input[4]
 output_perf <- input[5]
@@ -28,8 +29,7 @@ ml_results <- run_ml(data_processed$dat_transformed,
                    seed = seed)
 
 #write results to files 
-write.csv(ml_results$performance %>%
-    inner_join(wildcards, by = c("method", "seed")), output_perf)
+write.csv(ml_results$performance)
 #readr::write_csv(ml_results$test_data, snakemake@output[["test"]])
 saveRDS(ml_results$trained_model, file = output_model)
 

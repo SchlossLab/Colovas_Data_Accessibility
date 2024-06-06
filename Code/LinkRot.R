@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 #begin link rot, extract links from pre-scraped website html
 #
 #

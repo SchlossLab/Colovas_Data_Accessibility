@@ -1,13 +1,13 @@
 configfile: "config.yaml"
 
-start_seed = 2000
-seeds = range(start_seed, start_seed + nseeds)
+# start_seed = 2000
+# nseeds = config["nseeds"]
+# seeds = range(start_seed, start_seed + nseeds)
 
 rule targets:
     input: 
-      "Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.Rds"
-      
-
+      #"Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.RDS"
+      "Data/groundtruth_new_seq_data_preprocessed.RDS"
 
 rule webscrape:
     input: 
@@ -50,36 +50,33 @@ rule ml_prep:
         tokens = "Data/{datasets}_tokens.csv.gz",
         rscript = "Code/MLprep.R",
         metadata = "Data/{datasets}.csv",
-        ml_vars = "{ml_variables}"
     output: 
-        "Data/{datasets}_preprocessed.Rds"
+        rds = "Data/{datasets}_{ml_variables}_preprocessed.RDS"
     shell:
         """
-        {input.rscript} {input.metadata} {input.ml_vars} {input.tokens} {output}
+        {input.rscript} {input.metadata} {input.tokens} {wildcard.ml_variables} {output.rds}
         """
 
 rule train_ml_set_seed:
     input:
-        rds = "Data/{datasets}_preprocessed.Rds"
-        seed = 2000,
-        ml_vars = "{ml_variables}",
+        rds = "Data/{datasets}_{ml_variables}_preprocessed.RDS",
+        seed = "2000",
         rscript = "Code/trainML.R",
-   output:
-        model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_model.Rds",
-        perf="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_performance.csv"
+    output:
+        model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_variables}_model.RDS",
+        perf="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_variables}_performance.csv"
     shell:
         """
-        {input.rscript} {input.rds} {input.seed} {input.ml_vars}
-        {output.model} {output.perf}
+        {input.rscript} {input.rds} {input.seed} {wildcard.model} {wildcard.ml_variables} {output.model} {output.perf}
         """
 
 
 # rule train_ml:
 #     input: 
-#         rds = "Data/{datasets}_preprocessed.Rds"
+#         rds = "Data/{datasets}_preprocessed.RDS"
 #         seed = 
 #    output:
-#         model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_model.Rds",
+#         model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_model.RDS",
 #         perf="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_performance.csv",
 #         # test="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_test-data.csv",
 #     shell: 
@@ -95,11 +92,10 @@ rule link_rot:
         rscript = "Code/LinkRot.R",
         metadata = "Data/{datasets}.csv"
     output: 
-        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz"
-        unique_links = "Data/linkrot/{datasets}_uniquelinks.csv.gz"
+        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+        unique_links = "Data/linkrot/{datasets}_uniquelinks.csv.gz",
         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
     shell:
         """
-        {input.rscript}  {input.html} {input.metadata} {output.all_links} 
-        {output.metadata_links}
+        {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
         """
