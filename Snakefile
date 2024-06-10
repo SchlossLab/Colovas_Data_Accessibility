@@ -60,7 +60,7 @@ rule ml_prep:
 rule train_ml_set_seed:
     input:
         rds = "Data/{datasets}_{ml_variables}_preprocessed.RDS",
-        seed = "2000",
+ #       seed = "2000",
         rscript = "Code/trainML.R",
     output:
         model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_variables}_model.RDS",
@@ -69,7 +69,17 @@ rule train_ml_set_seed:
         """
         {input.rscript} {input.rds} {input.seed} {wildcard.model} {wildcard.ml_variables} {output.model} {output.perf}
         """
-
+#wildcard.model is not mentioned in rule train_ml_set_seed
+#Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.RDS
+#{dataset} =groundtruth
+#{method} = glmnet
+#likely change delimiter in the filenames use period or hyphen instead of underscore (pat likes periods)
+#can also get ride of seed = 2000, and use wildcard.seed
+#can also get advanced and tell it what kind of variable to be expecting
+#will figure out seed from target filename : glmnet_2000_, it will understand the placeholder of the seed
+#model output not mentioned in filename either
+# inputs: are files, params: are different, params.seed would be a better way to do that 
+#
 
 # rule train_ml:
 #     input: 
@@ -81,7 +91,7 @@ rule train_ml_set_seed:
 #         # test="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_test-data.csv",
 #     shell: 
 #         """
-#         {input.rscript} {input.rds} {input.seed} {input.ml_vars} 
+#         {input.rscript} {input.rds} {wildcard.seed} {input.ml_vars} 
 #         {output.model} {output.perf}
 #         """
         
@@ -93,7 +103,7 @@ rule link_rot:
         metadata = "Data/{datasets}.csv"
     output: 
         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
-        unique_links = "Data/linkrot/{datasets}_uniquelinks.csv.gz",
+        #unique_links = "Data/linkrot/{datasets}_uniquelinks.csv.gz",
         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
     shell:
         """
