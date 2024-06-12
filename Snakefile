@@ -6,8 +6,9 @@ configfile: "config.yaml"
 
 rule targets:
     input: 
-      #"Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.RDS"
-      "Data/groundtruth_new_seq_data_preprocessed.RDS"
+        "Data/groundtruth.new_seq_data.preprocessed.RDS",
+        "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
+     
 
 rule webscrape:
     input: 
@@ -27,7 +28,7 @@ rule cleanHTML:
       html = "Data/{datasets}_html.csv.gz",
       rscript = "Code/cleanHTML.R"
     output: 
-        "Data/{datasets}_clean_html.csv.gz"
+        "Data/{datasets}.clean_html.csv.gz"
     shell: 
         """
         {input.rscript} {input.html} {output}
@@ -36,10 +37,10 @@ rule cleanHTML:
 
 rule tokenize: 
     input:
-      html = "Data/{datasets}_clean_html.csv.gz",
+      html = "Data/{datasets}.clean_html.csv.gz",
       rscript = "Code/tokenize.R"
     output: 
-        "Data/{datasets}_tokens.csv.gz"
+        "Data/{datasets}.tokens.csv.gz"
     shell: 
         """
         {input.rscript} {input.html} {output}
@@ -47,27 +48,28 @@ rule tokenize:
 
 rule ml_prep:
     input:
-        tokens = "Data/{datasets}_tokens.csv.gz",
+        tokens = "Data/{datasets}.tokens.csv.gz",
         rscript = "Code/MLprep.R",
         metadata = "Data/{datasets}.csv",
     output: 
-        rds = "Data/{datasets}_{ml_variables}_preprocessed.RDS"
+        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS"
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {wildcard.ml_variables} {output.rds}
+        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds}
         """
 
 rule train_ml_set_seed:
     input:
-        rds = "Data/{datasets}_{ml_variables}_preprocessed.RDS",
- #       seed = "2000",
+        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS",
         rscript = "Code/trainML.R",
     output:
-        model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_variables}_model.RDS",
-        perf="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_variables}_performance.csv"
+        model="Data/ml_results/{dataset}/runs/{method}.{seed}.{ml_variables}.model.RDS",
+        perf="Data/ml_results/{dataset}/runs/{method}.{seed}.{ml_variables}.performance.csv"
+    params:
+        seed = "2000"
     shell:
         """
-        {input.rscript} {input.rds} {input.seed} {wildcard.model} {wildcard.ml_variables} {output.model} {output.perf}
+        {input.rscript} {input.rds} {params.seed} {wildcards.model} {wildcards.ml_variables} {output.model} {output.perf}
         """
 #wildcard.model is not mentioned in rule train_ml_set_seed
 #Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.RDS

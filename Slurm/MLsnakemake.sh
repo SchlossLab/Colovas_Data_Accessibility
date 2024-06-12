@@ -56,5 +56,5 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
-snakemake 
+snakemake --profile config_files
 ##  If you copied any files to /tmp, make sure you delete them here!
