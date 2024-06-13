@@ -8,8 +8,10 @@ ncores = config["ncores"]
 
 rule targets:
     input: 
-        "Data/groundtruth.new_seq_data.preprocessed.RDS",
-        "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
+        #"Data/groundtruth.new_seq_data.preprocessed.RDS",
+       # "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
+       "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
+       "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
      
 
 rule webscrape:
@@ -61,19 +63,21 @@ rule ml_prep:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {params.threads} {output.rds}
         """
+# Code/MLprep.R "Data/gt_subset_30.csv" "Data/gt_subset_30.tokens.csv.gz" "new_seq_data" 16 "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
+#Code/MLprep.R "Data/groundtruth.csv" "Data/groundtruth.tokens.csv.gz" "new_seq_data" 32 "Data/groundtruth.new_seq_data.preprocessed.RDS"
 
 rule train_ml_set_seed:
     input:
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS",
         rscript = "Code/trainML.R",
     output:
-        model="Data/ml_results/{dataset}/runs/{method}.{seed}.{ml_variables}.model.RDS",
-        perf="Data/ml_results/{dataset}/runs/{method}.{seed}.{ml_variables}.performance.csv"
+        model="Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.model.RDS",
+        perf="Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.performance.csv"
     params:
         seed = "2000"
     shell:
         """
-        {input.rscript} {input.rds} {params.seed} {wildcards.model} {wildcards.ml_variables} {output.model} {output.perf}
+        {input.rscript} {input.rds} {params.seed} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
         """
 #wildcard.model is not mentioned in rule train_ml_set_seed
 #Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.RDS

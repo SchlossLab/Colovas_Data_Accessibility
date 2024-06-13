@@ -1,0 +1,40 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 48
+Rules claiming more threads will be scaled down.
+Job stats:
+job                  count
+-----------------  -------
+ml_prep                  1
+targets                  1
+train_ml_set_seed        1
+total                    3
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Thu Jun 13 15:24:27 2024]
+localrule ml_prep:
+    input: Data/groundtruth.tokens.csv.gz, Code/MLprep.R, Data/groundtruth.csv
+    output: Data/groundtruth.new_seq_data.preprocessed.RDS
+    jobid: 7
+    reason: Missing output files: Data/groundtruth.new_seq_data.preprocessed.RDS
+    wildcards: datasets=groundtruth, ml_variables=new_seq_data
+    resources: tmpdir=/tmp
+
+[Thu Jun 13 15:25:37 2024]
+Error in rule ml_prep:
+    jobid: 7
+    input: Data/groundtruth.tokens.csv.gz, Code/MLprep.R, Data/groundtruth.csv
+    output: Data/groundtruth.new_seq_data.preprocessed.RDS
+    shell:
+        
+        Code/MLprep.R Data/groundtruth.csv Data/groundtruth.tokens.csv.gz new_seq_data 48 Data/groundtruth.new_seq_data.preprocessed.RDS
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-06-13T152423.276458.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
