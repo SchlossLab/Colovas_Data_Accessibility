@@ -13,3 +13,5 @@ method:
   xgbTree
   
 nseeds: 10
+ncores: 16
+

@@ -4,6 +4,8 @@ configfile: "config.yaml"
 # nseeds = config["nseeds"]
 # seeds = range(start_seed, start_seed + nseeds)
 
+ncores = config["ncores"]
+
 rule targets:
     input: 
         "Data/groundtruth.new_seq_data.preprocessed.RDS",
@@ -53,9 +55,11 @@ rule ml_prep:
         metadata = "Data/{datasets}.csv",
     output: 
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS"
+    params: 
+        threads = ncores
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds}
+        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {params.threads} {output.rds}
         """
 
 rule train_ml_set_seed:
@@ -83,19 +87,6 @@ rule train_ml_set_seed:
 # inputs: are files, params: are different, params.seed would be a better way to do that 
 #
 
-# rule train_ml:
-#     input: 
-#         rds = "Data/{datasets}_preprocessed.RDS"
-#         seed = 
-#    output:
-#         model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_model.RDS",
-#         perf="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_performance.csv",
-#         # test="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_test-data.csv",
-#     shell: 
-#         """
-#         {input.rscript} {input.rds} {wildcard.seed} {input.ml_vars} 
-#         {output.model} {output.perf}
-#         """
         
 
 rule link_rot: 

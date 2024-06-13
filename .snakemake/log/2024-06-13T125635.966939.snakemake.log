@@ -1,0 +1,60 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 16
+Rules claiming more threads will be scaled down.
+Job stats:
+job        count
+-------  -------
+ml_prep        2
+targets        1
+total          3
+
+Select jobs to execute...
+Execute 2 jobs...
+
+[Thu Jun 13 12:56:43 2024]
+localrule ml_prep:
+    input: Data/groundtruth.tokens.csv.gz, Code/MLprep.R, Data/groundtruth.csv
+    output: Data/groundtruth.new_seq_data.preprocessed.RDS
+    jobid: 1
+    reason: Missing output files: Data/groundtruth.new_seq_data.preprocessed.RDS
+    wildcards: datasets=groundtruth, ml_variables=new_seq_data
+    resources: tmpdir=/tmp
+
+
+[Thu Jun 13 12:56:43 2024]
+localrule ml_prep:
+    input: Data/gt_subset_30.tokens.csv.gz, Code/MLprep.R, Data/gt_subset_30.csv
+    output: Data/gt_subset_30.availability.preprocessed.RDS
+    jobid: 5
+    reason: Missing output files: Data/gt_subset_30.availability.preprocessed.RDS
+    wildcards: datasets=gt_subset_30, ml_variables=availability
+    resources: tmpdir=/tmp
+
+[Thu Jun 13 12:57:06 2024]
+Error in rule ml_prep:
+    jobid: 5
+    input: Data/gt_subset_30.tokens.csv.gz, Code/MLprep.R, Data/gt_subset_30.csv
+    output: Data/gt_subset_30.availability.preprocessed.RDS
+    shell:
+        
+        Code/MLprep.R Data/gt_subset_30.csv Data/gt_subset_30.tokens.csv.gz availability 16 Data/gt_subset_30.availability.preprocessed.RDS
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Jun 13 12:58:01 2024]
+Error in rule ml_prep:
+    jobid: 1
+    input: Data/groundtruth.tokens.csv.gz, Code/MLprep.R, Data/groundtruth.csv
+    output: Data/groundtruth.new_seq_data.preprocessed.RDS
+    shell:
+        
+        Code/MLprep.R Data/groundtruth.csv Data/groundtruth.tokens.csv.gz new_seq_data 16 Data/groundtruth.new_seq_data.preprocessed.RDS
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-06-13T125635.966939.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

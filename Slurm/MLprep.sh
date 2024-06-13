@@ -13,10 +13,10 @@
 ####    an the amount of time a job requires.  May include processor
 ####    type, too.
 
-#SBATCH --nodes=1
+#SBATCH --nodes=2
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=16g
+#SBATCH --mem-per-cpu=100g
 #SBATCH --time=12:00:00
 
  
@@ -48,10 +48,6 @@
 
 ####  Commands your job should run follow this line
 
-echo "Running from $(pwd)"
-echo "20240429 MLprep.R of groundtruth, groundtruth_subset30"
-echo "using mikropml and model glmnet to train model to predict" 
-echo "variable new_seq_data"
 
 #add internet access to the jobs!
 source /etc/profile.d/http_proxy.sh
@@ -61,6 +57,6 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
-R CMD BATCH MLprep.R Slurm/20240429_1_mlprep_gt_gtss30_newseqdata_glmnet.out
+R CMD BATCH Code/MLprep.R Slurm/20240613_2_mlprep_gtnewseqdata_glmnet.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!
