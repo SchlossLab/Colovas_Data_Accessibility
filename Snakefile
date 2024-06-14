@@ -8,11 +8,11 @@ ncores = config["ncores"]
 
 rule targets:
     input: 
-        #"Data/groundtruth.new_seq_data.preprocessed.RDS",
-       # "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
-       #"Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
-       #"Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
-       "Data/linkrot/groundtruth_alllinks.csv.gz"
+        # "Data/groundtruth.new_seq_data.preprocessed.RDS",
+        # "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
+        # "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
+        # "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
+        "Data/linkrot/groundtruth_alllinks.csv.gz"
      
 
 rule webscrape:
