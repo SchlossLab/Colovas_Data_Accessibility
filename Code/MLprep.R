@@ -28,8 +28,8 @@ clean_text <- read.csv(clean_csv)
 metadata <- read.csv(metadata)
 
 
-doFuture::registerDoFuture()
-future::plan(future::multicore, workers = threads)
+# doFuture::registerDoFuture()
+# future::plan(future::multicore, workers = threads)
 
 # #other implementation
 # clean_text <- read.csv("Data/gt_subset_30_tokens.csv.gz")

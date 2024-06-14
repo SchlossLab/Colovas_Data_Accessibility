@@ -13,11 +13,11 @@
 ####    an the amount of time a job requires.  May include processor
 ####    type, too.
 
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=100g
-#SBATCH --time=12:00:00
+#SBATCH --mem-per-cpu=10g
+#SBATCH --time=100:00:00
 
  
 
@@ -53,10 +53,11 @@
 source /etc/profile.d/http_proxy.sh
 
 #conda env
-source ~/miniconda3/etc/profile.d/conda.sh
+source ~/miniforge3/etc/profile.d/conda.sh
 conda activate data_acc
 
-
-R CMD BATCH Code/MLprep.R Slurm/20240613_2_mlprep_gtnewseqdata_glmnet.out
+cd $SLURM_SUBMIT_DIR
+#R CMD BATCH Code/MLprep.R Slurm/20240613_2_mlprep_gtnewseqdata_glmnet.out
+snakemake --profile config_files/ 
 
 ##  If you copied any files to /tmp, make sure you delete them here!

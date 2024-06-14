@@ -1,18 +1,35 @@
-configfile: "config.yaml"
+datasets = {
+  "groundtruth" : "Data/groundtruth.csv",
+  "gt_subset_30" : "Data/gt_subset_30.csv"
+}
+  
+ml_variables = [
+  "new_seq_data",
+  "availability"
+]
+  
+method = [
+  "glmnet",
+  "rf",
+  "rpart2",
+  "xgbTree"
+]
+  
+nseeds = 10
+ncores = 1
 
 # start_seed = 2000
 # nseeds = config["nseeds"]
 # seeds = range(start_seed, start_seed + nseeds)
 
-ncores = config["ncores"]
 
 rule targets:
     input: 
-        # "Data/groundtruth.new_seq_data.preprocessed.RDS",
-        # "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
+        "Data/groundtruth.new_seq_data.preprocessed.RDS",
+        "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
         # "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
         # "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
-        "Data/linkrot/groundtruth_alllinks.csv.gz"
+        # "Data/linkrot/groundtruth_alllinks.csv.gz"
      
 
 rule webscrape:
@@ -58,11 +75,11 @@ rule ml_prep:
         metadata = "Data/{datasets}.csv",
     output: 
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS"
-    params: 
-        threads = ncores
+    resources: 
+        cpus = ncores
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {params.threads} {output.rds}
+        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
         """
 # Code/MLprep.R "Data/gt_subset_30.csv" "Data/gt_subset_30.tokens.csv.gz" "new_seq_data" 16 "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
 #Code/MLprep.R "Data/groundtruth.csv" "Data/groundtruth.tokens.csv.gz" "new_seq_data" 32 "Data/groundtruth.new_seq_data.preprocessed.RDS"
@@ -108,35 +125,35 @@ rule link_rot:
         {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
         """
         
-rule lr_by_journal:
-    input: 
-        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
-        metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
-    output: 
-        filename = "Figures/linkrot/{datasets}/links_byjournal.png"
-    shell: 
-      """
-      {input.rscript} {input.metadata_links} {output.filename}
-      """
+# rule lr_by_journal:
+#     input: 
+#         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+#         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
+#     output: 
+#         filename = "Figures/linkrot/{datasets}/links_byjournal.png"
+#     shell: 
+#         """
+#         {input.rscript} {input.metadata_links} {output.filename}
+#         """
       
-rule lr_by_status: 
-   input: 
-        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
-        metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
-    output: 
-        filename = "Figures/linkrot/{datasets}/links_bystatus.png"
-    shell: 
-      """
-      {input.rscript} {input.metadata_links} {output.filename}
-      """
+# rule lr_by_status: 
+#    input: 
+#         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+#         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
+#     output: 
+#         filename = "Figures/linkrot/{datasets}/links_bystatus.png"
+#     shell: 
+#         """
+#         {input.rscript} {input.metadata_links} {output.filename}
+#         """
 
-rule lr_template: 
-   input: 
-        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
-        metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
-    output: 
-        filename = "Figures/linkrot/{datasets}/links_bystatus.png"
-    shell: 
-      """
-      {input.rscript} {input.metadata_links} {output.filename}
-      """
+# rule lr_template: 
+#    input: 
+#         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+#         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
+#     output: 
+#         filename = "Figures/linkrot/{datasets}/links_bystatus.png"
+#     shell: 
+#         """
+#         {input.rscript} {input.metadata_links} {output.filename}
+#         """

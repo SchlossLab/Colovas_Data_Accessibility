@@ -1,4 +1,0 @@
-Running from /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility
-20240429 MLprep.R of groundtruth, groundtruth_subset30
-using mikropml and model glmnet to train model to predict
-variable new_seq_data
