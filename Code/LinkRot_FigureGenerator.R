@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 #linkrot figure generator 
 #
 #
@@ -6,9 +7,9 @@ library(tidyverse)
 
 #load needed files
 groundtruth <- read_csv("Data/groundtruth.csv")
-groundtruth_links <- read_csv("Data/groundtruth_links.csv")
-groundtruth_linkcount <- read_csv("Data/groundtruth_linkcount.csv")
-gt_all_links_with_metadata <- read_csv("Data/gt_all_links_with_metadata.csv")
+groundtruth_links <- read_csv("Data/linkrot/groundtruth_links.csv")
+groundtruth_linkcount <- read_csv("Data/linkrot/groundtruth_linkcount.csv")
+gt_all_links_with_metadata <- read_csv("Data/linkrot/gt_all_links_with_metadata.csv")
 
 #group articles by the journal they were found in
 journal_tally <- groundtruth_linkcount %>% group_by(container.title) %>% tally()

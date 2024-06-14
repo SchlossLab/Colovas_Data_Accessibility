@@ -10,8 +10,9 @@ rule targets:
     input: 
         #"Data/groundtruth.new_seq_data.preprocessed.RDS",
        # "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
-       "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
-       "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
+       #"Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
+       #"Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
+       "Data/linkrot/groundtruth_alllinks.csv.gz"
      
 
 rule webscrape:
@@ -106,3 +107,10 @@ rule link_rot:
         """
         {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
         """
+        
+rule link_rot_figures:
+    input: 
+        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
+    output: 
+        "Figures/{datasets}_"
