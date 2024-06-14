@@ -1,5 +1,0 @@
-Using profile config_files for setting default command line arguments.
-Assuming unrestricted shared filesystem usage.
-Building DAG of jobs...
-MissingRuleException:
-No rule to produce --cluster=mkdir -p logs/cluster_logs/`date +"%Y-%m-%d"`/{rule} && sbatch --job-name={rule}_{wildcards} --output=logs/cluster_logs/`date +"%Y-%m-%d"`/{rule}/{rule}-{wildcards}_%j.out --account=pschloss99 --partition=standard --nodes=1 --time={resources.time_min} --mem={resources.mem_mb} --cpus-per-task={resources.cpus} (if you use input functions make sure that they don't raise unexpected exceptions).
