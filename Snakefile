@@ -108,9 +108,35 @@ rule link_rot:
         {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
         """
         
-rule link_rot_figures:
+rule lr_by_journal:
     input: 
         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
     output: 
-        "Figures/{datasets}_"
+        filename = "Figures/linkrot/{datasets}/links_byjournal.png"
+    shell: 
+      """
+      {input.rscript} {input.metadata_links} {output.filename}
+      """
+      
+rule lr_by_status: 
+   input: 
+        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
+    output: 
+        filename = "Figures/linkrot/{datasets}/links_bystatus.png"
+    shell: 
+      """
+      {input.rscript} {input.metadata_links} {output.filename}
+      """
+
+rule lr_template: 
+   input: 
+        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
+    output: 
+        filename = "Figures/linkrot/{datasets}/links_bystatus.png"
+    shell: 
+      """
+      {input.rscript} {input.metadata_links} {output.filename}
+      """
