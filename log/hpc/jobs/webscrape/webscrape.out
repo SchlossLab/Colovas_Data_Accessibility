@@ -2,17 +2,17 @@ Building DAG of jobs...
 Using shell: /usr/bin/bash
 Provided cores: 1 (use --cores to define parallelism)
 Rules claiming more threads will be scaled down.
-Provided resources: mem_mb=512, mem_mib=489, disk_mb=1000, disk_mib=954, cpus=1
+Provided resources: mem_mb=1024, mem_mib=977, disk_mb=1000, disk_mib=954, cpus=1
 Select jobs to execute...
 
-[Fri Jun 14 16:14:18 2024]
+[Mon Jun 17 12:19:35 2024]
 rule webscrape:
     input: Data/groundtruth.csv, Code/Webscrape.R
     output: Data/groundtruth_html.csv.gz
     jobid: 0
     reason: Forced execution
     wildcards: datasets=groundtruth
-    resources: mem_mb=512, mem_mib=489, disk_mb=1000, disk_mib=954, tmpdir=/tmp, cpus=1, time=24:00:00, job_name=data
+    resources: mem_mb=1024, mem_mib=977, disk_mb=1000, disk_mib=954, tmpdir=/tmp, cpus=1, time=24:00:00, job_name=data
 
 
         Code/Webscrape.R Data/groundtruth.csv Data/groundtruth_html.csv.gz
@@ -49,17 +49,6 @@ dbl (11): ...10, issue, member, prefix, score, reference.count, references.c...
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-[Fri Jun 14 16:32:11 2024]
-Error in rule webscrape:
-    jobid: 0
-    input: Data/groundtruth.csv, Code/Webscrape.R
-    output: Data/groundtruth_html.csv.gz
-    shell:
-        
-        Code/Webscrape.R Data/groundtruth.csv Data/groundtruth_html.csv.gz
-        
-        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
-
-Shutting down, this might take some time.
-Exiting because a job execution failed. Look above for error message
-slurmstepd: error: Detected 1 oom_kill event in StepId=9556538.batch. Some of the step tasks have been OOM Killed.
+[Mon Jun 17 12:38:13 2024]
+Finished job 0.
+1 of 1 steps (100%) done

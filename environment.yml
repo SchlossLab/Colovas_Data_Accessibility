@@ -16,5 +16,8 @@ dependencies:
   - r-jsonlite
   - r-tokenizers
   - r-httr2
+  - r-xml2
+  - r-textstem
+  
 
 

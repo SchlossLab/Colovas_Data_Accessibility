@@ -2,17 +2,17 @@ Building DAG of jobs...
 Using shell: /usr/bin/bash
 Provided cores: 1 (use --cores to define parallelism)
 Rules claiming more threads will be scaled down.
-Provided resources: mem_mb=512, mem_mib=489, disk_mb=1000, disk_mib=954, cpus=1
+Provided resources: mem_mb=1024, mem_mib=977, disk_mb=1000, disk_mib=954, cpus=1
 Select jobs to execute...
 
-[Fri Jun 14 16:14:18 2024]
+[Mon Jun 17 12:19:35 2024]
 rule cleanHTML:
     input: Data/gt_subset_30_html.csv.gz, Code/cleanHTML.R
     output: Data/gt_subset_30.clean_html.csv.gz
     jobid: 0
     reason: Forced execution
     wildcards: datasets=gt_subset_30
-    resources: mem_mb=512, mem_mib=489, disk_mb=1000, disk_mib=954, tmpdir=/tmp, cpus=1, time=24:00:00, job_name=data
+    resources: mem_mb=1024, mem_mib=977, disk_mb=1000, disk_mib=954, tmpdir=/tmp, cpus=1, time=24:00:00, job_name=data
 
 
         Code/cleanHTML.R Data/gt_subset_30_html.csv.gz Data/gt_subset_30.clean_html.csv.gz
@@ -43,7 +43,7 @@ Warning message:
 package ‘rvest’ was built under R version 4.3.2 
 Error in library(textstem) : there is no package called ‘textstem’
 Execution halted
-[Fri Jun 14 16:14:26 2024]
+[Mon Jun 17 12:19:39 2024]
 Error in rule cleanHTML:
     jobid: 0
     input: Data/gt_subset_30_html.csv.gz, Code/cleanHTML.R
