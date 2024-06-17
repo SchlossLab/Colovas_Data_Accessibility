@@ -1,0 +1,86 @@
+Using profile config_files/ for setting default command line arguments.
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cluster nodes: 4999
+Job stats:
+job          count
+---------  -------
+cleanHTML        1
+ml_prep          1
+targets          1
+tokenize         1
+webscrape        1
+total            5
+
+Resources before job selection: {'_cores': 9223372036854775807, '_nodes': 4999}
+Ready jobs (1)
+Select jobs to execute...
+Selected jobs (1)
+Resources after job selection: {'_cores': 9223372036854775806, '_nodes': 4998}
+
+[Mon Jun 17 15:46:21 2024]
+rule webscrape:
+    input: Data/gt_subset_30.csv, Code/Webscrape.R
+    output: Data/gt_subset_30.html.csv.gz
+    jobid: 4
+    reason: Missing output files: Data/gt_subset_30.html.csv.gz; Updated input files: Code/Webscrape.R
+    wildcards: datasets=gt_subset_30
+    resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, cpus=1, time=24:00:00, job_name=data
+
+
+        Code/Webscrape.R Data/gt_subset_30.csv Data/gt_subset_30.html.csv.gz
+        
+Jobscript:
+#!/bin/sh
+# properties = {"type": "single", "rule": "webscrape", "local": false, "input": ["Data/gt_subset_30.csv", "Code/Webscrape.R"], "output": ["Data/gt_subset_30.html.csv.gz"], "wildcards": {"datasets": "gt_subset_30"}, "params": {}, "log": [], "threads": 1, "resources": {"mem_mb": 10000, "mem_mib": 9537, "disk_mb": 1000, "disk_mib": 954, "tmpdir": "<TBD>", "cpus": 1, "time": "24:00:00", "job_name": "data"}, "jobid": 4, "cluster": {}}
+cd /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility && /home/jocolova/miniforge3/envs/data_acc/bin/python3.12 -m snakemake --snakefile '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile' --target-jobs 'webscrape:datasets=gt_subset_30' --allowed-rules 'webscrape' --cores 'all' --attempt 1 --force-use-threads  --resources 'mem_mb=10000' 'mem_mib=9537' 'disk_mb=1000' 'disk_mib=954' 'cpus=1' --wait-for-files '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.d3lg_tp_' 'Data/gt_subset_30.csv' 'Code/Webscrape.R' --force --keep-target-files --keep-remote --max-inventory-time 0 --nocolor --notemp --no-hooks --nolock --ignore-incomplete --rerun-triggers 'mtime' 'software-env' 'input' 'params' 'code' --skip-script-cleanup  --use-conda  --conda-frontend 'mamba' --conda-base-path '/home/jocolova/miniforge3' --wrapper-prefix 'https://github.com/snakemake/snakemake-wrappers/raw/' --printshellcmds  --latency-wait 120 --scheduler 'greedy' --scheduler-solver-path '/home/jocolova/miniforge3/envs/data_acc/bin' --default-resources 'mem_mb=10000' 'disk_mb=max(2*input.size_mb, 1000)' 'tmpdir=system_tmpdir' 'cpus=1' 'time="24:00:00"' 'job_name="data"' --mode 2 && touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.d3lg_tp_/4.jobfinished' || (touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.d3lg_tp_/4.jobfailed'; exit 1)
+
+Submitted job 4 with external jobid 'Submitted batch job 9645731'.
+[Mon Jun 17 15:50:01 2024]
+Finished job 4.
+1 of 5 steps (20%) done
+Resources before job selection: {'_cores': 9223372036854775807, '_nodes': 4999}
+Ready jobs (1)
+Select jobs to execute...
+Selected jobs (1)
+Resources after job selection: {'_cores': 9223372036854775806, '_nodes': 4998}
+
+[Mon Jun 17 15:50:01 2024]
+rule cleanHTML:
+    input: Data/gt_subset_30.html.csv.gz, Code/cleanHTML.R
+    output: Data/gt_subset_30.clean_html.csv.gz
+    jobid: 3
+    reason: Missing output files: Data/gt_subset_30.clean_html.csv.gz; Input files updated by another job: Data/gt_subset_30.html.csv.gz
+    wildcards: datasets=gt_subset_30
+    resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, cpus=1, time=24:00:00, job_name=data
+
+
+        Code/cleanHTML.R Data/gt_subset_30.html.csv.gz Data/gt_subset_30.clean_html.csv.gz
+        
+Jobscript:
+#!/bin/sh
+# properties = {"type": "single", "rule": "cleanHTML", "local": false, "input": ["Data/gt_subset_30.html.csv.gz", "Code/cleanHTML.R"], "output": ["Data/gt_subset_30.clean_html.csv.gz"], "wildcards": {"datasets": "gt_subset_30"}, "params": {}, "log": [], "threads": 1, "resources": {"mem_mb": 10000, "mem_mib": 9537, "disk_mb": 1000, "disk_mib": 954, "tmpdir": "<TBD>", "cpus": 1, "time": "24:00:00", "job_name": "data"}, "jobid": 3, "cluster": {}}
+cd /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility && /home/jocolova/miniforge3/envs/data_acc/bin/python3.12 -m snakemake --snakefile '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile' --target-jobs 'cleanHTML:datasets=gt_subset_30' --allowed-rules 'cleanHTML' --cores 'all' --attempt 1 --force-use-threads  --resources 'mem_mb=10000' 'mem_mib=9537' 'disk_mb=1000' 'disk_mib=954' 'cpus=1' --wait-for-files '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.d3lg_tp_' 'Data/gt_subset_30.html.csv.gz' 'Code/cleanHTML.R' --force --keep-target-files --keep-remote --max-inventory-time 0 --nocolor --notemp --no-hooks --nolock --ignore-incomplete --rerun-triggers 'mtime' 'software-env' 'input' 'params' 'code' --skip-script-cleanup  --use-conda  --conda-frontend 'mamba' --conda-base-path '/home/jocolova/miniforge3' --wrapper-prefix 'https://github.com/snakemake/snakemake-wrappers/raw/' --printshellcmds  --latency-wait 120 --scheduler 'greedy' --scheduler-solver-path '/home/jocolova/miniforge3/envs/data_acc/bin' --default-resources 'mem_mb=10000' 'disk_mb=max(2*input.size_mb, 1000)' 'tmpdir=system_tmpdir' 'cpus=1' 'time="24:00:00"' 'job_name="data"' --mode 2 && touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.d3lg_tp_/3.jobfinished' || (touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.d3lg_tp_/3.jobfailed'; exit 1)
+
+Submitted job 3 with external jobid 'Submitted batch job 9646038'.
+[Mon Jun 17 15:51:41 2024]
+Error in rule cleanHTML:
+    jobid: 3
+    input: Data/gt_subset_30.html.csv.gz, Code/cleanHTML.R
+    output: Data/gt_subset_30.clean_html.csv.gz
+    shell:
+        
+        Code/cleanHTML.R Data/gt_subset_30.html.csv.gz Data/gt_subset_30.clean_html.csv.gz
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 9646038
+
+Error executing rule cleanHTML on cluster (jobid: 3, external: Submitted batch job 9646038, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.d3lg_tp_/snakejob.cleanHTML.3.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-06-17T154620.099538.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks

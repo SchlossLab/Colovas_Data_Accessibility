@@ -25,7 +25,7 @@ ncores = 1
 
 rule targets:
     input: 
-        "Data/groundtruth.new_seq_data.preprocessed.RDS",
+       # "Data/groundtruth.new_seq_data.preprocessed.RDS",
         "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
         # "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
         # "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
@@ -37,7 +37,7 @@ rule webscrape:
        csv = "Data/{datasets}.csv",
        rscript = "Code/Webscrape.R"
     output: 
-        "Data/{datasets}_html.csv.gz"
+        "Data/{datasets}.html.csv.gz"
     shell: 
         """
         {input.rscript} {input.csv} {output}
@@ -47,10 +47,10 @@ rule webscrape:
 
 rule cleanHTML: 
     input:
-      html = "Data/{datasets}_html.csv.gz",
+      html = "Data/{datasets}.html.csv.gz",
       rscript = "Code/cleanHTML.R"
     output: 
-        "Data/{datasets}.clean_html.csv.gz"
+        "Data/{datasets}.cleanhtml.csv.gz"
     shell: 
         """
         {input.rscript} {input.html} {output}
@@ -59,7 +59,7 @@ rule cleanHTML:
 
 rule tokenize: 
     input:
-      html = "Data/{datasets}.clean_html.csv.gz",
+      html = "Data/{datasets}.cleanhtml.csv.gz",
       rscript = "Code/tokenize.R"
     output: 
         "Data/{datasets}.tokens.csv.gz"
