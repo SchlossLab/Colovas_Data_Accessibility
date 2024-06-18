@@ -25,7 +25,7 @@ ncores = 1
 
 rule targets:
     input: 
-       # "Data/groundtruth.new_seq_data.preprocessed.RDS",
+        "Data/groundtruth.new_seq_data.preprocessed.RDS",
         "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
         # "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
         # "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
@@ -76,7 +76,8 @@ rule ml_prep:
     output: 
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS"
     resources: 
-        cpus = ncores
+        cpus = ncores,
+        mem_mb = 200000
     shell:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}

@@ -29,7 +29,7 @@ metadata <- read.csv(metadata)
 
 
 # doFuture::registerDoFuture()
-# future::plan(future::multicore, workers = threads)
+# future::plan(future::multicore, workers = 100)
 
 # #other implementation
 # clean_text <- read.csv("Data/gt_subset_30_tokens.csv.gz")

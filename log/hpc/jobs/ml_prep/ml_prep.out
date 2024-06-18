@@ -1,0 +1,61 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Provided resources: mem_mb=100000, mem_mib=95368, disk_mb=1000, disk_mib=954, cpus=1
+Select jobs to execute...
+
+[Tue Jun 18 13:11:23 2024]
+rule ml_prep:
+    input: Data/groundtruth.tokens.csv.gz, Code/MLprep.R, Data/groundtruth.csv
+    output: Data/groundtruth.new_seq_data.preprocessed.RDS
+    jobid: 0
+    reason: Forced execution
+    wildcards: datasets=groundtruth, ml_variables=new_seq_data
+    resources: mem_mb=100000, mem_mib=95368, disk_mb=1000, disk_mib=954, tmpdir=/tmp, cpus=1, time=24:00:00, job_name=data
+
+
+        Code/MLprep.R Data/groundtruth.csv Data/groundtruth.tokens.csv.gz new_seq_data 1 Data/groundtruth.new_seq_data.preprocessed.RDS
+        
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+Warning messages:
+1: package ‘ggplot2’ was built under R version 4.3.3 
+2: package ‘stringr’ was built under R version 4.3.2 
+Warning message:
+package ‘tidytext’ was built under R version 4.3.3 
+
+Attaching package: ‘jsonlite’
+
+The following object is masked from ‘package:purrr’:
+
+    flatten
+
+ num 1
+ chr "Data/groundtruth.new_seq_data.preprocessed.RDS"
+Using 'new_seq_data' as the outcome column.
+Error in apply_fn(features, 2, function(x) { : 
+  The total size of ‘X’ (of class ‘matrix’ and type ‘character’) is 605.41 MiB and the total size of the other argument is 7.91 KiB. With 1 workers, this translates to 605.41 MiB per worker needed for future_apply(), which exceeds the maximum allowed size of 500.00 MiB (option 'future.globals.maxSize').
+Calls: preprocess_data -> process_novar_feats -> apply_fn
+Execution halted
+[Tue Jun 18 13:22:21 2024]
+Error in rule ml_prep:
+    jobid: 0
+    input: Data/groundtruth.tokens.csv.gz, Code/MLprep.R, Data/groundtruth.csv
+    output: Data/groundtruth.new_seq_data.preprocessed.RDS
+    shell:
+        
+        Code/MLprep.R Data/groundtruth.csv Data/groundtruth.tokens.csv.gz new_seq_data 1 Data/groundtruth.new_seq_data.preprocessed.RDS
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message

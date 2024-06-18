@@ -5,17 +5,17 @@ Rules claiming more threads will be scaled down.
 Provided resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, cpus=1
 Select jobs to execute...
 
-[Mon Jun 17 15:48:22 2024]
+[Tue Jun 18 11:14:42 2024]
 rule webscrape:
-    input: Data/gt_subset_30.csv, Code/Webscrape.R
-    output: Data/gt_subset_30.html.csv.gz
+    input: Data/groundtruth.csv, Code/Webscrape.R
+    output: Data/groundtruth.html.csv.gz
     jobid: 0
     reason: Forced execution
-    wildcards: datasets=gt_subset_30
+    wildcards: datasets=groundtruth
     resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, tmpdir=/tmp, cpus=1, time=24:00:00, job_name=data
 
 
-        Code/Webscrape.R Data/gt_subset_30.csv Data/gt_subset_30.html.csv.gz
+        Code/Webscrape.R Data/groundtruth.csv Data/groundtruth.html.csv.gz
         
 ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ✔ dplyr     1.1.3     ✔ readr     2.1.4
@@ -41,15 +41,14 @@ Warning message:
 package ‘rvest’ was built under R version 4.3.2 
 Warning message:
 package ‘tidytext’ was built under R version 4.3.3 
-Rows: 30 Columns: 41
+Rows: 500 Columns: 41
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
-chr (29): paper, new_seq_data, availability, data_public_private, keywords, ...
+chr (30): paper, new_seq_data, availability, data_public_private, software_l...
 dbl (11): ...10, issue, member, prefix, score, reference.count, references.c...
-lgl  (1): software_links
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-[Mon Jun 17 15:49:12 2024]
+[Tue Jun 18 11:35:55 2024]
 Finished job 0.
 1 of 1 steps (100%) done
