@@ -98,19 +98,10 @@ rule train_ml_set_seed:
         """
         {input.rscript} {input.rds} {params.seed} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
         """
-#wildcard.model is not mentioned in rule train_ml_set_seed
-#Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.RDS
-#{dataset} =groundtruth
-#{method} = glmnet
-#likely change delimiter in the filenames use period or hyphen instead of underscore (pat likes periods)
-#can also get ride of seed = 2000, and use wildcard.seed
-#can also get advanced and tell it what kind of variable to be expecting
-#will figure out seed from target filename : glmnet_2000_, it will understand the placeholder of the seed
-#model output not mentioned in filename either
-# inputs: are files, params: are different, params.seed would be a better way to do that 
-#
 
-        
+#Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.RDS
+
+#-------------------LINK-------ROT-----------------------------------------------------------
 
 rule link_rot: 
     input:
@@ -119,42 +110,44 @@ rule link_rot:
         metadata = "Data/{datasets}.csv"
     output: 
         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
-        #unique_links = "Data/linkrot/{datasets}_uniquelinks.csv.gz",
         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
     shell:
         """
         {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
         """
         
-# rule lr_by_journal:
-#     input: 
-#         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
-#         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
-#     output: 
-#         filename = "Figures/linkrot/{datasets}/links_byjournal.png"
-#     shell: 
-#         """
-#         {input.rscript} {input.metadata_links} {output.filename}
-#         """
-      
-# rule lr_by_status: 
-#    input: 
-#         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
-#         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
-#     output: 
-#         filename = "Figures/linkrot/{datasets}/links_bystatus.png"
-#     shell: 
-#         """
-#         {input.rscript} {input.metadata_links} {output.filename}
-#         """
+rule lr_by_journal: 
+    input: 
+        rscript = "Code/linkrot/links_byjournal.R",
+        #all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
+    output:
+        filename = "Figures/linkrot/{datasets}/links_byjournal.png"
+    shell: 
+        """
+        {input.rscript} {input.metadata_links} {output.filename}
+        """
 
-# rule lr_template: 
-#    input: 
-#         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
-#         metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
-#     output: 
-#         filename = "Figures/linkrot/{datasets}/links_bystatus.png"
-#     shell: 
-#         """
-#         {input.rscript} {input.metadata_links} {output.filename}
-#         """
+rule lr_by_status:
+    input: 
+        rscript = "Code/linkrot/links_bystatus.R",
+        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+    output:
+       filename = "Figures/linkrot/{datasets}/links_bystatus.png"
+    shell: 
+        """
+        {input.rscript} {input.all_links} {output.filename}
+        """
+
+
+rule lr_template:
+    input: 
+        all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}_links_metadata.csv.gz"
+    output: 
+        filename = "Figures/linkrot/{datasets}/links_byNAME.png"
+    shell:
+        """
+        {input.rscript} {input.all_links} {input.metadata_links} {output.filename}
+        """
+
