@@ -1,0 +1,81 @@
+Using profile config_files/ for setting default command line arguments.
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cluster nodes: 4999
+Job stats:
+job        count
+-------  -------
+ml_prep        2
+targets        1
+total          3
+
+Resources before job selection: {'_cores': 9223372036854775807, '_nodes': 4999}
+Ready jobs (2)
+Select jobs to execute...
+Selected jobs (2)
+Resources after job selection: {'_cores': 9223372036854775805, '_nodes': 4997}
+
+[Wed Jun 19 17:02:52 2024]
+rule ml_prep:
+    input: Data/groundtruth.tokens.csv.gz, Code/MLprep.R, Data/groundtruth.csv
+    output: Data/groundtruth.new_seq_data.preprocessed.RDS
+    jobid: 1
+    reason: Missing output files: Data/groundtruth.new_seq_data.preprocessed.RDS
+    wildcards: datasets=groundtruth, ml_variables=new_seq_data
+    resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, cpus=1, time=24:00:00, job_name=data
+
+
+        Code/MLprep.R Data/groundtruth.csv Data/groundtruth.tokens.csv.gz new_seq_data 1 Data/groundtruth.new_seq_data.preprocessed.RDS
+        
+Jobscript:
+#!/bin/sh
+# properties = {"type": "single", "rule": "ml_prep", "local": false, "input": ["Data/groundtruth.tokens.csv.gz", "Code/MLprep.R", "Data/groundtruth.csv"], "output": ["Data/groundtruth.new_seq_data.preprocessed.RDS"], "wildcards": {"datasets": "groundtruth", "ml_variables": "new_seq_data"}, "params": {}, "log": [], "threads": 1, "resources": {"mem_mb": 10000, "mem_mib": 9537, "disk_mb": 1000, "disk_mib": 954, "tmpdir": "<TBD>", "cpus": 1, "time": "24:00:00", "job_name": "data"}, "jobid": 1, "cluster": {}}
+cd /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility && /home/jocolova/miniforge3/envs/data_acc/bin/python3.12 -m snakemake --snakefile '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile' --target-jobs 'ml_prep:datasets=groundtruth,ml_variables=new_seq_data' --allowed-rules 'ml_prep' --cores 'all' --attempt 1 --force-use-threads  --resources 'mem_mb=10000' 'mem_mib=9537' 'disk_mb=1000' 'disk_mib=954' 'cpus=1' --wait-for-files '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.zpau2hls' 'Data/groundtruth.tokens.csv.gz' 'Code/MLprep.R' 'Data/groundtruth.csv' --force --keep-target-files --keep-remote --max-inventory-time 0 --nocolor --notemp --no-hooks --nolock --ignore-incomplete --rerun-triggers 'code' 'mtime' 'software-env' 'input' 'params' --skip-script-cleanup  --use-conda  --conda-frontend 'mamba' --conda-base-path '/home/jocolova/miniforge3' --wrapper-prefix 'https://github.com/snakemake/snakemake-wrappers/raw/' --printshellcmds  --latency-wait 120 --scheduler 'greedy' --scheduler-solver-path '/home/jocolova/miniforge3/envs/data_acc/bin' --default-resources 'mem_mb=10000' 'disk_mb=max(2*input.size_mb, 1000)' 'tmpdir=system_tmpdir' 'cpus=1' 'time="24:00:00"' 'job_name="data"' --mode 2 && touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.zpau2hls/1.jobfinished' || (touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.zpau2hls/1.jobfailed'; exit 1)
+
+Submitted job 1 with external jobid 'Submitted batch job 9799259'.
+
+[Wed Jun 19 17:02:54 2024]
+rule ml_prep:
+    input: Data/gt_subset_30.tokens.csv.gz, Code/MLprep.R, Data/gt_subset_30.csv
+    output: Data/gt_subset_30.new_seq_data.preprocessed.RDS
+    jobid: 5
+    reason: Missing output files: Data/gt_subset_30.new_seq_data.preprocessed.RDS
+    wildcards: datasets=gt_subset_30, ml_variables=new_seq_data
+    resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, cpus=1, time=24:00:00, job_name=data
+
+
+        Code/MLprep.R Data/gt_subset_30.csv Data/gt_subset_30.tokens.csv.gz new_seq_data 1 Data/gt_subset_30.new_seq_data.preprocessed.RDS
+        
+Jobscript:
+#!/bin/sh
+# properties = {"type": "single", "rule": "ml_prep", "local": false, "input": ["Data/gt_subset_30.tokens.csv.gz", "Code/MLprep.R", "Data/gt_subset_30.csv"], "output": ["Data/gt_subset_30.new_seq_data.preprocessed.RDS"], "wildcards": {"datasets": "gt_subset_30", "ml_variables": "new_seq_data"}, "params": {}, "log": [], "threads": 1, "resources": {"mem_mb": 10000, "mem_mib": 9537, "disk_mb": 1000, "disk_mib": 954, "tmpdir": "<TBD>", "cpus": 1, "time": "24:00:00", "job_name": "data"}, "jobid": 5, "cluster": {}}
+cd /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility && /home/jocolova/miniforge3/envs/data_acc/bin/python3.12 -m snakemake --snakefile '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile' --target-jobs 'ml_prep:datasets=gt_subset_30,ml_variables=new_seq_data' --allowed-rules 'ml_prep' --cores 'all' --attempt 1 --force-use-threads  --resources 'mem_mb=10000' 'mem_mib=9537' 'disk_mb=1000' 'disk_mib=954' 'cpus=1' --wait-for-files '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.zpau2hls' 'Data/gt_subset_30.tokens.csv.gz' 'Code/MLprep.R' 'Data/gt_subset_30.csv' --force --keep-target-files --keep-remote --max-inventory-time 0 --nocolor --notemp --no-hooks --nolock --ignore-incomplete --rerun-triggers 'code' 'mtime' 'software-env' 'input' 'params' --skip-script-cleanup  --use-conda  --conda-frontend 'mamba' --conda-base-path '/home/jocolova/miniforge3' --wrapper-prefix 'https://github.com/snakemake/snakemake-wrappers/raw/' --printshellcmds  --latency-wait 120 --scheduler 'greedy' --scheduler-solver-path '/home/jocolova/miniforge3/envs/data_acc/bin' --default-resources 'mem_mb=10000' 'disk_mb=max(2*input.size_mb, 1000)' 'tmpdir=system_tmpdir' 'cpus=1' 'time="24:00:00"' 'job_name="data"' --mode 2 && touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.zpau2hls/5.jobfinished' || (touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.zpau2hls/5.jobfailed'; exit 1)
+
+Submitted job 5 with external jobid 'Submitted batch job 9799260'.
+[Wed Jun 19 17:04:32 2024]
+Finished job 5.
+1 of 3 steps (33%) done
+[Wed Jun 19 17:07:02 2024]
+Finished job 1.
+2 of 3 steps (67%) done
+Resources before job selection: {'_cores': 9223372036854775807, '_nodes': 4999}
+Ready jobs (1)
+Select jobs to execute...
+Selected jobs (1)
+Resources after job selection: {'_cores': 9223372036854775806, '_nodes': 4998}
+
+[Wed Jun 19 17:07:02 2024]
+localrule targets:
+    input: Data/groundtruth.new_seq_data.preprocessed.RDS, Data/gt_subset_30.new_seq_data.preprocessed.RDS
+    jobid: 0
+    reason: Input files updated by another job: Data/gt_subset_30.new_seq_data.preprocessed.RDS, Data/groundtruth.new_seq_data.preprocessed.RDS
+    resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, tmpdir=/tmp, cpus=1, time=24:00:00, job_name=data
+
+[Wed Jun 19 17:07:02 2024]
+Finished job 0.
+3 of 3 steps (100%) done
+Complete log: .snakemake/log/2024-06-19T170249.946798.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks

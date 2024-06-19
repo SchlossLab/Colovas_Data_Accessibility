@@ -76,8 +76,8 @@ rule ml_prep:
     output: 
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS"
     resources: 
-        cpus = ncores,
-        mem_mb = 200000
+        cpus = ncores
+        #mem_mb = 200000
     shell:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
