@@ -1,0 +1,64 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 8
+Rules claiming more threads will be scaled down.
+Job stats:
+job         count
+--------  -------
+ml_prep         2
+targets         1
+tokenize        1
+total           4
+
+Select jobs to execute...
+
+[Wed Jun 19 10:26:52 2024]
+rule ml_prep:
+    input: Data/gt_subset_30.tokens.csv.gz, Code/MLprep.R, Data/gt_subset_30.csv
+    output: Data/gt_subset_30.new_seq_data.preprocessed.RDS
+    jobid: 5
+    reason: Updated input files: Code/MLprep.R
+    wildcards: datasets=gt_subset_30, ml_variables=new_seq_data
+    resources: tmpdir=/tmp, cpus=1, mem_mb=200000, mem_mib=190735
+
+
+[Wed Jun 19 10:26:52 2024]
+rule tokenize:
+    input: Data/groundtruth.cleanhtml.csv.gz, Code/tokenize.R
+    output: Data/groundtruth.tokens.csv.gz
+    jobid: 2
+    reason: Missing output files: Data/groundtruth.tokens.csv.gz
+    wildcards: datasets=groundtruth
+    resources: tmpdir=/tmp
+
+[Wed Jun 19 10:28:16 2024]
+Finished job 5.
+1 of 4 steps (25%) done
+[Wed Jun 19 10:28:56 2024]
+Finished job 2.
+2 of 4 steps (50%) done
+Select jobs to execute...
+
+[Wed Jun 19 10:28:56 2024]
+rule ml_prep:
+    input: Data/groundtruth.tokens.csv.gz, Code/MLprep.R, Data/groundtruth.csv
+    output: Data/groundtruth.new_seq_data.preprocessed.RDS
+    jobid: 1
+    reason: Missing output files: Data/groundtruth.new_seq_data.preprocessed.RDS; Input files updated by another job: Data/groundtruth.tokens.csv.gz
+    wildcards: datasets=groundtruth, ml_variables=new_seq_data
+    resources: tmpdir=/tmp, cpus=1, mem_mb=200000, mem_mib=190735
+
+[Wed Jun 19 10:30:57 2024]
+Error in rule ml_prep:
+    jobid: 1
+    input: Data/groundtruth.tokens.csv.gz, Code/MLprep.R, Data/groundtruth.csv
+    output: Data/groundtruth.new_seq_data.preprocessed.RDS
+    shell:
+        
+        Code/MLprep.R Data/groundtruth.csv Data/groundtruth.tokens.csv.gz new_seq_data 1 Data/groundtruth.new_seq_data.preprocessed.RDS
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-06-19T102645.089741.snakemake.log
