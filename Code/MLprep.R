@@ -39,19 +39,12 @@ metadata <- read.csv(metadata)
 
 # clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
 # metadata <- read_csv("Data/groundtruth.csv")
-# ml_var_snake <- "new_seq_data"
+# ml_var_snake <- "availability"
 # ml_var <- c("paper", ml_var_snake, "container.title")
-# output_file <- "Data/groundtruth.new_seq_data.preprocessed.RDS"
+# output_file <- "Data/groundtruth.availability.preprocessed.RDS"
 
 
 # set up the format of the clean_text dataframe 
-# need to remove: 
-    # singleton columns
-    # columns with nzv- this should also remove singletons
-        # could count the number of papers that each token shows up in 
-        # know total number of papers, can add missing papers to have 0s
-        # add that to nearZeroVar
-    # columns with absolute value of correlation of 1
 total_papers <- n_distinct(clean_text$paper_doi)
 
 clean_tibble <-
@@ -82,6 +75,11 @@ full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 
 # remove paper doi
 full_ml <- select(full_ml, !paper)
+
+#if availability, convert to "availbility.x"
+if (ml_var_snake == "availability") {
+    ml_var_snake <- "availability.x"
+}
 
 # use mikropml::preprocess_data on dataset
 full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake, 
