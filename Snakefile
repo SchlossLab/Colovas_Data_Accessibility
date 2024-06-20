@@ -25,13 +25,15 @@ ncores = 1
 
 rule targets:
     input: 
-        "Data/groundtruth.new_seq_data.preprocessed.RDS",
-        #"Data/gt_subset_30.new_seq_data.preprocessed.RDS", 
-        "Data/groundtruth.availability.preprocessed.RDS",
-       # "Data/gt_subset_30.availability.preprocessed.RDS"
-         "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
-         "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
-        # "Data/linkrot/groundtruth_alllinks.csv.gz"
+    #     "Data/groundtruth.new_seq_data.preprocessed.RDS",
+    #     "Data/gt_subset_30.new_seq_data.preprocessed.RDS", 
+    #     "Data/groundtruth.availability.preprocessed.RDS",
+    #     "Data/gt_subset_30.availability.preprocessed.RDS"
+    #     "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
+    #     "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
+    #     "Data/linkrot/groundtruth_alllinks.csv.gz"
+        "Figures/linkrot/groundtruth/alllinks_bystatus.png",
+        "Figures/linkrot/groundtruth/links_byjournal.png"
      
 
 rule webscrape:
@@ -107,7 +109,7 @@ rule train_ml_set_seed:
 
 rule link_rot: 
     input:
-        html = "Data/{datasets}_html.csv.gz",
+        html = "Data/{datasets}.html.csv.gz",
         rscript = "Code/LinkRot.R",
         metadata = "Data/{datasets}.csv"
     output: 
@@ -135,10 +137,11 @@ rule lr_by_status:
         rscript = "Code/linkrot/links_bystatus.R",
         all_links = "Data/linkrot/{datasets}_alllinks.csv.gz",
     output:
-       filename = "Figures/linkrot/{datasets}/links_bystatus.png"
+        all_filename = "Figures/linkrot/{datasets}/alllinks_bystatus.png",
+        unique_filename = "Figures/linkrot/{datasets}/uniquelinks_bystatus.png"
     shell: 
         """
-        {input.rscript} {input.all_links} {output.filename}
+        {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
         """
 
 

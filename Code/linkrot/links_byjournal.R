@@ -13,12 +13,14 @@ output <- input[2]
 
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz")
-metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
-output <- "Figures/linkrot/groundtruth/LinksByJournal.png"
+#metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
+#output <- "Figures/linkrot/groundtruth/LinksByJournal.png"
 
 
 #group articles by the journal they were found in
-journal_tally <- metadatalinks %>% group_by(container.title) %>% tally()
+journal_tally <- metadatalinks %>% 
+                  dplyr::group_by(container.title) %>% 
+                  dplyr::add_tally()
 sum <- as.numeric(sum(journal_tally$n)) 
 
 #plot number of articles containing links by which journal they were in 
@@ -31,8 +33,7 @@ LinksByJournal <-
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of Manuscripts Containing Links", 
         x = "ASM Journal",
-        title = str_glue("Number of ASM Manuscripts Containing 1+ 
-        External Links Added by User (N={sum})") )
+        title = stringr::str_glue("Number of ASM Manuscripts Containing 1+ External Links Added by User (N={sum})"))
 #LinksByJournal
 
 ggsave(LinksByJournal, filename = output)

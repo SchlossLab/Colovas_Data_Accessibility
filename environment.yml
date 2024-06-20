@@ -6,7 +6,7 @@ channels:
   - defaults
 dependencies:
   - snakemake=7.32.4
-  - r-base
+  - r-base=4.3.3
   - r-tidyverse
   - r-tidytext
   - r-rcrossref

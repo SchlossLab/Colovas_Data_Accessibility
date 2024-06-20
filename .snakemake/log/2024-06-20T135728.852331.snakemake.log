@@ -1,0 +1,66 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 2
+Rules claiming more threads will be scaled down.
+Job stats:
+job              count
+-------------  -------
+link_rot             1
+lr_by_journal        1
+lr_by_status         1
+targets              1
+total                4
+
+Select jobs to execute...
+
+[Thu Jun 20 13:57:38 2024]
+rule link_rot:
+    input: Data/groundtruth.html.csv.gz, Code/LinkRot.R, Data/groundtruth.csv
+    output: Data/linkrot/groundtruth_alllinks.csv.gz, Data/linkrot/groundtruth_links_metadata.csv.gz
+    jobid: 2
+    reason: Updated input files: Data/groundtruth.html.csv.gz
+    wildcards: datasets=groundtruth
+    resources: tmpdir=/tmp
+
+[Thu Jun 20 14:15:33 2024]
+Finished job 2.
+1 of 4 steps (25%) done
+Select jobs to execute...
+
+[Thu Jun 20 14:15:34 2024]
+rule lr_by_status:
+    input: Code/linkrot/links_bystatus.R, Data/linkrot/groundtruth_alllinks.csv.gz
+    output: Figures/linkrot/groundtruth/alllinks_bystatus.png, Figures/linkrot/groundtruth/uniquelinks_bystatus.png
+    jobid: 1
+    reason: Missing output files: Figures/linkrot/groundtruth/alllinks_bystatus.png; Input files updated by another job: Data/linkrot/groundtruth_alllinks.csv.gz
+    wildcards: datasets=groundtruth
+    resources: tmpdir=/tmp
+
+
+[Thu Jun 20 14:15:34 2024]
+rule lr_by_journal:
+    input: Code/linkrot/links_byjournal.R, Data/linkrot/groundtruth_links_metadata.csv.gz
+    output: Figures/linkrot/groundtruth/links_byjournal.png
+    jobid: 4
+    reason: Missing output files: Figures/linkrot/groundtruth/links_byjournal.png; Input files updated by another job: Data/linkrot/groundtruth_links_metadata.csv.gz
+    wildcards: datasets=groundtruth
+    resources: tmpdir=/tmp
+
+[Thu Jun 20 14:15:39 2024]
+Error in rule lr_by_status:
+    jobid: 1
+    input: Code/linkrot/links_bystatus.R, Data/linkrot/groundtruth_alllinks.csv.gz
+    output: Figures/linkrot/groundtruth/alllinks_bystatus.png, Figures/linkrot/groundtruth/uniquelinks_bystatus.png
+    shell:
+        
+        Code/linkrot/links_bystatus.R Data/linkrot/groundtruth_alllinks.csv.gz Figures/linkrot/groundtruth/alllinks_bystatus.png Figures/linkrot/groundtruth/uniquelinks_bystatus.png
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Waiting at most 5 seconds for missing files.
+MissingOutputException in rule lr_by_journal in file /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile, line 123:
+Job 4  completed successfully, but some output files are missing. Missing files after 5 seconds. This might be due to filesystem latency. If that is the case, consider to increase the wait time with --latency-wait:
+Figures/linkrot/groundtruth/links_byjournal.png
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-06-20T135728.852331.snakemake.log
