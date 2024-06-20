@@ -15,15 +15,16 @@ unique_output <- input[3]
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz")
 #metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
-#output <- "Figures/linkrot/groundtruth/LinksByJournal.png"
+#all_output <- "Figures/linkrot/groundtruth/alllinks_bystatus.png"
+#unique_output <- "Figures/linkrot/groundtruth/uniquelinks_bystatus.png"
 
 #group links by link_status
-all_status_tally <- alllinks %>% 
+all_status_tally <- alllinks %>%
                     dplyr::group_by(link_status) %>% 
-                    dplyr::add_tally()
+                    dplyr::tally()
 unique_status_tally <- unique(alllinks) %>% 
-                      dplyr::group_by(link_status) %>% 
-                      dplyr::add_tally()
+                      dplyr::group_by(link_status) %>%
+                      dplyr::tally()
 all_sum <- as.numeric(sum(all_status_tally$n)) 
 unique_sum <- as.numeric(sum(unique_status_tally$n))
 
