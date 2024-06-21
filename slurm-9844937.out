@@ -1,0 +1,83 @@
+Using profile config_files/ for setting default command line arguments.
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cluster nodes: 4999
+Job stats:
+job              count
+-------------  -------
+lr_by_journal        1
+lr_by_status         1
+targets              1
+total                3
+
+Resources before job selection: {'_cores': 9223372036854775807, '_nodes': 4999}
+Ready jobs (2)
+Select jobs to execute...
+Selected jobs (2)
+Resources after job selection: {'_cores': 9223372036854775805, '_nodes': 4997}
+
+[Fri Jun 21 10:07:09 2024]
+rule lr_by_status:
+    input: Code/linkrot/links_bystatus.R, Data/linkrot/groundtruth.alllinks.csv.gz
+    output: Figures/linkrot/groundtruth/alllinks_bystatus.png, Figures/linkrot/groundtruth/uniquelinks_bystatus.png
+    jobid: 1
+    reason: Missing output files: Figures/linkrot/groundtruth/alllinks_bystatus.png
+    wildcards: datasets=groundtruth
+    resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, cpus=1, time=24:00:00, job_name=data
+
+
+        Code/linkrot/links_bystatus.R Data/linkrot/groundtruth.alllinks.csv.gz Figures/linkrot/groundtruth/alllinks_bystatus.png Figures/linkrot/groundtruth/uniquelinks_bystatus.png
+        
+Jobscript:
+#!/bin/sh
+# properties = {"type": "single", "rule": "lr_by_status", "local": false, "input": ["Code/linkrot/links_bystatus.R", "Data/linkrot/groundtruth.alllinks.csv.gz"], "output": ["Figures/linkrot/groundtruth/alllinks_bystatus.png", "Figures/linkrot/groundtruth/uniquelinks_bystatus.png"], "wildcards": {"datasets": "groundtruth"}, "params": {}, "log": [], "threads": 1, "resources": {"mem_mb": 10000, "mem_mib": 9537, "disk_mb": 1000, "disk_mib": 954, "tmpdir": "<TBD>", "cpus": 1, "time": "24:00:00", "job_name": "data"}, "jobid": 1, "cluster": {}}
+cd /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility && /home/jocolova/miniforge3/envs/data_acc/bin/python3.12 -m snakemake --snakefile '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile' --target-jobs 'lr_by_status:datasets=groundtruth' --allowed-rules 'lr_by_status' --cores 'all' --attempt 1 --force-use-threads  --resources 'mem_mb=10000' 'mem_mib=9537' 'disk_mb=1000' 'disk_mib=954' 'cpus=1' --wait-for-files '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.q7wxcjrg' 'Code/linkrot/links_bystatus.R' 'Data/linkrot/groundtruth.alllinks.csv.gz' --force --keep-target-files --keep-remote --max-inventory-time 0 --nocolor --notemp --no-hooks --nolock --ignore-incomplete --rerun-triggers 'software-env' 'input' 'mtime' 'params' 'code' --skip-script-cleanup  --use-conda  --conda-frontend 'mamba' --conda-base-path '/home/jocolova/miniforge3' --wrapper-prefix 'https://github.com/snakemake/snakemake-wrappers/raw/' --printshellcmds  --latency-wait 120 --scheduler 'greedy' --scheduler-solver-path '/home/jocolova/miniforge3/envs/data_acc/bin' --default-resources 'mem_mb=10000' 'disk_mb=max(2*input.size_mb, 1000)' 'tmpdir=system_tmpdir' 'cpus=1' 'time="24:00:00"' 'job_name="data"' --mode 2 && touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.q7wxcjrg/1.jobfinished' || (touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.q7wxcjrg/1.jobfailed'; exit 1)
+
+Submitted job 1 with external jobid 'Submitted batch job 9844938'.
+
+[Fri Jun 21 10:07:09 2024]
+rule lr_by_journal:
+    input: Code/linkrot/links_byjournal.R, Data/linkrot/groundtruth.linksmetadata.csv.gz
+    output: Figures/linkrot/groundtruth/links_byjournal.png
+    jobid: 4
+    reason: Missing output files: Figures/linkrot/groundtruth/links_byjournal.png
+    wildcards: datasets=groundtruth
+    resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, tmpdir=<TBD>, cpus=1, time=24:00:00, job_name=data
+
+
+        Code/linkrot/links_byjournal.R Data/linkrot/groundtruth.linksmetadata.csv.gz Figures/linkrot/groundtruth/links_byjournal.png
+        
+Jobscript:
+#!/bin/sh
+# properties = {"type": "single", "rule": "lr_by_journal", "local": false, "input": ["Code/linkrot/links_byjournal.R", "Data/linkrot/groundtruth.linksmetadata.csv.gz"], "output": ["Figures/linkrot/groundtruth/links_byjournal.png"], "wildcards": {"datasets": "groundtruth"}, "params": {}, "log": [], "threads": 1, "resources": {"mem_mb": 10000, "mem_mib": 9537, "disk_mb": 1000, "disk_mib": 954, "tmpdir": "<TBD>", "cpus": 1, "time": "24:00:00", "job_name": "data"}, "jobid": 4, "cluster": {}}
+cd /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility && /home/jocolova/miniforge3/envs/data_acc/bin/python3.12 -m snakemake --snakefile '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile' --target-jobs 'lr_by_journal:datasets=groundtruth' --allowed-rules 'lr_by_journal' --cores 'all' --attempt 1 --force-use-threads  --resources 'mem_mb=10000' 'mem_mib=9537' 'disk_mb=1000' 'disk_mib=954' 'cpus=1' --wait-for-files '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.q7wxcjrg' 'Code/linkrot/links_byjournal.R' 'Data/linkrot/groundtruth.linksmetadata.csv.gz' --force --keep-target-files --keep-remote --max-inventory-time 0 --nocolor --notemp --no-hooks --nolock --ignore-incomplete --rerun-triggers 'software-env' 'input' 'mtime' 'params' 'code' --skip-script-cleanup  --use-conda  --conda-frontend 'mamba' --conda-base-path '/home/jocolova/miniforge3' --wrapper-prefix 'https://github.com/snakemake/snakemake-wrappers/raw/' --printshellcmds  --latency-wait 120 --scheduler 'greedy' --scheduler-solver-path '/home/jocolova/miniforge3/envs/data_acc/bin' --default-resources 'mem_mb=10000' 'disk_mb=max(2*input.size_mb, 1000)' 'tmpdir=system_tmpdir' 'cpus=1' 'time="24:00:00"' 'job_name="data"' --mode 2 && touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.q7wxcjrg/4.jobfinished' || (touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.q7wxcjrg/4.jobfailed'; exit 1)
+
+Submitted job 4 with external jobid 'Submitted batch job 9844939'.
+Waiting at most 120 seconds for missing files.
+[Fri Jun 21 10:08:09 2024]
+Finished job 1.
+1 of 3 steps (33%) done
+[Fri Jun 21 10:08:09 2024]
+Finished job 4.
+2 of 3 steps (67%) done
+Resources before job selection: {'_cores': 9223372036854775807, '_nodes': 4999}
+Ready jobs (1)
+Select jobs to execute...
+Selected jobs (1)
+Resources after job selection: {'_cores': 9223372036854775806, '_nodes': 4998}
+
+[Fri Jun 21 10:08:09 2024]
+localrule targets:
+    input: Figures/linkrot/groundtruth/alllinks_bystatus.png, Figures/linkrot/groundtruth/links_byjournal.png
+    jobid: 0
+    reason: Input files updated by another job: Figures/linkrot/groundtruth/alllinks_bystatus.png, Figures/linkrot/groundtruth/links_byjournal.png
+    resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, tmpdir=/tmp, cpus=1, time=24:00:00, job_name=data
+
+[Fri Jun 21 10:08:09 2024]
+Finished job 0.
+3 of 3 steps (100%) done
+Complete log: .snakemake/log/2024-06-21T100708.418024.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks

@@ -5,7 +5,7 @@ Rules claiming more threads will be scaled down.
 Provided resources: mem_mb=10000, mem_mib=9537, disk_mb=1000, disk_mib=954, cpus=1
 Select jobs to execute...
 
-[Thu Jun 20 17:07:15 2024]
+[Fri Jun 21 10:07:38 2024]
 rule lr_by_status:
     input: Code/linkrot/links_bystatus.R, Data/linkrot/groundtruth.alllinks.csv.gz
     output: Figures/linkrot/groundtruth/alllinks_bystatus.png, Figures/linkrot/groundtruth/uniquelinks_bystatus.png
@@ -27,20 +27,16 @@ rule lr_by_status:
 ✖ dplyr::filter() masks stats::filter()
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-Error in UseMethod("group_by") : 
-  no applicable method for 'group_by' applied to an object of class "character"
-Calls: %>% -> <Anonymous> -> <Anonymous>
-Execution halted
-[Thu Jun 20 17:07:17 2024]
-Error in rule lr_by_status:
-    jobid: 0
-    input: Code/linkrot/links_bystatus.R, Data/linkrot/groundtruth.alllinks.csv.gz
-    output: Figures/linkrot/groundtruth/alllinks_bystatus.png, Figures/linkrot/groundtruth/uniquelinks_bystatus.png
-    shell:
-        
-        Code/linkrot/links_bystatus.R Data/linkrot/groundtruth.alllinks.csv.gz Figures/linkrot/groundtruth/alllinks_bystatus.png Figures/linkrot/groundtruth/uniquelinks_bystatus.png
-        
-        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+Rows: 662 Columns: 8
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (7): paper, html_tag, link_address, link_text, hostname, domain, website...
+dbl (1): link_status
 
-Shutting down, this might take some time.
-Exiting because a job execution failed. Look above for error message
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+Saving 7 x 7 in image
+Saving 7 x 7 in image
+[Fri Jun 21 10:07:44 2024]
+Finished job 0.
+1 of 1 steps (100%) done

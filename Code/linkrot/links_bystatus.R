@@ -9,6 +9,7 @@ library(tidyverse)
 # {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
 input <- commandArgs(trailingOnly = TRUE)
 alllinks <- input[1]
+alllinks <- read_csv(alllinks)
 all_output <- input[2]
 unique_output <- input[3]
 
@@ -20,11 +21,11 @@ unique_output <- input[3]
 
 #group links by link_status
 all_status_tally <- alllinks %>%
-                    dplyr::group_by(link_status) %>% 
-                    dplyr::tally()
+                    group_by(link_status) %>% 
+                    tally()
 unique_status_tally <- unique(alllinks) %>% 
-                      dplyr::group_by(link_status) %>%
-                      dplyr::tally()
+                      group_by(link_status) %>%
+                      tally()
 all_sum <- as.numeric(sum(all_status_tally$n)) 
 unique_sum <- as.numeric(sum(unique_status_tally$n))
 
