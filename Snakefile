@@ -33,7 +33,11 @@ rule targets:
     #     "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
     #     "Data/linkrot/groundtruth_alllinks.csv.gz"
         "Figures/linkrot/groundtruth/alllinks_bystatus.png",
-        "Figures/linkrot/groundtruth/links_byjournal.png"
+        "Figures/linkrot/groundtruth/links_byjournal.png", 
+        "Figures/linkrot/groundtruth/links_byyear.png", 
+        "Figures/linkrot/groundtruth/links_yearstatus.png", 
+        "Figures/linkrot/groundtruth/alllinks_bytype.png"
+
      
 
 rule webscrape:
@@ -119,6 +123,12 @@ rule link_rot:
         """
         {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
         """
+#can you make a rule all for the figures? 
+rule all_lr_figures: 
+    input: 
+        "Figures/linkrot/{datasets}/links_byjournal.png",
+        "Figures/linkrot/{datasets}/alllinks_bystatus.png",
+        "Figures/linkrot/{datasets}/links_byyear.png"
         
 rule lr_by_journal: 
     input: 
@@ -145,16 +155,39 @@ rule lr_by_status:
         {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
         """
 
-
-rule lr_template:
+rule lr_by_year: 
     input: 
-        rscript = "Code/linkrot/FILENAME.R",
+        rscript = "Code/linkrot/links_byyear.R",
+       # all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+    output:
+        filename = "Figures/linkrot/{datasets}/links_byyear.png"
+    shell: 
+        """
+        {input.rscript} {input.metadata_links} {output.filename}
+        """
+
+rule lr_year_status:
+    input: 
+        rscript = "Code/linkrot/links_yearstatus.R",
         all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
         metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
     output: 
-        filename = "Figures/linkrot/{datasets}/links_byNAME.png"
+        filename = "Figures/linkrot/{datasets}/links_yearstatus.png"
     shell:
         """
         {input.rscript} {input.all_links} {input.metadata_links} {output.filename}
         """
 
+rule lr_by_type:
+    input: 
+        rscript = "Code/linkrot/links_bytype.R",
+        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz"
+       #metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+    output:
+        all_filename = "Figures/linkrot/{datasets}/alllinks_bytype.png",
+        unique_filename = "Figures/linkrot/{datasets}/uniquelinks_bytype.png"
+    shell: 
+        """
+        {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
+        """
