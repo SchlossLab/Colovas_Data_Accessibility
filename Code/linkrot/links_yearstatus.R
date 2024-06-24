@@ -17,7 +17,6 @@ output <- input[3]
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz") %>% unique()
 #metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
-#all_output <- "Figures/linkrot/groundtruth/alllinks_bystatus.png"
 
 all_with_meta <- left_join(alllinks, metadatalinks, 
                             by = join_by("paper" == "paper_doi"),
