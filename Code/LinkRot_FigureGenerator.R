@@ -21,23 +21,6 @@ gt_all_links_with_metadata <- read_csv("Data/linkrot/gt_all_links_with_metadata.
 # journal_tally <- groundtruth_linkcount %>% group_by(container.title) %>% tally()
 
 
-#plot type of link 
-LinkType <- 
-  ggplot(
-    data = groundtruth_links, 
-    mapping = aes(x = website_type, fill = as.factor(link_status))
-  ) + 
-  geom_bar(stat = "count") +
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
-  labs( y = "Number of External User-Added Links", 
-        x = "Year Published",
-        title = "Number of External User-Added  
-        Links by Domain Type and Status (N=270)", 
-        fill = "Link Status") 
-LinkType
-
-ggsave(LinkType, filename = "Figures/link_type_status.png")
-
 #plot hostame of deadlinks
 error_only <- filter(gt_all_links_with_metadata, link_status != 200)
 

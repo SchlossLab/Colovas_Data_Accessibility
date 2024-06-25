@@ -90,8 +90,6 @@ rule ml_prep:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
         """
-# Code/MLprep.R "Data/gt_subset_30.csv" "Data/gt_subset_30.tokens.csv.gz" "new_seq_data" 16 "Data/gt_subset_30.new_seq_data.preprocessed.RDS"
-#Code/MLprep.R "Data/groundtruth.csv" "Data/groundtruth.tokens.csv.gz" "new_seq_data" 32 "Data/groundtruth.new_seq_data.preprocessed.RDS"
 
 rule train_ml_set_seed:
     input:
