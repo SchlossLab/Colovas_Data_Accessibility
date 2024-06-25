@@ -15,28 +15,26 @@ method = [
   "xgbTree"
 ]
   
-nseeds = 10
-ncores = 1
 
-# start_seed = 2000
-# nseeds = config["nseeds"]
-# seeds = range(start_seed, start_seed + nseeds)
+ncores = 1
+seeds = list(range(1, 10))
+
 
 
 rule targets:
     input: 
-    #     "Data/groundtruth.new_seq_data.preprocessed.RDS",
+        # "Data/groundtruth.new_seq_data.preprocessed.RDS",
     #     "Data/gt_subset_30.new_seq_data.preprocessed.RDS", 
     #     "Data/groundtruth.availability.preprocessed.RDS",
     #     "Data/gt_subset_30.availability.preprocessed.RDS"
     #     "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
-    #     "Data/ml_results/groundtruth/runs/glmnet.2000.new_seq_data.model.RDS"
-    #     "Data/linkrot/groundtruth_alllinks.csv.gz"
-        "Figures/linkrot/groundtruth/alllinks_bystatus.png",
-        "Figures/linkrot/groundtruth/links_byjournal.png", 
-        "Figures/linkrot/groundtruth/links_byyear.png", 
-        "Figures/linkrot/groundtruth/links_yearstatus.png", 
-        "Figures/linkrot/groundtruth/alllinks_bytype.png"
+        "Data/ml_results/groundtruth/runs/glmnet.1.new_seq_data.model.RDS"
+        # "Data/linkrot/groundtruth_alllinks.csv.gz"
+        # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
+        # "Figures/linkrot/groundtruth/links_byjournal.png", 
+        # "Figures/linkrot/groundtruth/links_byyear.png", 
+        # "Figures/linkrot/groundtruth/links_yearstatus.png", 
+        # "Figures/linkrot/groundtruth/alllinks_bytype.png"
 
      
 
@@ -90,16 +88,18 @@ rule ml_prep:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
         """
-
-rule train_ml_set_seed:
+#20240625 - doesn't create multiple files, one for each seed
+rule train_ml:
     input:
-        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS",
+        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML.R",
     output:
-        model="Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.model.RDS",
-        perf="Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.performance.csv"
+        model=expand("Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.model.RDS", 
+        seed=seeds, allow_missing = True),
+        perf=expand("Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.performance.csv", 
+        seed=seeds, allow_missing = True)
     params:
-        seed = "2000"
+        seed = seeds
     shell:
         """
         {input.rscript} {input.rds} {params.seed} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
