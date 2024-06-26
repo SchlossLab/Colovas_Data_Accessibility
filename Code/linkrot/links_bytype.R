@@ -38,8 +38,8 @@ AllLinkType <-
   geom_bar(stat = "count") +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of External User-Added Links", 
-        x = "Year Published",
-        title = stringr::str_glue("Total Number of External User-Added Links by Domain Type and Status (N={all_sum})"), 
+        x = "Link Type",
+        title = stringr::str_glue("Total Number of External User-Added Links by Domain Typ\nand Status (N={all_sum})"), 
         fill = "Link Status") 
 AllLinkType
 
@@ -55,8 +55,8 @@ UniqueLinkType <-
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of External User-Added Links", 
         x = "Year Published",
-        title = stringr::str_glue("Unique Number of External User-Added Links by Domain Type and Status (N={unique_sum})"), 
-        fill = "Link Status") 
+        title = stringr::str_glue("Unique Number of External User-Added Links by Domain Type\nand Status (N={unique_sum})"), 
+        fill = "Link Type") 
 UniqueLinkType
 
 ggsave(UniqueLinkType, filename = unique_output)

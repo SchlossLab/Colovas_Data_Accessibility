@@ -34,7 +34,8 @@ unique_sum <- as.numeric(sum(unique_status_tally$n))
 AllLinksByStatus <- 
   ggplot(
     data = alllinks, 
-    mapping = aes(x = factor(link_status)) ) + 
+    mapping = aes(x = factor(link_status)), 
+    fill = link_status) + 
   geom_bar() +
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = 1.2, color = "white", size = 3) +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
@@ -48,7 +49,8 @@ ggsave(AllLinksByStatus, filename = all_output)
 UniqueLinksByStatus <- 
   ggplot(
     data = unique(alllinks), 
-    mapping = aes(x = factor(link_status)) ) + 
+    mapping = aes(x = factor(link_status)), 
+    fill = link_status)  + 
   geom_bar() +
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = 1.2, color = "white", size = 3) +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +

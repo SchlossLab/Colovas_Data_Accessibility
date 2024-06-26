@@ -28,13 +28,13 @@ rule targets:
     #     "Data/groundtruth.availability.preprocessed.RDS",
     #     "Data/gt_subset_30.availability.preprocessed.RDS"
     #     "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
-        "Data/ml_results/groundtruth/runs/glmnet.1.new_seq_data.model.RDS"
-        # "Data/linkrot/groundtruth_alllinks.csv.gz"
-        # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
-        # "Figures/linkrot/groundtruth/links_byjournal.png", 
-        # "Figures/linkrot/groundtruth/links_byyear.png", 
-        # "Figures/linkrot/groundtruth/links_yearstatus.png", 
-        # "Figures/linkrot/groundtruth/alllinks_bytype.png"
+        # "Data/ml_results/groundtruth/runs/glmnet.1.new_seq_data.model.RDS"
+        #"Data/linkrot/groundtruth_alllinks.csv.gz"
+        "Figures/linkrot/groundtruth/alllinks_bystatus.png",
+        "Figures/linkrot/groundtruth/links_byjournal.png", 
+        "Figures/linkrot/groundtruth/links_byyear.png", 
+        "Figures/linkrot/groundtruth/links_yearstatus.png", 
+        "Figures/linkrot/groundtruth/alllinks_bytype.png"
 
      
 
