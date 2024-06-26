@@ -5,6 +5,6 @@
 .DS_Store
 ori_narrative.pdf
 .vscode
-/Data
-/.snakemake
-/log
+Data/
+.snakemake/
+log/

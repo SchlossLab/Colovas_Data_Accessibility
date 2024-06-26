@@ -1,2 +1,0 @@
-"","cv_metric_AUC","logLoss","AUC","prAUC","Accuracy","Kappa","F1","Sensitivity","Specificity","Pos_Pred_Value","Neg_Pred_Value","Precision","Recall","Detection_Rate","Balanced_Accuracy","method","seed"
-"1",0.789277777777778,0.799221500852469,0.666666666666667,0.466666666666667,0.6,0.166666666666667,0.666666666666667,0.666666666666667,0.5,0.666666666666667,0.5,0.666666666666667,0.666666666666667,0.4,0.583333333333333,"glmnet",2000
