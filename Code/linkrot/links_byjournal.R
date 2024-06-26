@@ -34,7 +34,7 @@ LinksByJournal <-
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of Manuscripts Containing Links", 
         x = "ASM Journal",
-        title = stringr::str_glue("Number of ASM Manuscripts Containing 1+ External Links Added by User (N={sum})"))
+        title = stringr::str_glue("Number of ASM Manuscripts Containing 1+ External Links\nAdded by User (N={sum})"))
 LinksByJournal
 
 ggsave(LinksByJournal, filename = output)

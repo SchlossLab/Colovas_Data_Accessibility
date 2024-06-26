@@ -34,7 +34,9 @@ rule targets:
         "Figures/linkrot/groundtruth/links_byjournal.png", 
         "Figures/linkrot/groundtruth/links_byyear.png", 
         "Figures/linkrot/groundtruth/links_yearstatus.png", 
-        "Figures/linkrot/groundtruth/alllinks_bytype.png"
+        "Figures/linkrot/groundtruth/alllinks_bytype.png", 
+        "Figures/linkrot/groundtruth/alllinks_byhostname.png",
+        "Figures/linkrot/groundtruth/links_errorhostname.png"
 
      
 
@@ -188,4 +190,29 @@ rule lr_by_type:
     shell: 
         """
         {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
+        """
+
+rule lr_by_hostname:
+    input: 
+        rscript = "Code/linkrot/links_byhostname.R",
+        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz"
+       #metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+    output:
+        all_filename = "Figures/linkrot/{datasets}/alllinks_byhostname.png",
+        unique_filename = "Figures/linkrot/{datasets}/uniquelinks_byhostname.png"
+    shell: 
+        """
+        {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
+        """
+
+rule lr_error_hostname: 
+    input: 
+        rscript = "Code/linkrot/links_errorhostname.R",
+        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
+       # metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+    output:
+        filename = "Figures/linkrot/{datasets}/links_errorhostname.png"
+    shell: 
+        """
+        {input.rscript} {input.all_links} {output.filename}
         """

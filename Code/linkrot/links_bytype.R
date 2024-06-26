@@ -39,7 +39,7 @@ AllLinkType <-
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of External User-Added Links", 
         x = "Link Type",
-        title = stringr::str_glue("Total Number of External User-Added Links by Domain Typ\nand Status (N={all_sum})"), 
+        title = stringr::str_glue("Total Number of External User-Added Links by Domain Type\nand Status (N={all_sum})"), 
         fill = "Link Status") 
 AllLinkType
 
