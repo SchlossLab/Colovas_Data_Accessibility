@@ -5,7 +5,7 @@ datasets = {
   
 ml_variables = [
   "new_seq_data",
-  "availability"
+  "data_availability"
 ]
   
 method = [
@@ -23,20 +23,20 @@ seeds = list(range(1, 10))
 
 rule targets:
     input: 
-        # "Data/groundtruth.new_seq_data.preprocessed.RDS",
-    #     "Data/gt_subset_30.new_seq_data.preprocessed.RDS", 
-    #     "Data/groundtruth.availability.preprocessed.RDS",
-    #     "Data/gt_subset_30.availability.preprocessed.RDS"
-    #     "Data/ml_results/gt_subset_30/runs/glmnet.2000.new_seq_data.model.RDS",
-        # "Data/ml_results/groundtruth/runs/glmnet.1.new_seq_data.model.RDS"
-        #"Data/linkrot/groundtruth_alllinks.csv.gz"
-        "Figures/linkrot/groundtruth/alllinks_bystatus.png",
-        "Figures/linkrot/groundtruth/links_byjournal.png", 
-        "Figures/linkrot/groundtruth/links_byyear.png", 
-        "Figures/linkrot/groundtruth/links_yearstatus.png", 
-        "Figures/linkrot/groundtruth/alllinks_bytype.png", 
-        "Figures/linkrot/groundtruth/alllinks_byhostname.png",
-        "Figures/linkrot/groundtruth/links_errorhostname.png"
+        expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
+        ml_variables = ml_variables)
+
+        # # all ml results  
+        # expand("Data/ml_results/groundtruth/runs/{method}.{seed}.{ml_variables}.model.RDS", 
+        # seed=seeds, method = method, ml_variables = ml_variables)
+        # # figures 
+        # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
+        # "Figures/linkrot/groundtruth/links_byjournal.png", 
+        # "Figures/linkrot/groundtruth/links_byyear.png", 
+        # "Figures/linkrot/groundtruth/links_yearstatus.png", 
+        # "Figures/linkrot/groundtruth/alllinks_bytype.png", 
+        # "Figures/linkrot/groundtruth/alllinks_byhostname.png",
+        # "Figures/linkrot/groundtruth/links_errorhostname.png"
 
      
 
@@ -96,15 +96,13 @@ rule train_ml:
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML.R",
     output:
-        model=expand("Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.model.RDS", 
-        seed=seeds, allow_missing = True),
-        perf=expand("Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.performance.csv", 
-        seed=seeds, allow_missing = True)
-    params:
-        seed = seeds
+        model="Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.model.RDS", 
+        perf="Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.performance.csv", 
+    # params:
+    #     seed = seeds
     shell:
         """
-        {input.rscript} {input.rds} {params.seed} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
+        {input.rscript} {input.rds} {wildcards.seed} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
         """
 
 #Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.RDS

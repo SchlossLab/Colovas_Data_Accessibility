@@ -29,7 +29,7 @@ prep_html_tm <- function(html) {
   # html <- str_remove_all(html, "ì")
   # html <- str_remove_all(html, "î")
   # html <- removeNumbers(html)
-  # html <- str_remove_all(html, "[[:digit:]]")
+  html <- str_remove_all(html, "[[:digit:]]")
   html <- str_remove_all(html, "[[^a-z ]]")
   # html <- str_remove_all(html, "[[2|3|4|9]]")
   html <- lemmatize_strings(html)

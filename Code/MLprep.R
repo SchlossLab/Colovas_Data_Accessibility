@@ -76,11 +76,6 @@ full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 # remove paper doi
 full_ml <- select(full_ml, !paper)
 
-#if availability, convert to "availbility.x"
-if (ml_var_snake == "availability") {
-    ml_var_snake <- "availability.x"
-}
-
 # use mikropml::preprocess_data on dataset
 full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake, 
                                 remove_var = NULL)

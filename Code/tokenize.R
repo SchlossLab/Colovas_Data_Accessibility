@@ -13,6 +13,7 @@ library(xml2)
 library(textstem) #for stemming text variables
 library(tm) #for text manipulation
 library(tokenizers) #for text tokenization
+#library(stopwords) shouldn't need just for the one function
 
 # for snakemake implementation
 input <- commandArgs(trailingOnly = TRUE)
@@ -24,11 +25,11 @@ clean_text <- read.csv(clean_csv)
 # clean_text <- read.csv("Data/gt_subset_30_data_clean_html.csv.gz")
 
 
-#tokenize cleaned text
+#tokenize cleaned text using snowball stopwords
 clean_text$paper_tokens <- 
   tokenize_ngrams(clean_text$clean_html, 
                   n_min = 1, n = 3,
-                  stopwords = stopwords::stopwords("en"))
+                  stopwords = stopwords::stopwords("en", source = "snowball"))
 clean_text <- select(clean_text, !"clean_html")
 
 #unnesting makes long 2 col df with doi and each token in col 2
