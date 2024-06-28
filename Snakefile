@@ -17,18 +17,18 @@ method = [
   
 
 ncores = 1
-seeds = list(range(1, 10))
+seeds = list(range(1, 6))
 
 
 
 rule targets:
     input: 
         expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
-        ml_variables = ml_variables)
+        ml_variables = ml_variables),
 
         # # all ml results  
-        # expand("Data/ml_results/groundtruth/runs/{method}.{seed}.{ml_variables}.model.RDS", 
-        # seed=seeds, method = method, ml_variables = ml_variables)
+        expand("Data/ml_results/groundtruth/{method}.{seeds}.{ml_variables}.model.RDS", 
+        seeds=seeds, method = method, ml_variables = ml_variables)
         # # figures 
         # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
         # "Figures/linkrot/groundtruth/links_byjournal.png", 
@@ -96,16 +96,29 @@ rule train_ml:
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML.R",
     output:
-        model="Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.model.RDS", 
-        perf="Data/ml_results/{datasets}/runs/{method}.{seed}.{ml_variables}.performance.csv", 
+        model="Data/ml_results/{datasets}/{method}.{seeds}.{ml_variables}.model.RDS", 
+        perf="Data/ml_results/{datasets}/{method}.{seeds}.{ml_variables}.performance.csv", 
     # params:
-    #     seed = seeds
+    #     seeds = seeds
     shell:
         """
-        {input.rscript} {input.rds} {wildcards.seed} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
+        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
         """
 
-#Data/ml_results/groundtruth/runs/glmnet_2000_new_seq_data_model.RDS
+# 20240628 - need to change the input to this as just the filepath to the folder where the stuff is 
+# rule merge_results: 
+#     input: 
+#         rscript = "Code/mergeResults.R",
+#         model=expand("Data/ml_results/{datasets}/{method}.{seeds}.{ml_variables}.model.RDS", seeds = seeds, 
+#         datasets = datasets, method = method, ml_variables), 
+#         perf=expand("Data/ml_results/{datasets}/{method}.{seeds}.{ml_variables}.performance.csv", seeds = seeds)
+#     output: 
+#         "Data/ml_results/{datasets}/{method}.{ml_variables}.results.csv"
+#     shell: 
+#         """
+#         {input.rscript} {input.model} {input.perf} {output}
+#         """
+    
 
 #-------------------LINK-------ROT-----------------------------------------------------------
 
