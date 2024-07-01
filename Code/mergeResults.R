@@ -20,21 +20,32 @@ seed_files <- input[1]
 # "Data/ml_results/groundtruth/runs/{method}.{seeds}.{ml_variables}.performance.csv"
 
 #will probably need to supply all the right wildcards from snakemake or READ from filenames
-filepath <-"Data/ml_results/groundtruth/runs"
+filepath <-"Data/ml_results/groundtruth"
 #filepath <- paste0("Data/ml_results/groundtruth/runs/", method)
 
 #remove "{method}", and then group by method, then you can summarize in one df
-files_list <- list.files(filepath, 
-                        pattern = str_glue("{method}.*.csv"), 
+# need to group trained models by the variable used in the filename!!! 
+#"Data/ml_results/groundtruth/new_seq_data"
+
+seq_files_list <- list.files(filepath, 
+                        pattern = str_glue("new_seq_data.*.csv"), 
                         full.names = TRUE)
 
+avail_files_list <- list.files(filepath, 
+                        pattern = str_glue("data_availability.*.csv"), 
+                        full.names = TRUE)
 
-results <- read_csv(files_list)
+seq_results <- read_csv(seq_files_list)
+avail_results <- read_csv(avail_files_list)
 
 #colnames(results)
 
-results <- results %>% 
-    select(seed, everything(results)) %>% 
+seq_results <- seq_results %>% 
+    select(seed, method, everything(results)) %>% 
+    select(!...1) 
+
+avail_results <- avail_results %>% 
+    select(seed, method, everything(results)) %>% 
     select(!...1) 
 
 # need to summarize by group 
