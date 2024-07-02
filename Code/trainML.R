@@ -31,6 +31,5 @@ ml_results <- run_ml(data_processed$dat_transformed,
 
 #write results to files 
 write.csv(ml_results$performance, file = output_perf)
-#readr::write_csv(ml_results$test_data, snakemake@output[["test"]])
 saveRDS(ml_results$trained_model, file = output_model)
 

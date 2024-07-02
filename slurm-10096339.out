@@ -774,3 +774,249 @@ Jobscript:
 cd /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility && /home/jocolova/miniforge3/envs/data_acc/bin/python3.12 -m snakemake --snakefile '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/Snakefile' --target-jobs 'train_ml:datasets=groundtruth,method=rpart2,seeds=5,ml_variables=data_availability' --allowed-rules 'train_ml' --cores 'all' --attempt 1 --force-use-threads  --resources 'mem_mb=10000' 'mem_mib=9537' 'disk_mb=1000' 'disk_mib=954' 'cpus=1' --wait-for-files '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom' 'Data/groundtruth.data_availability.preprocessed.RDS' 'Code/trainML.R' --force --keep-target-files --keep-remote --max-inventory-time 0 --nocolor --notemp --no-hooks --nolock --ignore-incomplete --rerun-triggers 'input' 'params' 'code' 'mtime' 'software-env' --skip-script-cleanup  --use-conda  --conda-frontend 'mamba' --conda-base-path '/home/jocolova/miniforge3' --wrapper-prefix 'https://github.com/snakemake/snakemake-wrappers/raw/' --printshellcmds  --latency-wait 120 --scheduler 'greedy' --scheduler-solver-path '/home/jocolova/miniforge3/envs/data_acc/bin' --default-resources 'mem_mb=10000' 'disk_mb=max(2*input.size_mb, 1000)' 'tmpdir=system_tmpdir' 'cpus=1' 'time="24:00:00"' 'job_name="data"' --mode 2 && touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/48.jobfinished' || (touch '/nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/48.jobfailed'; exit 1)
 
 Submitted job 48 with external jobid 'Submitted batch job 10096422'.
+[Fri Jun 28 16:34:40 2024]
+Error in rule train_ml:
+    jobid: 24
+    input: Data/groundtruth.data_availability.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.2.data_availability.model.RDS, Data/ml_results/groundtruth/rpart2.2.data_availability.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.data_availability.preprocessed.RDS 2 rpart2 data_availability Data/ml_results/groundtruth/rpart2.2.data_availability.model.RDS Data/ml_results/groundtruth/rpart2.2.data_availability.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096383
+
+Error executing rule train_ml on cluster (jobid: 24, external: Submitted batch job 10096383, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.24.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:34:40 2024]
+Error in rule train_ml:
+    jobid: 39
+    input: Data/groundtruth.new_seq_data.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.4.new_seq_data.model.RDS, Data/ml_results/groundtruth/rpart2.4.new_seq_data.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.new_seq_data.preprocessed.RDS 4 rpart2 new_seq_data Data/ml_results/groundtruth/rpart2.4.new_seq_data.model.RDS Data/ml_results/groundtruth/rpart2.4.new_seq_data.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096387
+
+Error executing rule train_ml on cluster (jobid: 39, external: Submitted batch job 10096387, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.39.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:34:40 2024]
+Error in rule train_ml:
+    jobid: 15
+    input: Data/groundtruth.new_seq_data.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.1.new_seq_data.model.RDS, Data/ml_results/groundtruth/rpart2.1.new_seq_data.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.new_seq_data.preprocessed.RDS 1 rpart2 new_seq_data Data/ml_results/groundtruth/rpart2.1.new_seq_data.model.RDS Data/ml_results/groundtruth/rpart2.1.new_seq_data.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096392
+
+Error executing rule train_ml on cluster (jobid: 15, external: Submitted batch job 10096392, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.15.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:34:40 2024]
+Error in rule train_ml:
+    jobid: 40
+    input: Data/groundtruth.data_availability.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.4.data_availability.model.RDS, Data/ml_results/groundtruth/rpart2.4.data_availability.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.data_availability.preprocessed.RDS 4 rpart2 data_availability Data/ml_results/groundtruth/rpart2.4.data_availability.model.RDS Data/ml_results/groundtruth/rpart2.4.data_availability.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096395
+
+Error executing rule train_ml on cluster (jobid: 40, external: Submitted batch job 10096395, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.40.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:34:40 2024]
+Error in rule train_ml:
+    jobid: 16
+    input: Data/groundtruth.data_availability.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.1.data_availability.model.RDS, Data/ml_results/groundtruth/rpart2.1.data_availability.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.data_availability.preprocessed.RDS 1 rpart2 data_availability Data/ml_results/groundtruth/rpart2.1.data_availability.model.RDS Data/ml_results/groundtruth/rpart2.1.data_availability.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096400
+
+Error executing rule train_ml on cluster (jobid: 16, external: Submitted batch job 10096400, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.16.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:35:10 2024]
+Error in rule train_ml:
+    jobid: 31
+    input: Data/groundtruth.new_seq_data.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.3.new_seq_data.model.RDS, Data/ml_results/groundtruth/rpart2.3.new_seq_data.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.new_seq_data.preprocessed.RDS 3 rpart2 new_seq_data Data/ml_results/groundtruth/rpart2.3.new_seq_data.model.RDS Data/ml_results/groundtruth/rpart2.3.new_seq_data.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096402
+
+Error executing rule train_ml on cluster (jobid: 31, external: Submitted batch job 10096402, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.31.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:35:10 2024]
+Error in rule train_ml:
+    jobid: 32
+    input: Data/groundtruth.data_availability.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.3.data_availability.model.RDS, Data/ml_results/groundtruth/rpart2.3.data_availability.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.data_availability.preprocessed.RDS 3 rpart2 data_availability Data/ml_results/groundtruth/rpart2.3.data_availability.model.RDS Data/ml_results/groundtruth/rpart2.3.data_availability.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096411
+
+Error executing rule train_ml on cluster (jobid: 32, external: Submitted batch job 10096411, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.32.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:35:10 2024]
+Error in rule train_ml:
+    jobid: 47
+    input: Data/groundtruth.new_seq_data.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.5.new_seq_data.model.RDS, Data/ml_results/groundtruth/rpart2.5.new_seq_data.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.new_seq_data.preprocessed.RDS 5 rpart2 new_seq_data Data/ml_results/groundtruth/rpart2.5.new_seq_data.model.RDS Data/ml_results/groundtruth/rpart2.5.new_seq_data.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096414
+
+Error executing rule train_ml on cluster (jobid: 47, external: Submitted batch job 10096414, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.47.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:35:10 2024]
+Error in rule train_ml:
+    jobid: 23
+    input: Data/groundtruth.new_seq_data.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.2.new_seq_data.model.RDS, Data/ml_results/groundtruth/rpart2.2.new_seq_data.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.new_seq_data.preprocessed.RDS 2 rpart2 new_seq_data Data/ml_results/groundtruth/rpart2.2.new_seq_data.model.RDS Data/ml_results/groundtruth/rpart2.2.new_seq_data.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096417
+
+Error executing rule train_ml on cluster (jobid: 23, external: Submitted batch job 10096417, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.23.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:35:10 2024]
+Error in rule train_ml:
+    jobid: 48
+    input: Data/groundtruth.data_availability.preprocessed.RDS, Code/trainML.R
+    output: Data/ml_results/groundtruth/rpart2.5.data_availability.model.RDS, Data/ml_results/groundtruth/rpart2.5.data_availability.performance.csv
+    shell:
+        
+        Code/trainML.R Data/groundtruth.data_availability.preprocessed.RDS 5 rpart2 data_availability Data/ml_results/groundtruth/rpart2.5.data_availability.model.RDS Data/ml_results/groundtruth/rpart2.5.data_availability.performance.csv
+        
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+    cluster_jobid: Submitted batch job 10096422
+
+Error executing rule train_ml on cluster (jobid: 48, external: Submitted batch job 10096422, jobscript: /nfs/turbo/schloss-lab/jocolova/Colovas_Data_Accessibility/.snakemake/tmp.if3wfjom/snakejob.train_ml.48.sh). For error details see the cluster log and the log files of the involved rule(s).
+Cleanup job metadata.
+Cleanup failed jobs output files.
+[Fri Jun 28 16:35:40 2024]
+Finished job 19.
+1 of 41 steps (2%) done
+[Fri Jun 28 16:35:40 2024]
+Finished job 44.
+2 of 41 steps (5%) done
+[Fri Jun 28 16:35:40 2024]
+Finished job 20.
+3 of 41 steps (7%) done
+[Fri Jun 28 16:35:40 2024]
+Finished job 35.
+4 of 41 steps (10%) done
+[Fri Jun 28 16:35:40 2024]
+Finished job 11.
+5 of 41 steps (12%) done
+[Fri Jun 28 16:35:40 2024]
+Finished job 12.
+6 of 41 steps (15%) done
+[Fri Jun 28 16:35:40 2024]
+Finished job 43.
+7 of 41 steps (17%) done
+[Fri Jun 28 16:36:10 2024]
+Finished job 36.
+8 of 41 steps (20%) done
+[Fri Jun 28 16:36:10 2024]
+Finished job 27.
+9 of 41 steps (22%) done
+[Fri Jun 28 16:36:10 2024]
+Finished job 28.
+10 of 41 steps (24%) done
+[Fri Jun 28 20:07:24 2024]
+Finished job 46.
+11 of 41 steps (27%) done
+[Fri Jun 28 20:18:54 2024]
+Finished job 30.
+12 of 41 steps (29%) done
+[Fri Jun 28 20:22:25 2024]
+Finished job 38.
+13 of 41 steps (32%) done
+[Fri Jun 28 20:25:55 2024]
+Finished job 22.
+14 of 41 steps (34%) done
+[Fri Jun 28 20:27:25 2024]
+Finished job 14.
+15 of 41 steps (37%) done
+[Fri Jun 28 20:27:25 2024]
+Finished job 13.
+16 of 41 steps (39%) done
+[Fri Jun 28 20:28:55 2024]
+Finished job 37.
+17 of 41 steps (41%) done
+[Fri Jun 28 20:36:26 2024]
+Finished job 21.
+18 of 41 steps (44%) done
+[Fri Jun 28 20:37:56 2024]
+Finished job 45.
+19 of 41 steps (46%) done
+[Fri Jun 28 20:42:26 2024]
+Finished job 29.
+20 of 41 steps (49%) done
+[Sat Jun 29 10:49:08 2024]
+Finished job 42.
+21 of 41 steps (51%) done
+[Sat Jun 29 11:12:39 2024]
+Finished job 18.
+22 of 41 steps (54%) done
+[Sat Jun 29 11:16:09 2024]
+Finished job 41.
+23 of 41 steps (56%) done
+[Sat Jun 29 11:20:39 2024]
+Finished job 17.
+24 of 41 steps (59%) done
+[Sat Jun 29 12:11:12 2024]
+Finished job 25.
+25 of 41 steps (61%) done
+[Sat Jun 29 12:20:43 2024]
+Finished job 50.
+26 of 41 steps (63%) done
+[Sat Jun 29 12:26:13 2024]
+Finished job 26.
+27 of 41 steps (66%) done
+[Sat Jun 29 13:20:47 2024]
+Finished job 49.
+28 of 41 steps (68%) done
+[Sat Jun 29 13:21:17 2024]
+Finished job 34.
+29 of 41 steps (71%) done
+[Sat Jun 29 14:52:53 2024]
+Finished job 33.
+30 of 41 steps (73%) done
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-06-28T163057.171240.snakemake.log
+unlocking
+removing lock
+removing lock
+removed all locks
