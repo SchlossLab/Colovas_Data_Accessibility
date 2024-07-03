@@ -11,13 +11,13 @@ ml_variables = [
 method = [
   "glmnet",
   "rf",
-  "rpart2",
+  #"rpart2",
   "xgbTree"
 ]
   
 
 ncores = 1
-seeds = list(range(1, 6))
+seeds = list(range(1, 21))
 
 
 
@@ -27,7 +27,7 @@ rule targets:
         ml_variables = ml_variables),
 
         # # all ml results  
-        expand("Data/ml_results/groundtruth/{method}.{seeds}.{ml_variables}.model.RDS", 
+        expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
         seeds=seeds, method = method, ml_variables = ml_variables)
         # # figures 
         # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
@@ -90,20 +90,32 @@ rule ml_prep:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
         """
-#20240625 - doesn't create multiple files, one for each seed
+
 rule train_ml:
     input:
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML.R",
     output:
-        model="Data/ml_results/{datasets}/{method}.{seeds}.{ml_variables}.model.RDS", 
-        perf="Data/ml_results/{datasets}/{method}.{seeds}.{ml_variables}.performance.csv", 
+        model="Data/ml_results/{datasets}/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
+        perf="Data/ml_results/{datasets}/{method}/{method}.{seeds}.{ml_variables}.performance.csv", 
     # params:
     #     seeds = seeds
     shell:
         """
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
         """
+
+# rule glmnet: 
+#     input:
+#         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+#         rscript = "Code/trainML.R",
+#     output:
+#         model="Data/ml_results/{datasets}/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
+#         perf="Data/ml_results/{datasets}/{method}/{method}.{seeds}.{ml_variables}.performance.csv", 
+#     shell:
+#         """
+#         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
+#         """
 
 # 20240628 - need to change the input to this as just the filepath to the folder where the stuff is 
 # rule merge_results: 
