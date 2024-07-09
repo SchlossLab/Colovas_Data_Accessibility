@@ -3,7 +3,10 @@ library(tidyverse)
 library(mikropml)
 
 # load my files probably 
-filepath <-"Data/ml_results/groundtruth"
+filepath <-"Data/ml_results/groundtruth/glmnet"
+
+#what if i just want to open one of the RDS files to see what's in it
+one_rds <- readRDS("Data/ml_results/groundtruth/glmnet/glmnet.1.data_availability.model.RDS")
 
 
 seq_files_list <- list.files(filepath, 
@@ -23,8 +26,14 @@ head(avail_results, 2)
 #this works!!! yay, you just have to graph diff ones ased on which type of results you want to see
 
 seq_combined <- combine_hp_performance(seq_results)
+
+#for glmnet
 plot_hp_performance(seq_combined$dat, lambda, AUC)
+
+#for rf
 plot_hp_performance(seq_combined$dat, mtry, AUC)
+
+#for xgboost
 plot_hp_performance(seq_combined$dat, max_depth, AUC)
 plot_hp_performance(seq_combined$dat, eta, AUC)
 
