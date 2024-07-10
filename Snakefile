@@ -28,7 +28,7 @@ rule targets:
 
         # # all ml results  
         expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
-        seeds=seeds, method = "glmnet", ml_variables = ml_variables)
+        seeds=seeds, method = method, ml_variables = ml_variables)
         # # figures 
         # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
         # "Figures/linkrot/groundtruth/links_byjournal.png", 

@@ -29,9 +29,17 @@ head(avail_results, 2)
 #this works!!! yay, you just have to graph diff ones ased on which type of results you want to see
 
 seq_combined <- combine_hp_performance(seq_results)
+#seq_combined <- combine_hp_performance(gtss30_RDS)
 
 #for glmnet
 plot_hp_performance(seq_combined$dat, lambda, AUC)
+plot_hp_performance(seq_combined$dat, alpha, AUC)
+
+#for gtss30 test
+gtp <- get_hp_performance(gtss30_RDS)
+gtss30_RDS$results
+plot_hp_performance(gtss30_RDS$results, lambda, AUC)
+plot_hp_performance(gtss30_RDS$results, alpha, AUC)
 
 #for rf
 plot_hp_performance(seq_combined$dat, mtry, AUC)
@@ -42,9 +50,12 @@ plot_hp_performance(seq_combined$dat, eta, AUC)
 
 
 avail_combined <- combine_hp_performance(avail_results)
+
 plot_hp_performance(avail_combined$dat, lambda, AUC)
 plot_hp_performance(avail_combined$dat, alpha, AUC)
+
 plot_hp_performance(avail_combined$dat, mtry, AUC)
+
 plot_hp_performance(avail_combined$dat, max_depth, AUC)
 plot_hp_performance(avail_combined$dat, eta, AUC)
 plot_hp_performance(avail_combined$dat, subsample, AUC)

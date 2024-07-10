@@ -9,8 +9,8 @@ library(tidytext)
 library(mikropml)
 
 
-# model="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_model.Rds",
-# perf="Data/ml_results/{dataset}/runs/{method}_{seed}_{ml_vars}_performance.csv",
+# model="Data/ml_results/{dataset}/{method}_{seed}_{ml_vars}_model.Rds",
+# perf="Data/ml_results/{dataset}/{method}_{seed}_{ml_vars}_performance.csv",
 # {input.rscript} {input.rds} {params.seed} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
        
 input <- commandArgs(trailingOnly = TRUE)
