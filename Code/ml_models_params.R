@@ -4,6 +4,9 @@ library(mikropml)
 
 # load my files probably 
 filepath <-"Data/ml_results/groundtruth/glmnet"
+# filepath  <- "Data/ml_results/gt_subset_30/glmnet"
+# gtss30_RDS <- readRDS("Data/ml_results/gt_subset_30/glmnet/glmnet.10.new_seq_data.model.RDS")
+# gtss30_RDS$results
 
 #what if i just want to open one of the RDS files to see what's in it
 one_rds <- readRDS("Data/ml_results/groundtruth/glmnet/glmnet.1.data_availability.model.RDS")

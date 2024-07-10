@@ -17,7 +17,7 @@ method = [
   
 
 ncores = 1
-seeds = list(range(1, 21))
+seeds = list(range(1, 6))
 
 
 
@@ -28,7 +28,7 @@ rule targets:
 
         # # all ml results  
         expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
-        seeds=seeds, method = method, ml_variables = ml_variables)
+        seeds=seeds, method = "glmnet", ml_variables = ml_variables)
         # # figures 
         # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
         # "Figures/linkrot/groundtruth/links_byjournal.png", 
@@ -91,31 +91,56 @@ rule ml_prep:
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
         """
 
-rule train_ml:
-    input:
-        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
-        rscript = "Code/trainML.R",
-    output:
-        model="Data/ml_results/{datasets}/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
-        perf="Data/ml_results/{datasets}/{method}/{method}.{seeds}.{ml_variables}.performance.csv", 
-    # params:
-    #     seeds = seeds
-    shell:
-        """
-        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
-        """
-
-# rule glmnet: 
+# rule train_ml:
 #     input:
 #         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
 #         rscript = "Code/trainML.R",
 #     output:
 #         model="Data/ml_results/{datasets}/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
 #         perf="Data/ml_results/{datasets}/{method}/{method}.{seeds}.{ml_variables}.performance.csv", 
+#         #"Data/ml_results/gt_subset_30/glmnet/glmnet.10.new_seq_data.model.RDS"
+#     # params:
+#     #     seeds = seeds
 #     shell:
 #         """
 #         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
 #         """
+
+rule glmnet: 
+    input:
+        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+        rscript = "Code/trainML_glmnet.R",
+    output:
+        model="Data/ml_results/{datasets}/glmnet/glmnet.{seeds}.{ml_variables}.model.RDS", 
+        perf="Data/ml_results/{datasets}/glmnet/glmnet.{seeds}.{ml_variables}.performance.csv", 
+    shell:
+        """
+        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
+        """
+
+rule rf: 
+    input:
+        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+        rscript = "Code/trainML_rf.R",
+    output:
+        model="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.model.RDS", 
+        perf="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv", 
+    shell:
+        """
+        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
+        """
+
+rule xgbTree: 
+    input:
+        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+        rscript = "Code/trainML_xgbTree.R",
+    output:
+        model="Data/ml_results/{datasets}/xgbTree/xgbTree.{seeds}.{ml_variables}.model.RDS", 
+        perf="Data/ml_results/{datasets}/xgbTree/xgbTree.{seeds}.{ml_variables}.performance.csv", 
+    shell:
+        """
+        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
+        """
 
 # 20240628 - need to change the input to this as just the filepath to the folder where the stuff is 
 # rule merge_results: 
