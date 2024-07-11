@@ -7,7 +7,7 @@ library(tidyverse)
 library(mikropml)
 
 #snakemake
-# {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
+# {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
 
 input <- commandArgs(trailingOnly = TRUE)
 filepath <- input[1]
