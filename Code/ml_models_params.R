@@ -9,7 +9,7 @@ filepath <-"Data/ml_results/groundtruth/glmnet"
 # gtss30_RDS$results
 
 #what if i just want to open one of the RDS files to see what's in it
-one_rds <- readRDS("Data/ml_results/groundtruth/glmnet/glmnet.1.data_availability.model.RDS")
+#one_rds <- readRDS("Data/ml_results/groundtruth/glmnet/glmnet.1.data_availability.model.RDS")
 
 
 seq_files_list <- list.files(filepath, 
@@ -36,10 +36,10 @@ plot_hp_performance(seq_combined$dat, lambda, AUC)
 plot_hp_performance(seq_combined$dat, alpha, AUC)
 
 #for gtss30 test
-gtp <- get_hp_performance(gtss30_RDS)
-gtss30_RDS$results
-plot_hp_performance(gtss30_RDS$results, lambda, AUC)
-plot_hp_performance(gtss30_RDS$results, alpha, AUC)
+# gtp <- get_hp_performance(gtss30_RDS)
+# gtss30_RDS$results
+# plot_hp_performance(gtss30_RDS$results, lambda, AUC)
+# plot_hp_performance(gtss30_RDS$results, alpha, AUC)
 
 #for rf
 plot_hp_performance(seq_combined$dat, mtry, AUC)

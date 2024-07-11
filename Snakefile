@@ -142,19 +142,18 @@ rule xgbTree:
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
         """
 
-# 20240628 - need to change the input to this as just the filepath to the folder where the stuff is 
-# rule merge_results: 
-#     input: 
-#         rscript = "Code/mergeResults.R",
-#         model=expand("Data/ml_results/{datasets}/{method}.{seeds}.{ml_variables}.model.RDS", seeds = seeds, 
-#         datasets = datasets, method = method, ml_variables), 
-#         perf=expand("Data/ml_results/{datasets}/{method}.{seeds}.{ml_variables}.performance.csv", seeds = seeds)
-#     output: 
-#         "Data/ml_results/{datasets}/{method}.{ml_variables}.results.csv"
-#     shell: 
-#         """
-#         {input.rscript} {input.model} {input.perf} {output}
-#         """
+rule merge_results: 
+    input: 
+        rscript = "Code/combine_models.R",
+        filepath=expand("Data/ml_results/{datasets}/{method}",
+        datasets = datasets, method = method)
+    output: 
+        expand("Data/ml_results/{datasets}/{method}.png", 
+        datasets = datasets, method = method)
+    shell: 
+        """
+        {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
+        """
     
 
 #-------------------LINK-------ROT-----------------------------------------------------------

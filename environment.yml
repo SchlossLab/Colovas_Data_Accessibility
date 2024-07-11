@@ -18,6 +18,7 @@ dependencies:
   - r-httr2
   - r-xml2
   - r-textstem
+  - r-cowplot
   
 
 

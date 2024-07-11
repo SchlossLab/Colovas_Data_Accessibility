@@ -28,10 +28,14 @@ output_perf <- input[5]
 ml_results <- run_ml(data_processed$dat_transformed,
                    method = "xgbTree",  
                    outcome_colname = ml_var_snake,
-                   hyperparameters = list( eta = c(0.001, 0.01, 0.015, 0.02, 
-                                            0.025, 0.05, 0.075, 0.1, 0.2, 0.25), 
-                                            max_depth = 15, 
-                                            subsample = c(0.6, 0.7, 0.8, 0.9, 1.0)), 
+                   hyperparameters = list( eta = c(0.001, 0.01, 0.015, 0.02,
+                                            0.025, 0.05, 0.075, 0.1, 0.2, 0.25),
+                                            max_depth = 15,
+                                            subsample = c(0.6, 0.7, 0.8, 0.9, 1.0),
+                                            nrounds = 100,
+                                            gamma = 0,
+                                            colsample_bytree = 0.8,
+                                            min_child_weight = 1),
                    find_feature_importance = FALSE,
                    seed = seed)
 
