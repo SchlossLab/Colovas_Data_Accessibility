@@ -26,9 +26,8 @@ output_perf <- input[5]
 ml_results <- run_ml(data_processed$dat_transformed,
                    method = "glmnet",  
                    outcome_colname = ml_var_snake,
-                   hyperparameters = list(alpha = c(0, 0.5, 1),
-                                    lambda = c(0.00001, 0.0001, 0.001, 0.01, 0.015, 
-                                    0.02, 0.025, 0.03, 0.04, 0.05, 0.06, 0.1)), 
+                   hyperparameters = list(alpha = c(0.4, 0.5, 0.6),
+                                    lambda = c(0.03, 0.04, 0.05, 0.06, 0.07, 0.08)), 
                    find_feature_importance = FALSE,
                    seed = seed)
 

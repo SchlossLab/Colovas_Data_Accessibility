@@ -17,23 +17,23 @@ method = [
   
 
 ncores = 1
-seeds = list(range(1, 6))
+seeds = list(range(20, 31))
 
 
 
 rule targets:
     input: 
         # model summary figs
-        expand("Data/ml_results/groundtruth/{method}/{method}.{ml_variables}.png", 
-        method = method, ml_variables = ml_variables)
+        # expand("Data/ml_results/groundtruth/{method}/{method}.{ml_variables}.png", 
+        # method = method, ml_variables = ml_variables)
 
         # # preproceesed data 
         # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
         # ml_variables = ml_variables)
 
         # # all ml results  
-        # expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
-        # seeds=seeds, method = method, ml_variables = ml_variables)
+        expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
+        seeds=seeds, method = method, ml_variables = ml_variables)
 
         # # figures 
         # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
