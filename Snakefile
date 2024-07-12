@@ -23,12 +23,18 @@ seeds = list(range(1, 6))
 
 rule targets:
     input: 
-        expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
-        ml_variables = ml_variables),
+        # model summary figs
+        expand("Data/ml_results/groundtruth/{method}/{method}.{ml_variables}.png", 
+        method = method, ml_variables = ml_variables)
+
+        # # preproceesed data 
+        # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
+        # ml_variables = ml_variables)
 
         # # all ml results  
-        expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
-        seeds=seeds, method = method, ml_variables = ml_variables)
+        # expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
+        # seeds=seeds, method = method, ml_variables = ml_variables)
+
         # # figures 
         # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
         # "Figures/linkrot/groundtruth/links_byjournal.png", 
@@ -137,6 +143,8 @@ rule xgbTree:
     output:
         model="Data/ml_results/{datasets}/xgbTree/xgbTree.{seeds}.{ml_variables}.model.RDS", 
         perf="Data/ml_results/{datasets}/xgbTree/xgbTree.{seeds}.{ml_variables}.performance.csv", 
+    resources: 
+        mem_mb = 20000
     shell:
         """
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
@@ -145,11 +153,11 @@ rule xgbTree:
 rule merge_results: 
     input: 
         rscript = "Code/combine_models.R",
-        filepath=expand("Data/ml_results/{datasets}/{method}",
-        datasets = datasets, method = method)
+        filepath = "Data/ml_results/{datasets}/{method}"
+        # expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
+        # seeds=seeds, method = method, ml_variables = ml_variables)
     output: 
-        expand("Data/ml_results/{datasets}/{method}.png", 
-        datasets = datasets, method = method)
+        "Data/ml_results/{datasets}/{method}/{method}.{ml_variables}.png", 
     shell: 
         """
         {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}

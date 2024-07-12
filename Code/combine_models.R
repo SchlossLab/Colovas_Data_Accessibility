@@ -15,8 +15,8 @@ method <- as.character(input[2])
 ml_var <- input[3]
 
 #practice locally
-# filepath <-"Data/ml_results/groundtruth/rf"
-# method <- "rf"
+# filepath <-"Data/ml_results/groundtruth/xgbTree"
+# method <- "xgbTree"
 # ml_var <- "new_seq_data"
 
 
@@ -30,17 +30,15 @@ combined <- combine_hp_performance(results)
 
 if (method == "glmnet") {
     lambda <- plot_hp_performance(combined$dat, lambda, AUC)
-       # ggsave(str_glue("{filepath}/{model}.lambda.png"))
     alpha <- plot_hp_performance(combined$dat, alpha, AUC) 
-       # ggsave(str_glue("{filepath}/{model}.alpha.png"))
     plot <- cowplot::plot_grid(lambda, alpha, 
                         labels = c("lambda", "alpha")) 
-    ggsave(plot, filename = str_glue("{filepath}/{method}.png"))  
+    ggsave(plot, filename = str_glue("{filepath}/{method}.{ml_var}.png"))  
 }
 
 if (method == "rf") {
     plot_hp_performance(combined$dat, mtry, AUC) %>%
-        ggsave(filename = str_glue("{filepath}/{method}.png"))  
+        ggsave(filename = str_glue("{filepath}/{method}.{ml_var}.png"))  
 }
 
 if (method == "xgbTree") {
@@ -50,6 +48,6 @@ if (method == "xgbTree") {
     
     plot <- cowplot::plot_grid(max, eta, sub, 
                     labels = c("max_depth", "eta", "subsample"))
-    ggsave(plot, filename = str_glue("{filepath}/{method}.png"))  
+    ggsave(plot, filename = str_glue("{filepath}/{method}.{ml_var}.png"))  
 
 }
