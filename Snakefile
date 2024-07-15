@@ -149,7 +149,7 @@ rule xgbTree:
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
         """
 
-rule merge_results: 
+rule merge_results_figs: 
     input: 
         rscript = "Code/combine_models.R",
         filepath = "Data/ml_results/{datasets}/{method}"
