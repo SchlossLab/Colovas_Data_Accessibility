@@ -23,18 +23,17 @@ seeds = list(range(20, 31))
 
 rule targets:
     input: 
+        expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS",
+        seeds=seeds, method=method, ml_variables=ml_variables),
         # model summary figs
-        # expand("Data/ml_results/groundtruth/{method}/{method}.{ml_variables}.png", 
-        # method = method, ml_variables = ml_variables)
+        expand("Data/ml_results/groundtruth/{method}/{method}.{ml_variables}.png", 
+        method = method, ml_variables = ml_variables)
 
         # # preproceesed data 
         # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
         # ml_variables = ml_variables)
 
         # # all ml results  
-        expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
-        seeds=seeds, method = method, ml_variables = ml_variables)
-
         # # figures 
         # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
         # "Figures/linkrot/groundtruth/links_byjournal.png", 
@@ -157,7 +156,9 @@ rule merge_results:
         # expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
         # seeds=seeds, method = method, ml_variables = ml_variables)
     output: 
-        "Data/ml_results/{datasets}/{method}/{method}.{ml_variables}.png", 
+        "Data/ml_results/{datasets}/{method}/{method}.{ml_variables}.png"
+    resources: 
+        mem_mb = 20000 
     shell: 
         """
         {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
