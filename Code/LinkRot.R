@@ -105,6 +105,11 @@ file_links <- file_links %>%
                                   TRUE ~ "other")
   )
 
+file_links <- file_links %>% 
+    mutate(
+      binary_status = ifelse(link_status == 200, "Alive", "Dead")
+      )
+
 write_csv(file_links, alllinks_output)
 
 
