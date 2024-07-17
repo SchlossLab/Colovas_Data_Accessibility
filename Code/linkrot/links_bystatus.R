@@ -13,11 +13,13 @@ alllinks <- read_csv(alllinks)
 all_output <- input[2]
 unique_output <- input[3]
 
+
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz")
 #metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
 #all_output <- "Figures/linkrot/groundtruth/alllinks_bystatus.png"
 #unique_output <- "Figures/linkrot/groundtruth/uniquelinks_bystatus.png"
+
 
 #group links by link_status
 all_status_tally <- alllinks %>%
@@ -34,7 +36,7 @@ unique_sum <- as.numeric(sum(unique_status_tally$n))
 AllLinksByStatus <- 
   ggplot(
     data = alllinks, 
-    mapping = aes(x = factor(link_status), fill = factor(link_status))) + 
+    mapping = aes(x = binary_status)) + 
   geom_bar() +
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = 1.2, color = "white", size = 3) +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
@@ -48,7 +50,7 @@ ggsave(AllLinksByStatus, filename = all_output)
 UniqueLinksByStatus <- 
   ggplot(
     data = unique(alllinks), 
-    mapping = aes(x = factor(link_status), fill = factor(link_status)))  + 
+    mapping = aes(x = binary_status))  + 
   geom_bar() +
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = 1.2, color = "white", size = 3) +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
