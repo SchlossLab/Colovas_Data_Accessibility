@@ -16,7 +16,7 @@ ml_var <- input[3]
 #local
 
 # "Data/ml_results/groundtruth/runs/{method}/{method}.{seeds}.{ml_variables}.performance.csv"
-# method <- "glmnet"
+# method <- "rf"
 # filepath <- str_glue("Data/ml_results/groundtruth/{method}")
 
 #remove "{method}", and then group by method, then you can summarize in one df
@@ -52,7 +52,11 @@ results$trained_on <- map(results$file_path, str_split_i, pattern = "\\.", i = 3
 # need to summarize by group 
 results_method <- results %>%
     summarize(.by = c("method", "trained_on"), 
-                mean_cv_AUC = mean(cv_metric_AUC))
+                mean_cv_AUC = mean(cv_metric_AUC), 
+                mean_accuracy = mean(Accuracy), 
+                mean_sens = mean(Sensitivity), 
+                mean_spec = mean(Specificity), 
+                mean_precision = mean(Precision))
    
 
 
