@@ -24,8 +24,8 @@ seeds = list(range(32, 50))
 rule targets:
     input: 
         # linkrot
-        "Data/linkrot/groundtruth.alllinks.csv.gz", 
-        "Figures/linkrot/groundtruth/alllinks_bystatus.png"
+        "Data/linkrot/groundtruth.alllinks.csv.gz"
+        #"Figures/linkrot/groundtruth/alllinks_bystatus.png"
 
 
         # expand("Data/ml_results/groundtruth/rf/rf.{seeds}.{ml_variables}.model.RDS",
