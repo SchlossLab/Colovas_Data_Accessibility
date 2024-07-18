@@ -17,23 +17,20 @@ method = [
   
 
 ncores = 1
-seeds = list(range(32, 50))
+seeds = list(range(1, 101))
 
 
 
 rule targets:
     input: 
         # linkrot
-        "Data/linkrot/groundtruth.alllinks.csv.gz"
+        #"Data/linkrot/groundtruth.alllinks.csv.gz"
         #"Figures/linkrot/groundtruth/alllinks_bystatus.png"
-
-
-        # expand("Data/ml_results/groundtruth/rf/rf.{seeds}.{ml_variables}.model.RDS",
-        # seeds=seeds, ml_variables=ml_variables),
-        
+        expand("Data/ml_results/groundtruth/rf/rf.{seeds}.{ml_variables}.model.RDS",
+        seeds=seeds, ml_variables=ml_variables),
         # # model summary figs
-        # expand("Data/ml_results/groundtruth/rf/rf.{ml_variables}.png", 
-        # ml_variables = ml_variables)
+        expand("Data/ml_results/groundtruth/rf/rf.{ml_variables}.png", 
+        ml_variables = ml_variables)
 
         # # preproceesed data 
         # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 

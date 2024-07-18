@@ -13,16 +13,21 @@ metadatalinks <- read_csv(metadatalinks)
 output <- input[2]
 
 #non-snakemake implementation
-#alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz")
-#metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
+#alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
+#metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
 #output <- "Figures/linkrot/groundtruth/links_byjournal.png"
 
 
 #group articles by the journal they were found in
-journal_tally <- metadatalinks %>% 
-                  group_by(container.title) %>% 
-                  add_tally()
-sum <- as.numeric(sum(journal_tally$n)) 
+# journal_tally <- unique(metadatalinks) %>% 
+#                   group_by(container.title) %>% 
+#                   add_tally()
+
+
+journal_tally <- unique(metadatalinks) %>%
+  count(container.title)
+
+sum <- sum(journal_tally$n)
 
 #plot number of articles containing links by which journal they were in 
 LinksByJournal <- 
@@ -38,3 +43,9 @@ LinksByJournal <-
 LinksByJournal
 
 ggsave(LinksByJournal, filename = output)
+
+
+# what if i do it as a line graph? 
+journal_tally %>%
+  ggplot(aes(x = container.title)) +
+  geom_bar(stat_count = `n`)

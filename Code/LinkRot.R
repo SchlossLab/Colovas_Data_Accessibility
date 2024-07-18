@@ -11,8 +11,7 @@ library(httr2)
 
 
 # load data from snakemake input
-# {input.rscript}  {input.html} {input.metadata} {output.all_links} 
-# {output.metadata_links}
+# {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
 input <- commandArgs(trailingOnly = TRUE)
 html <- input[1]
 metadata_file <- input[2]

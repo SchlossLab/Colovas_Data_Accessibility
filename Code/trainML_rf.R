@@ -27,8 +27,8 @@ output_perf <- input[5]
 ml_results <- run_ml(data_processed$dat_transformed,
                    method = "rf",  
                    outcome_colname = ml_var_snake,
-                   hyperparameters = list(mtry = c(21, 42, 84, 100, 150, 200, 300)),
-                   find_feature_importance = FALSE,
+                   hyperparameters = list(mtry =  200),
+                   find_feature_importance = TRUE,
                    seed = seed)
 
 #write results to files 
