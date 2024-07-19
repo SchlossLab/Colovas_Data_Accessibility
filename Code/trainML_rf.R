@@ -33,5 +33,5 @@ ml_results <- run_ml(data_processed$dat_transformed,
 
 #write results to files 
 write.csv(ml_results$performance, file = output_perf)
-saveRDS(ml_results$trained_model, file = output_model)
+saveRDS(ml_results, file = output_model)
 

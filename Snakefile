@@ -26,8 +26,9 @@ rule targets:
         # linkrot
         #"Data/linkrot/groundtruth.alllinks.csv.gz"
         #"Figures/linkrot/groundtruth/alllinks_bystatus.png"
+        # all 100 models RF
         expand("Data/ml_results/groundtruth/rf/rf.{seeds}.{ml_variables}.model.RDS",
-        seeds=seeds, ml_variables=ml_variables),
+        seeds=seeds, ml_variables=ml_variables)
 
         # # preproceesed data 
         # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
