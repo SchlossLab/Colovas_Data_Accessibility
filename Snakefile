@@ -28,9 +28,6 @@ rule targets:
         #"Figures/linkrot/groundtruth/alllinks_bystatus.png"
         expand("Data/ml_results/groundtruth/rf/rf.{seeds}.{ml_variables}.model.RDS",
         seeds=seeds, ml_variables=ml_variables),
-        # # model summary figs
-        expand("Data/ml_results/groundtruth/rf/rf.{ml_variables}.png", 
-        ml_variables = ml_variables)
 
         # # preproceesed data 
         # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
@@ -152,20 +149,22 @@ rule xgbTree:
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
         """
 
-rule merge_results_figs: 
-    input: 
-        rscript = "Code/combine_models.R",
-        filepath = "Data/ml_results/{datasets}/{method}"
-        # expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
-        # seeds=seeds, method = method, ml_variables = ml_variables)
-    output: 
-        "Data/ml_results/{datasets}/{method}/{method}.{ml_variables}.png"
-    resources: 
-        mem_mb = 20000 
-    shell: 
-        """
-        {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
-        """
+# # do not run this rule OVER the results again because i want the stats
+# # to show that i picked a good mtry value
+# rule merge_results_figs: 
+#     input: 
+#         rscript = "Code/combine_models.R",
+#         filepath = "Data/ml_results/{datasets}/{method}"
+#         # expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
+#         # seeds=seeds, method = method, ml_variables = ml_variables)
+#     output: 
+#         "Data/ml_results/{datasets}/{method}/{method}.{ml_variables}.png"
+#     resources: 
+#         mem_mb = 20000 
+#     shell: 
+#         """
+#         {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
+#         """
     
 
 #-------------------LINK-------ROT-----------------------------------------------------------

@@ -4,7 +4,7 @@
 #
 #library statements
 library(tidyverse)
-
+library(mikropml)
 # load files 
 
 # snakemake 
@@ -18,6 +18,7 @@ ml_var <- input[3]
 # "Data/ml_results/groundtruth/runs/{method}/{method}.{seeds}.{ml_variables}.performance.csv"
 # method <- "rf"
 # filepath <- str_glue("Data/ml_results/groundtruth/{method}")
+# outfile <- str_glue("Data/ml_results/groundtruth/{method}/rf.summary.csv")
 
 #remove "{method}", and then group by method, then you can summarize in one df
 # need to group trained models by the variable used in the filename!!! 
@@ -33,8 +34,9 @@ files_list <- list.files(filepath,
 
 results <- read_csv(files_list, id = "file_path")
 
-    
-results$trained_on <- map(results$file_path, str_split_i, pattern = "\\.", i = 3)
+
+results <- results %>%
+    mutate(trained_on = str_split_i(file_path, pattern = "\\.", i = 3))
 
 # seq_results <- read_csv(seq_files_list)
 # avail_results <- read_csv(avail_files_list)
@@ -56,7 +58,8 @@ results_method <- results %>%
                 mean_accuracy = mean(Accuracy), 
                 mean_sens = mean(Sensitivity), 
                 mean_spec = mean(Specificity), 
-                mean_precision = mean(Precision))
+                mean_precision = mean(Precision)) 
    
-
+str(results_method)
+write.csv(results_method, file = outfile)
 
