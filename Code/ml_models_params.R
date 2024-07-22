@@ -14,10 +14,19 @@ filepath <-"Data/ml_results/groundtruth/rf"
 one_rds <- readRDS("Data/ml_results/groundtruth/rf/rf.1.data_availability.model.RDS")
 two_rds <- readRDS("Data/ml_results/groundtruth/rf/rf.1.new_seq_data.model.RDS")
 
+#20240722 looking for the feature importance table by p value
 one_rds
 str(one_rds)
-one_rds$feature_importance
+head(one_rds$feature_importance$feat, 10)
+head(two_rds$feature_importance, 10)
 two_rds$feature_importance
+
+# one_rds_feats <-
+one_rds$feature_importance %>%
+    filter(pvalue <= 0.2)
+
+two_rds$feature_importance %>%
+    filter(pvalue <= 0.2)
 
 seq_files_list <- list.files(filepath, 
                         pattern = str_glue("new_seq_data.*.RDS"), 
