@@ -15,8 +15,8 @@ output <- input[2]
 
 
 #non-snakemake implementation
-#alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz")
-#metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
+#alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
+#metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
 
 
 #separate out only deadlinks
@@ -38,7 +38,8 @@ error_only_hostname <-
   labs( x = "Number of Links", 
         y = "Website Hostname",
         title = stringr::str_glue("Number of External User-Added\nLinks by Hostname and Status (N={sum})"), 
-        fill = "Link Status") 
+        fill = "Link Status") +
+  scale_fill_manual(values = c("red4", "orangered", "orange" ))
 error_only_hostname
 
 ggsave(error_only_hostname, filename = output)

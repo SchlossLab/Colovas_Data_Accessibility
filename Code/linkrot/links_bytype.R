@@ -15,8 +15,8 @@ all_output <- input[2]
 unique_output <- input[3]
 
 #non-snakemake implementation
-#alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz")
-#metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
+#alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
+#metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
 
 
 #group links by link_status
@@ -33,14 +33,15 @@ unique_sum <- as.numeric(sum(unique_type_tally$n))
 AllLinkType <- 
   ggplot(
     data = alllinks, 
-    mapping = aes(x = website_type, fill = as.factor(link_status))
+    mapping = aes(x = website_type, fill = binary_status)
   ) + 
   geom_bar(stat = "count") +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of External User-Added Links", 
         x = "Link Type",
         title = stringr::str_glue("Total Number of External User-Added Links by Domain Type\nand Status (N={all_sum})"), 
-        fill = "Link Status") 
+        fill = "Link Status") +
+  scale_fill_manual(values = c("seagreen2", "indianred1"))       
 AllLinkType
 
 ggsave(AllLinkType, filename = all_output)
@@ -49,14 +50,15 @@ ggsave(AllLinkType, filename = all_output)
 UniqueLinkType <- 
   ggplot(
     data = unique(alllinks), 
-    mapping = aes(x = website_type, fill = as.factor(link_status))
+    mapping = aes(x = website_type, fill = binary_status)
   ) + 
   geom_bar(stat = "count") +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of External User-Added Links", 
         x = "Year Published",
         title = stringr::str_glue("Unique Number of External User-Added Links by Domain Type\nand Status (N={unique_sum})"), 
-        fill = "Link Type") 
+        fill = "Link Type") +
+  scale_fill_manual(values = c("seagreen2", "indianred1"))   
 UniqueLinkType
 
 ggsave(UniqueLinkType, filename = unique_output)
