@@ -46,6 +46,13 @@ ggsave(LinksByJournal, filename = output)
 
 
 # what if i do it as a line graph? 
-journal_tally %>%
-  ggplot(aes(x = container.title)) +
-  geom_bar(stat_count = `n`)
+# 20240725 does this even need to be a line graph? 
+
+# journal_tally %>%
+#   ggplot(aes(x = container.title, y = `n`)) +
+#   geom_point(stat = "identity") + 
+#   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
+#   labs( y = "Number of Manuscripts Containing Links", 
+#         x = "ASM Journal",
+#         title = stringr::str_glue("Number of ASM Manuscripts Containing 1+ External Links\nAdded by User (N={sum})"))
+
