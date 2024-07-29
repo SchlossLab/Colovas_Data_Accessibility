@@ -23,26 +23,27 @@ seeds = list(range(1, 101))
 
 rule targets:
     input: 
+    # # figures 
+        "Figures/linkrot/groundtruth/alllinks_bystatus.png",
+        "Figures/linkrot/groundtruth/links_byjournal.png", 
+        "Figures/linkrot/groundtruth/links_byyear.png", 
+        "Figures/linkrot/groundtruth/links_yearstatus.png", 
+        "Figures/linkrot/groundtruth/alllinks_bytype.png", 
+        "Figures/linkrot/groundtruth/alllinks_byhostname.png",
+        "Figures/linkrot/groundtruth/links_errorhostname.png"
         # linkrot
         #"Data/linkrot/groundtruth.alllinks.csv.gz"
         #"Figures/linkrot/groundtruth/alllinks_bystatus.png"
         # all 100 models RF
-        expand("Data/ml_results/groundtruth/rf/rf.{seeds}.{ml_variables}.model.RDS",
-        seeds=seeds, ml_variables=ml_variables)
+        # expand("Data/ml_results/groundtruth/rf/rf.{seeds}.{ml_variables}.model.RDS",
+        # seeds=seeds, ml_variables=ml_variables)
 
         # # preproceesed data 
         # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
         # ml_variables = ml_variables)
 
         # # all ml results  
-        # # figures 
-        # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
-        # "Figures/linkrot/groundtruth/links_byjournal.png", 
-        # "Figures/linkrot/groundtruth/links_byyear.png", 
-        # "Figures/linkrot/groundtruth/links_yearstatus.png", 
-        # "Figures/linkrot/groundtruth/alllinks_bytype.png", 
-        # "Figures/linkrot/groundtruth/alllinks_byhostname.png",
-        # "Figures/linkrot/groundtruth/links_errorhostname.png"
+        
 
      
 
