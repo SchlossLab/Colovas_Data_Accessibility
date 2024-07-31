@@ -32,9 +32,9 @@ ml_results <- run_ml(data_processed$dat_transformed,
                    find_feature_importance = TRUE,
                    seed = seed)
 
-#write results to files (jo og)
-write.csv(ml_results$performance, file = output_perf)
-saveRDS(ml_results, file = output_model)
+# #write results to files (jo og)
+# write.csv(ml_results$performance, file = output_perf)
+# saveRDS(ml_results, file = output_model)
 
 # perf="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv"
 # write out performance results
