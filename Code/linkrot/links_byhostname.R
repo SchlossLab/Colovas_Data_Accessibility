@@ -11,8 +11,8 @@ library(tidyverse)
 input <- commandArgs(trailingOnly = TRUE)
 alllinks <- input[1]
 alllinks <- read_csv(alllinks)
-all_output <- input[2]
-unique_output <- input[3]
+unique_output <- input[2]
+
 
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
@@ -21,7 +21,7 @@ unique_output <- input[3]
 # 20240730 - we only care about unique links 
 
 #group links by link_status
-unique_type_tally <- unique(alllinks) %>% 
+unique_type_tally <- distinct(alllinks) %>% 
                       group_by(hostname) %>%
                       tally()
 unique_sum <- as.numeric(sum(unique_type_tally$n))
@@ -36,30 +36,29 @@ distinct <- distinct(alllinks)
 long_lasting <- filter(distinct, 
                        grepl("doi|git|figshare|datadryad|zenodo|asm", hostname)) 
 
-#get count data 
+#get count data per hostname 
 long_lasting <-
   long_lasting %>% 
-    mutate(.by = paper, 
+    mutate(.by = hostname, 
           n_links = n(), 
           n_dead = sum(!is_alive),
           dead_fract = ((n_dead) / n_links), 
-          ) %>%
-    select(paper, n_links, n_dead, dead_fract)
+          )
 
-
+# 20240731 - technically this has every single point still and not just one per hostname...
+long_lasting %>% summarize(.groups = hostname, dead_fract)
 
 unique_long_lasting_status <- 
-   ggplot(
+  ggplot(
     data = long_lasting, 
-    mapping = aes(y = hostname, color = binary_status)
+    mapping = aes(y = hostname, x = dead_fract, group = hostname)
   ) + 
-  geom_point(stat = "count") +
-  labs( x = "Number of Links", 
-        y = "Website Hostname",
-        title = stringr::str_glue("Total Number of External User-Added Links\nby Hostname and Status (N={unique_sum})"), 
-        fill = "Link Status") +
-scale_color_manual(values = c("seagreen2", "indianred1"))
-
+  geom_point(size = 2.5) +
+  labs( x = "Fraction of Dead Links per Website Hostname", 
+        y = "Website Hostname (N)",
+        title = stringr::str_glue("Percentage of Unique External User-Added Links\nby Hostname and Status for 'Long-Lasting' Hostnames (N={unique_sum})") 
+      ) +
+  scale_x_continuous(labels = scales::percent)
 unique_long_lasting_status
 
 ggsave(unique_long_lasting_status, filename = unique_output)

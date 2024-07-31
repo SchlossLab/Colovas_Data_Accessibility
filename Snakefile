@@ -258,11 +258,10 @@ rule lr_by_hostname:
         all_links = "Data/linkrot/{datasets}.alllinks.csv.gz"
        #metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
     output:
-        all_filename = "Figures/linkrot/{datasets}/alllinks_byhostname.png",
-        unique_filename = "Figures/linkrot/{datasets}/uniquelinks_byhostname.png"
+        filename = "Figures/linkrot/{datasets}/longlasting_byhostname.png"
     shell: 
         """
-        {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
+        {input.rscript} {input.all_links} {output.filename}
         """
 
 rule lr_error_hostname: 
