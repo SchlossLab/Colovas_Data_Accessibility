@@ -13,16 +13,30 @@ library(mikropml)
 # perf="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv"
 # dir = "Data/ml_results/{datasets}/rf"
        
+# input:
+#    rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+#    rscript = "Code/trainML_rf.R",
+#    dir = "Data/ml_results/{datasets}/rf"
+# output:
+#    model="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.model.RDS", 
+#    perf="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv", 
+#    #prediction="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.prediction.csv", 
+#    hp_performance="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.hp_performance.csv"
 
 # {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.dir}
 input <- commandArgs(trailingOnly = TRUE)
 rds <- input[1]
 data_processed <- readRDS(rds)
 seed <- as.numeric(input[2])
-method <- as.character(input[3])
 ml_var_snake <- input[3]
 output_dir <- input[4]
 
+##local checks
+# rds <- "Data/groundtruth.data_availability.preprocessed.RDS"
+# data_processed <- readRDS(rds)
+# seed <- 1
+# ml_var_snake <- "data_availability"
+# output_dir <- "Data/ml_results/groundtruth/rf"
 
 # run model using mikropml::run_ml
 ml_results <- run_ml(data_processed$dat_transformed,
@@ -32,6 +46,7 @@ ml_results <- run_ml(data_processed$dat_transformed,
                    find_feature_importance = TRUE,
                    seed = seed)
 
+data_processed$dat_transformed
 # #write results to files (jo og)
 # write.csv(ml_results$performance, file = output_perf)
 # saveRDS(ml_results, file = output_model)

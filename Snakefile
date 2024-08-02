@@ -133,7 +133,7 @@ rule rf:
         model="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.model.RDS", 
         perf="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv", 
         #prediction="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.prediction.csv", 
-        hp_performance="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.hp_split.csv"
+        hp_performance="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.hp_performance.csv"
     shell:
         """
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.dir}
