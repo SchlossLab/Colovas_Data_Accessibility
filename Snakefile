@@ -17,7 +17,7 @@ method = [
   
 
 ncores = 1
-seeds = list(range(1, 101))
+seeds = list(range(1, 10))
 
 
 
@@ -128,15 +128,15 @@ rule rf:
     input:
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML_rf.R",
-        dir = "Data/ml_results/{datasets}/rf"
+        rdir = "Data/ml_results/{datasets}/rf"
     output:
-        model="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.model.RDS", 
-        perf="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv", 
-        #prediction="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.prediction.csv", 
-        hp_performance="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.hp_performance.csv"
+        "Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.model.RDS", 
+        "Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv", 
+        "Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.hp_performance.csv"
+        #"Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.prediction.csv", 
     shell:
         """
-        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.dir}
+        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.rdir}
         """
 
 rule xgbTree: 

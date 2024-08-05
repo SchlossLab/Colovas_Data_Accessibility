@@ -46,7 +46,12 @@ ml_results <- run_ml(data_processed$dat_transformed,
                    find_feature_importance = TRUE,
                    seed = seed)
 
-data_processed$dat_transformed
+#ok we're just going to add some more code for a model that isn't even this model 
+#to see if any of this works and which one is the problem 
+
+
+
+#data_processed$dat_transformed
 # #write results to files (jo og)
 # write.csv(ml_results$performance, file = output_perf)
 # saveRDS(ml_results, file = output_model)
