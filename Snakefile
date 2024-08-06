@@ -128,11 +128,11 @@ rule rf:
     input:
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML_rf.R",
-        rdir = "Data/ml_results/{datasets}/rf"
+        rdir = "Data/ml_results/{datasets}/rf/{ml_varaibles}"
     output:
-        "Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.model.RDS", 
-        "Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv", 
-        "Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.hp_performance.csv"
+        "Data/ml_results/{datasets}/rf/{ml_varaibles}/rf.{ml_variables}.{seeds}.model.RDS", 
+        "Data/ml_results/{datasets}/rf/{ml_varaibles}/rf.{ml_variables}.{seeds}.performance.csv", 
+        "Data/ml_results/{datasets}/rf/{ml_varaibles}/rf.{ml_variables}.{seeds}.hp_performance.csv"
         #"Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.prediction.csv", 
     shell:
         """

@@ -36,7 +36,7 @@ output_dir <- input[4]
 # data_processed <- readRDS(rds)
 # seed <- 1
 # ml_var_snake <- "data_availability"
-# output_dir <- "Data/ml_results/groundtruth/rf"
+# output_dir <- paste0("Data/ml_results/groundtruth/rf/{ml_var_snake}"
 
 # run model using mikropml::run_ml
 ml_results <- run_ml(data_processed$dat_transformed,
@@ -46,31 +46,17 @@ ml_results <- run_ml(data_processed$dat_transformed,
                    find_feature_importance = TRUE,
                    seed = seed)
 
-#ok we're just going to add some more code for a model that isn't even this model 
-#to see if any of this works and which one is the problem 
 
-
-
-#data_processed$dat_transformed
-# #write results to files (jo og)
-# write.csv(ml_results$performance, file = output_perf)
-# saveRDS(ml_results, file = output_model)
-
-# perf="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv"
+# "Data/ml_results/{datasets}/rf/{ml_varaibles}/rf.{ml_variables}.{seeds}.model.RDS",
+#output_dir <- paste0("Data/ml_results/groundtruth/rf/{ml_var_snake}"
 # write out performance results
 performance <- ml_results$performance
-write_csv(performance,file = paste0(output_dir, "/rf.", seed, ".", ml_var_snake, ".performance.csv"))
+write_csv(performance,file = paste0(output_dir, "/rf.", ml_var_snake, ".", seed, ".performance.csv"))
 
-# 20240730 i don't think i need this one yet
-# # write out prediction probabilities for sample
-# prediction <- predict(results$trained_model,test,type = "prob")  %>% 
-#   bind_cols(.,testIDS) %>% 
-#   select(Group,dx,cancer,normal)
-# write_csv(prediction,file = paste0(outDir, "prediction_", split, ".csv"))
 
 #hyperparameter performance
 hyperparameters <- get_hp_performance(ml_results$trained_model)$dat
-write_csv(hyperparameters,paste0(output_dir, "/rf.", seed, ".", ml_var_snake, ".hp_performance.csv"))
+write_csv(hyperparameters,paste0(output_dir, "/rf.", ml_var_snake, ".", seed, ".hp_performance.csv"))
 
 # write out model
-saveRDS(ml_results$trained_model,file = paste0(output_dir, "/rf.", seed, ".", ml_var_snake, ".model.RDS"))
+saveRDS(ml_results$trained_model,file = paste0(output_dir, "/rf.", ml_var_snake, ".", seed, ".model.RDS"))
