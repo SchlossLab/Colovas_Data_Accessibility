@@ -36,7 +36,7 @@ output_dir <- input[4]
 # data_processed <- readRDS(rds)
 # seed <- 1
 # ml_var_snake <- "data_availability"
-# output_dir <- paste0("Data/ml_results/groundtruth/rf/{ml_var_snake}"
+# output_dir <- paste0("Data/ml_results/groundtruth/rf/{ml_var_snake}")
 
 # run model using mikropml::run_ml
 ml_results <- run_ml(data_processed$dat_transformed,

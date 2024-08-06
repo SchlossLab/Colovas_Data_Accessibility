@@ -13,12 +13,18 @@ filepath <- input[1]
 method <- as.character(input[2])
 ml_var <- input[3]
 
-#local
+##local checks for updated file locations
+# rds <- "Data/groundtruth.data_availability.preprocessed.RDS"
+# data_processed <- readRDS(rds)
+# seed <- 1
+# ml_var_snake <- "data_availability"
+# output_dir <- paste0("Data/ml_results/groundtruth/rf/{ml_var_snake}")
 
-# "Data/ml_results/groundtruth/runs/{method}/{method}.{seeds}.{ml_variables}.performance.csv"
+## local checks for old file locations
+# filepath <- "Data/ml_results/groundtruth/rf"
 # method <- "rf"
-# filepath <- str_glue("Data/ml_results/groundtruth/{method}")
-# outfile <- str_glue("Data/ml_results/groundtruth/{method}/rf.summary.csv")
+# ml_var <- "data_availability"
+# output_dir <- paste0("Data/ml_results/groundtruth/rf/{ml_var_snake}")
 
 #remove "{method}", and then group by method, then you can summarize in one df
 # need to group trained models by the variable used in the filename!!! 

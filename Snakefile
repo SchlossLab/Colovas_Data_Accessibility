@@ -17,7 +17,7 @@ method = [
   
 
 ncores = 1
-seeds = list(range(1, 10))
+seeds = list(range(1, 101))
 
 
 
