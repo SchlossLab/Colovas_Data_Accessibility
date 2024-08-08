@@ -27,9 +27,9 @@ rule targets:
         #"Data/linkrot/groundtruth.alllinks.csv.gz"
         #"Figures/linkrot/groundtruth/alllinks_bystatus.png"
         # all 100 models RF
-        expand("Data/ml_results/groundtruth/rf/rf.{seeds}.{ml_variables}.model.RDS",
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS",
         seeds=seeds, ml_variables=ml_variables)
-
+# "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS"
         # # preproceesed data 
         # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
         # ml_variables = ml_variables)
@@ -128,11 +128,11 @@ rule rf:
     input:
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML_rf.R",
-        rdir = "Data/ml_results/{datasets}/rf/{ml_varaibles}"
+        rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_varaibles}/rf.{ml_variables}.{seeds}.model.RDS", 
-        "Data/ml_results/{datasets}/rf/{ml_varaibles}/rf.{ml_variables}.{seeds}.performance.csv", 
-        "Data/ml_results/{datasets}/rf/{ml_varaibles}/rf.{ml_variables}.{seeds}.hp_performance.csv"
+        "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
+        "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.performance.csv", 
+        "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.hp_performance.csv"
         #"Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.prediction.csv", 
     shell:
         """
