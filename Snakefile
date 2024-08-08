@@ -202,19 +202,6 @@ rule lr_by_journal:
         {input.rscript} {input.metadata_links} {output.filename}
         """
 
-rule lr_by_status:
-    input: 
-        rscript = "Code/linkrot/links_bystatus.R",
-        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz"
-       #metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
-    output:
-        all_filename = "Figures/linkrot/{datasets}/alllinks_bystatus.png",
-        unique_filename = "Figures/linkrot/{datasets}/uniquelinks_bystatus.png"
-    shell: 
-        """
-        {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
-        """
-
 rule lr_by_year: 
     input: 
         rscript = "Code/linkrot/links_byyear.R",

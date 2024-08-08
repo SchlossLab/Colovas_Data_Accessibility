@@ -39,20 +39,34 @@ long_lasting <- filter(distinct,
 #get count data per hostname 
 long_lasting <-
   long_lasting %>% 
-    mutate(.by = hostname, 
+    mutate(short_hostname = str_split_i(hostname, "\\.", -2)) 
+    
+long_lasting <-
+  long_lasting %>% 
+    mutate(.by = short_hostname, 
           n_links = n(), 
           n_dead = sum(!is_alive),
           dead_fract = ((n_dead) / n_links), 
           )
 
 # 20240731 - technically this has every single point still and not just one per hostname...
-long_lasting %>% summarize(.groups = hostname, dead_fract)
+# doesn't actually work 
+
+long_count <-
+  long_lasting %>% 
+    count(dead_fract, short_hostname) 
+      
 
 unique_long_lasting_status <- 
   ggplot(
     data = long_lasting, 
-    mapping = aes(y = hostname, x = dead_fract, group = hostname)
-  ) + 
+    mapping = aes(x = dead_fract, group = short_hostname, 
+                  y = factor(short_hostname, 
+                  levels = c("datadryad", "figshare", "github", 
+                            "gitlab", "zenodo", "doi", "asm"), 
+                  labels = c("datadryad\n(1)", "figshare\n(2)", "github\n(61)", 
+                            "gitlab\n(3)", "zenodo\n(1)", "doi\n(36)", "asm\n(6)"), )
+  )) + 
   geom_point(size = 2.5) +
   labs( x = "Fraction of Dead Links per Website Hostname", 
         y = "Website Hostname (N)",

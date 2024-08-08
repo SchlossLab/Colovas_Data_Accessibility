@@ -11,54 +11,56 @@ library(tidyverse)
 input <- commandArgs(trailingOnly = TRUE)
 alllinks <- input[1]
 alllinks <- read_csv(alllinks)
-all_output <- input[2]
-unique_output <- input[3]
+unique_output <- input[2]
 
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
 #metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
 
 
+# 20240730 - we only care about unique links 
+
 #group links by link_status
-all_type_tally <- alllinks %>%
-                    group_by(website_type) %>% 
-                    tally()
-unique_type_tally <- unique(alllinks) %>% 
+unique_type_tally <- distinct(alllinks) %>% 
                       group_by(website_type) %>%
                       tally()
-all_sum <- as.numeric(sum(all_type_tally$n)) 
 unique_sum <- as.numeric(sum(unique_type_tally$n))
 
-#plot type of link 
-AllLinkType <- 
-  ggplot(
-    data = alllinks, 
-    mapping = aes(x = website_type, fill = binary_status)
-  ) + 
-  geom_bar(stat = "count") +
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
-  labs( y = "Number of External User-Added Links", 
-        x = "Domain Type",
-        title = stringr::str_glue("Total Number of External User-Added Links by Domain Type\nand Status (N={all_sum})"), 
-        fill = "Link Status") +
-  scale_fill_manual(values = c("seagreen2", "indianred1"))       
-AllLinkType
+# only unique links
+distinct <- distinct(alllinks)
 
-ggsave(AllLinkType, filename = all_output)
+#get count data per website_type
+distinct <-
+  distinct %>% 
+    mutate(.by = website_type, 
+          n_links = n(), 
+          n_dead = sum(!is_alive),
+          dead_fract = ((n_dead) / n_links), 
+          )
 
+distinct_count <-
+  distinct %>% 
+      count(dead_fract, website_type) 
+  
+
+# 20240808 - still need to order y axis and add N 
+# do we have a way to do this by value? 
 #plot type of link for only unique links
 UniqueLinkType <- 
   ggplot(
-    data = unique(alllinks), 
-    mapping = aes(x = website_type, fill = binary_status)
+    data = distinct_count, 
+    mapping = aes(y = factor(website_type, 
+      levels = c("com", "org", "gov", "edu", "other"), 
+      labels = c("com\n(77)", "org\n(94)", "gov\n(32)", "edu\n(14)", "other\n(55)")), 
+      x = dead_fract)
   ) + 
-  geom_bar(stat = "count") +
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
-  labs( y = "Number of External User-Added Links", 
-        x = "Domain Type",
-        title = stringr::str_glue("Unique Number of External User-Added Links by Domain Type\nand Status (N={unique_sum})"), 
-        fill = "Link Type") +
-  scale_fill_manual(values = c("seagreen2", "indianred1"))   
+    geom_point(size = 2.5) +
+  labs( x = "Fraction of Dead Links per Website Domain Name",
+        y = "Domain Type (N)",
+        title = stringr::str_glue("Percentage of Unique External User-Added Links by Domain Type\nand Status (N={unique_sum})"), 
+        ) +
+  #scale_y_discrete() +
+scale_x_continuous(labels = scales::percent)
 UniqueLinkType
 
 ggsave(UniqueLinkType, filename = unique_output)
