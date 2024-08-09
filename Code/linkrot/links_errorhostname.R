@@ -34,12 +34,12 @@ error_only_hostname <-
     data = error_only, 
     mapping = aes(y = hostname, fill = as.factor(link_status))
   ) + 
-  geom_bar(stat = "count") +
+  geom_bar(stat = "count", position = "dodge") +
   labs( x = "Number of Links", 
         y = "Website Hostname",
-        title = stringr::str_glue("Number of External User-Added\nLinks by Hostname and Status (N={sum})"), 
+        title = stringr::str_glue("Number of Dead External User-Added\nLinks by Hostname and Error Status (N={sum})"), 
         fill = "Link Status") +
-  scale_fill_manual(values = c("red4", "orangered", "orange" ))
+  scale_fill_grey(labels = c("403 Forbidden", "404 Not Found", "429 Too Many Requests")) 
 error_only_hostname
 
 ggsave(error_only_hostname, filename = output)
