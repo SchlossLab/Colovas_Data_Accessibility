@@ -18,25 +18,39 @@ output <- input[2]
 #output <- "Figures/linkrot/groundtruth/links_byjournal.png"
 
 
-#group articles by the journal they were found in
-# journal_tally <- unique(metadatalinks) %>% 
-#                   group_by(container.title) %>% 
-#                   add_tally()
-
-
 journal_tally <- unique(metadatalinks) %>%
   count(container.title)
   
 sum <- sum(journal_tally$n)
 
-# want to do the factoring outside of the ggplot
-# c("Antimicrobial Agents and Chemotherapy" = "Antimicrobial Agents\nand Chemotherapy", 
-#                  "Applied and Environmental Microbiology"  = "Applied and Environmental\nMicrobiology", 
-#                  "Journal of Microbiology &amp; Biology Education" = "Journal of Microbiology &\nBiology Education",
-#                  "Journal of Clinical Microbiology" = "Journal of Clinical\nMicrobiology", 
-#                  "Microbiology Resource Announcements" = "Microbiology Resource\nAnnouncements", 
-#                   "Infection and Immunity", "Journal of Bacteriology",  
-#                   "Journal of Virology","Microbiology Spectrum", "mBio", "mSphere", "mSystems")
+# 20240809 - i cannot for the life of me figure out how to make this work 
+# journal_tally$container.title <-
+# factor(journal_tally$container.title,
+#     levels = c("Antimicrobial Agents and Chemotherapy",
+#               "Journal of Bacteriology",
+#               "Journal of Microbiology &amp; Biology Education",
+#               "Microbiology Resource Announcements", 
+#               "Journal of Clinical Microbiology", 
+#               "Applied and Environmental Microbiology", 
+#               "Infection and Immunity",
+#               "Journal of Virology",
+#               "mSphere",
+#               "mBio",
+#               "Microbiology Spectrum",
+#               "mSystems"), 
+#     labels = c("Antimicrobial Agents and Chemotherapy" = "Antimicrobial Agents\nand Chemotherapy",
+#               "Journal of Bacteriology" = "Journal of Bacteriology",
+#               "Journal of Microbiology &amp; Biology Education" = "Journal of Microbiology &\nBiology Education",
+#               "Microbiology Resource Announcements" = "Microbiology Resource\nAnnouncements", 
+#               "Journal of Clinical Microbiology" = "Journal of Clinical\nMicrobiology", 
+#               "Applied and Environmental Microbiology"  = "Applied and Environmental\nMicrobiology", 
+#               "Infection and Immunity" = "Infection and Immunity",
+#               "Journal of Virology" = "Journal of Virology",
+#               "mSphere" = "mSphere",
+#               "mBio" = "mBio",
+#               "Microbiology Spectrum" = "Microbiology Spectrum",
+#               "mSystems" = "mSystems"))
+
 
 #plot number of articles containing links by which journal they were in 
 LinksByJournal <- 
@@ -44,22 +58,10 @@ LinksByJournal <-
     data = journal_tally, 
     mapping = aes( x = `n`, y = factor(container.title))) + 
   geom_point(size = 2.5) +
-  labs( y = "Number of Manuscripts Containing Links", 
-        x = "ASM Journal",
-        title = stringr::str_glue("Number of ASM Manuscripts Containing 1+ External Links\nAdded by User (N={sum})"))
+  labs( x = "Number of Manuscripts Containing Links", 
+        y = "ASM Journal",
+        title = stringr::str_glue("Number of ASM Manuscripts Containing 1+ External Links\nAdded by User Separated by Journal (N={sum})"))
 LinksByJournal
 
 ggsave(LinksByJournal, filename = output)
-
-
-# what if i do it as a line graph? 
-# 20240725 does this even need to be a line graph? 
-
-# journal_tally %>%
-#   ggplot(aes(x = container.title, y = `n`)) +
-#   geom_point(stat = "identity") + 
-#   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
-#   labs( y = "Number of Manuscripts Containing Links", 
-#         x = "ASM Journal",
-#         title = stringr::str_glue("Number of ASM Manuscripts Containing 1+ External Links\nAdded by User (N={sum})"))
 
