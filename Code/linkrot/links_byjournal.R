@@ -26,17 +26,24 @@ output <- input[2]
 
 journal_tally <- unique(metadatalinks) %>%
   count(container.title)
-
+  
 sum <- sum(journal_tally$n)
+
+# want to do the factoring outside of the ggplot
+# c("Antimicrobial Agents and Chemotherapy" = "Antimicrobial Agents\nand Chemotherapy", 
+#                  "Applied and Environmental Microbiology"  = "Applied and Environmental\nMicrobiology", 
+#                  "Journal of Microbiology &amp; Biology Education" = "Journal of Microbiology &\nBiology Education",
+#                  "Journal of Clinical Microbiology" = "Journal of Clinical\nMicrobiology", 
+#                  "Microbiology Resource Announcements" = "Microbiology Resource\nAnnouncements", 
+#                   "Infection and Immunity", "Journal of Bacteriology",  
+#                   "Journal of Virology","Microbiology Spectrum", "mBio", "mSphere", "mSystems")
 
 #plot number of articles containing links by which journal they were in 
 LinksByJournal <- 
   ggplot(
-    data = metadatalinks, 
-    mapping = aes(x = container.title)
-  ) + 
-  geom_bar(stat = "count") +
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
+    data = journal_tally, 
+    mapping = aes( x = `n`, y = factor(container.title))) + 
+  geom_point(size = 2.5) +
   labs( y = "Number of Manuscripts Containing Links", 
         x = "ASM Journal",
         title = stringr::str_glue("Number of ASM Manuscripts Containing 1+ External Links\nAdded by User (N={sum})"))
