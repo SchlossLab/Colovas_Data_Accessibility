@@ -8,9 +8,11 @@ library(tidyverse)
 # load data from snakemake input
 # {input.rscript} {input.metadata_links} {output.filename}
 input <- commandArgs(trailingOnly = TRUE)
-metadatalinks <- input[1]
+alllinks <- input[1]
+alllinks <- read_csv(alllinks)
+metadatalinks <- input[2]
 metadatalinks <- read_csv(metadatalinks)
-output <- input[2]
+output <- input[3]
 
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
