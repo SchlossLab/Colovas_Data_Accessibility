@@ -21,19 +21,29 @@ output <- input[2]
 #group articles by the year they were published
 year_tally <- metadatalinks %>% 
                   group_by(year.published) %>% 
-                  tally()
+                  tally() 
+
+add_zeros <-
+  tibble("year.published" = c(2013, 2014), 
+          "n" = c(0, 0))
+      
+year_tally_zeros <-
+    rbind(year_tally, add_zeros) 
+  
+
+
 sum <- as.numeric(sum(year_tally$n)) 
 
 LinksByYear <- 
   ggplot(
-    data = metadatalinks, 
-    mapping = aes(x = year.published)
+    data = year_tally_zeros, 
+    mapping = aes(x = year.published, y = `n`)
   ) + 
-  geom_line(stat = "count", size = 1) +
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
+  geom_line(stat = "identity", linewidth = 1) +
   labs( y = "Number of Manuscripts Containing Links", 
         x = "Year Published",
-        title = stringr::str_glue("Number of ASM Manuscripts by Year Containing 1+ External Links\nAdded by User (N={sum})")) 
+        title = stringr::str_glue("Number of ASM Manuscripts by Year Containing 1+ External Links\nAdded by User (N={sum})")) +
+  scale_x_continuous(breaks = c(2011, 2015, 2020, 2024))
 LinksByYear
 
 ggsave(LinksByYear, filename = output)

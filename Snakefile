@@ -193,13 +193,13 @@ rule all_lr_figures:
 rule lr_by_journal: 
     input: 
         rscript = "Code/linkrot/links_byjournal.R",
-       # all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
+        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
         metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
     output:
         filename = "Figures/linkrot/{datasets}/links_byjournal.png"
     shell: 
         """
-        {input.rscript} {input.metadata_links} {output.filename}
+        {input.rscript} {input.all_links} {input.metadata_links} {output.filename}
         """
 
 rule lr_by_year: 
