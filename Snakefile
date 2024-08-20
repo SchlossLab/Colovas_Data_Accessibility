@@ -9,10 +9,10 @@ ml_variables = [
 ]
   
 method = [
-  "glmnet",
+  #"glmnet",
   "rf",
   #"rpart2",
-  "xgbTree"
+  #"xgbTree"
 ]
   
 
@@ -23,12 +23,14 @@ seeds = list(range(1, 101))
 
 rule targets:
     input: 
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.1234.model.RDS", 
+        ml_variables = ml_variables)
         # linkrot
         #"Data/linkrot/groundtruth.alllinks.csv.gz"
         #"Figures/linkrot/groundtruth/alllinks_bystatus.png"
         # all 100 models RF
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS",
-        seeds=seeds, ml_variables=ml_variables)
+        #expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS",
+        #seeds=seeds, ml_variables=ml_variables)
 # "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS"
         # # preproceesed data 
         # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
