@@ -39,12 +39,12 @@ if (method == "glmnet") {
     alpha <- plot_hp_performance(combined$dat, alpha, AUC) 
     plot <- cowplot::plot_grid(lambda, alpha, 
                                labels = c("lambda", "alpha")) 
-    ggsave(plot, filename = str_glue("{filepath}/{method}.{ml_var}.png"))  
+    ggsave(plot, filename = str_glue("{filepath}/hp_perf.{method}.{ml_var}.png"))  
 }
 
 if (method == "rf") {
     plot_hp_performance(combined$dat, mtry, AUC) %>%
-        ggsave(filename = str_glue("{filepath}/{method}.{ml_var}.png"))  
+        ggsave(filename = str_glue("{filepath}/hp_perf.{method}.{ml_var}.png"))  
 }
 
 if (method == "xgbTree") {
@@ -54,6 +54,6 @@ if (method == "xgbTree") {
     
     plot <- cowplot::plot_grid(max, eta, sub, 
                     labels = c("max_depth", "eta", "subsample"))
-    ggsave(plot, filename = str_glue("{filepath}/{method}.{ml_var}.png"))  
+    ggsave(plot, filename = str_glue("{filepath}/hp_perf.{method}.{ml_var}.png"))  
 
 }

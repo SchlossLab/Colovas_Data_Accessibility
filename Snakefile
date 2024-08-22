@@ -23,18 +23,10 @@ seeds = list(range(1, 101))
 
 rule targets:
     input: 
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.1234.model.RDS", 
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/auroc.{ml_variables}.png", 
+        ml_variables = ml_variables), 
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/hp_perf.rf.{ml_variables}.png", 
         ml_variables = ml_variables)
-        # linkrot
-        #"Data/linkrot/groundtruth.alllinks.csv.gz"
-        #"Figures/linkrot/groundtruth/alllinks_bystatus.png"
-        # all 100 models RF
-        #expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS",
-        #seeds=seeds, ml_variables=ml_variables)
-# "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS"
-        # # preproceesed data 
-        # expand("Data/{datasets}.{ml_variables}.preprocessed.RDS", datasets = datasets, 
-        # ml_variables = ml_variables)
 
         # # all ml results  
         # # figures 
@@ -174,7 +166,7 @@ rule auroc:
         rscript = "Code/auroc_fig.R",
         filepath = "Data/ml_results/{datasets}/{method}/{ml_variables}"
     output: 
-        "Data/ml_results/{datasets}/{method}/auroc.{method}.{ml_variables}.png"
+        "Data/ml_results/{datasets}/{method}/auroc.{ml_variables}.png"
     resources: 
         mem_mb = 20000 
     shell: 
