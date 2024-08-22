@@ -114,17 +114,17 @@ rule ml_prep:
 #         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.method} {wildcards.ml_variables} {output.model} {output.perf}
 #         """
 
-rule glmnet: 
-    input:
-        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
-        rscript = "Code/trainML_glmnet.R",
-    output:
-        model="Data/ml_results/{datasets}/glmnet/glmnet.{seeds}.{ml_variables}.model.RDS", 
-        perf="Data/ml_results/{datasets}/glmnet/glmnet.{seeds}.{ml_variables}.performance.csv", 
-    shell:
-        """
-        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
-        """
+# rule glmnet: 
+#     input:
+#         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+#         rscript = "Code/trainML_glmnet.R",
+#     output:
+#         model="Data/ml_results/{datasets}/glmnet/glmnet.{seeds}.{ml_variables}.model.RDS", 
+#         perf="Data/ml_results/{datasets}/glmnet/glmnet.{seeds}.{ml_variables}.performance.csv", 
+#     shell:
+#         """
+#         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
+#         """
 
 rule rf: 
     input:
@@ -141,37 +141,46 @@ rule rf:
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.rdir}
         """
 
-rule xgbTree: 
-    input:
-        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
-        rscript = "Code/trainML_xgbTree.R",
-    output:
-        model="Data/ml_results/{datasets}/xgbTree/xgbTree.{seeds}.{ml_variables}.model.RDS", 
-        perf="Data/ml_results/{datasets}/xgbTree/xgbTree.{seeds}.{ml_variables}.performance.csv", 
-    resources: 
-        mem_mb = 20000
-    shell:
-        """
-        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
-        """
-
-# # do not run this rule OVER the results again because i want the stats
-# # to show that i picked a good mtry value
-# rule merge_results_figs: 
-#     input: 
-#         rscript = "Code/combine_models.R",
-#         filepath = "Data/ml_results/{datasets}/{method}"
-#         # expand("Data/ml_results/groundtruth/{method}/{method}.{seeds}.{ml_variables}.model.RDS", 
-#         # seeds=seeds, method = method, ml_variables = ml_variables)
-#     output: 
-#         "Data/ml_results/{datasets}/{method}/{method}.{ml_variables}.png"
+# rule xgbTree: 
+#     input:
+#         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+#         rscript = "Code/trainML_xgbTree.R",
+#     output:
+#         model="Data/ml_results/{datasets}/xgbTree/xgbTree.{seeds}.{ml_variables}.model.RDS", 
+#         perf="Data/ml_results/{datasets}/xgbTree/xgbTree.{seeds}.{ml_variables}.performance.csv", 
 #     resources: 
-#         mem_mb = 20000 
-#     shell: 
+#         mem_mb = 20000
+#     shell:
 #         """
-#         {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
+#         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {output.model} {output.perf}
 #         """
+
+
+rule merge_results_figs: 
+    input: 
+        rscript = "Code/combine_models.R",
+        filepath = "Data/ml_results/{datasets}/{method}/{ml_variables}"
+    output: 
+        "Data/ml_results/{datasets}/{method}/hp_perf.{method}.{ml_variables}.png"
+    resources: 
+        mem_mb = 20000 
+    shell: 
+        """
+        {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
+        """
     
+rule auroc: 
+    input: 
+        rscript = "Code/auroc_fig.R",
+        filepath = "Data/ml_results/{datasets}/{method}/{ml_variables}"
+    output: 
+        "Data/ml_results/{datasets}/{method}/auroc.{method}.{ml_variables}.png"
+    resources: 
+        mem_mb = 20000 
+    shell: 
+        """
+        {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
+        """
 
 #-------------------LINK-------ROT-----------------------------------------------------------
 

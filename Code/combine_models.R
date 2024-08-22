@@ -15,14 +15,20 @@ method <- as.character(input[2])
 ml_var <- input[3]
 
 #practice locally
-# filepath <-"Data/ml_results/groundtruth/xgbTree"
-# method <- "xgbTree"
-# ml_var <- "new_seq_data"
+# filepath <-"Data/ml_results/groundtruth/rf/data_availability"
+# method <- "rf"
+# ml_var <- "data_availability"
 
 
 files_list <- list.files(filepath, 
+                        #pattern = str_glue("{ml_var}\\.[0-9]{1,3}$\\.(.RDS)*"),
                         pattern = str_glue("{ml_var}.*.RDS"), 
                         full.names = TRUE)
+
+index <- 
+    grep("1234", files_list)
+
+files_list <- files_list[-index]
 
 results <- map(files_list, readRDS)
 
@@ -32,7 +38,7 @@ if (method == "glmnet") {
     lambda <- plot_hp_performance(combined$dat, lambda, AUC)
     alpha <- plot_hp_performance(combined$dat, alpha, AUC) 
     plot <- cowplot::plot_grid(lambda, alpha, 
-                        labels = c("lambda", "alpha")) 
+                               labels = c("lambda", "alpha")) 
     ggsave(plot, filename = str_glue("{filepath}/{method}.{ml_var}.png"))  
 }
 
