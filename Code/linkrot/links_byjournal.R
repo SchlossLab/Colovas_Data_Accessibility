@@ -55,33 +55,6 @@ distinct_count <-
   distinct %>% 
       count(dead_fract, container.title) 
 
-# 20240809 - i cannot for the life of me figure out how to make this work 
-# distinct_count$container.title <-
-# factor(journal_tally$container.title,
-#     levels = c("Antimicrobial Agents and Chemotherapy",
-#               "Applied and Environmental Microbiology",
-#               "Infection and Immunity",
-#               "Journal of Bacteriology",
-#               "Journal of Clinical Microbiology", 
-#               "Journal of Microbiology &amp; Biology Education",
-#               "Journal of Virology",
-#               "mBio",
-#               "Microbiology Resource Announcements", 
-#               "Microbiology Spectrum",
-#               "mSphere",
-#               "mSystems"), 
-#     labels = c("Antimicrobial Agents and Chemotherapy" = "Antimicrobial Agents\nand Chemotherapy\n(2)",
-#               "Applied and Environmental Microbiology"  = "Applied and Environmental\nMicrobiology\n(8)", 
-#               "Infection and Immunity" = "Infection and Immunity\n(5)",
-#               "Journal of Bacteriology" = "Journal of Bacteriology\n(8)",
-#               "Journal of Clinical Microbiology" = "Journal of Clinical\nMicrobiology\n(4)", 
-#               "Journal of Microbiology &amp; Biology Education" = "Journal of Microbiology &\nBiology Education\n(9)",
-#               "Journal of Virology" = "Journal of Virology\n(1)",
-#               "mBio" = "mBio\n(34)",
-#               "Microbiology Resource Announcements" = "Microbiology Resource\nAnnouncements\n(37)",
-#               "Microbiology Spectrum" = "Microbiology Spectrum\n(59)", 
-#               "mSphere" = "mSphere\n(20)",
-#               "mSystems" = "mSystems\n(85)"))
 
 
 #plot number of articles containing links by which journal they were in 
