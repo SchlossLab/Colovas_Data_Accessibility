@@ -13,8 +13,8 @@ method <- as.character(input[2])
 ml_var <- input[3]
 
 # local data
-# filepath <- "Data/ml_results/groundtruth/rf/data_availability"
-# ml_var <- "data_availability"
+# filepath <- "Data/ml_results/groundtruth/rf/new_seq_data"
+# ml_var <- "new_seq_data"
 
 
 #get list of all files
@@ -28,6 +28,18 @@ index <-
 files_list <- files_list[-index]
 
 all_mtry <- read_csv(files_list)
+
+#find the best seed for each variable
+#seed 44 for data_availability
+#seed 49 for new_seq_data
+
+# all_mtry %>% 
+#     arrange(-AUC)
+
+# best_auc_seed <- as.integer((which.max(all_mtry$AUC))/5)
+
+# best_auc_filname <- files_list[best_auc_seed]
+
 
 # need to summarize for measures of central tendency
 # of each AUC for each mtry value 

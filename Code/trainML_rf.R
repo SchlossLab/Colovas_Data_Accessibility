@@ -49,6 +49,7 @@ ml_results <- run_ml(data_processed$dat_transformed,
 
 # "Data/ml_results/{datasets}/rf/{ml_varaibles}/rf.{ml_variables}.{seeds}.model.RDS",
 #output_dir <- paste0("Data/ml_results/groundtruth/rf/{ml_var_snake}"
+
 # write out performance results
 performance <- ml_results$performance
 write_csv(performance,file = paste0(output_dir, "/rf.", ml_var_snake, ".", seed, ".performance.csv"))
