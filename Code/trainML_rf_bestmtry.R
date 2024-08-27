@@ -56,11 +56,10 @@ output_dir <- paste0("Data/ml_results/groundtruth/rf/{ml_var_snake}")
 results_cv <- run_ml(data_processed$dat_transformed,
                    method = "rf",  
                    outcome_colname = ml_var_snake,
-                   training_frac = 1.0,
+                   training_frac = .99,
                    kfold = 5, 
                    cv_times = 100, 
                    hyperparameters = list(mtry =  c(84, 100, 150, 200, 300)),
-                   find_feature_importance = TRUE,
                    seed = best_seed, 
                    calculate_performance = FALSE)
 # save besttune
@@ -96,12 +95,12 @@ output_dir <- paste0("Data/ml_results/groundtruth/rf/{ml_var_snake}")
 results_cv <- run_ml(data_processed$dat_transformed,
                    method = "rf",  
                    outcome_colname = ml_var_snake,
-                   training_frac = 1.0,
-                   kfold = 5, 
-                   cv_times = 100, 
+                   training_frac = .99,
+                   kfold = 5,
+                   cv_times = 100,
                    hyperparameters = list(mtry =  c(84, 100, 150, 200, 300)),
                    find_feature_importance = TRUE,
-                   seed = best_seed, 
+                   seed = best_seed,
                    calculate_performance = FALSE)
 # save besttune
 best_tune <- results_cv$trained_model$bestTune
