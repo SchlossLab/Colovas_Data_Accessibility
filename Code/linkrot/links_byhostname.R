@@ -54,25 +54,20 @@ long_lasting <-
 
 long_count <-
   long_lasting %>% 
-    count(dead_fract, short_hostname) 
+    count(dead_fract, short_hostname) %>%
+    mutate(fancy_name = paste0(str_to_title(short_hostname), "\n(", `n`, ")"))
       
 
 unique_long_lasting_status <- 
   ggplot(
-    data = long_lasting, 
-    mapping = aes(x = dead_fract, group = short_hostname, 
-                  y = factor(short_hostname, 
-                  levels = c("datadryad", "figshare", "github", 
-                            "gitlab", "zenodo", "doi", "asm"), 
-                  labels = c("datadryad\n(1)", "figshare\n(2)", "github\n(61)", 
-                            "gitlab\n(3)", "zenodo\n(1)", "doi\n(36)", "asm\n(6)"), )
-  )) + 
+    data = long_count, 
+    mapping = aes(x = dead_fract, 
+                  y = fct_reorder(fancy_name, dead_fract))) + 
   geom_point(size = 2.5) +
   labs( x = "Fraction of Dead Links per Website Hostname", 
         y = "Website Hostname (N)",
-        title = stringr::str_glue("Percentage of Unique External User-Added Links\nby Hostname and Status for 'Long-Lasting' Hostnames (N={unique_sum})") 
-      ) +
-  scale_x_continuous(labels = scales::percent)
+        title = stringr::str_glue("Percentage of Unique External User-Added Links\nby Hostname and Status for 'Long-Lasting' Hostnames (N={unique_sum})")) +
+  scale_x_continuous(labels = scales::percent) 
 unique_long_lasting_status
 
 ggsave(unique_long_lasting_status, filename = unique_output)
