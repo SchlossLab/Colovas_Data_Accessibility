@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 #linkrot figure generator for number of links by year by their status
-#
+#20240828 - this graph is also redundant so i haven't updated it
 #
 #library statements
 library(tidyverse)
@@ -27,20 +27,6 @@ year_tally <- all_with_meta %>%
                   tally()
 sum <- as.numeric(sum(year_tally$n)) 
 
-#as bargraph
-# LinksByYearAndStatus <- 
-#   ggplot(
-#     data = unique(all_with_meta), 
-#     mapping = aes(x = year.published, fill = binary_status)) + 
-#   geom_bar(stat = "count") +
-#   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
-#   labs( y = "Number of Manuscripts Containing Links", 
-#         x = "Year Published",
-#         title = stringr::str_glue("Number of External User-Added Links by Year and Status (N={sum})"), 
-#         fill = "Link Status") +
-# scale_fill_manual(values = c("seagreen2", "indianred1"))
-# LinksByYearAndStatus
-#ggsave(LinksByYearAndStatus, filename = output)
 
 #as linegraph, 
 LinksByYearAndStatus_Line <- 

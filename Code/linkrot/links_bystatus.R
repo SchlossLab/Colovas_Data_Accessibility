@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 #linkrot figure generator for number of links by status
+#20240828 - not updated because figure became redundant
 #
 #
 #library statements
@@ -29,14 +30,6 @@ unique_status_tally <- unique(alllinks) %>%
                       group_by(binary_status) %>%
                       tally()
 
-#redundant
-# all_status_tally <- alllinks %>%
-#   group_by(binary_status) %>%
-#   tally()
-
-# unique_status_tally <- unique(alllinks) %>%
-#   group_by(binary_status) %>%
-#   tally()
 
 all_sum <- as.numeric(sum(all_status_tally$n)) 
 unique_sum <- as.numeric(sum(unique_status_tally$n))

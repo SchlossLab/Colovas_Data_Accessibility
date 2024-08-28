@@ -29,21 +29,21 @@ add_zeros <-
       
 year_tally_zeros <-
     rbind(year_tally, add_zeros) 
-  
-
 
 sum <- as.numeric(sum(year_tally$n)) 
 
+#20240828 - i have no idea why the breaks don't work for this geom_line
 LinksByYear <- 
   ggplot(
     data = year_tally_zeros, 
-    mapping = aes(x = year.published, y = `n`)
-  ) + 
+    mapping = aes(x = as.numeric(year.published), y = `n`)) + 
   geom_line(stat = "identity", linewidth = 1) +
+  #scale_x_continuous(breaks = c(2000, 2005, 2010, 2015, 2020, 2024), 
+  #                  labels = c(2000, 2005, 2010, 2015, 2020, 2024)) +
   labs( y = "Number of Manuscripts Containing Links", 
         x = "Year Published",
-        title = stringr::str_glue("Number of ASM Manuscripts by Year Containing 1+ External Links\nAdded by User (N={sum})")) +
-  scale_x_continuous(breaks = c(2011, 2015, 2020, 2024))
+        title = stringr::str_glue("Number of ASM Manuscripts by Year Containing 1+ External Links\nAdded by User (N={sum})")) 
 LinksByYear
+
 
 ggsave(LinksByYear, filename = output)

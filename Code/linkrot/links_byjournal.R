@@ -4,7 +4,6 @@
 #
 #library statements
 library(tidyverse)
-source("Code/utilities.R")
 
 # load data from snakemake input
 # {input.rscript} {input.metadata_links} {output.filename}
@@ -54,20 +53,22 @@ distinct <-
 
 distinct_count <-
   distinct %>% 
-      count(dead_fract, container.title) 
+      count(dead_fract, container.title) %>%
+      mutate(fancy_name = paste0(container.title, "\n(", `n`, ")"))
+      
 
-# # 20240826 - trying to factor the container title but it removes the count so uhhh
+  distinct_count$fancy_name <-
+    map_chr(distinct_count$fancy_name, gsub, 
+      pattern = "&amp;", 
+      replacement = "&")
 
-# factor(distinct$container.title, levels = journals) %>%
-#     tally(container.title, dead_fract,) 
 
 #plot number of articles containing links by which journal they were in
 LinksByJournal <- 
   ggplot(
     data = distinct_count, 
     mapping = aes(x = dead_fract, 
-    #thank you pat!
-                  y = fct_reorder(container.title, dead_fract))) + 
+                  y = fct_reorder(fancy_name, dead_fract))) + 
   geom_point(size = 2.5) +
   labs( x = "Fraction of Dead Links per Journal", 
         y = "ASM Journal",

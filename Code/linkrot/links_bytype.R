@@ -37,21 +37,18 @@ distinct <-
           n_dead = sum(!is_alive),
           dead_fract = ((n_dead) / n_links), 
           )
-
+#add graphing name too
 distinct_count <-
   distinct %>% 
-      count(dead_fract, website_type) 
+      count(dead_fract, website_type) %>%
+      mutate(fancy_name = paste0(str_to_title(website_type), "\n(", `n`, ")"))
   
 
-# 20240808 - still need to order y axis and add N 
-# do we have a way to do this by value? 
-#plot type of link for only unique links
+#create plot
 UniqueLinkType <- 
   ggplot(
     data = distinct_count, 
-    mapping = aes(y = factor(website_type, 
-      levels = c("com", "org", "gov", "edu", "other"), 
-      labels = c("com\n(77)", "org\n(94)", "gov\n(32)", "edu\n(14)", "other\n(55)")), 
+    mapping = aes(y = fct_reorder(fancy_name, -dead_fract),  
       x = dead_fract)
   ) + 
     geom_point(size = 2.5) +
@@ -59,7 +56,6 @@ UniqueLinkType <-
         y = "Domain Type (N)",
         title = stringr::str_glue("Percentage of Unique External User-Added Links by Domain Type\nand Status (N={unique_sum})"), 
         ) +
-  #scale_y_discrete() +
 scale_x_continuous(labels = scales::percent)
 UniqueLinkType
 
