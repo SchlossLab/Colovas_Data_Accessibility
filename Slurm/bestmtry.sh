@@ -17,7 +17,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=16g
-#SBATCH --time=2:00:00
+#SBATCH --time=100:00:00
 
  
 
@@ -54,7 +54,7 @@ echo "Running from $(pwd)"
 source /etc/profile.d/http_proxy.sh
 
 #conda env
-source ~/miniconda3/etc/profile.d/conda.sh
+source ~/miniforge3/etc/profile.d/conda.sh
 conda activate data_acc
 
 
