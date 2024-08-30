@@ -15,8 +15,7 @@ output <- input[2]
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz")
 #metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
-#all_output <- "Figures/linkrot/groundtruth/alllinks_bystatus.png"
-#unique_output <- "Figures/linkrot/groundtruth/uniquelinks_bystatus.png"
+#output <- "Figures/linkrot/groundtruth/links_byyear.png"
 
 #group articles by the year they were published
 year_tally <- metadatalinks %>% 

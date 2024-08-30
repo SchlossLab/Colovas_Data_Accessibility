@@ -16,7 +16,7 @@ output <- input[2]
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
 #metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
-
+#output <- "Figures/linkrot/groundtruth/links_errorhostname.png"
 
 #separate out only deadlinks
 error_only <- filter(alllinks, link_status != 200)

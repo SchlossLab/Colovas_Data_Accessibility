@@ -16,7 +16,7 @@ unique_output <- input[2]
 #non-snakemake implementation
 #alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
 #metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
-
+#unique_output <- Figures/linkrot/groundtruth/uniquelinks_bytype.png"
 
 # 20240730 - we only care about unique links 
 
