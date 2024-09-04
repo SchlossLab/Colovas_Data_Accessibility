@@ -26,7 +26,13 @@ rule targets:
         expand("Data/ml_results/groundtruth/rf/{ml_variables}/auroc.{ml_variables}.png", 
         ml_variables = ml_variables), 
         expand("Data/ml_results/groundtruth/rf/{ml_variables}/hp_perf.rf.{ml_variables}.png", 
-        ml_variables = ml_variables)
+        ml_variables = ml_variables),
+        "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.bestTune.csv",
+        "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.model.RDS",
+        "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.bestTune.csv", 
+        "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.model.RDS"
+
+
 
         # # all ml results  
         # # figures 
@@ -174,6 +180,23 @@ rule auroc:
         {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
         """
 
+#   "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.bestTune.csv",
+#         "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.model.RDS",
+#         "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.bestTune.csv", 
+#         "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.model.RDS"
+
+rule best_mtry: 
+    input:
+        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+        rscript = "Code/trainML_rf_bestmtry.R",
+        rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
+    output:
+        "Data/ml_results/{datasets}/rf/{ml_variables}/best.rf.{ml_variables}.{seeds}.model.RDS", 
+        "Data/ml_results/{datasets}/rf/{ml_variables}/best.rf.{ml_variables}.{seeds}.bestTune.csv" 
+    shell:
+        """
+        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.rdir}
+        """
 #-------------------LINK-------ROT-----------------------------------------------------------
 
 rule link_rot: 

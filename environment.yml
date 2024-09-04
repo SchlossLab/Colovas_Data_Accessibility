@@ -19,6 +19,7 @@ dependencies:
   - r-xml2
   - r-textstem
   - r-cowplot
+  - r-devtools
   
 
 
