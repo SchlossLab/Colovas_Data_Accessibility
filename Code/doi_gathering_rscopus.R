@@ -6,14 +6,17 @@
 library(tidyverse)
 library(rscopus)
 
-key <- "24a07ed9eea613f729d6469a816966c"
+personal_key <- "f24a07ed9eea613f729d6469a816966c"
+institutional_key <- "7c25e0e82b37408e45c8da604e824725"
 
-set_api_key(key)
-have_api_key(key)
-get_api_key(key)
+set_api_key(personal_key)
+have_api_key()
+
+inst_token_header(institutional_key)
+get_api_key()
 
 if (have_api_key()) {
-auth <- elsevier_authenticate(key, verbose = TRUE)
+auth <- elsevier_authenticate(institutional_key, verbose = TRUE)
 }
 
 rscopus::is_elsevier_guest()
