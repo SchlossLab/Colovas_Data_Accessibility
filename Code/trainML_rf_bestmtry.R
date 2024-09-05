@@ -9,7 +9,6 @@ library(tidytext)
 library(devtools)
 #library(mikropml)
 install_github("joannacolovas/mikropml", 
-                auth_token = "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", 
                 quiet = TRUE)
 
 
@@ -56,9 +55,11 @@ results_cv <- mikropml::run_ml(data_processed$dat_transformed,
                    calculate_performance = FALSE)
 # save besttune
 best_tune <- results_cv$trained_model$bestTune
-write_csv(performance,file = paste0(output_dir, "/best.rf.", ml_var_snake, ".", best_seed, ".bestTune.csv"))
+write_csv(best_tune,file = paste0(output_dir, "/best.rf.", ml_var_snake, ".", best_seed, ".bestTune.csv"))
 
 
 # write out model
 saveRDS(results_cv$trained_model,file = paste0(output_dir, "/best.rf.", ml_var_snake, ".", best_seed, ".model.RDS"))
+
+
 
