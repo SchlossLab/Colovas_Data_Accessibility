@@ -195,11 +195,12 @@ rule best_mtry:
         rscript = "Code/trainML_rf_bestmtry.R",
         rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best.rf.{ml_variables}.{seeds}.model.RDS", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best.rf.{ml_variables}.{seeds}.bestTune.csv" 
+        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS", 
+        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.bestTune.csv", 
+        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.hp_performance.csv" 
     shell:
         """
-        {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.rdir}
+        {input.rscript} {input.rds} {wildcards.ml_variables} {input.rdir}
         """
 #-------------------LINK-------ROT-----------------------------------------------------------
 
