@@ -10,9 +10,10 @@ library(mikropml)
 # {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
 
 input <- commandArgs(trailingOnly = TRUE)
-filepath <- input[1]
+in_filepath <- input[1]
 method <- as.character(input[2])
 ml_var <- input[3]
+out_filepath <- input[4]
 
 #practice locally
 # filepath <-"Data/ml_results/groundtruth/rf/data_availability"
@@ -20,15 +21,11 @@ ml_var <- input[3]
 # ml_var <- "data_availability"
 
 
-files_list <- list.files(filepath, 
+files_list <- list.files(in_filepath, 
                         #pattern = str_glue("{ml_var}\\.[0-9]{1,3}$\\.(.RDS)*"),
                         pattern = str_glue("{ml_var}.*.RDS"), 
                         full.names = TRUE)
 
-index <- 
-    grep("1234", files_list)
-
-files_list <- files_list[-index]
 
 results <- map(files_list, readRDS)
 
@@ -39,12 +36,12 @@ if (method == "glmnet") {
     alpha <- plot_hp_performance(combined$dat, alpha, AUC) 
     plot <- cowplot::plot_grid(lambda, alpha, 
                                labels = c("lambda", "alpha")) 
-    ggsave(plot, filename = str_glue("{filepath}/hp_perf.{method}.{ml_var}.png"))  
+    ggsave(plot, filename = out_filepath)
 }
 
 if (method == "rf") {
     plot_hp_performance(combined$dat, mtry, AUC) %>%
-        ggsave(filename = str_glue("{filepath}/hp_perf.{method}.{ml_var}.png"))  
+        ggsave(filename = out_filepath)  
 }
 
 if (method == "xgbTree") {
@@ -54,6 +51,6 @@ if (method == "xgbTree") {
     
     plot <- cowplot::plot_grid(max, eta, sub, 
                     labels = c("max_depth", "eta", "subsample"))
-    ggsave(plot, filename = str_glue("{filepath}/hp_perf.{method}.{ml_var}.png"))  
-
+    ggsave(plot, filename = out_filepath)  
 }
+

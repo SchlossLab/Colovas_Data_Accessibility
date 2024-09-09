@@ -9,10 +9,10 @@ ml_variables = [
 ]
   
 method = [
-  #"glmnet",
+  "glmnet",
   "rf",
   #"rpart2",
-  #"xgbTree"
+  "xgbTree"
 ]
   
 
@@ -23,16 +23,20 @@ seeds = list(range(1, 101))
 
 rule targets:
     input: 
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/auroc.{ml_variables}.png", 
-        ml_variables = ml_variables), 
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/hp_perf.rf.{ml_variables}.png", 
-        ml_variables = ml_variables),
-        "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.bestTune.csv",
-        "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.model.RDS",
-        "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.bestTune.csv", 
-        "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.model.RDS"
-
-
+       expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", 
+       ml_variables = ml_variables), 
+       expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", 
+       ml_variables = ml_variables)
+    
+       
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/auroc.{ml_variables}.png", 
+        # ml_variables = ml_variables), 
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/hp_perf.rf.{ml_variables}.png", 
+        # ml_variables = ml_variables),
+        # "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.bestTune.csv",
+        # "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.model.RDS",
+        # "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.bestTune.csv", 
+        # "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.model.RDS"
 
         # # all ml results  
         # # figures 
@@ -159,7 +163,7 @@ rule merge_results_figs:
         rscript = "Code/combine_models.R",
         filepath = "Data/ml_results/{datasets}/{method}/{ml_variables}"
     output: 
-        "Data/ml_results/{datasets}/{method}/hp_perf.{method}.{ml_variables}.png"
+        "Figures/ml_results/{datasets}/{method}/hp_perf.{method}.{ml_variables}.png"
     resources: 
         mem_mb = 20000 
     shell: 
@@ -172,7 +176,7 @@ rule auroc:
         rscript = "Code/auroc_fig.R",
         filepath = "Data/ml_results/{datasets}/{method}/{ml_variables}"
     output: 
-        "Data/ml_results/{datasets}/{method}/auroc.{ml_variables}.png"
+        "Figures/ml_results/{datasets}/{method}/auroc.{ml_variables}.png"
     resources: 
         mem_mb = 20000 
     shell: 

@@ -8,24 +8,21 @@ library(tidyverse)
 
 # get file input from snakemake
 input <- commandArgs(trailingOnly = TRUE)
-filepath <- input[1]
+in_filepath <- input[1]
 method <- as.character(input[2])
 ml_var <- input[3]
+out_filepath <- input[4]
 
 # local data
-# filepath <- "Data/ml_results/groundtruth/rf/new_seq_data"
+# in_filepath <- "Data/ml_results/groundtruth/rf/new_seq_data"
 # ml_var <- "new_seq_data"
 
 
 #get list of all files
-files_list <- list.files(filepath, 
+files_list <- list.files(in_filepath, 
                         pattern = "hp_performance.csv", 
                         full.names = TRUE)
 
-index <- 
-    grep("1234", files_list)
-
-files_list <- files_list[-index]
 
 all_mtry <- read_csv(files_list)
 
@@ -66,4 +63,4 @@ auroc <-
             color = "Mtry Value"
             )
 
-ggsave(auroc, filename = str_glue("{filepath}/auroc.{ml_var}.png"))  
+ggsave(auroc, filename = out_filepath)  
