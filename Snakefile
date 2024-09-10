@@ -23,10 +23,8 @@ seeds = list(range(1, 101))
 
 rule targets:
     input: 
-       expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", 
-       ml_variables = ml_variables), 
-       expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", 
-       ml_variables = ml_variables)
+      expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS",
+      ml_variables = ml_variables)
     
        
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/auroc.{ml_variables}.png", 

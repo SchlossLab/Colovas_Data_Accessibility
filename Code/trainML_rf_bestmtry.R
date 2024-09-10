@@ -67,7 +67,7 @@ write_csv(best_tune,file = paste0(output_dir, "/best/best.rf.", ml_var_snake, ".
 
 #hyperparameter performance
 hyperparameters <- mikropml::get_hp_performance(results_cv$trained_model)$dat
-write_csv(hyperparameters,paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", seed, ".hp_performance.csv"))
+write_csv(hyperparameters,paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", best_seed, ".hp_performance.csv"))
 
 # write out model
 saveRDS(results_cv$trained_model,file = paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", best_seed, ".model.RDS"))
