@@ -14,6 +14,11 @@ method = [
   #"rpart2",
   "xgbTree"
 ]
+
+# mtry_values = {
+#     "new_seq_data" = 300, 
+#     "data_availability" = 200
+# }
   
 
 ncores = 1
@@ -199,6 +204,25 @@ rule best_mtry:
     shell:
         """
         {input.rscript} {input.rds} {wildcards.ml_variables} {input.rdir}
+        """
+
+## 20240911 - needs way to make sure ml_variables correspond to mtry values
+
+rule final_model: 
+    input:
+        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+        rscript = "Code/trainML_rf_finalmodel.R",
+        rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
+    output:
+        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS", 
+        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.bestTune.csv", 
+        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.hp_performance.csv" 
+
+    params:
+        mtry_dict = {"new_seq_data": 300, "data_availability": 200} # Define a dictionary for ml_variables to mtry_values mapping
+    shell:
+        """
+        {input.rscript} {input.rds} {wildcards.ml_variables} {params.mtry_dict[wildcards.ml_variables]} {input.rdir}
         """
 #-------------------LINK-------ROT-----------------------------------------------------------
 
