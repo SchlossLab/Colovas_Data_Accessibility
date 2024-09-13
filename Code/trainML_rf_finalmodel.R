@@ -30,6 +30,7 @@ mtry_value
 # data_processed <- readRDS(rds)
 # best_seed <- 102899
 # ml_var_snake <- "data_availability"
+# mtry_value <-200
 # output_dir <- paste0("Data/ml_results/groundtruth/rf/", ml_var_snake)
 
 # # 3. We take that mtry value and fit a model to 100% of the training data
@@ -47,13 +48,13 @@ mtry_value
 
 
 ## practice model with small dataset 
-# results_cv <- mikropml::run_ml(mikropml::otu_mini_bin,
+# final_result <- mikropml::run_ml(mikropml::otu_mini_bin,
 #                    method = "rf",  
 #                    training_frac = 1.0,
-#                    kfold = 5, 
-#                    cv_times = 100, 
+#                    hyperparameters = list(mtry = 2), 
 #                    seed = 102899, 
-#                    calculate_performance = FALSE)
+#                    calculate_performance = FALSE, 
+#                    cross_val = caret::trainControl(method = "none"))
 
 
 # run model using mikropml::run_ml
@@ -61,22 +62,20 @@ final_result <- mikropml::run_ml(data_processed$dat_transformed,
                    method = "rf",  
                    outcome_colname = ml_var_snake,
                    training_frac = 1.0,
-                   hyperparameters = mtry_value,
+                   hyperparameters = list(mtry = mtry_value),
                    seed = best_seed, 
                    calculate_performance = FALSE, #no test data
                    cross_val = caret::trainControl(method = "none") #no tuning
                    ) 
 # save save final model
 
-best_tune <- results_cv$trained_model$bestTune
-write_csv(best_tune,file = paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", best_seed, ".bestTune.csv"))
+final_model <- final_result$trained_model$finalModel
+saveRDS(final_model, 
+         file = paste0(output_dir, "/final/final.rf.", ml_var_snake, ".", best_seed, ".finalModel.RDS"))
 
-#hyperparameter performance
-hyperparameters <- mikropml::get_hp_performance(results_cv$trained_model)$dat
-write_csv(hyperparameters,paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", best_seed, ".hp_performance.csv"))
+write_csv(final_model, 
+         file = paste0(output_dir, "/final/final.rf.", ml_var_snake, ".", best_seed, ".finalModel.csv"))
 
 # write out model
-saveRDS(results_cv$trained_model,file = paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", best_seed, ".model.RDS"))
-
-
-
+saveRDS(final_result$trained_model,
+        file = paste0(output_dir, "/final/final.rf.", ml_var_snake, ".", best_seed, ".model.RDS"))

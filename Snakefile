@@ -19,27 +19,20 @@ method = [
 #     "new_seq_data" = 300, 
 #     "data_availability" = 200
 # }
+
+# mtry_dict = {"new_seq_data": 300, 
+# "data_availability": 200}   
   
 
 ncores = 1
 seeds = list(range(1, 101))
 
 
-
 rule targets:
-    input: 
-      expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS",
-      ml_variables = ml_variables)
-    
-       
-        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/auroc.{ml_variables}.png", 
-        # ml_variables = ml_variables), 
-        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/hp_perf.rf.{ml_variables}.png", 
-        # ml_variables = ml_variables),
-        # "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.bestTune.csv",
-        # "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.model.RDS",
-        # "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.bestTune.csv", 
-        # "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.model.RDS"
+    input:
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS",
+        ml_variables = ml_variables)
+
 
         # # all ml results  
         # # figures 
@@ -214,9 +207,9 @@ rule final_model:
         rscript = "Code/trainML_rf_finalmodel.R",
         rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.bestTune.csv", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.hp_performance.csv" 
+        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.csv"
+        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.RDS"
+        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.model.RDS"
 
     params:
         mtry_dict = {"new_seq_data": 300, "data_availability": 200} # Define a dictionary for ml_variables to mtry_values mapping
