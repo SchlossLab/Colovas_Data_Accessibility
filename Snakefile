@@ -209,7 +209,6 @@ rule final_model:
         rscript = "Code/trainML_rf_finalmodel.R",
         rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.csv",
         "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.RDS",
         "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.model.RDS"
     params: 
