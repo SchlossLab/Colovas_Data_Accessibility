@@ -20,8 +20,10 @@ method = [
 #     "data_availability" = 200
 # }
 
-# mtry_dict = {"new_seq_data": 300, 
-# "data_availability": 200}   
+mtry_dict = {
+    "new_seq_data" : 300, 
+    "data_availability" : 200
+}
   
 
 ncores = 1
@@ -207,15 +209,14 @@ rule final_model:
         rscript = "Code/trainML_rf_finalmodel.R",
         rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.csv"
-        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.RDS"
+        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.csv",
+        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.RDS",
         "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.model.RDS"
-
-    params:
-        mtry_dict = {"new_seq_data": 300, "data_availability": 200} # Define a dictionary for ml_variables to mtry_values mapping
+    params: 
+        mtry_value = lambda wildcards : mtry_dict[wildcards.ml_variables]
     shell:
         """
-        {input.rscript} {input.rds} {wildcards.ml_variables} {params.mtry_dict[wildcards.ml_variables]} {input.rdir}
+        {input.rscript} {input.rds} {wildcards.ml_variables} {params.mtry_value} {input.rdir}
         """
 #-------------------LINK-------ROT-----------------------------------------------------------
 

@@ -69,6 +69,9 @@ final_result <- mikropml::run_ml(data_processed$dat_transformed,
                    ) 
 # save save final model
 
+# "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.csv",
+#         "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.RDS",
+#         "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.model.RDS"
 final_model <- final_result$trained_model$finalModel
 saveRDS(final_model, 
          file = paste0(output_dir, "/final/final.rf.", ml_var_snake, ".", best_seed, ".finalModel.RDS"))
