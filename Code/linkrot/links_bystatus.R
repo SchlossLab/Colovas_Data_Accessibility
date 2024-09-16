@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 #linkrot figure generator for number of links by status
+#20240828 - not updated because figure became redundant
 #
 #
 #library statements
@@ -23,35 +24,32 @@ unique_output <- input[3]
 
 #group links by link_status
 all_status_tally <- alllinks %>%
-                    group_by(link_status) %>% 
+                    group_by(binary_status) %>% 
                     tally()
 unique_status_tally <- unique(alllinks) %>% 
-                      group_by(link_status) %>%
+                      group_by(binary_status) %>%
                       tally()
 
-all_status_tally <- alllinks %>%
-  group_by(binary_status) %>%
-  tally()
-
-unique_status_tally <- unique(alllinks) %>%
-  group_by(binary_status) %>%
-  tally()
 
 all_sum <- as.numeric(sum(all_status_tally$n)) 
 unique_sum <- as.numeric(sum(unique_status_tally$n))
+#do it all over again with an Alive/Dead link status
+
 
 #plot number of links with each status 
 #20240614 - need to update for unique and non-unique
 AllLinksByStatus <- 
   ggplot(
     data = alllinks, 
-    mapping = aes(x = binary_status)) + 
+    mapping = aes(x = binary_status, fill = binary_status)) + 
   geom_bar() +
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = 1.2, color = "white", size = 3) +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of Links", 
         x = "Link Status",
-        title = stringr::str_glue("Total Number of External User-Added Links by Status (N={all_sum})")) 
+        fill = "Link Status",
+        title = stringr::str_glue("Total Number of External User-Added Links by Status (N={all_sum})")) +
+  scale_fill_manual(values = c("seagreen2", "indianred1"))
 AllLinksByStatus
 
 ggsave(AllLinksByStatus, filename = all_output)
@@ -59,13 +57,15 @@ ggsave(AllLinksByStatus, filename = all_output)
 UniqueLinksByStatus <- 
   ggplot(
     data = unique(alllinks), 
-    mapping = aes(x = binary_status))  + 
+    mapping = aes(x = binary_status, fill = binary_status))  + 
   geom_bar() +
   geom_text(stat = "count", aes(label = after_stat(count)), vjust = 1.2, color = "white", size = 3) +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of Links", 
         x = "Link Status",
-        title = stringr::str_glue("Unique Number of External User-Added Links by Status (N={unique_sum})"))
+        fill = "Link Status", 
+        title = stringr::str_glue("Unique Number of External User-Added Links by Status (N={unique_sum})")) +
+  scale_fill_manual(values = c("seagreen2", "indianred1"))
 UniqueLinksByStatus
 
 ggsave(UniqueLinksByStatus, filename = unique_output)

@@ -37,14 +37,7 @@ rule targets:
 
 
         # # all ml results  
-        # # figures 
-        # "Figures/linkrot/groundtruth/alllinks_bystatus.png",
-        # "Figures/linkrot/groundtruth/links_byjournal.png", 
-        # "Figures/linkrot/groundtruth/links_byyear.png", 
-        # "Figures/linkrot/groundtruth/links_yearstatus.png", 
-        # "Figures/linkrot/groundtruth/alllinks_bytype.png", 
-        # "Figures/linkrot/groundtruth/alllinks_byhostname.png",
-        # "Figures/linkrot/groundtruth/links_errorhostname.png"
+        
 
      
 
@@ -241,26 +234,13 @@ rule all_lr_figures:
 rule lr_by_journal: 
     input: 
         rscript = "Code/linkrot/links_byjournal.R",
-       # all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
+        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
         metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
     output:
         filename = "Figures/linkrot/{datasets}/links_byjournal.png"
     shell: 
         """
-        {input.rscript} {input.metadata_links} {output.filename}
-        """
-
-rule lr_by_status:
-    input: 
-        rscript = "Code/linkrot/links_bystatus.R",
-        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz"
-       #metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
-    output:
-        all_filename = "Figures/linkrot/{datasets}/alllinks_bystatus.png",
-        unique_filename = "Figures/linkrot/{datasets}/uniquelinks_bystatus.png"
-    shell: 
-        """
-        {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
+        {input.rscript} {input.all_links} {input.metadata_links} {output.filename}
         """
 
 rule lr_by_year: 
@@ -293,11 +273,10 @@ rule lr_by_type:
         all_links = "Data/linkrot/{datasets}.alllinks.csv.gz"
        #metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
     output:
-        all_filename = "Figures/linkrot/{datasets}/alllinks_bytype.png",
         unique_filename = "Figures/linkrot/{datasets}/uniquelinks_bytype.png"
     shell: 
         """
-        {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
+        {input.rscript} {input.all_links} {output.unique_filename}
         """
 
 rule lr_by_hostname:
@@ -306,11 +285,10 @@ rule lr_by_hostname:
         all_links = "Data/linkrot/{datasets}.alllinks.csv.gz"
        #metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
     output:
-        all_filename = "Figures/linkrot/{datasets}/alllinks_byhostname.png",
-        unique_filename = "Figures/linkrot/{datasets}/uniquelinks_byhostname.png"
+        filename = "Figures/linkrot/{datasets}/longlasting_byhostname.png"
     shell: 
         """
-        {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
+        {input.rscript} {input.all_links} {output.filename}
         """
 
 rule lr_error_hostname: 

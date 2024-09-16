@@ -11,52 +11,52 @@ library(tidyverse)
 input <- commandArgs(trailingOnly = TRUE)
 alllinks <- input[1]
 alllinks <- read_csv(alllinks)
-all_output <- input[2]
-unique_output <- input[3]
+unique_output <- input[2]
 
 #non-snakemake implementation
-#alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz")
-#metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
+#alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
+#metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
+#unique_output <- Figures/linkrot/groundtruth/uniquelinks_bytype.png"
 
+# 20240730 - we only care about unique links 
 
 #group links by link_status
-all_type_tally <- alllinks %>%
-                    group_by(website_type) %>% 
-                    tally()
-unique_type_tally <- unique(alllinks) %>% 
+unique_type_tally <- distinct(alllinks) %>% 
                       group_by(website_type) %>%
                       tally()
-all_sum <- as.numeric(sum(all_type_tally$n)) 
 unique_sum <- as.numeric(sum(unique_type_tally$n))
 
-#plot type of link 
-AllLinkType <- 
-  ggplot(
-    data = alllinks, 
-    mapping = aes(x = website_type, fill = as.factor(link_status))
-  ) + 
-  geom_bar(stat = "count") +
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
-  labs( y = "Number of External User-Added Links", 
-        x = "Link Type",
-        title = stringr::str_glue("Total Number of External User-Added Links by Domain Type\nand Status (N={all_sum})"), 
-        fill = "Link Status") 
-AllLinkType
+# only unique links
+distinct <- distinct(alllinks)
 
-ggsave(AllLinkType, filename = all_output)
+#get count data per website_type
+distinct <-
+  distinct %>% 
+    mutate(.by = website_type, 
+          n_links = n(), 
+          n_dead = sum(!is_alive),
+          dead_fract = ((n_dead) / n_links), 
+          )
+#add graphing name too
+distinct_count <-
+  distinct %>% 
+      count(dead_fract, website_type) %>%
+      mutate(fancy_name = paste0(str_to_title(website_type), "\n(", `n`, ")"))
+  
 
-#plot type of link for only unique links
+#create plot
 UniqueLinkType <- 
   ggplot(
-    data = unique(alllinks), 
-    mapping = aes(x = website_type, fill = as.factor(link_status))
+    data = distinct_count, 
+    mapping = aes(y = fct_reorder(fancy_name, -dead_fract),  
+      x = dead_fract)
   ) + 
-  geom_bar(stat = "count") +
-  theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
-  labs( y = "Number of External User-Added Links", 
-        x = "Year Published",
-        title = stringr::str_glue("Unique Number of External User-Added Links by Domain Type\nand Status (N={unique_sum})"), 
-        fill = "Link Type") 
+    geom_point(size = 2.5) +
+  labs( x = "Fraction of Dead Links per Website Domain Name",
+        y = "Domain Type (N)",
+        title = stringr::str_glue("Percentage of Unique External User-Added Links by Domain Type\nand Status (N={unique_sum})"), 
+        ) +
+scale_x_continuous(labels = scales::percent)
 UniqueLinkType
 
 ggsave(UniqueLinkType, filename = unique_output)

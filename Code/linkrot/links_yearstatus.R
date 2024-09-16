@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 #linkrot figure generator for number of links by year by their status
-#
+#20240828 - this graph is also redundant so i haven't updated it
 #
 #library statements
 library(tidyverse)
@@ -15,29 +15,31 @@ metadatalinks <- read_csv(metadatalinks)
 output <- input[3]
 
 #non-snakemake implementation
-#alllinks <- read_csv("Data/linkrot/groundtruth_alllinks.csv.gz") %>% unique()
-#metadatalinks <- read_csv("Data/linkrot/groundtruth_links_metadata.csv.gz")
+#alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz") %>% unique()
+#metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
 
 all_with_meta <- left_join(alllinks, metadatalinks, 
                             by = join_by("paper" == "paper_doi"),
                             relationship = "many-to-one")
 
 year_tally <- all_with_meta %>% 
-                  group_by(year.published, link_status) %>% 
+                  group_by(year.published, binary_status) %>% 
                   tally()
 sum <- as.numeric(sum(year_tally$n)) 
 
-LinksByYearAndStatus <- 
+
+#as linegraph, 
+LinksByYearAndStatus_Line <- 
   ggplot(
     data = unique(all_with_meta), 
-    mapping = aes(x = year.published, fill = as.factor(link_status))
-  ) + 
-  geom_bar(stat = "count") +
+    mapping = aes(x = year.published, color = binary_status)) + 
+  geom_line(stat = "count", size = 1) +
   theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust=1)) +
   labs( y = "Number of Manuscripts Containing Links", 
         x = "Year Published",
         title = stringr::str_glue("Number of External User-Added Links by Year and Status (N={sum})"), 
-        fill = "Link Status") 
-LinksByYearAndStatus
+        color = "Link Status") +
+scale_color_manual(values = c("seagreen2", "indianred1"))
+LinksByYearAndStatus_Line
 
-ggsave(LinksByYearAndStatus, filename = output)
+ggsave(LinksByYearAndStatus_Line, filename = output)
