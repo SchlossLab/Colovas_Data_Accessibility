@@ -1,7 +1,7 @@
 datasets = {
   "groundtruth" : "Data/groundtruth.csv",
   "gt_subset_30" : "Data/gt_subset_30.csv",
-  "1935-7885" : "Data/1935-7885.csv"
+  "1935-7885_alive" : "Data/1935-7885.csv"
 }
   
 ml_variables = [
@@ -33,21 +33,22 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/1935-7885.{ml_variables}.preprocessed.RDS", 
-        ml_variables = ml_variables), 
-        "Data/linkrot/1935-7885.alllinks.csv.gz"
+        "Data/1935-7885_alive.html.csv.gz"
+        # expand("Data/1935-7885.{ml_variables}.preprocessed.RDS", 
+        # ml_variables = ml_variables), 
+        # "Data/linkrot/1935-7885.alllinks.csv.gz"
 
         
 # rule rds_to_csv: 
 #     input: 
-#         #RDS FILE
-#         #r script file
+#         rds = "Data/{datasets}_metadata.RDS",
+#         rscript = "Code/rds_to_csv.R"
 #     output: 
-#         #csv file
+#         "Data/{datasets}.csv"
 #     shell: 
-#     #shell commands here
-
-     
+#         """
+#         {input.rscript} {input.rds} {output}
+#         """
 
 rule webscrape:
     input: 
