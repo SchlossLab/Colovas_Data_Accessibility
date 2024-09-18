@@ -20,15 +20,15 @@ data_processed <- readRDS(rds)
 
 data_processed <-
     data_processed %>% 
+        filter(!grepl("x14", doi)) %>%
         mutate(paper = paste0("https://journals.asm.org/doi/", doi)) %>%
-        relocate(paper, .before = container.title) %>%
-        arrange(url)
+        relocate(paper, .before = container.title) 
 
-map(data_processed$url, grepl, pattern = "x14")
+# map(data_processed$url, grepl, pattern = "x14")
 
-data_processed_alive <-
-    data_processed %>%
-        slice_tail(., n = -(37))
+# data_processed_alive <-
+#     data_processed %>%
+#         slice_tail(., n = -(37))
 
 
 data_processed$url %>%
@@ -38,4 +38,4 @@ data_processed$url %>%
 data_processed_alive$url %>%
     grep(pattern = "x14")
 
-write_csv(data_processed_alive, file = "Data/1935-7885_alive.csv")
+write_csv(data_processed, file = "Data/1935-7885_alive.csv")
