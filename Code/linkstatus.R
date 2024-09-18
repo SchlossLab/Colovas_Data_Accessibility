@@ -9,3 +9,5 @@ library(tidytext)
 library(jsonlite)
 library(httr2)
 source("Code/LinkRot.R")
+
+extract_links()
