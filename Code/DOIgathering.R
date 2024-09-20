@@ -48,15 +48,7 @@ asm_journals <- mutate(asm_journals,
   metadata_file = paste0("Data/", asm_journals$issn, "_metadata.RDS")
 )
 
-# for (i in asm_journals$issn[]) {
-#   assign(i, asm_journals$issn[i])
-#   
-# }
 
-# for (i in 1:12) {
-#   name <- str_glue_data("{asm_journals$issn[i]}_metadata") 
-#   name <- readRDS(asm_journals$metadata_file[i])
-# }
 
 # metadata_1098_6596 <- readRDS("Data/1098-6596_metadata.RDS")
 # metadata_1098_5336 <- readRDS("Data/1098-5336_metadata.RDS")
