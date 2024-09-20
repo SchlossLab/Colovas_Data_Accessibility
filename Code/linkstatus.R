@@ -93,14 +93,46 @@ data_processed_jb_small <-
 
 
 # okay even with the datasets that have been updated the urls don't work... great
+
+# takes a lot longer to get_site_status with redrection
 data_processed_jb_small$link_status <- 
   map_int(data_processed_jb_small$url, get_site_status)
 
 data_processed_jb_small %>%
     count(link_status)
 
+# is faster without redirection
 data_processed_jb_small$link_status_no_follow <- 
   map_int(data_processed_jb_small$url, get_site_status_no_follow)
 
 data_processed_jb_small %>%
     count(link_status_no_follow)
+
+data_processed_jb_small <-
+  data_processed_jb_small %>% 
+    mutate(
+      paper_altid = paste0("https://journals.asm.org/doi/", alternative.id), 
+      paper_doi = paste0("https://journals.asm.org/doi/", doi)
+    )
+
+data_processed_jb_small$ls_no_follow_altid <- 
+  map_int(data_processed_jb_small$paper_altid, get_site_status_no_follow)
+
+#13/250 links are aliive with the altid and no follow
+data_processed_jb_small %>%
+    count(ls_no_follow_altid)
+
+data_processed_jb_small$ls_no_follow_doi <- 
+  map_int(data_processed_jb_small$paper_doi, get_site_status_no_follow)
+
+# allegedly this one all of the links work with the updated dois? 
+#let's save this version and try a webscrape 
+data_processed_jb_small %>%
+    count(ls_no_follow_doi)
+
+data_processed_jb_small <-
+  data_processed_jb_small %>%
+    rename(paper = paper_doi)
+
+write_csv(data_processed_jb_small,
+          file = "Data/1098-5530_small.csv")

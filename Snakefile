@@ -1,7 +1,8 @@
 datasets = {
   "groundtruth" : "Data/groundtruth.csv",
   "gt_subset_30" : "Data/gt_subset_30.csv",
-  "1935-7885_alive" : "Data/1935-7885.csv"
+  "1935-7885_alive" : "Data/1935-7885.csv", 
+  "1098-5530_small" : "Data/1098-5530_small.csv"
 }
   
 ml_variables = [
@@ -33,7 +34,12 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        "Data/1935-7885_alive.html.csv.gz"
+        "Data/1098-5530_small.html.csv.gz", 
+        "Data/1098-5530_small.tokens.csv.gz", 
+        "Data/{datasets}.{ml_variables}.preprocessed.RDS"
+    
+
+        # "Data/1935-7885_alive.html.csv.gz"
         # expand("Data/1935-7885.{ml_variables}.preprocessed.RDS", 
         # ml_variables = ml_variables), 
         # "Data/linkrot/1935-7885.alllinks.csv.gz"
