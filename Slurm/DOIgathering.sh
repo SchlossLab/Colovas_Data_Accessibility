@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name=aemdoi
+#SBATCH --job-name=dois
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
@@ -16,8 +16,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=2g
-#SBATCH --time=04:00:00
+#SBATCH --mem-per-cpu=8g
+#SBATCH --time=50:00:00
 
  
 
@@ -54,10 +54,11 @@ echo "Running from $(pwd)"
 source /etc/profile.d/http_proxy.sh
 
 #conda env
-source ~/miniconda3/etc/profile.d/conda.sh
+source ~/miniforge3/etc/profile.d/conda.sh
 conda activate data_acc
+git checkout predict_test_rds
 
 
-R CMD BATCH AEM_doigathering.R Slurm/20240320_doigathering.out
+R CMD BATCH Code/DOIgathering.R Slurm/20240320_doigathering.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!
