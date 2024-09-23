@@ -34,9 +34,9 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        "Data/1098-5530_small.html.csv.gz", 
-        "Data/1098-5530_small.tokens.csv.gz", 
-        "Data/{datasets}.{ml_variables}.preprocessed.RDS"
+        "Data/1935-7885_alive.html.csv.gz"
+        # "Data/1935-7885_alive.tokens.csv.gz", 
+        # "Data/{datasets}.{ml_variables}.preprocessed.RDS"
     
 
         # "Data/1935-7885_alive.html.csv.gz"

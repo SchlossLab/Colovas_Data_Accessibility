@@ -40,6 +40,23 @@ get_site_status_no_follow <- function(websiteurl) {
 #look at rds file for 1935-7885 jmbe metadata
 rds_jmbe <- "Data/1935-7885_metadata.RDS"
 data_processed_jmbe <- readRDS(rds_jmbe)
+data_processed_jmbe <-
+  data_processed_jmbe  %>% 
+    mutate( 
+      paper = paste0("https://journals.asm.org/doi/", doi)
+    )
+data_processed_jmbe$link_status_no_follow <- map_int(data_processed_jmbe$paper, get_site_status_no_follow)
+data_processed_jmbe$link_status <- map_int(data_processed_jmbe$paper, get_site_status)
+
+data_processed_jmbe %>%
+    count(link_status_no_follow)
+     
+data_processed_jmbe <-
+  data_processed_jmbe %>%
+     filter(link_status_no_follow == 200)
+
+write_csv(data_processed_jmbe, file = "Data/1935-7885_alive.csv")
+
 
 #rds for msphere
 rds_msph <- "Data/2379-5042_metadata.RDS"
@@ -53,7 +70,7 @@ data_processed_msys <- readRDS(rds_msys)
 # which means i probably need to re-scrape them all them from crossref which
 # is going to be an afternoon problem 
 
-data_processed_jmbe$link_status <- map_int(data_processed_jmbe$url, get_site_status)
+
 data_processed_msph$link_status <- map_int(data_processed_msph$url, get_site_status)
 data_processed_msys$link_status <- map_int(data_processed_msys$url, get_site_status)
 
