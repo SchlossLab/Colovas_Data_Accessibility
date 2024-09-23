@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-#prep dataset for ML modeling 
+#prep dataset for ML model predictions
 #
 #
 #library statements
@@ -7,36 +7,36 @@ library(tidyverse)
 library(tidytext)
 library(jsonlite)
 library(mikropml)
-# options(future.globals.maxSize = 768 * 1024^3)
-# options(expressions = 5e5)
 
 
 # load files
 
 #for snakemake implementation
-#{input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
+#{input.rscript} {input.metadata} {input.tokens} {resources.cpus} {output.rds}
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- input[1]
 clean_csv <- input[2]
-ml_var_snake <- input[3]
-ml_var <- c("paper", ml_var_snake, "container.title")
-threads <- as.numeric(input[4])
+# ml_var_snake <- input[3]
+ml_var <- c("paper", "container.title")
+threads <- as.numeric(input[3])
 str(threads)
-output_file <- as.character(input[5])
+output_file <- as.character(input[4])
 str(output_file)
 clean_text <- read.csv(clean_csv)
 metadata <- read.csv(metadata)
 
 
 # #local implementation
-# clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
-# metadata <- read_csv("Data/groundtruth.csv")
+clean_text <- read_csv("Data/1935-7885_alive.tokens.csv.gz")
+metadata <- read_csv("Data/1935-7885_alive.csv")
 # ml_var_snake <- "availability"
-# ml_var <- c("paper", ml_var_snake, "container.title")
-# output_file <- "Data/groundtruth.availability.preprocessed.RDS"
+ml_var <- c("paper", "container.title")
+output_file <- "Data/1935-7885_alive.preprocessed.RDS"
 
 
 # set up the format of the clean_text dataframe 
+
+# 20240923 - need to check if this is still the header in the files
 total_papers <- n_distinct(clean_text$paper_doi)
 
 clean_tibble <-
@@ -65,11 +65,11 @@ need_meta <- select(metadata, all_of(ml_var))
 # join clean_tibble and need_meta 
 full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 
-# remove paper doi
-full_ml <- select(full_ml, !paper)
+# DO NOT remove paper doi
+#full_ml <- select(full_ml, !paper)
 
 # use mikropml::preprocess_data on dataset
-full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake, 
+full_ml_pre <- preprocess_data(full_ml, outcome_colname = "paper", 
                                 remove_var = NULL)
 full_ml_pre$dat_transformed
 

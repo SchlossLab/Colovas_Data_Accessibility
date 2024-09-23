@@ -34,8 +34,8 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        "Data/1935-7885_alive.html.csv.gz"
-        # "Data/1935-7885_alive.tokens.csv.gz", 
+        "Data/1935-7885_alive.html.csv.gz",
+        "Data/1935-7885_alive.tokens.csv.gz"
         # "Data/{datasets}.{ml_variables}.preprocessed.RDS"
     
 
@@ -92,7 +92,11 @@ rule tokenize:
         {input.rscript} {input.html} {output}
         """      
 
-rule ml_prep:
+# 20240923 don't need a ruleorder statement because the pre-processed data 
+# has no ml_var in fileneame
+# ex. 'ruleorder: ml_prep_predict > ml_prep_train'
+
+rule ml_prep_train:
     input:
         tokens = "Data/{datasets}.tokens.csv.gz",
         rscript = "Code/MLprep.R",
@@ -105,6 +109,20 @@ rule ml_prep:
     shell:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
+        """
+
+rule ml_prep_predict:
+    input:
+        tokens = "Data/{datasets}.tokens.csv.gz",
+        rscript = "Code/ml_prep_predict.R",
+        metadata = "Data/{datasets}.csv",
+    output: 
+        rds = "Data/{datasets}.preprocessed.RDS"
+    resources: 
+        cpus = ncores
+    shell:
+        """
+        {input.rscript} {input.metadata} {input.tokens} {resources.cpus} {output.rds}
         """
 
 # rule train_ml:
