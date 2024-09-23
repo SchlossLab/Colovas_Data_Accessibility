@@ -1,8 +1,21 @@
 datasets = {
-  "groundtruth" : "Data/groundtruth.csv",
-  "gt_subset_30" : "Data/gt_subset_30.csv",
-  "1935-7885_alive" : "Data/1935-7885.csv", 
-  "1098-5530_small" : "Data/1098-5530_small.csv"
+#   "groundtruth" : "Data/groundtruth.csv",
+#   "gt_subset_30" : "Data/gt_subset_30.csv",
+#   "1935-7885_alive" : "Data/1935-7885.csv", 
+#   "1098-5530_small" : "Data/1098-5530_small.csv",
+  "0095-1137" : "Data/0095-1137_metadata.RDS", 
+  "1098-5336" : "Data/1098-5336_metadata.RDS", 
+  "1098-5514" : "Data/1098-5514_metadata.RDS",
+  "1098-5522" : "Data/1098-5522_metadata.RDS",
+  "1098-5530" : "Data/1098-5530_metadata.RDS",
+  "1098-6596" : "Data/1098-6596_metadata.RDS",
+  "1935-7885" : "Data/1935-7885_metadata.RDS",
+  "2150-7511" : "Data/2150-7511_metadata.RDS",
+  "2165-0497" : "Data/2165-0497_metadata.RDS",
+  "2379-5042" : "Data/2379-5042_metadata.RDS",
+  "2379-5077" : "Data/2379-5077_metadata.RDS",
+  "2576-098X" : "Data/2576-098X_metadata.RDS"
+
 }
   
 ml_variables = [
@@ -34,8 +47,7 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        "Data/1935-7885_alive.html.csv.gz",
-        "Data/1935-7885_alive.tokens.csv.gz"
+        expand("Data/{datasets}/{datasets}.alive.csv", datasets = datasets)
         # "Data/{datasets}.{ml_variables}.preprocessed.RDS"
     
 
@@ -45,16 +57,29 @@ rule targets:
         # "Data/linkrot/1935-7885.alllinks.csv.gz"
 
         
-# rule rds_to_csv: 
-#     input: 
-#         rds = "Data/{datasets}_metadata.RDS",
-#         rscript = "Code/rds_to_csv.R"
-#     output: 
-#         "Data/{datasets}.csv"
-#     shell: 
-#         """
-#         {input.rscript} {input.rds} {output}
-#         """
+rule rds_to_csv: 
+    input: 
+        rds = "Data/{datasets}_metadata.RDS",
+        rscript = "Code/rds_to_csv.R"
+    output: 
+        "Data/papers/{datasets}.csv"
+    shell: 
+        """
+        {input.rscript} {input.rds} {output}
+        """
+
+rule doi_linkrot: 
+    input: 
+        csv = "Data/papers/{datasets}.csv", 
+        rscript = "Code/doi_linkrot.R",
+        filepath = "Data/doi_linkrot/{datasets}"
+    output:
+        "Data/{datasets}/{datasets}.alive.csv",
+        "Data/{datasets}/{datasets}.dead.csv"
+    shell: 
+        """
+        {input.rscript} {input.csv} {input.filepath}
+        """
 
 rule webscrape:
     input: 
