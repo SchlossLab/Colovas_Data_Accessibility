@@ -26,7 +26,7 @@ get_site_status_no_follow <- function(websiteurl) {
 # {input.rscript} {input.csv} {input.filepath}
 input <- commandArgs(trailingOnly = TRUE)
 csv <- input[1]
-data_processed <- read_csv(rds)
+data_processed <- read_csv(csv)
 filepath <- input[2]
 
 # local practice

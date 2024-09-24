@@ -47,8 +47,8 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/papers/{datasets}.csv", datasets = datasets),
-        #expand("Data/{datasets}/{datasets}.alive.csv", datasets = datasets)
+        #expand("Data/papers/{datasets}.csv", datasets = datasets),
+        expand("Data/doi_linkrot/{datasets}.alive.csv", datasets = datasets)
         # "Data/{datasets}.{ml_variables}.preprocessed.RDS"
     
 
@@ -72,14 +72,15 @@ rule rds_to_csv:
 rule doi_linkrot: 
     input: 
         csv = "Data/papers/{datasets}.csv", 
-        rscript = "Code/doi_linkrot.R",
-        filepath = "Data/doi_linkrot/{datasets}"
+        rscript = "Code/doi_linkrot.R"
     output:
-        "Data/{datasets}/{datasets}.alive.csv",
-        "Data/{datasets}/{datasets}.dead.csv"
+        "Data/doi_linkrot/{datasets}.alive.csv",
+        "Data/doi_linkrot/{datasets}.dead.csv"
+    params: 
+        filepath = "Data/doi_linkrot/{datasets}"
     shell: 
         """
-        {input.rscript} {input.csv} {input.filepath}
+        {input.rscript} {input.csv} {params.filepath}
         """
 
 rule webscrape:
