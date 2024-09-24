@@ -47,7 +47,8 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/{datasets}/{datasets}.alive.csv", datasets = datasets)
+        expand("Data/papers/{datasets}.csv", datasets = datasets),
+        #expand("Data/{datasets}/{datasets}.alive.csv", datasets = datasets)
         # "Data/{datasets}.{ml_variables}.preprocessed.RDS"
     
 
