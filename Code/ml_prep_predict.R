@@ -76,7 +76,16 @@ full_ml_pre$dat_transformed
 # save preprocessed data as an RDS file 
 saveRDS(full_ml_pre, file = output_file)
 
+# 20240925 - abstracting data from model 
 
+da_model_rds <- "Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS"
+da_model <- readRDS(da_model_rds)
+names(da_model)
+head(da_model$xNames, 15)
+tokens <- readRDS("Data/1935-7885_alive.preprocessed.RDS")
 
+model_tokens <- da_model$xNames
+str(tokens)
+names(tokens)
 
-
+head(tokens)
