@@ -52,6 +52,25 @@ clean_tibble <-
                             names_from = paper_tokens, values_from = frequency,
                             values_fill = 0) #pivot wider and fill in zeros
 
+# make 3 col df of token, mean, sd
+tokens <- names(clean_tibble)
+tokens <-
+    tokens[!tokens == "paper_doi"]
+  
+
+    
+z_score_table <- function(tokens, clean_tibble) {
+table <- tibble()
+    for (i in 1:seq_along(tokens)) {
+        table <- tibble()
+
+    }
+
+
+}
+    
+    
+
 
 # need metadata for the papers
 need_meta <- select(metadata, all_of(ml_var))
