@@ -53,20 +53,40 @@ clean_tibble <-
                             values_fill = 0) #pivot wider and fill in zeros
 
 # make 3 col df of token, mean, sd
+
+# get tokens from the names of the columns 
+# remove paper_doi from tokens list
 tokens <- names(clean_tibble)
 tokens <-
     tokens[!tokens == "paper_doi"]
 
+#initialize vectors for the loop 
+token_mean <- vector(mode="list")
+token_sd <- vector(mode="list")
+
+#for loop to make the mean and sd vectors 
  for (i in 2:ncol(clean_tibble)) {
-        token_mean[[i-1]] <- mean(clean_tibble[[i]])
-        token_sd[[i-1]] <- sd(clean_tibble[[i]])
+    token_mean[[i-1]] <- mean(clean_tibble[[i]])
+    token_sd[[i-1]] <- sd(clean_tibble[[i]])
  }
 
 z_score_table <- tibble(tokens, token_mean, token_sd)
 
 
-    
-    
+  # This is how you create an environment
+  z_score_hash <- new.env(hash=TRUE)
+  for(i in seq_along(z_score_table$tokens)) {
+    # You have to use a double bracket to add to the hash map
+    z_score_hash[[z_score_table$tokens[[i]]]] <- 
+        list(mean = z_score_table$token_mean[i], 
+            sd = z_score_table$token_sd[i])
+  }
+
+# 20240927 - need to save the z_score_table for easy access to the tokens? 
+# can we use the hash map list
+# also need to save the hash map
+# need to filter the tokens from other datasets to the tokens from the training sets
+# each model will need to be diff preprocessing 
 
 
 # need metadata for the papers
