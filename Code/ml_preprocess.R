@@ -56,18 +56,15 @@ clean_tibble <-
 tokens <- names(clean_tibble)
 tokens <-
     tokens[!tokens == "paper_doi"]
-  
 
-    
-z_score_table <- function(tokens, clean_tibble) {
-table <- tibble()
-    for (i in 1:seq_along(tokens)) {
-        table <- tibble()
+ for (i in 2:ncol(clean_tibble)) {
+        token_mean[[i-1]] <- mean(clean_tibble[[i]])
+        token_sd[[i-1]] <- sd(clean_tibble[[i]])
+ }
 
-    }
+z_score_table <- tibble(tokens, token_mean, token_sd)
 
 
-}
     
     
 
