@@ -29,7 +29,9 @@ clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
 metadata <- read_csv("Data/groundtruth.csv")
 ml_var_snake <- "availability"
 ml_var <- c("paper", ml_var_snake, "container.title")
-output_file <- "Data/groundtruth.availability.preprocessed.RDS"
+
+#don't run this unless you really need it so that you don't accidentally save a file over this
+#output_file <- "Data/groundtruth.availability.preprocessed.RDS"
 
 
 # set up the format of the clean_text dataframe 
@@ -73,14 +75,21 @@ token_sd <- vector(mode="list")
 z_score_table <- tibble(tokens, token_mean, token_sd)
 
 
-  # This is how you create an environment
+  # This is how you create an environment (hash map)
   z_score_hash <- new.env(hash=TRUE)
+
+  #for loop to fill the hash environment 
   for(i in seq_along(z_score_table$tokens)) {
     # You have to use a double bracket to add to the hash map
     z_score_hash[[z_score_table$tokens[[i]]]] <- 
         list(mean = z_score_table$token_mean[i], 
             sd = z_score_table$token_sd[i])
   }
+
+#20240930- need filenames somewhere that makes sense
+#  but this will work great to save and then load/apply 
+saveRDS(z_score_hash, file = "zscore_availability.RDS")
+zscore_loaded <- readRDS("zscore_availability.RDS")
 
 # 20240927 - need to save the z_score_table for easy access to the tokens? 
 # can we use the hash map list
