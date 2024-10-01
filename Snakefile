@@ -123,19 +123,23 @@ rule tokenize:
 # has no ml_var in fileneame
 # ex. 'ruleorder: ml_prep_predict > ml_prep_train'
 
+# 20241001 - add new filename and add ztable 
+# saving out to the train
 rule ml_prep_train:
     input:
         tokens = "Data/{datasets}.tokens.csv.gz",
-        rscript = "Code/MLprep.R",
+        rscript = "Code/ml_preprocess.R",
         metadata = "Data/{datasets}.csv",
     output: 
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS"
+        ztable = "Data/{datasets}.{ml_variables}.zscoretable.csv"
     resources: 
         cpus = ncores
         #mem_mb = 200000
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
+        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} 
+        {resources.cpus} {output.rds} {output.ztable}
         """
 
 rule ml_prep_predict:
@@ -235,10 +239,6 @@ rule auroc:
         {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
         """
 
-#   "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.bestTune.csv",
-#         "Data/ml_results/groundtruth/rf/data_availability/best.rf.data_availability.44.model.RDS",
-#         "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.bestTune.csv", 
-#         "Data/ml_results/groundtruth/rf/new_seq_data/best.rf.new_seq_data.49.model.RDS"
 
 rule best_mtry: 
     input:
@@ -272,6 +272,9 @@ rule final_model:
         """
 #-------------------LINK-------ROT-----------------------------------------------------------
 
+# 20241001 - need to add unique to linkrot in saving the, 
+# reason to have links and metadata separate 
+# links is all links and then you'd have redundant metadata for papers
 rule link_rot: 
     input:
         html = "Data/{datasets}.html.csv.gz",
@@ -284,13 +287,11 @@ rule link_rot:
         """
         {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
         """
-#can you make a rule all for the figures? 
-rule all_lr_figures: 
-    input: 
-        "Figures/linkrot/{datasets}/links_byjournal.png",
-        "Figures/linkrot/{datasets}/alllinks_bystatus.png",
-        "Figures/linkrot/{datasets}/links_byyear.png"
         
+# 20241001 - i think a lot of these have roughly identical code
+# could combine into one file and just tell it what kind of variables 
+# to graph, have to look at figures again and remove non-useful figs  
+
 rule lr_by_journal: 
     input: 
         rscript = "Code/linkrot/links_byjournal.R",

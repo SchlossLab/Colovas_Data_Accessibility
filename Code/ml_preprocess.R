@@ -10,7 +10,8 @@ library(mikropml)
 
 # load files
 #for snakemake implementation
-#{input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
+#{input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables}
+# {resources.cpus} {output.rds} {output.ztable}
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- input[1]
 clean_csv <- input[2]
@@ -22,41 +23,44 @@ output_file <- as.character(input[5])
 str(output_file)
 clean_text <- read.csv(clean_csv)
 metadata <- read.csv(metadata)
+ztable_filename <- as.character(input[6])
 
 
 # #local implementation
 clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
 metadata <- read_csv("Data/groundtruth.csv")
-ml_var_snake <- "availability"
+ml_var_snake <- "data_availability"
 ml_var <- c("paper", ml_var_snake, "container.title")
 
-#don't run this unless you really need it so that you don't accidentally save a file over this
-#output_file <- "Data/groundtruth.availability.preprocessed.RDS"
+#don't run this unless you really need it so that you don't
+# accidentally save a file over this
+# output_file <- "Data/groundtruth.data_availability.preprocessed.RDS"
+# ztable_filename <- "Data/groundtruth.data_availability.zscoretable.csv"
 
 
-# set up the format of the clean_text dataframe 
+# set up the format of the clean_text dataframe
 total_papers <- n_distinct(clean_text$paper_doi)
 
 clean_tibble <-
-    clean_text %>% 
-        mutate(n_papers = n(), .by = paper_tokens) %>% # number of papers a token appears in 
-        filter(n_papers > 1 ) %>% # filter for tokens that appear in more than one paper
-        nest(data= -paper_tokens) %>% #nest everything except paper tokens?
+    clean_text %>%
+        mutate(n_papers = n(), .by = paper_tokens) %>% #n papers contain token
+        filter(n_papers > 1 ) %>% #filter - tokens n_papers>1
+        nest(data = -paper_tokens) %>% #nest everything except paper tokens?
         # mutate to find near zero variants
         mutate(nzv = map_dfr(data, \(x) {z = c(x$frequency, 
-                                        rep(0,total_papers - nrow(x))); 
+                                        rep(0,total_papers - nrow(x)));
                                         caret::nearZeroVar(z, saveMetrics = TRUE)})) %>%
         unnest(nzv) %>% #pull the nzv column out
-        filter(!nzv) %>% # filter for things without near zero variance
+        filter(!nzv) %>% # filter for things without nzv
         unnest(data) %>%  #unnest all the data
-        select(paper_doi, paper_tokens, frequency) %>% #select only these colums
+        select(paper_doi, paper_tokens, frequency) %>% #select these columns
         pivot_wider(id_cols = c(paper_doi),
-                            names_from = paper_tokens, values_from = frequency,
-                            values_fill = 0) #pivot wider and fill in zeros
+                    names_from = paper_tokens, values_from = frequency,
+                    values_fill = 0) #pivot wider and fill in zeros
 
-# make 3 col df of token, mean, sd
+# make 3 col df of token, mean, sd for the z scoring --------------------------
 
-# get tokens from the names of the columns 
+# get tokens from the names of the columns
 # remove paper_doi from tokens list
 tokens <- names(clean_tibble)
 tokens <-
@@ -72,15 +76,13 @@ token_sd <- vector(mode="list")
     token_sd[[i-1]] <- sd(clean_tibble[[i]])
  }
 
+
 z_score_table <- tibble(tokens, token_mean, token_sd)
 
+# save out z score table 
+write_csv(z_score_table, file = ztable_filename)
 
-#20241001 - need to save table out 
-# need to filter the tokens from other datasets to the tokens from the training sets
-# each model will need to be diff preprocessing 
-
-
-# need metadata for the papers
+# grab the needed metadata for the papers
 need_meta <- select(metadata, all_of(ml_var))
 
 # join clean_tibble and need_meta 
@@ -93,6 +95,25 @@ full_ml <- select(full_ml, !paper)
 full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake, 
                                 remove_var = NULL)
 full_ml_pre$dat_transformed
+
+#20241001- there are 8 groups in the data 
+# need to figure out how to code for this by hand 
+#how does the pre-processing collapse them 
+# how do i collapse them
+col_names_preprocessed <- colnames(full_ml_pre$dat_transformed)
+grep("grp", col_names_preprocessed)
+
+# cor and then collapse
+correlation <-
+    clean_tibble %>%
+        select(!paper_doi) %>% 
+        cor()
+head(correlation)
+
+# what correlation percentage does preprocess use? how does it collapse them 
+caret::findCorrelation(correlation, names = TRUE, cutoff = 0.99, exact = TRUE)
+
+# 20241001 - also there's dummy variables for each of the journals 
 
 # save preprocessed data as an RDS file 
 saveRDS(full_ml_pre, file = output_file)
