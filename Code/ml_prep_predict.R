@@ -52,11 +52,7 @@ clean_tibble <-
         pivot_wider(id_cols = c(paper_doi),
                             names_from = paper_tokens, values_from = frequency,
                             values_fill = 0) 
-   
-# each token is a column 
-# clean_tibble <- pivot_wider(clean_text_small, id_cols = c(paper_doi),
-#                            names_from = paper_tokens, values_from = frequency,
-#                            names_sort = TRUE, values_fill = 0) 
+
 
 
 # need metadata for the papers

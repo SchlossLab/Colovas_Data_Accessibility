@@ -100,9 +100,13 @@ full_ml_pre$dat_transformed
 # need to figure out how to code for this by hand 
 #how does the pre-processing collapse them 
 # how do i collapse them
+# how do i find out what's in each group? 
 col_names_preprocessed <- colnames(full_ml_pre$dat_transformed)
 grep("grp", col_names_preprocessed)
 
+full_ml_pre$dat_transformed$grp2
+
+str(full_ml_pre$dat_transformed$grp3)
 # cor and then collapse
 correlation <-
     clean_tibble %>%
