@@ -24,6 +24,7 @@ str(output_file)
 clean_text <- read.csv(clean_csv)
 metadata <- read.csv(metadata)
 ztable_filename <- as.character(input[6])
+# 20241003 - features_filename needed to save features
 
 
 # #local implementation
@@ -36,6 +37,7 @@ ml_var <- c("paper", ml_var_snake, "container.title")
 # accidentally save a file over this
 # output_file <- "Data/groundtruth.data_availability.preprocessed.RDS"
 # ztable_filename <- "Data/groundtruth.data_availability.zscoretable.csv"
+# features_filename <- 
 
 
 # set up the format of the clean_text dataframe
@@ -95,6 +97,13 @@ full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake,
                                 remove_var = NULL)
 full_ml_pre$dat_transformed
 
+
+# save preprocessed data as an RDS file 
+saveRDS(full_ml_pre, file = output_file)
+
+
+# ------------working on recreating preprocessed data------------------
+
 #20241001- there are 8 groups in the data 
 # need to figure out how to code for this by hand 
 #how does the pre-processing collapse them 
@@ -103,8 +112,8 @@ full_ml_pre$dat_transformed
 col_names_preprocessed <- colnames(full_ml_pre$dat_transformed)
 grep("grp", col_names_preprocessed)
 
-head(str(full_ml_pre$grp_feats))
 
+#make a vector of the names of the grouped variables 
 token_groups <- vector(mode="list")
 for(i in 1:8) {
     grp_var <- paste0("grp", i)
@@ -112,13 +121,29 @@ for(i in 1:8) {
 }
 
 
+# 20241003 - dummy variables for each of the journals
+# format "container.title_journal title with spaces"
+grep("container", col_names_preprocessed, value = TRUE)
+# in the column these are numerics - 0 is no, 1 is yes
+full_ml_pre$dat_transformed$"container.title_Infection and Immunity"
 
-# 20241001 - also there's dummy variables for each of the journals 
+container_titles <- unique(full_ml$container.title)
+# duplicate full_ml to do practice on it without neededing to re-generate it
+full_ml_practice <- full_ml
 
-# save preprocessed data as an RDS file 
-saveRDS(full_ml_pre, file = output_file)
+# 20241003 - this doesn't workkkkkkk
+for (i in 1:12) {
+    new_var <- paste0("container.title_", container_titles[i])
+    full_ml_practice <-
+        full_ml_practice %>%
+        #vectorized ifelse
+        mutate(new_var = ifelse(full_ml_practice$container.title == container_titles[i], 1, 0)) 
 
+}
 
+col_names_full_ml <- colnames(full_ml_practice)
+grep("container", col_names_full_ml, value = TRUE)
+grep("new_var", col_names_full_ml, value = TRUE)
 
 
 
