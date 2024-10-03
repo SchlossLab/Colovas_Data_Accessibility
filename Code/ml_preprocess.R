@@ -76,7 +76,6 @@ token_sd <- vector(mode="list")
     token_sd[[i-1]] <- sd(clean_tibble[[i]])
  }
 
-
 z_score_table <- tibble(tokens, token_mean, token_sd)
 
 # save out z score table 
@@ -104,18 +103,15 @@ full_ml_pre$dat_transformed
 col_names_preprocessed <- colnames(full_ml_pre$dat_transformed)
 grep("grp", col_names_preprocessed)
 
-full_ml_pre$dat_transformed$grp2
+head(str(full_ml_pre$grp_feats))
 
-str(full_ml_pre$dat_transformed$grp3)
-# cor and then collapse
-correlation <-
-    clean_tibble %>%
-        select(!paper_doi) %>% 
-        cor()
-head(correlation)
+token_groups <- vector(mode="list")
+for(i in 1:8) {
+    grp_var <- paste0("grp", i)
+    token_groups[i] <- full_ml_pre$grp_feats[grp_var]
+}
 
-# what correlation percentage does preprocess use? how does it collapse them 
-caret::findCorrelation(correlation, names = TRUE, cutoff = 0.99, exact = TRUE)
+
 
 # 20241001 - also there's dummy variables for each of the journals 
 
