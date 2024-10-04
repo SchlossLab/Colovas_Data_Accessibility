@@ -122,28 +122,20 @@ for(i in 1:8) {
 
 
 # 20241003 - dummy variables for each of the journals
-# format "container.title_journal title with spaces"
-grep("container", col_names_preprocessed, value = TRUE)
-# in the column these are numerics - 0 is no, 1 is yes
-full_ml_pre$dat_transformed$"container.title_Infection and Immunity"
-
+# this needs to go into ml_prep_predict
 container_titles <- unique(full_ml$container.title)
 # duplicate full_ml to do practice on it without neededing to re-generate it
 full_ml_practice <- full_ml
 
-# 20241003 - this doesn't workkkkkkk
+#loop through to create each new variable 
 for (i in 1:12) {
-    new_var <- paste0("container.title_", container_titles[i])
-    full_ml_practice <-
-        full_ml_practice %>%
-        #vectorized ifelse
-        mutate(new_var = ifelse(full_ml_practice$container.title == container_titles[i], 1, 0)) 
-
+new_var <- paste0("container.title_", container_titles[i])
+full_ml_practice <-
+    full_ml_practice %>%
+    #vectorized ifelse
+    mutate("{new_var}" := ifelse(container.title == container_titles[i], 1, 0))
 }
 
-col_names_full_ml <- colnames(full_ml_practice)
-grep("container", col_names_full_ml, value = TRUE)
-grep("new_var", col_names_full_ml, value = TRUE)
 
 
 
