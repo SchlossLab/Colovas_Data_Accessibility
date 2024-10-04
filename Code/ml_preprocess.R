@@ -120,6 +120,20 @@ for(i in 1:8) {
     token_groups[i] <- full_ml_pre$grp_feats[grp_var]
 }
 
+# 20241004 - iterate through each token group
+# i actually need to also put this one in ml_prep_predict
+# becasue this is for new data not the old one 
+for(j in 1:length(token_groups)){
+    #if there are any of them in the dataset
+   if(token_groups[j] %in% full_ml_practice) {
+    #pseudocode
+    # keep 1 of them (ie the first one)
+    # rename to grp`j`(see below for renaming to variable of variables)
+    #save out to dataset
+   } 
+   
+}
+
 
 # 20241003 - dummy variables for each of the journals
 # this needs to go into ml_prep_predict
