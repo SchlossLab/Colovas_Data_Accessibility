@@ -36,8 +36,8 @@ ml_var <- c("paper", ml_var_snake, "container.title")
 #don't run this unless you really need it so that you don't
 # accidentally save a file over this
 # output_file <- "Data/groundtruth.data_availability.preprocessed.RDS"
-# ztable_filename <- "Data/groundtruth.data_availability.zscoretable.csv"
-# features_filename <- 
+ztable_filename <- "Data/groundtruth.data_availability.zscoretable.csv"
+token_filename <- "Data/groundtruth.data_availability.tokenlist.RDS"
 
 
 # set up the format of the clean_text dataframe

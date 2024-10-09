@@ -36,9 +36,10 @@ metadata <- read_csv("Data/1935-7885_alive.csv")
 ml_var <- c("paper", "container.title")
 output_file <- "Data/1935-7885_alive.preprocessed.RDS"
 #do i have a practice one yet?
-# ztable_filename <- as.character(input[6])
-# ztable <- read_csv(ztable_filename)
-# token_filename <- 
+ztable_filename <- "Data/groundtruth.data_availability.zscoretable.csv"
+token_filename <- "Data/groundtruth.data_availability.tokenlist.RDS"
+ztable <- read_csv(ztable_filename)
+token_list <- readRDS(token_filename)
 
 
 # set up the format of the clean_text dataframe 
@@ -65,7 +66,7 @@ clean_tibble <-
 need_meta <- select(metadata, all_of(ml_var))
 
 # join clean_tibble and need_meta 
-full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
+full_ml_practice <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 
 # DO NOT remove paper doi
 #full_ml <- select(full_ml, !paper)
@@ -83,40 +84,62 @@ full_ml <-
 
 #collapse correlated features from training datasets
 
+#we can pick one/n because they should all theoretically be the same
 
 # iterate through each token group
-for(j in 1:length(token_groups)){
-    #if there are any of them in the dataset
-   if(token_groups[j] %in% full_ml_practice) {
-    #pseudocode
-    # keep 1 of them (ie the first one)
-    # rename to grp`j`(see below for renaming to variable of variables)
-    #save out to dataset
-   } 
-   
+keep_groups <- vector("character", length(token_list))
+for(j in 1:length(token_list)){
+    #if none of the tokens are found in dataset
+        if(!any(token_list[[j]] %in% colnames(full_ml_practice))) {
+        #add grp'i' column to dataset and fill with 0s
+        new_var <- paste0("grp", j)
+        full_ml_practice <-
+            full_ml_practice %>%
+                mutate("{new_var}" := 0)
+        }
+        
+        else {
+            # could also add a fake token to enter else condition
+            #take first token to return true, 
+            #get positions of true tokens in token list j
+            new_var <- paste0("grp", j)
+            position <- which(any(token_list[[j]] %in% colnames(full_ml_practice)))[1]
+            # give you column name?
+            representative <- token_list[[j]][position]
+            full_ml_practice <-
+                full_ml_practice %>%
+                #will it be angry that representative isn't technically the name
+                mutate("{new_var}" := token_list[[j]][position])
+        }
 }
+# this gives 1 t/f
+any(token_list[[1]] %in% colnames(full_ml_practice))
+#if false, fill in colname with 0s 
 
+length(full_ml_practice[token_list[[1]]]) %>%
+print(n = 500)
+str(token_list)
 # 
 
 
 # use mikropml::preprocess_data on dataset
-full_ml_pre <- preprocess_data(full_ml, outcome_colname = "paper", 
+full_ml_pre_prediction <- preprocess_data(full_ml, outcome_colname = "paper", 
                                 remove_var = NULL)
-full_ml_pre$dat_transformed
+full_ml_pre_prediction$dat_transformed
 
 # save preprocessed data as an RDS file 
-saveRDS(full_ml_pre, file = output_file)
+saveRDS(full_ml_pre_prediction, file = output_file)
 
 # 20240925 - abstracting data from model 
 
-da_model_rds <- "Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS"
-da_model <- readRDS(da_model_rds)
-names(da_model)
-head(da_model$xNames, 15)
-tokens <- readRDS("Data/1935-7885_alive.preprocessed.RDS")
+# da_model_rds <- "Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS"
+# da_model <- readRDS(da_model_rds)
+# names(da_model)
+# head(da_model$xNames, 15)
+# tokens <- readRDS("Data/1935-7885_alive.preprocessed.RDS")
 
-model_tokens <- da_model$xNames
-str(tokens)
-names(tokens)
+# model_tokens <- da_model$xNames
+# str(tokens)
+# names(tokens)
 
-head(tokens)
+# head(tokens)
