@@ -11,7 +11,7 @@ library(mikropml)
 # load files
 #for snakemake implementation
 #{input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables}
-# {resources.cpus} {output.rds} {output.ztable}
+# {resources.cpus} {output.rds} {output.ztable} {output.token_list}
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- input[1]
 clean_csv <- input[2]
@@ -24,7 +24,7 @@ str(output_file)
 clean_text <- read.csv(clean_csv)
 metadata <- read.csv(metadata)
 ztable_filename <- as.character(input[6])
-# 20241003 - features_filename needed to save features
+token_filename <- as.character(input[7])
 
 
 # #local implementation
@@ -102,53 +102,18 @@ full_ml_pre$dat_transformed
 saveRDS(full_ml_pre, file = output_file)
 
 
-# ------------working on recreating preprocessed data------------------
-
-#20241001- there are 8 groups in the data 
-# need to figure out how to code for this by hand 
-#how does the pre-processing collapse them 
-# how do i collapse them
-# how do i find out what's in each group? 
-col_names_preprocessed <- colnames(full_ml_pre$dat_transformed)
-grep("grp", col_names_preprocessed)
-
 
 #make a vector of the names of the grouped variables 
+# that are collapsed by preprocess_data
 token_groups <- vector(mode="list")
 for(i in 1:8) {
     grp_var <- paste0("grp", i)
     token_groups[i] <- full_ml_pre$grp_feats[grp_var]
 }
-
-# 20241004 - iterate through each token group
-# i actually need to also put this one in ml_prep_predict
-# becasue this is for new data not the old one 
-for(j in 1:length(token_groups)){
-    #if there are any of them in the dataset
-   if(token_groups[j] %in% full_ml_practice) {
-    #pseudocode
-    # keep 1 of them (ie the first one)
-    # rename to grp`j`(see below for renaming to variable of variables)
-    #save out to dataset
-   } 
-   
-}
+# save token groups out 
+saveRDS(token_groups, file = token_file)
 
 
-# 20241003 - dummy variables for each of the journals
-# this needs to go into ml_prep_predict
-container_titles <- unique(full_ml$container.title)
-# duplicate full_ml to do practice on it without neededing to re-generate it
-full_ml_practice <- full_ml
-
-#loop through to create each new variable 
-for (i in 1:12) {
-new_var <- paste0("container.title_", container_titles[i])
-full_ml_practice <-
-    full_ml_practice %>%
-    #vectorized ifelse
-    mutate("{new_var}" := ifelse(container.title == container_titles[i], 1, 0))
-}
 
 
 

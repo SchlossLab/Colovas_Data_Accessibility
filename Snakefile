@@ -1,22 +1,29 @@
-datasets = {
-#   "groundtruth" : "Data/groundtruth.csv",
-#   "gt_subset_30" : "Data/gt_subset_30.csv",
-#   "1935-7885_alive" : "Data/1935-7885.csv", 
-#   "1098-5530_small" : "Data/1098-5530_small.csv",
-  "0095-1137" : "Data/0095-1137_metadata.RDS", 
-  "1098-5336" : "Data/1098-5336_metadata.RDS", 
-  "1098-5514" : "Data/1098-5514_metadata.RDS",
-  "1098-5522" : "Data/1098-5522_metadata.RDS",
-  "1098-5530" : "Data/1098-5530_metadata.RDS",
-  "1098-6596" : "Data/1098-6596_metadata.RDS",
-  "1935-7885" : "Data/1935-7885_metadata.RDS",
-  "2150-7511" : "Data/2150-7511_metadata.RDS",
-  "2165-0497" : "Data/2165-0497_metadata.RDS",
-  "2379-5042" : "Data/2379-5042_metadata.RDS",
-  "2379-5077" : "Data/2379-5077_metadata.RDS",
-  "2576-098X" : "Data/2576-098X_metadata.RDS"
+training_datasets = {
+    "groundtruth" : "Data/groundtruth.csv",
+    "gt_subset_30" : "Data/gt_subset_30.csv",
+}
+
+practice_datasets = { 
+    "1935-7885_alive" : "Data/1935-7885.csv", 
+    "1098-5530_small" : "Data/1098-5530_small.csv",
+}
+
+new_datasets = {
+    "0095-1137" : "Data/0095-1137_metadata.RDS", #jcb
+    "1098-5336" : "Data/1098-5336_metadata.RDS", #aem
+    "1098-5514" : "Data/1098-5514_metadata.RDS", #jv
+    "1098-5522" : "Data/1098-5522_metadata.RDS", #i&i
+    "1098-5530" : "Data/1098-5530_metadata.RDS", #jb
+    "1098-6596" : "Data/1098-6596_metadata.RDS", #aac
+    "1935-7885" : "Data/1935-7885_metadata.RDS", #jmbe
+    "2150-7511" : "Data/2150-7511_metadata.RDS", #mbio
+    "2165-0497" : "Data/2165-0497_metadata.RDS", #mspec
+    "2379-5042" : "Data/2379-5042_metadata.RDS", #msph
+    "2379-5077" : "Data/2379-5077_metadata.RDS", #msys
+    "2576-098X" : "Data/2576-098X_metadata.RDS" #mra
 
 }
+
   
 ml_variables = [
   "new_seq_data",
@@ -26,14 +33,9 @@ ml_variables = [
 method = [
   "glmnet",
   "rf",
-  #"rpart2",
   "xgbTree"
 ]
 
-# mtry_values = {
-#     "new_seq_data" = 300, 
-#     "data_availability" = 200
-# }
 
 mtry_dict = {
     "new_seq_data" : 300, 
@@ -47,8 +49,9 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
+        "Data/1935-7885_alive.tokens.csv.gz"
         #expand("Data/papers/{datasets}.csv", datasets = datasets),
-        expand("Data/doi_linkrot/{datasets}.alive.csv", datasets = datasets)
+       # expand("Data/doi_linkrot/{datasets}.alive.csv", datasets = datasets)
         # "Data/{datasets}.{ml_variables}.preprocessed.RDS"
     
 
@@ -131,8 +134,9 @@ rule ml_prep_train:
         rscript = "Code/ml_preprocess.R",
         metadata = "Data/{datasets}.csv",
     output: 
-        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS"
+        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS",
         ztable = "Data/{datasets}.{ml_variables}.zscoretable.csv"
+        token_list = "Data/{datasets}.{ml_variables}.tokenlist.RDS"
     resources: 
         cpus = ncores
         #mem_mb = 200000
