@@ -66,7 +66,7 @@ clean_tibble <-
 need_meta <- select(metadata, all_of(ml_var))
 
 # join clean_tibble and need_meta 
-full_ml_practice <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
+full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 
 # DO NOT remove paper doi
 #full_ml <- select(full_ml, !paper)
@@ -84,50 +84,33 @@ full_ml <-
 
 #collapse correlated features from training datasets
 
-#we can pick one/n because they should all theoretically be the same
-
 # iterate through each token group
 keep_groups <- vector("character", length(token_list))
 for(j in 1:length(token_list)){
     #if none of the tokens are found in dataset
-        if(!any(token_list[[j]] %in% colnames(full_ml_practice))) {
+        if(!any(token_list[[j]] %in% colnames(full_ml))) {
         #add grp'i' column to dataset and fill with 0s
         new_var <- paste0("grp", j)
-        full_ml_practice <-
-            full_ml_practice %>%
+        full_ml <-
+            full_ml %>%
                 mutate("{new_var}" := 0)
         }
         
         else {
-            # could also add a fake token to enter else condition
-            #take first token to return true, 
-            #get positions of true tokens in token list j
             new_var <- paste0("grp", j)
-            position <- which(any(token_list[[j]] %in% colnames(full_ml_practice)))[1]
-            # give you column name?
+            #get positions of true tokens in token list j
+            position <- which(any(token_list[[j]] %in% colnames(full_ml)))[1]
+            # give you column name
             representative <- token_list[[j]][position]
-            full_ml_practice <-
-                full_ml_practice %>%
-                #will it be angry that representative isn't technically the name
-                mutate("{new_var}" := token_list[[j]][position])
+            full_ml <-
+                full_ml %>%
+                mutate("{new_var}" := full_ml$representative)
         }
 }
-# this gives 1 t/f
-any(token_list[[1]] %in% colnames(full_ml_practice))
-#if false, fill in colname with 0s 
-
-length(full_ml_practice[token_list[[1]]]) %>%
-print(n = 500)
-str(token_list)
-# 
 
 
-# use mikropml::preprocess_data on dataset
-full_ml_pre_prediction <- preprocess_data(full_ml, outcome_colname = "paper", 
-                                remove_var = NULL)
-full_ml_pre_prediction$dat_transformed
 
-# save preprocessed data as an RDS file 
+# eventually - save preprocessed data as an RDS file 
 saveRDS(full_ml_pre_prediction, file = output_file)
 
 # 20240925 - abstracting data from model 
