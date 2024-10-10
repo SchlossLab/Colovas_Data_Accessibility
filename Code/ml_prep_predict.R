@@ -108,6 +108,11 @@ for(j in 1:length(token_list)){
         }
 }
 
+#20241010 - okay now we need to join with the z score table 
+#but first we have to pivot the z score table right?
+#what happened to my table - need to re-make it tomorrow tbh
+
+
 
 
 # eventually - save preprocessed data as an RDS file 
