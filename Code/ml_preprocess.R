@@ -18,7 +18,6 @@ clean_csv <- input[2]
 ml_var_snake <- input[3]
 ml_var <- c("paper", ml_var_snake, "container.title")
 threads <- as.numeric(input[4])
-str(threads)
 output_file <- as.character(input[5])
 str(output_file)
 clean_text <- read.csv(clean_csv)
@@ -27,17 +26,19 @@ ztable_filename <- as.character(input[6])
 token_filename <- as.character(input[7])
 
 
-# #local implementation
-clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
-metadata <- read_csv("Data/groundtruth.csv")
-ml_var_snake <- "data_availability"
-ml_var <- c("paper", ml_var_snake, "container.title")
-
-#don't run this unless you really need it so that you don't
-# accidentally save a file over this
-# output_file <- "Data/groundtruth.data_availability.preprocessed.RDS"
-ztable_filename <- "Data/groundtruth.data_availability.zscoretable.csv"
-token_filename <- "Data/groundtruth.data_availability.tokenlist.RDS"
+# # # #local implementation
+# clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
+# metadata <- read_csv("Data/groundtruth.csv")
+# ml_var_snake <- "data_availability"
+# ml_var <- c("paper", ml_var_snake, "container.title")
+# threads <- as.numeric(1)
+# str(threads)
+# #don't run this unless you really need it so that you don't
+# # accidentally save a file over this
+# output_file <- "groundtruth.data_availability.preprocessed.RDS"
+# str(output_file)
+# ztable_filename <- "groundtruth.data_availability.zscoretable.csv"
+# token_filename <- "groundtruth.data_availability.tokenlist.RDS"
 
 
 # set up the format of the clean_text dataframe
@@ -69,8 +70,8 @@ tokens <-
     tokens[!tokens == "paper_doi"]
 
 #initialize vectors for the loop 
-token_mean <- vector(mode="list")
-token_sd <- vector(mode="list")
+token_mean <- vector(mode="double")
+token_sd <- vector(mode="double")
 
 #for loop to make the mean and sd vectors 
  for (i in 2:ncol(clean_tibble)) {
@@ -111,7 +112,7 @@ for(i in 1:8) {
     token_groups[i] <- full_ml_pre$grp_feats[grp_var]
 }
 # save token groups out 
-saveRDS(token_groups, file = token_file)
+saveRDS(token_groups, file = token_filename)
 
 
 
