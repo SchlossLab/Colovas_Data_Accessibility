@@ -112,6 +112,14 @@ for(j in 1:length(token_list)){
 #but first we have to pivot the z score table right?
 #what happened to my table - need to re-make it tomorrow tbh
 
+#20241011 - i have no idea how to make this the way i want it
+#with the mean and sd values in rows so they can be applied
+# can i join rows by columns? 
+ztable
+wide_ztable <- pivot_wider(ztable, 
+                names_from = tokens, 
+               names_expand = FALSE, 
+                values_from =  c(token_mean, token_sd))
 
 
 
