@@ -108,19 +108,33 @@ for(j in 1:length(token_list)){
         }
 }
 
-#20241010 - okay now we need to join with the z score table 
-#but first we have to pivot the z score table right?
-#what happened to my table - need to re-make it tomorrow tbh
+#save full ml for troubleshooting purposes
+#saveRDS(full_ml, file = "Data/JMBE_full_ml.RDS")
+full_ml <- readRDS("Data/JMBE_full_ml.RDS")
 
-#20241011 - i have no idea how to make this the way i want it
-#with the mean and sd values in rows so they can be applied
-# can i join rows by columns? 
-ztable
-wide_ztable <- pivot_wider(ztable, 
-                names_from = tokens, 
-               names_expand = FALSE, 
-                values_from =  c(token_mean, token_sd))
+# i really actually only need the names of the 
+# columns to make sure they are all filled in? 
+# 20241014 and now i start screaming because
+# there's no way that none of these tokens match 
+ztokens <- ztable[1]
+str(ztokens)
+full_ml_colnames <- colnames(full_ml)
 
+
+
+#tokens exist in colnames
+ztokens$tokens %in% full_ml_colnames
+
+right_join(full_ml, ztokens$tokens, 
+            by = join_by(tokens), 
+            copy = TRUE)
+
+# 20241014 - try and join the two tables first? 
+
+
+#20241014- this will work to apply z scoring!
+full_ml[ztable[[1]][1]] %>%
+    map(., \(x) ((x-ztable[[2]][1])/ztable[[3]][1]))
 
 
 # eventually - save preprocessed data as an RDS file 
