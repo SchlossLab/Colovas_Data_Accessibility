@@ -72,41 +72,75 @@ full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 #full_ml <- select(full_ml, !paper)
 
 # create dummy variables for each of the journals
-container_titles <- unique(full_ml$container.title)
+#20241014 - check that this function works 
 
-for (i in 1:12) {
-new_var <- paste0("container.title_", container_titles[i])
-full_ml <-
-    full_ml %>%
-    #vectorized ifelse
-    mutate("{new_var}" := ifelse(container.title == container_titles[i], 1, 0))
+create_dummy_journal <- function(dataset) {
+container_titles <- unique(dataset$container.title)
+
+    for (i in 1:length(container_titles)) {
+    new_var <- paste0("container.title_", container_titles[i])
+    dataset <-
+        dataset %>%
+        #vectorized ifelse
+        mutate("{new_var}" := ifelse(container.title == container_titles[i], 1, 0))
+    }
+
 }
+
+create_dummy_journal(full_ml)
 
 #collapse correlated features from training datasets
 
 # iterate through each token group
-keep_groups <- vector("character", length(token_list))
-for(j in 1:length(token_list)){
-    #if none of the tokens are found in dataset
-        if(!any(token_list[[j]] %in% colnames(full_ml))) {
-        #add grp'i' column to dataset and fill with 0s
-        new_var <- paste0("grp", j)
-        full_ml <-
-            full_ml %>%
-                mutate("{new_var}" := 0)
-        }
-        
-        else {
+
+    keep_groups <- vector("character", length(token_list))
+    for(j in 1:length(token_list)){
+        #if none of the tokens are found in dataset
+            if(!any(token_list[[j]] %in% colnames(full_ml))) {
+            #add grp'i' column to dataset and fill with 0s
             new_var <- paste0("grp", j)
-            #get positions of true tokens in token list j
-            position <- which(any(token_list[[j]] %in% colnames(full_ml)))[1]
-            # give you column name
-            representative <- token_list[[j]][position]
             full_ml <-
                 full_ml %>%
-                mutate("{new_var}" := full_ml$representative)
-        }
-}
+                    mutate("{new_var}" := 0)
+            }
+            
+            else {
+                new_var <- paste0("grp", j)
+                #get positions of true tokens in token list j
+                position <- which(any(token_list[[j]] %in% colnames(full_ml)))[1]
+                # give you column name
+                representative <- token_list[[j]][position]
+                full_ml <-
+                    full_ml %>%
+                    mutate("{new_var}" := full_ml$representative)
+            }
+    }
+
+#also collapse correlated variables in 
+#the z score table but the columns are in 
+#a diff format so i have to re-do it 
+# iterate through each token group
+#20241014- i need to come back to this later
+
+    keep_groups <- vector("character", length(token_list))
+    for(j in 1:length(token_list)){
+        #when the tokens are found in dataset
+            if(any(token_list[[j]] %in% ztable$tokens)) {
+                new_var <- paste0("grp", j)
+                #get positions of true tokens in token list j
+                position <- which(any(token_list[[j]] %in% ztable$tokens))[1]
+                # give you column name
+                representative <- token_list[[j]][position]
+                ztable <-
+                    ztable %>%
+                    mutate("{new_var}" := ztable[representative])
+            }
+    }
+
+head(ztable)
+
+
+
 
 #save full ml for troubleshooting purposes
 #saveRDS(full_ml, file = "Data/JMBE_full_ml.RDS")
@@ -116,8 +150,9 @@ full_ml <- readRDS("Data/JMBE_full_ml.RDS")
 # columns to make sure they are all filled in? 
 # 20241014 and now i start screaming because
 # there's no way that none of these tokens match 
-ztokens <- ztable[1]
-str(ztokens)
+
+
+
 full_ml_colnames <- colnames(full_ml)
 
 
