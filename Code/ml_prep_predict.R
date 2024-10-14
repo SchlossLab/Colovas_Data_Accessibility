@@ -129,8 +129,20 @@ right_join(full_ml, ztokens$tokens,
             by = join_by(tokens), 
             copy = TRUE)
 
-# 20241014 - try and join the two tables first? 
-
+# 20241014 -pat 
+# pivot full ml to long and do it that way 
+# re-generate ztable to have the collapsed groups in them 
+# what to do with NAs with no paper? 
+# see what that looks like when you re-pivot 
+# NA in value column = 0
+# tokens that don't exist should be 0 in every paper
+full_ml %>%
+    pivot_longer(cols = -c(paper, container.title)) %>%
+    full_join(., ztable, by = c("name" = "tokens")) %>% 
+    select(-token_mean, -token_sd, -container.title) %>%
+    pivot_wider(id_cols = paper,
+            names_from = name, 
+                values_from = value)
 
 #20241014- this will work to apply z scoring!
 full_ml[ztable[[1]][1]] %>%
