@@ -68,12 +68,50 @@ need_meta <- select(metadata, all_of(ml_var))
 # join clean_tibble and need_meta 
 full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 
+
+#save full ml for troubleshooting purposes
+#saveRDS(full_ml, file = "Data/JMBE_full_ml.RDS")
+full_ml <- readRDS("Data/JMBE_full_ml.RDS")
+
 # DO NOT remove paper doi
 #full_ml <- select(full_ml, !paper)
 
+#pivot full_ml to long 
+
+long_full_ml <-
+    full_ml %>%
+        pivot_longer(cols = -c(paper, container.title), 
+                    names_to = "tokens", 
+                    values_to = "num_appearances")
+        
+head(long_full_ml, 20)
+
+
+#join long_full_ml to ztable by tokens
+#20241015 - tokens w/o mean/sd == not in training dataset
+# need to add cols to long_full_ml for tokens that don't exist in test data
+# what is the best way to do this?  
+joined_full_ml_tokens <-semi_join(long_full_ml, ztable)
+missing_full_ml_tokens <-anti_join(ztable, long_full_ml)
+
+head(joined_full_ml_tokens, 20)
+tail(joined_full_ml_tokens, 20)
+
+head(missing_full_ml_tokens, 20)
+tail(missing_full_ml_tokens, 20)
+str(missing_full_ml_tokens)
+
+# pivot back to wide? 
+        pivot_wider(id_cols = c(paper, container.title), 
+                    id_expand = TRUE,
+                    names_from = name, 
+                    values_from = value, 
+                    names_repair = "minimal", 
+                    values_fill = 0) 
+
+
 # create dummy variables for each of the journals
 #20241014 - check that this function works 
-
 create_dummy_journal <- function(dataset) {
 container_titles <- unique(dataset$container.title)
 
@@ -87,7 +125,13 @@ container_titles <- unique(dataset$container.title)
 
 }
 
-create_dummy_journal(full_ml)
+create_dummy_journal(pivoting)
+
+pivoted_colnames <- colnames(pivoting)
+
+
+grep("container", pivoted_colnames, value = TRUE)
+grep("grp", pivoted_colnames, value = TRUE)
 
 #collapse correlated features from training datasets
 
@@ -142,9 +186,6 @@ head(ztable)
 
 
 
-#save full ml for troubleshooting purposes
-#saveRDS(full_ml, file = "Data/JMBE_full_ml.RDS")
-full_ml <- readRDS("Data/JMBE_full_ml.RDS")
 
 # i really actually only need the names of the 
 # columns to make sure they are all filled in? 
@@ -171,13 +212,23 @@ right_join(full_ml, ztokens$tokens,
 # see what that looks like when you re-pivot 
 # NA in value column = 0
 # tokens that don't exist should be 0 in every paper
-full_ml %>%
-    pivot_longer(cols = -c(paper, container.title)) %>%
-    full_join(., ztable, by = c("name" = "tokens")) %>% 
-    select(-token_mean, -token_sd, -container.title) %>%
-    pivot_wider(id_cols = paper,
-            names_from = name, 
-                values_from = value)
+
+
+
+
+
+
+# 20241015 - i still think it would be easier to pivot z score
+# bc then i can apply the same transformations
+
+full_ml_colnames <- colnames(full_ml)
+pivoted_colnames <- colnames(pivoting)
+pivoted_colnames %in% full_ml_colnames
+pivoted_colnames %in% ztable$tokens
+ztable$tokens %in% pivoted_colnames
+"container.title" %in% pivoted_colnames
+"token" %in% pivoted_colnames
+"grp" %in% pivoted_colnames
 
 #20241014- this will work to apply z scoring!
 full_ml[ztable[[1]][1]] %>%
@@ -187,16 +238,3 @@ full_ml[ztable[[1]][1]] %>%
 # eventually - save preprocessed data as an RDS file 
 saveRDS(full_ml_pre_prediction, file = output_file)
 
-# 20240925 - abstracting data from model 
-
-# da_model_rds <- "Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS"
-# da_model <- readRDS(da_model_rds)
-# names(da_model)
-# head(da_model$xNames, 15)
-# tokens <- readRDS("Data/1935-7885_alive.preprocessed.RDS")
-
-# model_tokens <- da_model$xNames
-# str(tokens)
-# names(tokens)
-
-# head(tokens)
