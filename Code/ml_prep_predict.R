@@ -8,26 +8,19 @@ library(tidytext)
 library(jsonlite)
 library(mikropml)
 
-
 # load files
 
 #for snakemake implementation
 #{input.rscript} {input.metadata} {input.tokens} {resources.cpus} {output.rds}
 input <- commandArgs(trailingOnly = TRUE)
-metadata <- input[1]
-clean_csv <- input[2]
-# ml_var_snake <- input[3]
+metadata <- read.csv(input[1])
+clean_text <- read.csv(input[2])
 ml_var <- c("paper", "container.title")
-threads <- as.numeric(input[3])
-str(threads)
-output_file <- as.character(input[4])
+output_file <- as.character(input[3])
 str(output_file)
-clean_text <- read.csv(clean_csv)
-metadata <- read.csv(metadata)
-ztable_filename <- as.character(input[5])
-ztable <- read_csv(ztable_filename)
-token_filename <- as.character(input[6])
-token_groups <- readRDS(token_filename)
+ztable <- read_csv(input[4])
+token_groups <- readRDS(input[5])
+container_titles <-readRDS(input[6])
 
 # #local implementation
 clean_text <- read_csv("Data/1935-7885_alive.tokens.csv.gz")
@@ -40,13 +33,15 @@ ztable_filename <- "Data/groundtruth.data_availability.zscoretable.csv"
 token_filename <- "Data/groundtruth.data_availability.tokenlist.RDS"
 ztable <- read_csv(ztable_filename)
 token_list <- readRDS(token_filename)
+container_titles <-
+    readRDS("Data/groundtruth.data_availability.container_titles.RDS")
 
 
 # set up the format of the clean_text dataframe 
-
-# 20240923 - need to check if this is still the header in the files
+# remove near zero variants
 total_papers <- n_distinct(clean_text$paper_doi)
 
+#takes ~10 minutes for ground truth (n=500)
 clean_tibble <-
     clean_text %>% 
         mutate(n_papers = n(), .by = paper_tokens) %>%
@@ -73,11 +68,8 @@ full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 #saveRDS(full_ml, file = "Data/JMBE_full_ml.RDS")
 full_ml <- readRDS("Data/JMBE_full_ml.RDS")
 
-# DO NOT remove paper doi
-#full_ml <- select(full_ml, !paper)
 
 #pivot full_ml to long 
-
 long_full_ml <-
     full_ml %>%
         pivot_longer(cols = -c(paper, container.title), 
@@ -91,47 +83,67 @@ head(long_full_ml, 20)
 #20241015 - tokens w/o mean/sd == not in training dataset
 # need to add cols to long_full_ml for tokens that don't exist in test data
 # what is the best way to do this?  
-joined_full_ml_tokens <-semi_join(long_full_ml, ztable)
+
+
+#find tokens missing from full_ml 
 missing_full_ml_tokens <-anti_join(ztable, long_full_ml)
+#add columns to full_ml? 
+for (i in 1:length(missing_full_ml_tokens)) {
 
-head(joined_full_ml_tokens, 20)
-tail(joined_full_ml_tokens, 20)
+    missing_var <- missing_full_ml_tokens$tokens[i]
+   
+    full_ml_with_missing <-
+        full_ml %>%
+            mutate("{missing_var}" := 0)
 
-head(missing_full_ml_tokens, 20)
-tail(missing_full_ml_tokens, 20)
-str(missing_full_ml_tokens)
+}
+
+#make full_ml_with_missing long again 
+long_full_ml_with_missing <-
+    full_ml_with_missing %>%
+        pivot_longer(cols = -c(paper, container.title), 
+                    names_to = "tokens", 
+                    values_to = "num_appearances")
+
+
+#join with z table
+joined_full_ml_tokens <-semi_join(long_full_ml_with_missing, 
+                        ztable, 
+                        by = join_by(tokens))
+
+head(joined_full_ml_tokens)
 
 # pivot back to wide? 
+wide_joined_full_ml_tokens <-
+    joined_full_ml_tokens %>%
         pivot_wider(id_cols = c(paper, container.title), 
                     id_expand = TRUE,
-                    names_from = name, 
-                    values_from = value, 
+                    names_from = tokens, 
+                    values_from = num_appearances, 
                     names_repair = "minimal", 
                     values_fill = 0) 
 
 
 # create dummy variables for each of the journals
-#20241014 - check that this function works 
-create_dummy_journal <- function(dataset) {
-container_titles <- unique(dataset$container.title)
+# since each test dataset only contains data from one journal, 
+# need to fill in the rest with zeros 
+
+container_titles <- unique(wide_joined_full_ml_tokens$container.title)
 
     for (i in 1:length(container_titles)) {
     new_var <- paste0("container.title_", container_titles[i])
-    dataset <-
-        dataset %>%
+    wide_joined_full_ml_tokens <-
+        wide_joined_full_ml_tokens %>%
         #vectorized ifelse
-        mutate("{new_var}" := ifelse(container.title == container_titles[i], 1, 0))
+        mutate("{new_var}" := 0)
+        #"{new_var}" := ifelse(container.title == container_titles[i], 1, 0))
     }
 
-}
-
-create_dummy_journal(pivoting)
-
-pivoted_colnames <- colnames(pivoting)
 
 
+pivoted_colnames <- colnames(wide_joined_full_ml_tokens)
 grep("container", pivoted_colnames, value = TRUE)
-grep("grp", pivoted_colnames, value = TRUE)
+
 
 #collapse correlated features from training datasets
 

@@ -17,13 +17,13 @@ metadata <- input[1]
 clean_csv <- input[2]
 ml_var_snake <- input[3]
 ml_var <- c("paper", ml_var_snake, "container.title")
-threads <- as.numeric(input[4])
-output_file <- as.character(input[5])
+output_file <- as.character(input[4])
 str(output_file)
 clean_text <- read.csv(clean_csv)
 metadata <- read.csv(metadata)
-ztable_filename <- as.character(input[6])
-token_filename <- as.character(input[7])
+ztable_filename <- as.character(input[5])
+token_filename <- as.character(input[6])
+container_title_filename <-as.character(input[7])
 
 
 # # # #local implementation
@@ -31,14 +31,14 @@ token_filename <- as.character(input[7])
 # metadata <- read_csv("Data/groundtruth.csv")
 # ml_var_snake <- "data_availability"
 # ml_var <- c("paper", ml_var_snake, "container.title")
-# threads <- as.numeric(1)
-# str(threads)
 # #don't run this unless you really need it so that you don't
 # # accidentally save a file over this
 # output_file <- "groundtruth.data_availability.preprocessed.RDS"
 # str(output_file)
 # ztable_filename <- "groundtruth.data_availability.zscoretable.csv"
 # token_filename <- "groundtruth.data_availability.tokenlist.RDS"
+# container_title_filename <- "Data/groundtruth.data_availability.container_titles.RDS"
+
 
 
 # set up the format of the clean_text dataframe
@@ -81,6 +81,7 @@ token_sd <- vector(mode="double")
 
 z_score_table <- tibble(tokens, token_mean, token_sd)
 
+
 # save out z score table 
 write_csv(z_score_table, file = ztable_filename)
 
@@ -89,6 +90,15 @@ need_meta <- select(metadata, all_of(ml_var))
 
 # join clean_tibble and need_meta 
 full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
+
+#20241016 - for loop to create container.titles table 
+# i don't think this is right honestly... 
+# but we will have to open this script to do it all 
+container_titles <- full_ml %>%
+    count(container.title) %>%
+    mutate(token_mean = (n/500), 
+            token_sd = sd(n)) 
+
 
 # remove paper doi
 full_ml <- select(full_ml, !paper)
