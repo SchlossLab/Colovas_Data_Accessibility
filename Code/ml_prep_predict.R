@@ -183,21 +183,34 @@ grep("grp", pivoted_colnames2, value = TRUE)
 #a diff format so i have to re-do it 
 # iterate through each token group
 #20241014- i need to come back to this later
+ztable <- read_csv(ztable_filename)
 
-    keep_groups <- vector("character", length(token_list))
+   # keep_groups <- vector("character", length(token_list))
     for(j in 1:length(token_list)){
         #when the tokens are found in dataset
             if(any(token_list[[j]] %in% ztable$tokens)) {
                 new_var <- paste0("grp", j)
                 #get positions of true tokens in token list j
                 position <- which(any(token_list[[j]] %in% ztable$tokens))[1]
-                # give you column name
-                representative <- token_list[[j]][position]
-                ztable <-
-                    ztable %>%
-                    mutate("{new_var}" := ztable[representative])
+                # give you row name
+                representative <- grep(token_list[[j]][position], ztable$tokens)
+                ztable[[1]][[representative[1]]] <- new_var
             }
     }
+
+for(j in 1:length(token_list)){
+
+    if(any(token_list[[j]] %in% ztable$tokens)) {
+    position <- which(any(token_list[[j]] %in% ztable$tokens))[1]
+ztable <- 
+    ztable %>%
+        filter(tokens != token_list[[j]][position])
+    } 
+
+}
+
+grep("grp", ztable$tokens, value = TRUE)
+any(token_list %in% ztable$tokens)
 
 head(ztable)
 
