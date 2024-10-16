@@ -27,17 +27,17 @@ container_title_filename <-as.character(input[7])
 
 
 # # # #local implementation
-# clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
-# metadata <- read_csv("Data/groundtruth.csv")
-# ml_var_snake <- "data_availability"
-# ml_var <- c("paper", ml_var_snake, "container.title")
-# #don't run this unless you really need it so that you don't
-# # accidentally save a file over this
+clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
+metadata <- read_csv("Data/groundtruth.csv")
+ml_var_snake <- "data_availability"
+ml_var <- c("paper", ml_var_snake, "container.title") 
+#don't run this unless you really need it so that you don't
+# accidentally save a file over this
 # output_file <- "groundtruth.data_availability.preprocessed.RDS"
-# str(output_file)
-# ztable_filename <- "groundtruth.data_availability.zscoretable.csv"
-# token_filename <- "groundtruth.data_availability.tokenlist.RDS"
-# container_title_filename <- "Data/groundtruth.data_availability.container_titles.RDS"
+str(output_file)
+ztable_filename <- "groundtruth.data_availability.zscoretable.csv"
+token_filename <- "groundtruth.data_availability.tokenlist.RDS"
+container_title_filename <- "Data/groundtruth.data_availability.container_titles.RDS"
 
 
 
@@ -96,8 +96,10 @@ full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 # but we will have to open this script to do it all 
 container_titles <- full_ml %>%
     count(container.title) %>%
-    mutate(token_mean = (n/500), 
-            token_sd = sd(n)) 
+    mutate(token_mean = (`n`/500), 
+            token_sd = sqrt(token_mean*(1-token_mean))) 
+
+saveRDS(container_titles, file = container_title_filename)
 
 
 # remove paper doi
