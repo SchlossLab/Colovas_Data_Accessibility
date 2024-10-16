@@ -10,8 +10,8 @@ library(mikropml)
 
 # load files
 #for snakemake implementation
-#{input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables}
-# {resources.cpus} {output.rds} {output.ztable} {output.token_list}
+#  {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} 
+# {output.rds} {output.ztable} {output.tokenlist} {output.containerlist}
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- input[1]
 clean_csv <- input[2]

@@ -11,7 +11,8 @@ library(mikropml)
 # load files
 
 #for snakemake implementation
-#{input.rscript} {input.metadata} {input.tokens} {resources.cpus} {output.rds}
+# {input.rscript} {input.metadata} {input.tokens} {input.ztable} 
+# {input.tokenlist} {input.containerlist} {output.rds}
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- read.csv(input[1])
 clean_text <- read.csv(input[2])
@@ -87,8 +88,9 @@ head(long_full_ml, 20)
 
 #find tokens missing from full_ml 
 missing_full_ml_tokens <-anti_join(ztable, long_full_ml)
+
 #add columns to full_ml? 
-for (i in 1:length(missing_full_ml_tokens)) {
+for (i in 1:nrow(missing_full_ml_tokens)) {
 
     missing_var <- missing_full_ml_tokens$tokens[i]
    
@@ -128,21 +130,22 @@ wide_joined_full_ml_tokens <-
 # since each test dataset only contains data from one journal, 
 # need to fill in the rest with zeros 
 
-container_titles <- unique(wide_joined_full_ml_tokens$container.title)
+container_titles <-
+    container_titles %>% 
+        mutate(var_name = paste0("container.title_", container.title)) 
 
-    for (i in 1:length(container_titles)) {
-    new_var <- paste0("container.title_", container_titles[i])
+    for (i in 1:nrow(container_titles)) {
+    new_var <- container_titles$var_name[i]
     wide_joined_full_ml_tokens <-
         wide_joined_full_ml_tokens %>%
         #vectorized ifelse
-        mutate("{new_var}" := 0)
-        #"{new_var}" := ifelse(container.title == container_titles[i], 1, 0))
+        mutate(
+        "{new_var}" := ifelse(container.title == container_titles$container.title[i], 1, 0))
     }
 
 
-
 pivoted_colnames <- colnames(wide_joined_full_ml_tokens)
-grep("container", pivoted_colnames, value = TRUE)
+grep("container*", pivoted_colnames, value = TRUE) 
 
 
 #collapse correlated features from training datasets
@@ -152,25 +155,28 @@ grep("container", pivoted_colnames, value = TRUE)
     keep_groups <- vector("character", length(token_list))
     for(j in 1:length(token_list)){
         #if none of the tokens are found in dataset
-            if(!any(token_list[[j]] %in% colnames(full_ml))) {
+            if(!any(token_list[[j]] %in% colnames(wide_joined_full_ml_tokens))) {
             #add grp'i' column to dataset and fill with 0s
             new_var <- paste0("grp", j)
-            full_ml <-
-                full_ml %>%
+            wide_joined_full_ml_tokens <-
+                wide_joined_full_ml_tokens %>%
                     mutate("{new_var}" := 0)
             }
             
             else {
                 new_var <- paste0("grp", j)
                 #get positions of true tokens in token list j
-                position <- which(any(token_list[[j]] %in% colnames(full_ml)))[1]
+                position <- which(any(token_list[[j]] %in% colnames(wide_joined_full_ml_tokens)))[1]
                 # give you column name
                 representative <- token_list[[j]][position]
-                full_ml <-
-                    full_ml %>%
-                    mutate("{new_var}" := full_ml$representative)
+                wide_joined_full_ml_tokens <-
+                    wide_joined_full_ml_tokens %>%
+                    mutate("{new_var}" := wide_joined_full_ml_tokens$representative)
             }
     }
+
+pivoted_colnames2 <- colnames(wide_joined_full_ml_tokens)
+grep("grp", pivoted_colnames2, value = TRUE) 
 
 #also collapse correlated variables in 
 #the z score table but the columns are in 

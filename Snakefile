@@ -138,13 +138,11 @@ rule ml_prep_train:
     output: 
         rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS",
         ztable = "Data/{datasets}.{ml_variables}.zscoretable.csv", 
-        tokenlist = "Data/{datasets}.{ml_variables}.tokenlist.RDS"
-    resources: 
-        cpus = ncores
-        #mem_mb = 200000
+        tokenlist = "Data/{datasets}.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/{datasets}.{ml_variables}.container_titles.RDS"
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds} {output.ztable} {output.tokenlist}
+        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable} {output.tokenlist} {output.containerlist}
         """
 
 rule ml_prep_predict:
@@ -152,13 +150,14 @@ rule ml_prep_predict:
         tokens = "Data/{datasets}.tokens.csv.gz",
         rscript = "Code/ml_prep_predict.R",
         metadata = "Data/{datasets}.csv",
+        ztable = "Data/{datasets}.{ml_variables}.zscoretable.csv", 
+        tokenlist = "Data/{datasets}.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/{datasets}.{ml_variables}.container_titles.RDS"
     output: 
         rds = "Data/{datasets}.preprocessed.RDS"
-    resources: 
-        cpus = ncores
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {resources.cpus} {output.rds}
+        {input.rscript} {input.metadata} {input.tokens} {input.ztable} {input.tokenlist} {input.containerlist} {output.rds}
         """
 
 # rule train_ml:
