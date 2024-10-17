@@ -179,96 +179,25 @@ grep("container*", pivoted_colnames, value = TRUE)
 pivoted_colnames2 <- colnames(wide_joined_full_ml_tokens)
 grep("grp", pivoted_colnames2, value = TRUE) 
 
-#also collapse correlated variables in ztable --------------------------------------
 
-token_unlist <-
-    token_list %>% 
-        unlist() %>% 
-        tibble() %>%
-        mutate(grpname = NA)
+#finally apply z score to the data!--------------------------
+
+# 20241017
+# i have no clue what just happened because apparently now none 
+# of the colnames are in the ztable?????
+# which i swear i added them all 
+wide_colnames <- colnames(wide_joined_full_ml_tokens)
+wide_colnames == ztable_full$tokens
+
+ztable_full$tokens %in% wide_colnames
 
 
-for(i in 1:nrow(token_unlist)){
-    for(j in 1:length(token_list)){
-        if(any(token_unlist$.[i] == token_list[[j]])){
-           token_unlist$grpname[i] <-paste0("grp", j) 
-        }
-    }
+for(i in 1:ncol(wide_joined_full_ml_tokens)){
+wide_joined_full_ml_tokens[ztable_full[[1]][i]] %>%
+    map(., \(x) ((x-ztable_full[[2]][i])/ztable_full[[3]][i]))
 }
-token_unlist <-
-token_unlist %>%
-    rename(., tokens = `.`)
-
-tokens_withdata <-
- token_unlist %>% 
-       left_join(., ztable, by = "tokens")
-
-ztable_without_collapsed <-
-    ztable %>% 
-        anti_join(., tokens_withdata, by = "tokens")
-
-tokens_toz <- 
-tokens_withdata %>%
-    select(-tokens) %>% 
-    rename(tokens = grpname) %>%
-    unique()  
-
-ztable_withgrps <-
-tokens_toz %>% 
-    full_join(., ztable_without_collapsed) 
-    
 
 
-#sanity checks 
-grep("grp", ztable_withgrps$tokens, value = TRUE)
-for(i in 1:length(token_list)){
-    print(token_list[i] %in% ztable_withgrps$tokens)
-}
-grep("attribution international", ztable_withgrps$tokens, value = TRUE)
-
-# need to add container.titles to the z score table-------------------------------
-
-grep("container", ztable_withgrps$tokens, value = TRUE)
-
-containers_toz <-
-container_titles %>% 
-    select(var_name, token_mean, token_sd) %>% 
-    rename(tokens = var_name) 
-
-ztable_full <-
-containers_toz %>% 
-    full_join(., ztable_withgrps) 
-
-
-
-# 20241014 -pat 
-# pivot full ml to long and do it that way 
-# re-generate ztable to have the collapsed groups in them 
-# what to do with NAs with no paper? 
-# see what that looks like when you re-pivot 
-# NA in value column = 0
-# tokens that don't exist should be 0 in every paper
-
-
-
-
-
-
-# 20241015 - i still think it would be easier to pivot z score
-# bc then i can apply the same transformations
-
-full_ml_colnames <- colnames(full_ml)
-pivoted_colnames <- colnames(pivoting)
-pivoted_colnames %in% full_ml_colnames
-pivoted_colnames %in% ztable$tokens
-ztable$tokens %in% pivoted_colnames
-"container.title" %in% pivoted_colnames
-"token" %in% pivoted_colnames
-"grp" %in% pivoted_colnames
-
-#20241014- this will work to apply z scoring!
-full_ml[ztable[[1]][1]] %>%
-    map(., \(x) ((x-ztable[[2]][1])/ztable[[3]][1]))
 
 
 # eventually - save preprocessed data as an RDS file 
