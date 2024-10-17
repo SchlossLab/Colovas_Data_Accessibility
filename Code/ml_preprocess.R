@@ -27,17 +27,17 @@ container_title_filename <-as.character(input[7])
 
 
 # # # #local implementation
-clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
-metadata <- read_csv("Data/groundtruth.csv")
-ml_var_snake <- "data_availability"
-ml_var <- c("paper", ml_var_snake, "container.title") 
-#don't run this unless you really need it so that you don't
-# accidentally save a file over this
-# output_file <- "groundtruth.data_availability.preprocessed.RDS"
-str(output_file)
-ztable_filename <- "groundtruth.data_availability.zscoretable.csv"
-token_filename <- "groundtruth.data_availability.tokenlist.RDS"
-container_title_filename <- "Data/groundtruth.data_availability.container_titles.RDS"
+# clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
+# metadata <- read_csv("Data/groundtruth.csv")
+# ml_var_snake <- "data_availability"
+# ml_var <- c("paper", ml_var_snake, "container.title") 
+# #don't run this unless you really need it so that you don't
+# # accidentally save a file over this
+# # output_file <- "groundtruth.data_availability.preprocessed.RDS"
+# str(output_file)
+# ztable_filename <- "groundtruth.data_availability.zscoretable.csv"
+# token_filename <- "groundtruth.data_availability.tokenlist.RDS"
+# container_title_filename <- "Data/groundtruth.data_availability.container_titles.RDS"
 
 
 
