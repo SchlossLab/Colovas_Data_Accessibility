@@ -49,8 +49,10 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/groundtruth.{ml_variables}.preprocessed.RDS", 
-        ml_variables = ml_variables)
+        expand("Data/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
+         ml_variables = ml_variables)
+        # expand("Data/groundtruth.{ml_variables}.preprocessed.RDS", 
+        # ml_variables = ml_variables)
         # "Data/1935-7885_alive.tokens.csv.gz"
         #expand("Data/papers/{datasets}.csv", datasets = datasets),
        # expand("Data/doi_linkrot/{datasets}.alive.csv", datasets = datasets)
@@ -143,6 +145,19 @@ rule ml_prep_train:
     shell:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable} {output.tokenlist} {output.containerlist}
+        """
+
+rule ztable: 
+    input: 
+        rscript = "Code/ztable_prep.R",
+        ztable = "Data/{datasets}.{ml_variables}.zscoretable.csv", 
+        tokenlist = "Data/{datasets}.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/{datasets}.{ml_variables}.container_titles.RDS"
+    output: 
+        "Data/{datasets}.{ml_variables}.zscoretable_filtered.csv"
+    shell: 
+        """
+        {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
         """
 
 rule ml_prep_predict:

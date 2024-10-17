@@ -10,7 +10,7 @@ library(jsonlite)
 # load files
 
 #for snakemake implementation
-# {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output.rds}
+# {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
 input <- commandArgs(trailingOnly = TRUE)
 ztable <- read_csv(input[1])
 token_groups <- readRDS(input[2])
@@ -25,7 +25,7 @@ ztable <- read_csv(ztable_filename)
 token_list <- readRDS(token_filename)
 container_titles <-
     readRDS("Data/groundtruth.data_availability.container_titles.RDS")
-output_file <- "Data/1935-7885_alive.preprocessed.RDS"
+output_file <- "Data/groundtruth.data_availability.zscoretable_filtered.csv"
 
 #also collapse correlated variables in ztable --------------------------------------
 
