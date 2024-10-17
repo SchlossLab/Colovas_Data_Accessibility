@@ -143,7 +143,7 @@ wide_joined_full_ml_tokens <-
     wide_joined_full_ml_tokens %>%
         select(-container.title)
 
-#sanity check 
+#sanity check - should be 12
 pivoted_colnames <- colnames(wide_joined_full_ml_tokens)
 grep("container*", pivoted_colnames, value = TRUE) 
 
@@ -180,87 +180,66 @@ pivoted_colnames2 <- colnames(wide_joined_full_ml_tokens)
 grep("grp", pivoted_colnames2, value = TRUE) 
 
 #also collapse correlated variables in ztable --------------------------------------
-# 20241017 - this doesn't remove the ones that aren't selected
-# 
-ztable <-read_csv(ztable_filename)
 
 token_unlist <-
     token_list %>% 
-        unlist(token_list)
-
-#working on making this come out in the right order!
-ztable_grpsonly <-
-    ztable %>% 
-        filter(tokens %in% token_unlist, preserve = TRUE) %>%
-        nest(., tokens = tokens, .by = c(token_mean, token_sd))
-
-ztable_grpsonly$tokens[1] == token_list[[1]]
+        unlist() %>% 
+        tibble() %>%
+        mutate(grpname = NA)
 
 
-# why don't you work -----------------------------------------------------------
+for(i in 1:nrow(token_unlist)){
     for(j in 1:length(token_list)){
-        #when the tokens are found in dataset
-            if(any(token_list[[j]] %in% ztable$tokens)) {
-                new_var <- paste0("grp", j)
-                #get positions of true tokens in token list j
-                positions <- which(any(token_list[[j]] %in% ztable$tokens))
-                keep <- positions[1]
-                remove <- positions[]
-                # give you row name
-                representative <- grep(token_list[[j]][keep], ztable$tokens)
-                ztable[[1]][[representative[1]]] <- new_var
-            }
+        if(any(token_unlist$.[i] == token_list[[j]])){
+           token_unlist$grpname[i] <-paste0("grp", j) 
+        }
     }
-
-for(j in 1:length(token_list)){
-
-    if(any(token_list[[j]] %in% ztable$tokens)) {
-    position <- which(any(token_list[[j]] %in% ztable$tokens))[1]
-ztable <- 
-    ztable %>%
-        filter(tokens != token_list[[j]][position])
-    } 
-
 }
+token_unlist <-
+token_unlist %>%
+    rename(., tokens = `.`)
 
-##------------^^^doesn't work--^^^^--------------------------------------------
+tokens_withdata <-
+ token_unlist %>% 
+       left_join(., ztable, by = "tokens")
+
+ztable_without_collapsed <-
+    ztable %>% 
+        anti_join(., tokens_withdata, by = "tokens")
+
+tokens_toz <- 
+tokens_withdata %>%
+    select(-tokens) %>% 
+    rename(tokens = grpname) %>%
+    unique()  
+
+ztable_withgrps <-
+tokens_toz %>% 
+    full_join(., ztable_without_collapsed) 
+    
 
 
 #sanity checks 
-grep("grp", ztable$tokens, value = TRUE)
-
+grep("grp", ztable_withgrps$tokens, value = TRUE)
 for(i in 1:length(token_list)){
-    print(token_list[i] %in% ztable$tokens)
+    print(token_list[i] %in% ztable_withgrps$tokens)
 }
+grep("attribution international", ztable_withgrps$tokens, value = TRUE)
 
-head(ztable)
+# need to add container.titles to the z score table-------------------------------
 
-grep("attribution", ztable$tokens)
+grep("container", ztable_withgrps$tokens, value = TRUE)
 
-#tokens exist in colnames
-#which column names don't exist in ztable - container.title_
-no_exist <-which(!(pivoted_colnames2 %in% ztable$tokens))
+containers_toz <-
+container_titles %>% 
+    select(var_name, token_mean, token_sd) %>% 
+    rename(tokens = var_name) 
 
-for(i in 1:length(no_exist)){
-    print(pivoted_colnames2[no_exist[i]])
-}
-
-
-## 20241017 
-# and then also add the mean/sd variables from container table to the zscore table  
+ztable_full <-
+containers_toz %>% 
+    full_join(., ztable_withgrps) 
 
 
-
-
-
-
-
-
-
-
-right_join(full_ml, ztokens$tokens, 
-            by = join_by(tokens), 
-            copy = TRUE)
 
 # 20241014 -pat 
 # pivot full ml to long and do it that way 
