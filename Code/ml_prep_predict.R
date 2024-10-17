@@ -70,26 +70,23 @@ full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi))
 full_ml <- readRDS("Data/JMBE_full_ml.RDS")
 
 
-#pivot full_ml to long 
+#pivot full_ml to long------------------------------------ 
 long_full_ml <-
     full_ml %>%
         pivot_longer(cols = -c(paper, container.title), 
                     names_to = "tokens", 
                     values_to = "num_appearances")
-        
+#sanity check         
 head(long_full_ml, 20)
 
 
-#join long_full_ml to ztable by tokens
-#20241015 - tokens w/o mean/sd == not in training dataset
-# need to add cols to long_full_ml for tokens that don't exist in test data
-# what is the best way to do this?  
+#join long_full_ml to ztable by tokens----------------------------
 
 
 #find tokens missing from full_ml 
 missing_full_ml_tokens <-anti_join(ztable, long_full_ml)
 
-#add columns to full_ml? 
+#add columns to full_ml
 for (i in 1:nrow(missing_full_ml_tokens)) {
 
     missing_var <- missing_full_ml_tokens$tokens[i]
@@ -100,7 +97,7 @@ for (i in 1:nrow(missing_full_ml_tokens)) {
 
 }
 
-#make full_ml_with_missing long again 
+#make full_ml_with_missing long again-------------------------------- 
 long_full_ml_with_missing <-
     full_ml_with_missing %>%
         pivot_longer(cols = -c(paper, container.title), 
@@ -112,10 +109,10 @@ long_full_ml_with_missing <-
 joined_full_ml_tokens <-semi_join(long_full_ml_with_missing, 
                         ztable, 
                         by = join_by(tokens))
-
+#sanity check 
 head(joined_full_ml_tokens)
 
-# pivot back to wide? 
+# pivot back to wide -------------------------------------------------
 wide_joined_full_ml_tokens <-
     joined_full_ml_tokens %>%
         pivot_wider(id_cols = c(paper, container.title), 
@@ -126,9 +123,7 @@ wide_joined_full_ml_tokens <-
                     values_fill = 0) 
 
 
-# create dummy variables for each of the journals
-# since each test dataset only contains data from one journal, 
-# need to fill in the rest with zeros 
+# create dummy variables for each of the journals---------------------
 
 container_titles <-
     container_titles %>% 
@@ -143,12 +138,17 @@ container_titles <-
         "{new_var}" := ifelse(container.title == container_titles$container.title[i], 1, 0))
     }
 
+# remove container.title 
+wide_joined_full_ml_tokens <-
+    wide_joined_full_ml_tokens %>%
+        select(-container.title)
 
+#sanity check 
 pivoted_colnames <- colnames(wide_joined_full_ml_tokens)
 grep("container*", pivoted_colnames, value = TRUE) 
 
 
-#collapse correlated features from training datasets
+#collapse correlated features from training datasets------------------------------
 
 # iterate through each token group
 
@@ -175,25 +175,39 @@ grep("container*", pivoted_colnames, value = TRUE)
             }
     }
 
+#sanity check 
 pivoted_colnames2 <- colnames(wide_joined_full_ml_tokens)
 grep("grp", pivoted_colnames2, value = TRUE) 
 
-#also collapse correlated variables in 
-#the z score table but the columns are in 
-#a diff format so i have to re-do it 
-# iterate through each token group
-#20241014- i need to come back to this later
-ztable <- read_csv(ztable_filename)
+#also collapse correlated variables in ztable --------------------------------------
+# 20241017 - this doesn't remove the ones that aren't selected
+# 
+ztable <-read_csv(ztable_filename)
 
-   # keep_groups <- vector("character", length(token_list))
+token_unlist <-
+    token_list %>% 
+        unlist(token_list)
+
+#working on making this come out in the right order!
+ztable_grpsonly <-
+    ztable %>% 
+        filter(tokens %in% token_unlist, preserve = TRUE) %>%
+        nest(., tokens = tokens, .by = c(token_mean, token_sd))
+
+ztable_grpsonly$tokens[1] == token_list[[1]]
+
+
+# why don't you work -----------------------------------------------------------
     for(j in 1:length(token_list)){
         #when the tokens are found in dataset
             if(any(token_list[[j]] %in% ztable$tokens)) {
                 new_var <- paste0("grp", j)
                 #get positions of true tokens in token list j
-                position <- which(any(token_list[[j]] %in% ztable$tokens))[1]
+                positions <- which(any(token_list[[j]] %in% ztable$tokens))
+                keep <- positions[1]
+                remove <- positions[]
                 # give you row name
-                representative <- grep(token_list[[j]][position], ztable$tokens)
+                representative <- grep(token_list[[j]][keep], ztable$tokens)
                 ztable[[1]][[representative[1]]] <- new_var
             }
     }
@@ -209,28 +223,40 @@ ztable <-
 
 }
 
+##------------^^^doesn't work--^^^^--------------------------------------------
+
+
+#sanity checks 
 grep("grp", ztable$tokens, value = TRUE)
-any(token_list %in% ztable$tokens)
+
+for(i in 1:length(token_list)){
+    print(token_list[i] %in% ztable$tokens)
+}
 
 head(ztable)
 
-
-
-
-
-# i really actually only need the names of the 
-# columns to make sure they are all filled in? 
-# 20241014 and now i start screaming because
-# there's no way that none of these tokens match 
-
-
-
-full_ml_colnames <- colnames(full_ml)
-
-
+grep("attribution", ztable$tokens)
 
 #tokens exist in colnames
-ztokens$tokens %in% full_ml_colnames
+#which column names don't exist in ztable - container.title_
+no_exist <-which(!(pivoted_colnames2 %in% ztable$tokens))
+
+for(i in 1:length(no_exist)){
+    print(pivoted_colnames2[no_exist[i]])
+}
+
+
+## 20241017 
+# and then also add the mean/sd variables from container table to the zscore table  
+
+
+
+
+
+
+
+
+
 
 right_join(full_ml, ztokens$tokens, 
             by = join_by(tokens), 
