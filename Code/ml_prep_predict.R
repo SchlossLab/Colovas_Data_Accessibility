@@ -124,10 +124,10 @@ wide_joined_full_ml_tokens <-
 
 
 # create dummy variables for each of the journals---------------------
-
-container_titles <-
-    container_titles %>% 
-        mutate(var_name = paste0("container.title_", container.title)) 
+# 20241018 - do i still need this in this file?
+# container_titles <-
+#     container_titles %>% 
+#         mutate(var_name = paste0("container.title_", container.title)) 
 
     for (i in 1:nrow(container_titles)) {
     new_var <- container_titles$var_name[i]

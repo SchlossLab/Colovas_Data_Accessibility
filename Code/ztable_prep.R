@@ -13,7 +13,7 @@ library(jsonlite)
 # {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
 input <- commandArgs(trailingOnly = TRUE)
 ztable <- read_csv(input[1])
-token_groups <- readRDS(input[2])
+token_list <- readRDS(input[2])
 container_titles <-readRDS(input[3])
 output_file <- as.character(input[4])
 str(output_file)
@@ -27,7 +27,7 @@ str(output_file)
 #     readRDS("Data/groundtruth.data_availability.container_titles.RDS")
 # output_file <- "Data/groundtruth.data_availability.zscoretable_filtered.csv"
 
-#also collapse correlated variables in ztable --------------------------------------
+#collapse correlated variables in ztable --------------------------------------
 
 token_unlist <-
     token_list %>% 
@@ -76,6 +76,9 @@ for(i in 1:length(token_list)){
 grep("attribution international", ztable_withgrps$tokens, value = TRUE)
 
 #add container.titles to the z score table-----------------------------------
+container_titles <-
+    container_titles %>% 
+        mutate(var_name = paste0("container.title_", container.title)) 
 
 containers_toz <-
 container_titles %>% 
@@ -88,4 +91,5 @@ containers_toz %>%
     
 #sanity check    
 grep("container", ztable_full$tokens, value = TRUE)
- 
+
+write_csv(ztable_full, file = output_file) 
