@@ -30,7 +30,7 @@ metadata <- read_csv("Data/1935-7885_alive.csv")
 ml_var <- c("paper", "container.title")
 output_file <- "Data/1935-7885_alive.preprocessed.RDS"
 #do i have a practice one yet?
-ztable_filename <- "Data/groundtruth.data_availability.zscoretable.csv"
+ztable_filename <- "Data/groundtruth.data_availability.zscoretable_filtered.csv"
 token_filename <- "Data/groundtruth.data_availability.tokenlist.RDS"
 ztable <- read_csv(ztable_filename)
 token_list <- readRDS(token_filename)
@@ -78,7 +78,7 @@ long_full_ml <-
                     values_to = "num_appearances")
 #sanity check         
 head(long_full_ml, 20)
-
+nrow(full_ml)
 
 #join long_full_ml to ztable by tokens----------------------------
 
@@ -86,16 +86,28 @@ head(long_full_ml, 20)
 #find tokens missing from full_ml 
 missing_full_ml_tokens <-anti_join(ztable, long_full_ml)
 
-#add columns to full_ml
+#sanity check
+head(missing_full_ml_tokens, 20)
+nrow(missing_full_ml_tokens)
+
+
+#add missing columns to full_ml, but this isn't working
+full_ml_with_missing <-full_ml
 for (i in 1:nrow(missing_full_ml_tokens)) {
 
-    missing_var <- missing_full_ml_tokens$tokens[i]
-   
+    missing_var <- missing_full_ml_tokens$tokens[[i]]
     full_ml_with_missing <-
-        full_ml %>%
+        full_ml_with_missing %>%
             mutate("{missing_var}" := 0)
 
 }
+
+#sanity check
+head(full_ml_with_missing, 20)
+nrow(full_ml)
+nrow(full_ml_with_missing)
+nrow(ztable)
+
 
 #make full_ml_with_missing long again-------------------------------- 
 long_full_ml_with_missing <-
