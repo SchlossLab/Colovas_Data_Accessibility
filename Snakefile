@@ -3,10 +3,10 @@ training_datasets = {
     "gt_subset_30" : "Data/gt_subset_30.csv",
 }
 
-practice_datasets = { 
-    "1935-7885_alive" : "Data/1935-7885.csv", 
-    "1098-5530_small" : "Data/1098-5530_small.csv",
-}
+# practice_datasets = { 
+#     "1935-7885_alive" : "Data/1935-7885.csv", 
+#     "1098-5530_small" : "Data/1098-5530_small.csv",
+# }
 
 new_datasets = {
     "0095-1137" : "Data/0095-1137_metadata.RDS", #jcb
@@ -21,6 +21,21 @@ new_datasets = {
     "2379-5042" : "Data/2379-5042_metadata.RDS", #msph
     "2379-5077" : "Data/2379-5077_metadata.RDS", #msys
     "2576-098X" : "Data/2576-098X_metadata.RDS" #mra
+}
+
+alive_datasets = {
+    "0095-1137_alive" : "Data/0095-1137_metadata.RDS", #jcb
+    "1098-5336_alive" : "Data/1098-5336_metadata.RDS", #aem
+    "1098-5514_alive" : "Data/1098-5514_metadata.RDS", #jv
+    "1098-5522_alive" : "Data/1098-5522_metadata.RDS", #i&i
+    "1098-5530_alive" : "Data/1098-5530_metadata.RDS", #jb
+    "1098-6596_alive" : "Data/1098-6596_metadata.RDS", #aac
+    "1935-7885_alive" : "Data/1935-7885_metadata.RDS", #jmbe
+    "2150-7511_alive" : "Data/2150-7511_metadata.RDS", #mbio
+    "2165-0497_alive" : "Data/2165-0497_metadata.RDS", #mspec
+    "2379-5042_alive" : "Data/2379-5042_metadata.RDS", #msph
+    "2379-5077_alive" : "Data/2379-5077_metadata.RDS", #msys
+    "2576-098X_alive" : "Data/2576-098X_metadata.RDS" #mra
 
 }
 
@@ -46,11 +61,14 @@ mtry_dict = {
 ncores = 1
 seeds = list(range(1, 101))
 
+ruleorder: ml_prep_predict > ml_prep_train
 
 rule targets:
     input:
-        expand("Data/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
-         ml_variables = ml_variables)
+        # expand("Data/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
+        #  ml_variables = ml_variables)
+        expand("Data/1935-7885_alive.{ml_variables}.preprocessed_predict.RDS", 
+        ml_variables = ml_variables)
         # expand("Data/groundtruth.{ml_variables}.preprocessed.RDS", 
         # ml_variables = ml_variables)
         # "Data/1935-7885_alive.tokens.csv.gz"
@@ -128,7 +146,8 @@ rule tokenize:
 
 # 20240923 don't need a ruleorder statement because the pre-processed data 
 # has no ml_var in fileneame
-# ex. 'ruleorder: ml_prep_predict > ml_prep_train'
+
+ruleorder: ml_prep_predict > ml_prep_train
 
 # 20241001 - add new filename and add ztable 
 # saving out to the train
@@ -150,9 +169,9 @@ rule ml_prep_train:
 rule ztable: 
     input: 
         rscript = "Code/ztable_prep.R",
-        ztable = "Data/{datasets}.{ml_variables}.zscoretable.csv", 
-        tokenlist = "Data/{datasets}.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/{datasets}.{ml_variables}.container_titles.RDS"
+        ztable = "Data/groundtruth.{ml_variables}.zscoretable.csv", 
+        tokenlist = "Data/groundtruth.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/groundtruth.{ml_variables}.container_titles.RDS"
     output: 
         "Data/{datasets}.{ml_variables}.zscoretable_filtered.csv"
     shell: 
@@ -165,11 +184,11 @@ rule ml_prep_predict:
         tokens = "Data/{datasets}.tokens.csv.gz",
         rscript = "Code/ml_prep_predict.R",
         metadata = "Data/{datasets}.csv",
-        ztable = "Data/{datasets}.{ml_variables}.zscoretable.csv", 
-        tokenlist = "Data/{datasets}.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/{datasets}.{ml_variables}.container_titles.RDS"
+        ztable = "Data/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
+        tokenlist = "Data/groundtruth.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/groundtruth.{ml_variables}.container_titles.RDS"
     output: 
-        rds = "Data/{datasets}.preprocessed.RDS"
+        rds = "Data/{datasets}.{ml_variables}.preprocessed_predict.RDS"
     shell:
         """
         {input.rscript} {input.metadata} {input.tokens} {input.ztable} {input.tokenlist} {input.containerlist} {output.rds}

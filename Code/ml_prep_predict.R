@@ -17,11 +17,11 @@ input <- commandArgs(trailingOnly = TRUE)
 metadata <- read.csv(input[1])
 clean_text <- read.csv(input[2])
 ml_var <- c("paper", "container.title")
-output_file <- as.character(input[3])
+ztable <- read_csv(input[3])
+token_groups <- readRDS(input[4])
+container_titles <-readRDS(input[5])
+output_file <- as.character(input[6])
 str(output_file)
-ztable <- read_csv(input[4])
-token_groups <- readRDS(input[5])
-container_titles <-readRDS(input[6])
 
 # # #local implementation
 # clean_text <- read_csv("Data/1935-7885_alive.tokens.csv.gz")
@@ -72,8 +72,8 @@ head(full_ml)
 
 # #save full ml for troubleshooting purposes
 # #saveRDS(full_ml, file = "Data/JMBE_full_ml.RDS")
-# full_ml <- readRDS("Data/JMBE_full_ml.RDS") %>%
-#     rename(paper_doi = paper)
+full_ml <- readRDS("Data/JMBE_full_ml.RDS") %>%
+    rename(paper_doi = paper)
 
 
 
@@ -168,39 +168,6 @@ pivoted_colnames <- colnames(wide_joined_full_ml_tokens)
 grep("container*", pivoted_colnames, value = TRUE) 
 
 
-#collapse correlated features from training datasets------------------------------
-
-#i shouldn't need to do this anymore because i can just join with ztable 
-# iterate through each token group
-
-#     keep_groups <- vector("character", length(token_list))
-#     for(j in 1:length(token_list)){
-#         #if none of the tokens are found in dataset
-#             if(!any(token_list[[j]] %in% colnames(wide_joined_full_ml_tokens))) {
-#             #add grp'i' column to dataset and fill with 0s
-#             new_var <- paste0("grp", j)
-#             wide_joined_full_ml_tokens <-
-#                 wide_joined_full_ml_tokens %>%
-#                     mutate("{new_var}" := 0)
-#             }
-            
-#             else {
-#                 new_var <- paste0("grp", j)
-#                 #get positions of true tokens in token list j
-#                 position <- which(any(token_list[[j]] %in% colnames(wide_joined_full_ml_tokens)))[1]
-#                 # give you column name
-#                 representative <- token_list[[j]][position]
-#                 wide_joined_full_ml_tokens <-
-#                     wide_joined_full_ml_tokens %>%
-#                     mutate("{new_var}" := wide_joined_full_ml_tokens$representative)
-#             }
-#     }
-
-# #sanity check 
-# pivoted_colnames2 <- colnames(wide_joined_full_ml_tokens)
-# grep("grp", pivoted_colnames2, value = TRUE) 
-
-
 #finally apply z score to the data!--------------------------
 
 #sanity check that all colnames are in ztable 
@@ -218,12 +185,13 @@ nrow(ztable)
 
 
 #apply z scoring!!!
-
+zscored_table <- tibble(.rows = nrow(wide_joined_full_ml_tokens))
 for(i in 1:nrow(ztable)){
     zscored_table[ztable[[1]][[i]]] <-
     wide_joined_full_ml_tokens[ztable[[1]][[i]]] %>%
         modify(., \(x) ((x-ztable[[2]][[i]])/ztable[[3]][[i]]))
 }
+
 
 wide_joined_full_ml_tokens[ztable[[1]][[1]]]
 head(zscored_table, 20)
