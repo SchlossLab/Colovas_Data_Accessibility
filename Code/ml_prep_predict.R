@@ -186,6 +186,8 @@ nrow(ztable)
 
 #apply z scoring!!!
 zscored_table <- tibble(.rows = nrow(wide_joined_full_ml_tokens))
+zscored_table[1] <- wide_joined_full_ml_tokens[1]
+
 for(i in 1:nrow(ztable)){
     zscored_table[ztable[[1]][[i]]] <-
     wide_joined_full_ml_tokens[ztable[[1]][[i]]] %>%
