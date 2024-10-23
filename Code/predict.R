@@ -7,85 +7,65 @@
 library(tidyverse)
 library(tidytext)
 library(mikropml)
-install.packages("randomForest", repos = "https://repo.miserver.it.umich.edu/cran/")
 library(randomForest)
 
 # snakemake implementation
-# read in 2x models, the preprocessed .RDS files
-# input <- commandArgs(trailingOnly = TRUE)
-# rds <- input[1]
-# data_processed <- readRDS(rds)
-# ml_var_snake <- input[2]
-# output_dir <- input[4]
+# {input.rscript} {input.da} {input.nsd} {input.metadata} {output}
+input <- commandArgs(trailingOnly = TRUE)
+da_tokens <- readRDS(input[1])
+nsd_tokens <- readRDS(input[2])
+metadata  <-  read_csv(input[3])
+outfile <- input[4]
 
-# for local testing 
-da_model_rds <- "Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS"
-da_model <- readRDS(da_model_rds)
+# load in models 
+da_model <- 
+    readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
 
-da_tokens <- readRDS("Data/1935-7885_alive.data_availability.preprocessed_predict.RDS")
-
-
-# 20241022 - variables in the training data missing in newdata-
-# issues with naming
-# predictions <- predict(da_model, newdata = tokens, type = "response")
-
-any(da_model %in% da_tokens) 
+nsd_model <- 
+    readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
 
 
-# so are these duplicates? 
-which(!(da_model$xNames %in% colnames(da_tokens)))
-da_model$xNames[1494] #"paper.y" 
-#this one can just be a change of colunmname
+# # local files for testing
+# da_tokens <- readRDS("Data/1935-7885_alive.data_availability.preprocessed_predict.RDS")
+# nsd_tokens <- readRDS("Data/1935-7885_alive.new_seq_data.preprocessed_predict.RDS")
+# metadata <- read_csv("Data/doi_linkrot/1935-7885.alive.csv")
 
-da_model$xNames[211] #"`interest importance`_1"
-da_model$xNames[1686] #"`material method bacterial`_1"
+#make sure all colnames from model are in the zscored datasets
+#should return integer(0)
+all(da_model$xNames %in% colnames(da_tokens))
+all(da_model$xNames %in% colnames(nsd_tokens))
 
-#search to see if these are duplicates
-grep("interest", da_model$xNames, value = TRUE)
-grep("material", da_model$xNames, value = TRUE)
-grep("_1", da_model$xNames, value = TRUE)
+#make the predictions
+da_prediction <-
+     predict(da_model, newdata = da_tokens, type = "response")
 
-head(da_model)
+nsd_prediction <-
+     predict(da_model, newdata = nsd_tokens, type = "response")
 
-#honestly i think the column titles just got all funky and we can just change them 
-
-renamed_da_tokens <-
-da_tokens %>% 
-    rename("paper.y" = "paper",
-        "`interest importance`_1" = "interest importance",
-        "`material method bacterial`_1" = "material method bacterial")
-
-#okay this works but what do i do with it
-da_predictions <- predict(da_model, newdata = renamed_da_tokens, type = "response")
-
-
-
-#from kelly
-# and then use that to predict the classification for the held out data.
-# predictions <- predict(final_model, newdata = test_data, type = 'prob')
-
-
-
-#also need the other model, are there other things that we don't have in this dataset?
-
-nsd_model_rds <- "Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS"
-nsd_model <- readRDS(nsd_model_rds)
-
-nsd_tokens <- readRDS("Data/1935-7885_alive.new_seq_data.preprocessed_predict.RDS")
-str(nsd_tokens)
-
-
-#check all things exist
-any(da_model %in% da_tokens) 
-
-# so are these duplicates? 
-which(!(da_model$xNames %in% colnames(nsd_tokens)))
-
-renamed_nsd_tokens <-
+# add column for the prediction to a new df with just paper and prediction
+doi_with_nsd <- 
 nsd_tokens %>% 
-    rename("paper.y" = "paper",
-        "`interest importance`_1" = "interest importance",
-        "`material method bacterial`_1" = "material method bacterial")
+    mutate(nsd_prediction = nsd_prediction) %>%
+    select(paper_doi, nsd_prediction)
+     
+doi_with_da <- 
+da_tokens %>% 
+    mutate(da_prediction = da_prediction) %>%
+    select(paper_doi, da_prediction)
 
-nsd_predictions <- predict(da_model, newdata = renamed_nsd_tokens, type = "response")
+
+#join with metadata from snakerule doi_linkrot
+
+metadata_with_predictions <- 
+left_join(metadata, doi_with_nsd, by = join_by("paper" =="paper_doi")) %>% 
+        left_join(.,  doi_with_da, by = join_by("paper" == "paper_doi"))
+
+#select paper, nsd_prediction, da_prediction
+
+metadata_with_predictions  <- 
+metadata_with_predictions %>% 
+    select(paper, nsd_prediction, da_prediction) 
+
+#fill in filename with snakemake 
+saveRDS(metadata_with_predictions, file = outfile)
 

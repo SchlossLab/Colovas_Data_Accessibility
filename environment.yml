@@ -20,6 +20,8 @@ dependencies:
   - r-textstem
   - r-cowplot
   - r-devtools
+  - r-randomforest
+
   
 
 

@@ -198,6 +198,15 @@ for(i in 1:nrow(ztable)){
 wide_joined_full_ml_tokens[ztable[[1]][[1]]]
 head(zscored_table, 20)
 
+zscored_table <-
+zscored_table %>% 
+    rename("paper.y" = "paper",
+        "`interest importance`_1" = "interest importance",
+        "`material method bacterial`_1" = "material method bacterial")
+
+"paper" %in% colnames(zscored_table)
+"interest" %in% colnames(zscored_table)
+"material" %in% colnames(zscored_table)
 
 
 # eventually - save preprocessed data as an RDS file 

@@ -23,21 +23,21 @@ new_datasets = {
     "2576-098X" : "Data/2576-098X_metadata.RDS" #mra
 }
 
-alive_datasets = {
-    "0095-1137_alive" : "Data/0095-1137_metadata.RDS", #jcb
-    "1098-5336_alive" : "Data/1098-5336_metadata.RDS", #aem
-    "1098-5514_alive" : "Data/1098-5514_metadata.RDS", #jv
-    "1098-5522_alive" : "Data/1098-5522_metadata.RDS", #i&i
-    "1098-5530_alive" : "Data/1098-5530_metadata.RDS", #jb
-    "1098-6596_alive" : "Data/1098-6596_metadata.RDS", #aac
-    "1935-7885_alive" : "Data/1935-7885_metadata.RDS", #jmbe
-    "2150-7511_alive" : "Data/2150-7511_metadata.RDS", #mbio
-    "2165-0497_alive" : "Data/2165-0497_metadata.RDS", #mspec
-    "2379-5042_alive" : "Data/2379-5042_metadata.RDS", #msph
-    "2379-5077_alive" : "Data/2379-5077_metadata.RDS", #msys
-    "2576-098X_alive" : "Data/2576-098X_metadata.RDS" #mra
+# alive_datasets = {
+#     "0095-1137_alive" : "Data/0095-1137_metadata.RDS", #jcb
+#     "1098-5336_alive" : "Data/1098-5336_metadata.RDS", #aem
+#     "1098-5514_alive" : "Data/1098-5514_metadata.RDS", #jv
+#     "1098-5522_alive" : "Data/1098-5522_metadata.RDS", #i&i
+#     "1098-5530_alive" : "Data/1098-5530_metadata.RDS", #jb
+#     "1098-6596_alive" : "Data/1098-6596_metadata.RDS", #aac
+#     "1935-7885_alive" : "Data/1935-7885_metadata.RDS", #jmbe
+#     "2150-7511_alive" : "Data/2150-7511_metadata.RDS", #mbio
+#     "2165-0497_alive" : "Data/2165-0497_metadata.RDS", #mspec
+#     "2379-5042_alive" : "Data/2379-5042_metadata.RDS", #msph
+#     "2379-5077_alive" : "Data/2379-5077_metadata.RDS", #msys
+#     "2576-098X_alive" : "Data/2576-098X_metadata.RDS" #mra
 
-}
+# }
 
   
 ml_variables = [
@@ -65,29 +65,17 @@ ruleorder: ml_prep_predict > ml_prep_train
 
 rule targets:
     input:
-        # expand("Data/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
-        #  ml_variables = ml_variables)
-        expand("Data/1935-7885_alive.{ml_variables}.preprocessed_predict.RDS", 
-        ml_variables = ml_variables)
+        # expand("Data/2576-098X.alive.{ml_variables}.preprocessed_predict.RDS", 
+        # ml_variables = ml_variables),
+        # "Data/predicted/2576-098X.alive.data_predicted.csv",
+        "Data/predicted/1935-7885.alive.data_predicted.csv"
 
-        # expand("Data/groundtruth.{ml_variables}.preprocessed.RDS", 
-        # ml_variables = ml_variables)
-        # "Data/1935-7885_alive.tokens.csv.gz"
-        #expand("Data/papers/{datasets}.csv", datasets = datasets),
-       # expand("Data/doi_linkrot/{datasets}.alive.csv", datasets = datasets)
-        # "Data/{datasets}.{ml_variables}.preprocessed.RDS"
-    
-
-        # "Data/1935-7885_alive.html.csv.gz"
-        # expand("Data/1935-7885.{ml_variables}.preprocessed.RDS", 
-        # ml_variables = ml_variables), 
-        # "Data/linkrot/1935-7885.alllinks.csv.gz"
 
         
 rule rds_to_csv: 
     input: 
-        rds = "Data/{datasets}_metadata.RDS",
-        rscript = "Code/rds_to_csv.R"
+        rscript = "Code/rds_to_csv.R",
+        rds = "Data/metadata/{datasets}_metadata.RDS"
     output: 
         "Data/papers/{datasets}.csv"
     shell: 
@@ -97,11 +85,11 @@ rule rds_to_csv:
 
 rule doi_linkrot: 
     input: 
-        csv = "Data/papers/{datasets}.csv", 
-        rscript = "Code/doi_linkrot.R"
+        rscript = "Code/doi_linkrot.R",
+        csv = "Data/papers/{datasets}.csv"
     output:
-        "Data/doi_linkrot/{datasets}.alive.csv",
-        "Data/doi_linkrot/{datasets}.dead.csv"
+        "Data/doi_linkrot/alive/{datasets}.csv",
+        "Data/doi_linkrot/dead/{datasets}.csv"
     params: 
         filepath = "Data/doi_linkrot/{datasets}"
     shell: 
@@ -111,10 +99,11 @@ rule doi_linkrot:
 
 rule webscrape:
     input: 
-       csv = "Data/{datasets}.csv",
-       rscript = "Code/Webscrape.R"
+        rscript = "Code/Webscrape.R",
+        csv = "Data/alive/{datasets}.csv"
+       
     output: 
-        "Data/{datasets}.html.csv.gz"
+        "Data/webscrape/{datasets}.html.csv.gz"
     shell: 
         """
         {input.rscript} {input.csv} {output}
@@ -124,10 +113,10 @@ rule webscrape:
 
 rule cleanHTML: 
     input:
-      html = "Data/{datasets}.html.csv.gz",
-      rscript = "Code/cleanHTML.R"
+        rscript = "Code/cleanHTML.R",
+        html = "Data/webscrape/{datasets}.html.csv.gz"
     output: 
-        "Data/{datasets}.cleanhtml.csv.gz"
+        "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
     shell: 
         """
         {input.rscript} {input.html} {output}
@@ -136,32 +125,29 @@ rule cleanHTML:
 
 rule tokenize: 
     input:
-      html = "Data/{datasets}.cleanhtml.csv.gz",
-      rscript = "Code/tokenize.R"
+        rscript = "Code/tokenize.R",
+        html = "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
     output: 
-        "Data/{datasets}.tokens.csv.gz"
+        "Data/tokens/{datasets}.tokens.csv.gz"
     shell: 
         """
         {input.rscript} {input.html} {output}
         """      
 
-# 20240923 don't need a ruleorder statement because the pre-processed data 
-# has no ml_var in fileneame
+# 20240923 don't need a ruleorder statement
+# ruleorder: ml_prep_predict > ml_prep_train
 
-ruleorder: ml_prep_predict > ml_prep_train
 
-# 20241001 - add new filename and add ztable 
-# saving out to the train
 rule ml_prep_train:
     input:
-        tokens = "Data/{datasets}.tokens.csv.gz",
         rscript = "Code/ml_preprocess.R",
-        metadata = "Data/{datasets}.csv",
+        tokens = "Data/tokens/{datasets}.tokens.csv.gz",
+        metadata = "Data/doi_linkrot/alive/{datasets}.csv",
     output: 
-        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS",
-        ztable = "Data/{datasets}.{ml_variables}.zscoretable.csv", 
-        tokenlist = "Data/{datasets}.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/{datasets}.{ml_variables}.container_titles.RDS"
+        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed.RDS",
+        ztable = "Data/ml_prep/{datasets}.{ml_variables}.zscoretable.csv", 
+        tokenlist = "Data/ml_prep/{datasets}.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/ml_prep/{datasets}.{ml_variables}.container_titles.RDS"
     shell:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable} {output.tokenlist} {output.containerlist}
@@ -170,24 +156,25 @@ rule ml_prep_train:
 rule ztable: 
     input: 
         rscript = "Code/ztable_prep.R",
-        ztable = "Data/groundtruth.{ml_variables}.zscoretable.csv", 
-        tokenlist = "Data/groundtruth.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/groundtruth.{ml_variables}.container_titles.RDS"
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv", 
+        tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
     output: 
-        "Data/{datasets}.{ml_variables}.zscoretable_filtered.csv"
+        "Data/ml_prep/{datasets}.{ml_variables}.zscoretable_filtered.csv"
     shell: 
         """
         {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
         """
 
+#20241023 - stopped changing filenames here, need to make sure they all work tbh
 rule ml_prep_predict:
     input:
         tokens = "Data/{datasets}.tokens.csv.gz",
         rscript = "Code/ml_prep_predict.R",
-        metadata = "Data/{datasets}.csv",
-        ztable = "Data/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
-        tokenlist = "Data/groundtruth.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/groundtruth.{ml_variables}.container_titles.RDS"
+        metadata = "Data/metadata/{datasets}.csv",
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
+        tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
     output: 
         rds = "Data/{datasets}.{ml_variables}.preprocessed_predict.RDS"
     shell:
@@ -309,6 +296,23 @@ rule final_model:
         """
         {input.rscript} {input.rds} {wildcards.ml_variables} {params.mtry_value} {input.rdir}
         """
+
+rule predict: 
+    input: 
+        rscript = "Code/predict.R",
+        da = "Data/{datasets}.data_availability.preprocessed_predict.RDS",
+        nsd = "Data/{datasets}.new_seq_data.preprocessed_predict.RDS", 
+        metadata = "Data/doi_linkrot/{datasets}.alive.csv"
+    output: 
+        "Data/predicted/{datasets}.data_predicted.csv"
+    shell: 
+        """
+        {input.rscript} {input.da} {input.nsd} {input.metadata} {output}
+        """
+
+
+
+
 #-------------------LINK-------ROT-----------------------------------------------------------
 
 # 20241001 - need to add unique to linkrot in saving the, 
