@@ -22,12 +22,13 @@ get_site_status_no_follow <- function(websiteurl) {
 }
 
 # inport data snakemake 
-
-# {input.rscript} {input.csv} {input.filepath}
+# "Data/doi_linkrot/alive/{datasets}"
+# {input.rscript} {input.csv} {params.filepath} {wildcards.datasets}
 input <- commandArgs(trailingOnly = TRUE)
 csv <- input[1]
 data_processed <- read_csv(csv)
 filepath <- input[2]
+datasets <- input[3]
 
 # local practice
 # data_processed <- read_csv("Data/1935-7885_alive.csv")
@@ -47,5 +48,9 @@ dead <-
   data_processed %>%
      filter(link_status_no_follow != 200)
 
-write_csv(alive, file = paste0(filepath, ".alive.csv"))
-write_csv(dead, file = paste0(filepath, ".dead.csv"))
+
+alive_filepath  <- paste0(filepath, "/alive/", datasets, ".csv")
+dead_filepath   <- paste0(filepath, "/dead/", datasets, ".csv")
+
+write_csv(alive, file = alive_filepath)
+write_csv(dead, file = dead_filepath)

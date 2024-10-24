@@ -48,6 +48,7 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
+        # "Data/webscrape/1935-7885.html.csv.gz"
         expand("Data/doi_linkrot/alive/{datasets}.csv",
         datasets = new_datasets)
         # "Data/doi_linkrot/alive/1935-7885.csv",
@@ -79,17 +80,16 @@ rule doi_linkrot:
         "Data/doi_linkrot/alive/{datasets}.csv",
         "Data/doi_linkrot/dead/{datasets}.csv"
     params: 
-        filepath = "Data/doi_linkrot/{datasets}"
+        filepath = "Data/doi_linkrot"
     shell: 
         """
-        {input.rscript} {input.csv} {params.filepath}
+        {input.rscript} {input.csv} {params.filepath} {wildcards.datasets}
         """
 
 rule webscrape:
     input: 
         rscript = "Code/Webscrape.R",
         csv = "Data/alive/{datasets}.csv"
-       
     output: 
         "Data/webscrape/{datasets}.html.csv.gz"
     shell: 
@@ -166,7 +166,7 @@ rule ml_prep_predict:
         {input.rscript} {input.metadata} {input.tokens} {input.ztable} {input.tokenlist} {input.containerlist} {output.rds}
         """
 
-        
+
 rule predict: 
     input: 
         rscript = "Code/predict.R",
