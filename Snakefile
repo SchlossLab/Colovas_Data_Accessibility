@@ -50,7 +50,10 @@ rule targets:
     input:
         # "Data/webscrape/1935-7885.html.csv.gz"
         expand("Data/doi_linkrot/alive/{datasets}.csv",
-        datasets = new_datasets)
+        datasets = new_datasets), 
+        #20241024 - need to do jmbe and mra next
+        "Data/predicted/1935-7885.data_predicted.csv",
+        "Data/predicted/2576-098X.data_predicted.csv"
         # "Data/doi_linkrot/alive/1935-7885.csv",
         # "Data/tokens/1935-7885.tokens.csv.gz"
         # expand("Data/2576-098X.alive.{ml_variables}.preprocessed_predict.RDS", 
@@ -89,7 +92,7 @@ rule doi_linkrot:
 rule webscrape:
     input: 
         rscript = "Code/Webscrape.R",
-        csv = "Data/alive/{datasets}.csv"
+        csv = "Data/doi_linkrot/alive/{datasets}.csv"
     output: 
         "Data/webscrape/{datasets}.html.csv.gz"
     shell: 
@@ -154,8 +157,8 @@ rule ztable:
 rule ml_prep_predict:
     input:
         rscript = "Code/ml_prep_predict.R",
-        tokens = "Data/{datasets}.tokens.csv.gz",
-        metadata = "Data/metadata/{datasets}.csv",
+        tokens = "Data/tokens/{datasets}.tokens.csv.gz",
+        metadata = "Data/doi_linkrot/alive/{datasets}.csv",
         ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
         tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
         containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
@@ -172,7 +175,7 @@ rule predict:
         rscript = "Code/predict.R",
         da = "Data/preprocessed/{datasets}.data_availability.preprocessed_predict.RDS",
         nsd = "Data/preprocessed/{datasets}.new_seq_data.preprocessed_predict.RDS", 
-        metadata = "Data/doi_linkrot/{datasets}.alive.csv"
+        metadata = "Data/doi_linkrot/alive/{datasets}.csv"
     output: 
         "Data/predicted/{datasets}.data_predicted.csv"
     shell: 
