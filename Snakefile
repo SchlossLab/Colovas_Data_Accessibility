@@ -48,10 +48,10 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        "Data/predicted/1935-7885.data_predicted.RDS",
-        "Data/predicted/2576-098X.data_predicted.RDS"
-        # expand("Data/predicted/{datasets}.data_predicted.RDS",
-        # datasets = new_datasets)
+        # "Data/predicted/1935-7885.data_predicted.RDS",
+        # "Data/predicted/2576-098X.data_predicted.RDS"
+        expand("Data/predicted/{datasets}.data_predicted.RDS",
+        datasets = new_datasets)
        
 
         
@@ -75,6 +75,8 @@ rule doi_linkrot:
         "Data/doi_linkrot/dead/{datasets}.csv"
     params: 
         filepath = "Data/doi_linkrot"
+    resources: 
+        mem_mb = 20000 
     shell: 
         """
         {input.rscript} {input.csv} {params.filepath} {wildcards.datasets}
@@ -86,6 +88,8 @@ rule webscrape:
         csv = "Data/doi_linkrot/alive/{datasets}.csv"
     output: 
         "Data/webscrape/{datasets}.html.csv.gz"
+    resources: 
+        mem_mb = 20000 
     shell: 
         """
         {input.rscript} {input.csv} {output}
@@ -155,6 +159,8 @@ rule ml_prep_predict:
         containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
     output: 
         rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed_predict.RDS"
+    resources: 
+        mem_mb = 20000 
     shell:
         """
         {input.rscript} {input.metadata} {input.tokens} {input.ztable} {input.tokenlist} {input.containerlist} {output.rds}
