@@ -37,6 +37,19 @@ str(output_file)
 # container_titles <-
 #     readRDS("Data/groundtruth.data_availability.container_titles.RDS")
 
+## let's try this once again. mra.. this step is going to take 90 years 
+# clean_text <- read_csv("Data/tokens/2576-098X.tokens.csv.gz")
+# metadata <- read_csv("Data/doi_linkrot/alive/2576-098X.csv")
+# ml_var <- c("paper", "container.title")
+# output_file <- "Data/preprocessed/2576-098X.data_availability.preprocessed_predict.RDS"
+# #do i have a practice one yet?
+# ztable_filename <- "Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv"
+# token_filename <- "Data/ml_prep/groundtruth.data_availability.tokenlist.RDS"
+# ztable <- read_csv(ztable_filename)
+# token_list <- readRDS(token_filename)
+# container_titles <-
+#     readRDS("Data/ml_prep/groundtruth.data_availability.container_titles.RDS")
+
 
 # set up the format of the clean_text dataframe 
 # remove near zero variants
@@ -68,8 +81,6 @@ full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi)) 
 
 #sanity check - make sure paper_doi is first column 
 head(full_ml)
-
-
 
 
 #pivot full_ml to long------------------------------------ 

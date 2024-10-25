@@ -26,8 +26,8 @@ nsd_model <-
 
 
 # local files for testing
-da_tokens <- readRDS("Data/2576-098X.data_availability.preprocessed_predict.RDS")
-nsd_tokens <- readRDS("Data/2576-098X.new_seq_data.preprocessed_predict.RDS")
+da_tokens <- readRDS("Data/preprocessed/2576-098X.data_availability.preprocessed_predict.RDS")
+nsd_tokens <- readRDS("Data/preprocessed/2576-098X.new_seq_data.preprocessed_predict.RDS")
 metadata <- read_csv("Data/doi_linkrot/alive/2576-098X.csv")
 
 #make sure all colnames from model are in the zscored datasets

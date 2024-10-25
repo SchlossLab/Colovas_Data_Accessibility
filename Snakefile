@@ -48,8 +48,10 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/predicted/{datasets}.data_predicted.csv",
-        datasets = new_datasets)
+        "Data/predicted/1935-7885.data_predicted.RDS",
+        "Data/predicted/2576-098X.data_predicted.RDS"
+        # expand("Data/predicted/{datasets}.data_predicted.RDS",
+        # datasets = new_datasets)
        
 
         
