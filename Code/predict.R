@@ -15,7 +15,7 @@ input <- commandArgs(trailingOnly = TRUE)
 da_tokens <- readRDS(input[1])
 nsd_tokens <- readRDS(input[2])
 metadata  <-  read_csv(input[3])
-outfile <- input[4]
+outfile <- as.character(input[4])
 
 # load in models 
 da_model <- 
@@ -25,10 +25,10 @@ nsd_model <-
     readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
 
 
-# local files for testing
-da_tokens <- readRDS("Data/preprocessed/2576-098X.data_availability.preprocessed_predict.RDS")
-nsd_tokens <- readRDS("Data/preprocessed/2576-098X.new_seq_data.preprocessed_predict.RDS")
-metadata <- read_csv("Data/doi_linkrot/alive/2576-098X.csv")
+# # local files for testing
+# da_tokens <- readRDS("Data/preprocessed/2576-098X.data_availability.preprocessed_predict.RDS")
+# nsd_tokens <- readRDS("Data/preprocessed/2576-098X.new_seq_data.preprocessed_predict.RDS")
+# metadata <- read_csv("Data/doi_linkrot/alive/2576-098X.csv")
 
 #make sure all colnames from model are in the zscored datasets
 #should return integer(0)
