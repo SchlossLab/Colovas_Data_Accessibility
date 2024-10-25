@@ -50,8 +50,10 @@ rule targets:
     input:
         # "Data/predicted/1935-7885.data_predicted.RDS",
         # "Data/predicted/2576-098X.data_predicted.RDS"
-        expand("Data/predicted/{datasets}.data_predicted.RDS",
-        datasets = new_datasets)
+        # expand("Data/predicted/{datasets}.data_predicted.RDS",
+        # datasets = new_datasets), 
+        "Data/linkrot/1935-7885/1935-7885.alllinks.csv.gz",
+        "Data/linkrot/2576-098X/2576-098X.alllinks.csv.gz"
        
 
         
@@ -266,12 +268,12 @@ rule final_model:
 # links is all links and then you'd have redundant metadata for papers
 rule link_rot: 
     input:
-        html = "Data/{datasets}.html.csv.gz",
         rscript = "Code/LinkRot.R",
-        metadata = "Data/{datasets}.csv"
+        html = "Data/webscrape/{datasets}.html.csv.gz",
+        metadata = "Data/doi_linkrot/alive/{datasets}.csv"
     output: 
-        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
-        metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+        all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
     shell:
         """
         {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
@@ -284,8 +286,8 @@ rule link_rot:
 rule lr_by_journal: 
     input: 
         rscript = "Code/linkrot/links_byjournal.R",
-        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
-        metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+        all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
     output:
         filename = "Figures/linkrot/{datasets}/links_byjournal.png"
     shell: 
@@ -296,8 +298,8 @@ rule lr_by_journal:
 rule lr_by_year: 
     input: 
         rscript = "Code/linkrot/links_byyear.R",
-       # all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
-        metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+        # all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
     output:
         filename = "Figures/linkrot/{datasets}/links_byyear.png"
     shell: 
@@ -308,8 +310,8 @@ rule lr_by_year:
 rule lr_year_status:
     input: 
         rscript = "Code/linkrot/links_yearstatus.R",
-        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
-        metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+        all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz",
+        metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
     output: 
         filename = "Figures/linkrot/{datasets}/links_yearstatus.png"
     shell:
@@ -320,8 +322,8 @@ rule lr_year_status:
 rule lr_by_type:
     input: 
         rscript = "Code/linkrot/links_bytype.R",
-        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz"
-       #metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+       all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz"
+        # metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
     output:
         unique_filename = "Figures/linkrot/{datasets}/uniquelinks_bytype.png"
     shell: 
@@ -332,8 +334,8 @@ rule lr_by_type:
 rule lr_by_hostname:
     input: 
         rscript = "Code/linkrot/links_byhostname.R",
-        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz"
-       #metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+        all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz"
+        # metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
     output:
         filename = "Figures/linkrot/{datasets}/longlasting_byhostname.png"
     shell: 
@@ -344,8 +346,8 @@ rule lr_by_hostname:
 rule lr_error_hostname: 
     input: 
         rscript = "Code/linkrot/links_errorhostname.R",
-        all_links = "Data/linkrot/{datasets}.alllinks.csv.gz",
-       # metadata_links = "Data/linkrot/{datasets}.linksmetadata.csv.gz"
+       all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz"
+        # metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
     output:
         filename = "Figures/linkrot/{datasets}/links_errorhostname.png"
     shell: 
