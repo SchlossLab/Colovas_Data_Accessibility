@@ -48,20 +48,9 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        # "Data/webscrape/1935-7885.html.csv.gz"
-        expand("Data/doi_linkrot/alive/{datasets}.csv",
-        datasets = new_datasets), 
-        #20241024 - need to do jmbe and mra next
-        "Data/predicted/1935-7885.data_predicted.csv",
-        "Data/predicted/2576-098X.data_predicted.csv"
-        # "Data/doi_linkrot/alive/1935-7885.csv",
-        # "Data/tokens/1935-7885.tokens.csv.gz"
-        # expand("Data/2576-098X.alive.{ml_variables}.preprocessed_predict.RDS", 
-        # ml_variables = ml_variables),
-        # "Data/predicted/2576-098X.alive.data_predicted.csv",
-        # "Data/predicted/1935-7885.alive.data_predicted.csv"
-
-    
+        expand("Data/predicted/{datasets}.data_predicted.csv",
+        datasets = new_datasets)
+       
 
         
 rule rds_to_csv: 
@@ -177,7 +166,7 @@ rule predict:
         nsd = "Data/preprocessed/{datasets}.new_seq_data.preprocessed_predict.RDS", 
         metadata = "Data/doi_linkrot/alive/{datasets}.csv"
     output: 
-        "Data/predicted/{datasets}.data_predicted.csv"
+        "Data/predicted/{datasets}.data_predicted.RDS"
     shell: 
         """
         {input.rscript} {input.da} {input.nsd} {input.metadata} {output}

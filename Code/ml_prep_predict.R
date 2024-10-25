@@ -70,11 +70,6 @@ full_ml <- left_join(need_meta, clean_tibble, by = join_by(paper == paper_doi)) 
 head(full_ml)
 
 
-# #save full ml for troubleshooting purposes
-# #saveRDS(full_ml, file = "Data/JMBE_full_ml.RDS")
-full_ml <- readRDS("Data/JMBE_full_ml.RDS") %>%
-    rename(paper_doi = paper)
-
 
 
 #pivot full_ml to long------------------------------------ 

@@ -25,10 +25,10 @@ nsd_model <-
     readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
 
 
-# # local files for testing
-# da_tokens <- readRDS("Data/1935-7885_alive.data_availability.preprocessed_predict.RDS")
-# nsd_tokens <- readRDS("Data/1935-7885_alive.new_seq_data.preprocessed_predict.RDS")
-# metadata <- read_csv("Data/doi_linkrot/1935-7885.alive.csv")
+# local files for testing
+da_tokens <- readRDS("Data/2576-098X.data_availability.preprocessed_predict.RDS")
+nsd_tokens <- readRDS("Data/2576-098X.new_seq_data.preprocessed_predict.RDS")
+metadata <- read_csv("Data/doi_linkrot/alive/2576-098X.csv")
 
 #make sure all colnames from model are in the zscored datasets
 #should return integer(0)
