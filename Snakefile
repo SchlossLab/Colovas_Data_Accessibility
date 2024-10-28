@@ -116,6 +116,8 @@ rule tokenize:
         html = "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
     output: 
         "Data/tokens/{datasets}.tokens.csv.gz"
+    resources: 
+        mem_mb = 40000 
     shell: 
         """
         {input.rscript} {input.html} {output}
