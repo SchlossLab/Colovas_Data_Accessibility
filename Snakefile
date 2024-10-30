@@ -51,10 +51,13 @@ rule targets:
         # "Data/predicted/1935-7885.data_predicted.RDS",
         # "Data/predicted/2576-098X.data_predicted.RDS"
         # expand("Data/predicted/{datasets}.data_predicted.RDS",
-        # datasets = new_datasets), 
-        "Data/linkrot/1935-7885/1935-7885.alllinks.csv.gz",
-        "Data/linkrot/2576-098X/2576-098X.alllinks.csv.gz"
-       
+        # datasets = new_datasets)
+        # "Data/linkrot/1935-7885/1935-7885.alllinks.csv.gz",
+        # "Data/linkrot/2576-098X/2576-098X.alllinks.csv.gz"
+        #i want to try just the three that i don't have yet
+       "Data/webscrape/1098-5514.html.csv.gz", #jv
+       "Data/webscrape/1098-5336.html.csv.gz", #aem
+       "Data/webscrape/0095-1137.html.csv.gz" #jcb
 
         
 rule rds_to_csv: 
@@ -91,7 +94,7 @@ rule webscrape:
     output: 
         "Data/webscrape/{datasets}.html.csv.gz"
     resources: 
-        mem_mb = 20000 
+        mem_mb = 40000 
     shell: 
         """
         {input.rscript} {input.csv} {output}
@@ -104,6 +107,8 @@ rule cleanHTML:
         html = "Data/webscrape/{datasets}.html.csv.gz"
     output: 
         "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
+    resources: 
+        mem_mb = 20000
     shell: 
         """
         {input.rscript} {input.html} {output}
@@ -117,7 +122,7 @@ rule tokenize:
     output: 
         "Data/tokens/{datasets}.tokens.csv.gz"
     resources: 
-        mem_mb = 40000 
+        mem_mb = 80000 
     shell: 
         """
         {input.rscript} {input.html} {output}
@@ -164,7 +169,7 @@ rule ml_prep_predict:
     output: 
         rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed_predict.RDS"
     resources: 
-        mem_mb = 20000 
+        mem_mb = 40000 
     shell:
         """
         {input.rscript} {input.metadata} {input.tokens} {input.ztable} {input.tokenlist} {input.containerlist} {output.rds}
@@ -324,7 +329,7 @@ rule lr_year_status:
 rule lr_by_type:
     input: 
         rscript = "Code/linkrot/links_bytype.R",
-       all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz"
+        all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz"
         # metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
     output:
         unique_filename = "Figures/linkrot/{datasets}/uniquelinks_bytype.png"
@@ -348,7 +353,7 @@ rule lr_by_hostname:
 rule lr_error_hostname: 
     input: 
         rscript = "Code/linkrot/links_errorhostname.R",
-       all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz"
+        all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz"
         # metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
     output:
         filename = "Figures/linkrot/{datasets}/links_errorhostname.png"
