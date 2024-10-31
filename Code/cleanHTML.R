@@ -45,22 +45,3 @@ write.csv(webscraped_data,
           file = output_file, 
           row.names = FALSE)
 
-# # ground truth ss30
-# webscraped_data <- read.csv("Data/gt_subset_30.html.csv.gz")
-# webscraped_data$clean_html <- lapply(webscraped_data$paper_html, prep_html_tm)
-# webscraped_data <- select(webscraped_data, !"paper_html")
-# webscraped_data$clean_html <- 
-#  map_chr(webscraped_data$clean_html, as.character)
-# write.csv(webscraped_data, 
-#          file = "Data/gt_subset_30_clean_html.csv.gz", 
-#          row.names = FALSE)
-
-# # groundtruth 
-# #webscraped_data <- read.csv("Data/groundtruth.csv.gz")
-# webscraped_data$clean_html <- lapply(webscraped_data$paper_html, prep_html_tm)
-# webscraped_data <- select(webscraped_data, !"paper_html")
-# webscraped_data$clean_html <- 
-#   map_chr(webscraped_data$clean_html, as.character)
-# write.csv(webscraped_data, 
-#           file = "Data/groundtruth_clean_html.csv.gz", 
-#           row.names = FALSE)

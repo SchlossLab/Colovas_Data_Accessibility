@@ -48,16 +48,18 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        # "Data/predicted/1935-7885.data_predicted.RDS",
-        # "Data/predicted/2576-098X.data_predicted.RDS"
         # expand("Data/predicted/{datasets}.data_predicted.RDS",
         # datasets = new_datasets)
-        # "Data/linkrot/1935-7885/1935-7885.alllinks.csv.gz",
-        # "Data/linkrot/2576-098X/2576-098X.alllinks.csv.gz"
+        #"Data/predicted/1098-6596.data_predicted.RDS" #aac 
         #i want to try just the three that i don't have yet
-       "Data/webscrape/1098-5514.html.csv.gz", #jv
-       "Data/webscrape/1098-5336.html.csv.gz", #aem
-       "Data/webscrape/0095-1137.html.csv.gz" #jcb
+       #"Data/webscrape/1098-5514.html.csv.gz", #jv done
+       #"Data/webscrape/1098-5336.html.csv.gz", #aem in progress 10/31
+       #"Data/webscrape/0095-1137.html.csv.gz" #jcb
+       #cleanHTML jobs
+       "Data/cleanhmtl/1098-5514.cleanhtml.csv.gz", #jv
+       "Data/cleanhmtl/1098-5522.cleanhtml.csv.gz" #i&i
+
+
 
         
 rule rds_to_csv: 
