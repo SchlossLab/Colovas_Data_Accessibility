@@ -13,10 +13,13 @@ library(jsonlite)
 library(httr2)
 
 #scrape fails at index 12983
-failed_scrape <- read_csv("Data/doi_linkrot/alive/1098-5514.csv")
+# 11594 in aem 
+failed_scrape <- read_csv("Data/doi_linkrot/alive/1098-5336.csv")
 colnames(failed_scrape)
 
-failed_doi  <- failed_scrape$paper[12983]
+
+
+failed_doi  <- failed_scrape$paper[11594]
 failed_doi
 
 # 20241031 - i&i cleanHTML keeps failing 

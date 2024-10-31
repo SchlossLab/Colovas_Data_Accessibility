@@ -54,10 +54,14 @@ rule targets:
         #i want to try just the three that i don't have yet
        #"Data/webscrape/1098-5514.html.csv.gz", #jv done
        #"Data/webscrape/1098-5336.html.csv.gz", #aem in progress 10/31
-       #"Data/webscrape/0095-1137.html.csv.gz" #jcb
+       "Data/webscrape/0095-1137.html.csv.gz" #jcb
        #cleanHTML jobs
        #"Data/cleanhmtl/1098-5514.cleanhtml.csv.gz", #jv done
-       "Data/cleanhmtl/1098-5522.cleanhtml.csv.gz" #i&i
+       #"Data/cleanhmtl/1098-5522.cleanhtml.csv.gz" #i&i
+    #    expand("Data/preprocessed/1098-5514.{ml_variables}.preprocessed_predict.RDS",
+    #    ml_variables = ml_variables),  
+    #    expand("Data/preprocessed/1098-5522.{ml_variables}.preprocessed_predict.RDS", 
+    #    ml_variables = ml_variables)
 
 
 
