@@ -36,12 +36,11 @@ prep_html_tm <- function(html) {
 }
 
 # apply functions using snakemake input
-webscraped_data <- read_csv(html)
+webscraped_data <- read_csv(html) %>% na.omit()
 webscraped_data$clean_html <- lapply(webscraped_data$paper_html, prep_html_tm)
 webscraped_data <- select(webscraped_data, !"paper_html")
 webscraped_data$clean_html <- 
   map_chr(webscraped_data$clean_html, as.character)
 write_csv(webscraped_data, 
-          file = output_file, 
-          row.names = FALSE)
+          file = output_file)
 

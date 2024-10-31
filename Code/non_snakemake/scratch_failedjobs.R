@@ -45,8 +45,22 @@ prep_html_tm <- function(html) {
   html <- lemmatize_strings(html)
 }
 
-webscraped_data <- read.csv(html)
+webscraped_data <- read_csv("Data/webscrape/1098-5522.html.csv.gz")
+colnames(webscraped_data)
+
+grep(webscraped_data$paper_doi, `NA`, value = TRUE)
+grep(webscraped_data$paper_html, `NA`, value = TRUE)
+
+#error in index 2948
+webscraped_data$paper_doi[2948]
+str(webscraped_data$paper_html[2948])
+
+webscraped_data %>%
+  na.omit()
+
+
 webscraped_data$clean_html <- lapply(webscraped_data$paper_html, prep_html_tm)
+webscraped_data$clean_html <- map_chr(webscraped_data$paper_html, prep_html_tm)
 webscraped_data <- select(webscraped_data, !"paper_html")
 webscraped_data$clean_html <- 
   map_chr(webscraped_data$clean_html, as.character)
