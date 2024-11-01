@@ -9,18 +9,21 @@ training_datasets = {
 # }
 
 new_datasets = {
-    "0095-1137" : "Data/0095-1137_metadata.RDS", #jcb
-    "1098-5336" : "Data/1098-5336_metadata.RDS", #aem
-    "1098-5514" : "Data/1098-5514_metadata.RDS", #jv
-    "1098-5522" : "Data/1098-5522_metadata.RDS", #i&i
     "1098-5530" : "Data/1098-5530_metadata.RDS", #jb
-    "1098-6596" : "Data/1098-6596_metadata.RDS", #aac
     "1935-7885" : "Data/1935-7885_metadata.RDS", #jmbe
     "2150-7511" : "Data/2150-7511_metadata.RDS", #mbio
     "2165-0497" : "Data/2165-0497_metadata.RDS", #mspec
     "2379-5042" : "Data/2379-5042_metadata.RDS", #msph
     "2379-5077" : "Data/2379-5077_metadata.RDS", #msys
     "2576-098X" : "Data/2576-098X_metadata.RDS" #mra
+}
+
+large_datasets = {
+    "0095-1137" : "Data/0095-1137_metadata.RDS", #jcb
+    "1098-5336" : "Data/1098-5336_metadata.RDS", #aem
+    "1098-5514" : "Data/1098-5514_metadata.RDS", #jv
+    "1098-5522" : "Data/1098-5522_metadata.RDS", #i&i
+    "1098-6596" : "Data/1098-6596_metadata.RDS", #aac
 }
 
   
@@ -54,7 +57,7 @@ rule targets:
         #i want to try just the three that i don't have yet
        #"Data/webscrape/1098-5514.html.csv.gz", #jv done
        #"Data/webscrape/1098-5336.html.csv.gz", #aem in progress 10/31
-       "Data/webscrape/0095-1137.html.csv.gz" #jcb
+    #    "Data/webscrape/0095-1137.html.csv.gz" #jcb
        #cleanHTML jobs
        #"Data/cleanhmtl/1098-5514.cleanhtml.csv.gz", #jv done
        #"Data/cleanhmtl/1098-5522.cleanhtml.csv.gz" #i&i
@@ -62,7 +65,10 @@ rule targets:
     #    ml_variables = ml_variables),  
     #    expand("Data/preprocessed/1098-5522.{ml_variables}.preprocessed_predict.RDS", 
     #    ml_variables = ml_variables)
-
+        expand("Data/predicted/{datasets}-1.data_predicted.RDS", 
+        datasets = large_datasets), 
+        expand("Data/predicted/{datasets}-2.data_predicted.RDS", 
+        datasets = large_datasets) 
 
 
         
@@ -75,6 +81,20 @@ rule rds_to_csv:
     shell: 
         """
         {input.rscript} {input.rds} {output}
+        """
+
+rule split: 
+    input: 
+        rscript = "Code/dataset_split.R",
+        rds = "Data/papers/{datasets}.csv"
+    output: 
+        "Data/papers/{datasets}-1.csv",
+        "Data/papers/{datasets}-2.csv"
+    params: 
+        filepath = "Data/papers/{datasets}"
+    shell: 
+        """
+        {input.rscript} {input.rds} {params.filepath}
         """
 
 rule doi_linkrot: 
