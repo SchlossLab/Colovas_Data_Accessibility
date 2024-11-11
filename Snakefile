@@ -65,10 +65,13 @@ rule targets:
     #    ml_variables = ml_variables),  
     #    expand("Data/preprocessed/1098-5522.{ml_variables}.preprocessed_predict.RDS", 
     #    ml_variables = ml_variables)
-        expand("Data/predicted/{datasets}-1.data_predicted.RDS", 
-        datasets = large_datasets), 
-        expand("Data/predicted/{datasets}-2.data_predicted.RDS", 
-        datasets = large_datasets) 
+        # expand("Data/predicted/{datasets}-1.data_predicted.RDS", 
+        # datasets = large_datasets), 
+        # expand("Data/predicted/{datasets}-2.data_predicted.RDS", 
+        # datasets = large_datasets) 
+        # "Data/webscrape/1098-5522-1.html.csv.gz"
+        expand("Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz", 
+        datasets = new_datasets)
 
 
         

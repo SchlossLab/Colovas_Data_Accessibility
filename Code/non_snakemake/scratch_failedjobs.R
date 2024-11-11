@@ -70,3 +70,5 @@ webscraped_data$clean_html <-
 write.csv(webscraped_data, 
           file = output_file, 
           row.names = FALSE)
+
+

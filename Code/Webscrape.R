@@ -48,7 +48,7 @@ webscrape_save_html <- function(data, file_path_gz){
 #20241107 - trycatching errors with webscraping
  webscraped_data <- tryCatch( {
     map_chr(data$paper, webscrape)}, 
-    error = \(x){as.character(webscraped_data = "NA") } )
+    error = \(x){list(webscraped_data = "NA") } )
 
   df <- tibble::tibble(paper_doi = data$paper, 
                       paper_html = webscraped_data)

@@ -59,6 +59,6 @@ conda activate data_acc
 
 cd $SLURM_SUBMIT_DIR
 #R CMD BATCH Code/MLprep.R Slurm/20240613_2_mlprep_gtnewseqdata_glmnet.out
-snakemake --profile config_files/ --rerun-incomplete
+snakemake --profile config_files/ --rerun-triggers mtime
 
 ##  If you copied any files to /tmp, make sure you delete them here!
