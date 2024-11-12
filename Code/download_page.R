@@ -19,38 +19,28 @@ library(httr2)
 
 # local input
 input_file <- read_csv("Data/doi_linkrot/alive/1935-7885.csv")
-colnames(input_file)
-
+# colnames(input_file)
+output <- "Data/html/1935-7885/"
 
 # okay so we're going to do the validity check and scrape in the same thing? 
 
-get_site_status_no_follow <- function(websiteurl) {
+# get_site_status_no_follow <- function(websiteurl) {
   
-  response <- tryCatch( {request(websiteurl) %>% 
-      req_options(followlocation = FALSE) %>%
-      req_error(is_error = ~ FALSE) %>% 
-      req_perform()}, error = \(x){list(status_code = 404) } )
+#   response <- tryCatch( {request(websiteurl) %>% 
+#       req_options(followlocation = FALSE) %>%
+#       req_error(is_error = ~ FALSE) %>% 
+#       req_perform()}, error = \(x){list(status_code = 404) } )
   
-  numeric_response <- response$status_code
-  html <- response$html
-  return(numeric_response)
+#   numeric_response <- response$status_code
+#   html <- response$html
+#   return(numeric_response)
   
-}
+# }
 
 input_file <- input_file %>% 
     mutate(unique_id = str_split_i(input_file$doi, "/", 2))
 
 
-view(input_file)
-
-count(input_file, unique_id, sort = TRUE)
-
-
-# iterate through each doi 
-
-# webscrape and save back to each doi
-
-# how to save all of them as snakemake files and know that it has all the files
 
 one_paper <- input_file$paper[1]
 one_doi <- input_file$doi[1]
@@ -60,7 +50,7 @@ html <- read_html(one_paper)
 #use save_html in htmltools
 
 #have to figure out how to save these, might need just doi or put doi in quotes
-htmltools::save_html(html, file = paste0("Data/", one_doi))
+htmltools::save_html(html, file = paste0(output, unique_id))
 
 
 #20241112 - try getting status and html in one hit 
