@@ -21,6 +21,7 @@ dependencies:
   - r-cowplot
   - r-devtools
   - r-randomforest
+  - r-microbenchmark
 
   
 
