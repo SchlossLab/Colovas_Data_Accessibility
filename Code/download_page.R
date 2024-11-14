@@ -10,30 +10,30 @@ library(rvest)
 library(tidytext)
 library(xml2)
 library(httr2)
-library(microbenchmark)
 
 # #command line inputs
 # input <- commandArgs(trailingOnly = TRUE)
 # input_file <- input[1]
-# output_file <- input[2]
+# output <- input[2]
 
-# local input
+# # local input
 input_file <- read_csv("Data/doi_linkrot/alive/1935-7885.csv")
 # colnames(input_file)
 output <- "Data/html/1935-7885/"
 
 
-# add unique_id to table to tell you what the filename will be
+# add unique_id to table to tell you what the unique paper id will be
 input_file <- input_file %>% 
-    mutate(unique_id = str_split_i(input_file$doi, "/", 2))
+    mutate(unique_id = str_split_i(input_file$doi, "/", 2), 
+          link_status = as.numeric(0), 
+          filename = paste0(output, unique_id, ".html")) 
+
+# small table for local testing
+input_file_small <- 
+  slice_head(input_file, n = 20) 
+
 
 # start loop to go through each paper and save output
-input_file_small <- 
-  slice_head(input_file, n = 20) %>%
-  mutate(link_status = as.numeric(0)) 
-
-str(input_file_small$link_status)
-
 
 download_html <- function(input_file) {
   for(i in 1:nrow(input_file)){
@@ -44,16 +44,9 @@ download_html <- function(input_file) {
 
       input_file$link_status[i] <- as.numeric(response$status_code)
       html <- response %>% resp_body_html()
-      filename <- paste0(output, input_file$unique_id[i], ".html")
 
-      write_html(html, file = filename)
+      write_html(html, file = input_file$filename[i])
   }
 }
 
-#~14 seconds for 20 files (by hand timing)
-# trying to use microbenchmark to time these but it takes 5ever? 
-benchmark <- microbenchmark(download_html(input_file_small))
-print.microbenchmark(benchmark)
-
-
-# see pat note and ask greg for help with snakemake rules 
+download_html(input_file)
