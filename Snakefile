@@ -78,9 +78,12 @@ rule rds_to_csv:
         rds = "Data/metadata/{datasets}_metadata.RDS"
     output: 
         "Data/papers/{datasets}.csv"
+    params: 
+        html_dir = "Data/html/{datasets}/
+        
     shell: 
         """
-        {input.rscript} {input.rds} {output}
+        {input.rscript} {input.rds} {output} {params.html_dir}
         """
 
 # rule split: 

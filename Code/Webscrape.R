@@ -26,7 +26,7 @@ webscrape <- function(doi) {
   
   abstract <- read_html(doi) %>%
     html_elements("section#abstract") %>%
-    html_elements("[role = paragraph]") 
+    html_elements("[role = paragraph]")
   
   body <- read_html(doi) %>%
     html_elements("section#bodymatter") 
