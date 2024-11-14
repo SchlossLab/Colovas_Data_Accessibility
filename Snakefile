@@ -52,23 +52,14 @@ rule targets:
         # datasets = new_datasets)
         #"Data/predicted/1098-6596.data_predicted.RDS" #aac 
         #i want to try just the three that i don't have yet
-       #"Data/webscrape/1098-5514.html.csv.gz", #jv done
-       #"Data/webscrape/1098-5336.html.csv.gz", #aem in progress 10/31
-    #    "Data/webscrape/0095-1137.html.csv.gz" #jcb
-       #cleanHTML jobs
-       #"Data/cleanhmtl/1098-5514.cleanhtml.csv.gz", #jv done
-       #"Data/cleanhmtl/1098-5522.cleanhtml.csv.gz" #i&i
     #    expand("Data/preprocessed/1098-5514.{ml_variables}.preprocessed_predict.RDS",
     #    ml_variables = ml_variables),  
     #    expand("Data/preprocessed/1098-5522.{ml_variables}.preprocessed_predict.RDS", 
     #    ml_variables = ml_variables)
-        # expand("Data/predicted/{datasets}-1.data_predicted.RDS", 
-        # datasets = large_datasets), 
-        # expand("Data/predicted/{datasets}-2.data_predicted.RDS", 
-        # datasets = large_datasets) 
-        # "Data/webscrape/1098-5522-1.html.csv.gz"
-        expand("Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz", 
-        datasets = new_datasets)
+        "Data/papers/1935-7885.csv"
+
+        # expand("Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz", 
+        # datasets = new_datasets)
 
 
         
@@ -79,12 +70,28 @@ rule rds_to_csv:
     output: 
         "Data/papers/{datasets}.csv"
     params: 
-        html_dir = "Data/html/{datasets}/
-        
+        html_dir = "Data/html/{datasets}/"
     shell: 
         """
         {input.rscript} {input.rds} {output} {params.html_dir}
         """
+
+#20241114 - rule not done yet need work on wildcards for output
+rule download_html: 
+    input: 
+        rscript = "Code/download_html.R",
+        csv = "Data/papers/{datasets}.csv"
+    output:
+        #need to list all the files that will be generated from this step
+    params: 
+        filepath = "Data/html/{dataset}"
+    resources: 
+        mem_mb = 20000 
+    shell: 
+        """
+        {input.rscript} {input.csv} {params.filepath} {wildcards.datasets}
+        """
+
 
 # rule split: 
 #     input: 
