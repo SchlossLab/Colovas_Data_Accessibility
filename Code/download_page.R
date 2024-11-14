@@ -49,4 +49,8 @@ download_html <- function(input_file) {
   }
 }
 
-download_html(input_file)
+#okay do it!
+download_html(input_file) #big one
+# download_html(input_file_small) #small one
+
+#need to add to save df with just paper, path, etc, 

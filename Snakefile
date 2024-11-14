@@ -15,10 +15,7 @@ new_datasets = {
     "2165-0497" : "Data/2165-0497_metadata.RDS", #mspec
     "2379-5042" : "Data/2379-5042_metadata.RDS", #msph
     "2379-5077" : "Data/2379-5077_metadata.RDS", #msys
-    "2576-098X" : "Data/2576-098X_metadata.RDS" #mra
-}
-
-large_datasets = {
+    "2576-098X" : "Data/2576-098X_metadata.RDS", #mra
     "0095-1137" : "Data/0095-1137_metadata.RDS", #jcb
     "1098-5336" : "Data/1098-5336_metadata.RDS", #aem
     "1098-5514" : "Data/1098-5514_metadata.RDS", #jv
@@ -86,19 +83,19 @@ rule rds_to_csv:
         {input.rscript} {input.rds} {output}
         """
 
-rule split: 
-    input: 
-        rscript = "Code/dataset_split.R",
-        rds = "Data/papers/{datasets}.csv"
-    output: 
-        "Data/papers/{datasets}-1.csv",
-        "Data/papers/{datasets}-2.csv"
-    params: 
-        filepath = "Data/papers/{datasets}"
-    shell: 
-        """
-        {input.rscript} {input.rds} {params.filepath}
-        """
+# rule split: 
+#     input: 
+#         rscript = "Code/dataset_split.R",
+#         rds = "Data/papers/{datasets}.csv"
+#     output: 
+#         "Data/papers/{datasets}-1.csv",
+#         "Data/papers/{datasets}-2.csv"
+#     params: 
+#         filepath = "Data/papers/{datasets}"
+#     shell: 
+#         """
+#         {input.rscript} {input.rds} {params.filepath}
+#         """
 
 rule doi_linkrot: 
     input: 

@@ -15,6 +15,11 @@ input <- commandArgs(trailingOnly = TRUE)
 input_file <- input[1]
 output_file <- input[2]
 
+
+# #local testing
+# doi <- "Data/html/1935-7885/jmbe.8.1.3-12.2007.html"
+# webscrape(doi)
+
 #function for reading html, remove figs/tables, 
 #and concatenate abstract and body (using rvest, xml2)
 webscrape <- function(doi) {
@@ -41,6 +46,7 @@ webscrape <- function(doi) {
   return(paper_html)
   
 }
+
 
 webscrape_save_html <- function(data, file_path_gz){
 
