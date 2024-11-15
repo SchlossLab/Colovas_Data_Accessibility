@@ -1,3 +1,5 @@
+import pandas as pd 
+
 training_datasets = {
     "groundtruth" : "Data/groundtruth.csv",
     "gt_subset_30" : "Data/gt_subset_30.csv",
@@ -40,7 +42,8 @@ mtry_dict = {
     "new_seq_data" : 300, 
     "data_availability" : 200
 }
-  
+
+
 
 ncores = 1
 seeds = list(range(1, 101))
@@ -56,8 +59,7 @@ rule targets:
     #    ml_variables = ml_variables),  
     #    expand("Data/preprocessed/1098-5522.{ml_variables}.preprocessed_predict.RDS", 
     #    ml_variables = ml_variables)
-        "Data/papers/1935-7885.csv"
-
+        expand("Data/papers/{datasets}.csv", datasets = new_datasets)
         # expand("Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz", 
         # datasets = new_datasets)
 
@@ -76,13 +78,18 @@ rule rds_to_csv:
         {input.rscript} {input.rds} {output} {params.html_dir}
         """
 
+# get lists of files as targets for webscraping using pandas(import at top)
+
+for datasets in new_datasets.keys(): 
+    metadata[datasets] = pd.read_csv(f"Data/papers/{datasets}.csv")["html_filename"]
+
 #20241114 - rule not done yet need work on wildcards for output
 rule download_html: 
     input: 
         rscript = "Code/download_html.R",
         csv = "Data/papers/{datasets}.csv"
     output:
-        #need to list all the files that will be generated from this step
+        metadata
     params: 
         filepath = "Data/html/{dataset}"
     resources: 
@@ -90,6 +97,20 @@ rule download_html:
     shell: 
         """
         {input.rscript} {input.csv} {params.filepath} {wildcards.datasets}
+        """
+
+rule cleanup_html: 
+    input: 
+        # need list of files from download_html
+    output: 
+        "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
+    resources: 
+        mem_mb = 20000
+    params: 
+        # rdir = directory where all of the files will be
+    shell: 
+        """
+        {input.rscript} {input.html} {output}
         """
 
 
