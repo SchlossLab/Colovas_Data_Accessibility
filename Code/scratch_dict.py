@@ -59,7 +59,8 @@ for key in metadata:
     print(len(metadata[key]))
     values = []
     for value in metadata[key]:
-        list[key].append(value)
+        values.append(value)
+    list[key] = values
 
 
 print(list_inputs_all)
