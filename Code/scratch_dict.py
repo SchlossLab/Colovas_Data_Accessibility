@@ -38,3 +38,30 @@ for datasets in new_datasets.keys():
 for datasets in new_datasets.keys(): 
     # metadata[datasets] = 
     print(f"Data/papers/{datasets}.csv".strip())
+
+
+
+metadata = {}
+
+for datasets in new_datasets.keys(): 
+    metadata[datasets] = pd.read_csv(f"Data/papers/{datasets}.csv".replace(" ", ""), sep = ",", low_memory = False)["unique_id"]
+
+# html_filename =  lambda wildcards: metadata[wildcards.new_datasets]
+
+list_inputs_all = [
+    f"{html_filename}.html".replace(" ", "")
+    for html_filename
+    in metadata.items()
+]
+
+list = {}
+for key in metadata:
+    print(len(metadata[key]))
+    values = []
+    for value in metadata[key]:
+        list[key].append(value)
+
+
+print(list_inputs_all)
+
+len(list_inputs_all)
