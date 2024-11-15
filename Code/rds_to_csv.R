@@ -27,7 +27,8 @@ data_processed <-
         relocate(paper, .before = container.title) %>%
         mutate(unique_id = str_split_i(doi, "/", -1), 
             html_link_status = as.numeric(0), 
-            html_filename = paste0(html_dir, unique_id, ".html"))
+            html_filename = paste0(html_dir, unique_id, ".html")) %>%
+        unique()
 
 
 

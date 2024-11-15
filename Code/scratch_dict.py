@@ -35,3 +35,6 @@ new_datasets = {
 for datasets in new_datasets.keys(): 
     metadata[datasets] = pd.read_csv(f"Data/papers/{datasets}.csv")["html_filename"]
    
+for datasets in new_datasets.keys(): 
+    # metadata[datasets] = 
+    print(f"Data/papers/{datasets}.csv".strip())
