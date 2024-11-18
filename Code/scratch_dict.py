@@ -32,15 +32,17 @@ new_datasets = {
     "1098-6596" : "Data/1098-6596_metadata.RDS", #aac
 }
 
-for datasets in new_datasets.keys(): 
-    metadata[datasets] = pd.read_csv(f"Data/papers/{datasets}.csv")["html_filename"]
+
+#not these rn 
+# for datasets in new_datasets.keys(): 
+#     metadata[datasets] = pd.read_csv(f"Data/papers/{datasets}.csv")["html_filename"]
    
-for datasets in new_datasets.keys(): 
-    # metadata[datasets] = 
-    print(f"Data/papers/{datasets}.csv".strip())
+# for datasets in new_datasets.keys(): 
+#     # metadata[datasets] = 
+#     print(f"Data/papers/{datasets}.csv".strip())
 
 
-
+#redundant from above
 metadata = {}
 
 for datasets in new_datasets.keys(): 
@@ -54,14 +56,16 @@ list_inputs_all = [
     in metadata.items()
 ]
 
-list = {}
+listOfHTMLs = {}
 for key in metadata:
     print(len(metadata[key]))
     values = []
     for value in metadata[key]:
         values.append(value)
-    list[key] = values
+    listOfHTMLs[key] = values
 
+#print statments not needed
+print(listOfHTMLs)
 
 print(list_inputs_all)
 

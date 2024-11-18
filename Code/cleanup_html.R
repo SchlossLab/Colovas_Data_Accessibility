@@ -21,14 +21,14 @@ input_path <- input[2]
 output_file <- input[3]
 
 
-#local
-input_file <- read_csv("Data/papers/1935-7885.csv") %>% 
-    select(paper, html_filename) %>%
-    mutate(clean_html = NA)
+# #local
+# input_file <- read_csv("Data/papers/1935-7885.csv") %>% 
+#     select(paper, html_filename) %>%
+#     mutate(clean_html = NA)
 
-input_file <- as.data.table(input_file)
-str(input_file)
-input_path <- "Data/html/1935-7885"
+# input_file <- as.data.table(input_file)
+# str(input_file)
+# input_path <- "Data/html/1935-7885"
 
 # # doi <- "Data/html/1935-7885/jmbe.8.1.3-12.2007.html"
 # doi_webscraped <- webscrape(doi)
