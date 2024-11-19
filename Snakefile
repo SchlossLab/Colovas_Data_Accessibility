@@ -43,45 +43,8 @@ mtry_dict = {
     "data_availability" : 200
 }
 
-# get lists of files as targets for webscraping using pandas(import at top)
-metadata = {}
-
-for datasets in new_datasets.keys(): 
-    metadata[datasets] = pd.read_csv(f"Data/papers/{datasets}.csv".replace(" ", ""), sep = ",", low_memory = False)["unique_id"]
-
-list_inputs_all = [
-    f"{html_filename}.html".replace(" ", "")
-    for html_filename
-    in metadata.items()
-]
-
-list_of_htmls = {}
-for key in metadata:
-    # print(len(metadata[key]))
-    values = []
-    for value in metadata[key]:
-        values.append(value)
-    list_of_htmls[key] = values
-
-# html_filename =  lambda wildcards: metadata[wildcards.new_datasets]
-
-# list_inputs_all = [
-#     f"{html_filename}.html".replace(" ", "")
-#     for html_filename
-#     in metadata.items()
-# ]
-# print(list_inputs_all)
-
-# input_dict = {}
-# for key in metadata:
-#     values = []
-#     for value in metadata[key]:
-#         values.append(value)
-#     input_dict[key] = values
-# determine_list_by_dataset = lambda dataset : input_dict[dataset]
-
-# def func(wildcards):
-#     return metadata[wildcards.datasets]
+dois = pd.read_csv("Data/papers/all_papers.csv", names = ["url", "doi"])
+doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
 
 
@@ -93,27 +56,9 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        # expand("Data/predicted/{datasets}.data_predicted.RDS",
-        # datasets = new_datasets)
-        #"Data/predicted/1098-6596.data_predicted.RDS" #aac 
-        #i want to try just the three that i don't have yet
-    #    expand("Data/preprocessed/1098-5514.{ml_variables}.preprocessed_predict.RDS",
-    #    ml_variables = ml_variables),  
-    #    expand("Data/preprocessed/1098-5522.{ml_variables}.preprocessed_predict.RDS", 
-    #    ml_variables = ml_variables)
-        # expand("Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz", 
-        # datasets = new_datasets)
-        # expand("Data/papers/{datasets}.csv", datasets = new_datasets), 
-        # lambda wildcards : expand(
-        # "Data/html/{datasets}/{html_filename}.html",
-        # html_filename =  metadata[wildcards.datasets], datasets = new_datasets.keys())
-        # expand("Data/html/{datasets}/{html_filename}", 
-        # datasets = new_datasets, html_filename = determine_list_by_dataset(datasets))
-       expand("Data/hmtl/{issn}/{unique_id}.html")
+    #    expand("Data/papers/{datasets}.csv", datasets = new_datasets)
+        "Data/papers/all_papers.csv"
       
-
-        
-
 
         
 rule rds_to_csv: 
@@ -122,59 +67,67 @@ rule rds_to_csv:
         rds = "Data/metadata/{datasets}_metadata.RDS"
     output: 
         "Data/papers/{datasets}.csv"
-    params: 
-        html_dir = "Data/html/{datasets}/"
     shell: 
         """
-        {input.rscript} {input.rds} {output} {params.html_dir}
+        {input.rscript} {input.rds} {output}
         """
 
 rule all_papers: 
     input: 
-        rscript = "Code/all_papers.R",
-        rds = "Data/metadata/{datasets}_metadata.RDS"
+        rscript = "Code/get_all_papers.R",
+        papers = expand("Data/papers/{datasets}.csv", datasets = new_datasets)
     output: 
-        "Data/papers/{datasets}.csv"
+        "Data/papers/all_papers.csv"
     params: 
-        html_dir = "Data/html/{datasets}/"
+        paper_dir = "Data/papers"
     shell: 
         """
-        {input.rscript} {input.rds} {output} {params.html_dir}
+        {input.rscript} {params.paper_dir} {output} 
         """
 
+# rule all_dois:
+#   input:
+#     doi_lookup.keys()
 
+# rule indiv_dois:
+#   output:
+#     doi = "{doi}"
+#   params:
+#     url = lambda wildcards, output: doi_lookup[output.doi]
+#   shell:
+#     """
+#     wget {params.url} -O --save-headers {output.doi}
+#     """
 
+# #20241114 - rule not done yet need work on wildcards for output
+# rule download_html: 
+#     input: 
+#         rscript = "Code/download_html.R",
+#         csv = "Data/papers/{datasets}.csv"
+#     output:
+#         list_of_htmls
+#     # params: 
+#     #     filepath = "Data/html/{datasets}"
+#     resources: 
+#         mem_mb = 20000 
+#     shell: 
+#         """
+#         {input.rscript} {input.csv} {params.filepath}
+#         """
 
-
-#20241114 - rule not done yet need work on wildcards for output
-rule download_html: 
-    input: 
-        rscript = "Code/download_html.R",
-        csv = "Data/papers/{datasets}.csv"
-    output:
-        list_of_htmls
-    # params: 
-    #     filepath = "Data/html/{datasets}"
-    resources: 
-        mem_mb = 20000 
-    shell: 
-        """
-        {input.rscript} {input.csv} {params.filepath}
-        """
-
-rule cleanup_html: 
-    input: 
-        list_of_htmls
-    output: 
-        "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-    resources: 
-        mem_mb = 20000
-    params: 
-        filepath = "Data/html/{datasets}"
-    shell: 
-        """
-        {input.rscript} {input.html} {output} {params.filepath}
-        """
+# rule cleanup_html: 
+#     input: 
+#         list_of_htmls
+#     output: 
+#         "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
+#     resources: 
+#         mem_mb = 20000
+#     params: 
+#         filepath = "Data/html/{datasets}"
+#     shell: 
+#         """
+#         {input.rscript} {input.html} {output} {params.filepath}
+#         """
 
 
 # rule split: 
@@ -223,18 +176,18 @@ rule webscrape:
         """
 
 
-# rule cleanHTML: 
-#     input:
-#         rscript = "Code/cleanHTML.R",
-#         html = "Data/webscrape/{datasets}.html.csv.gz"
-#     output: 
-#         "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-#     resources: 
-#         mem_mb = 20000
-#     shell: 
-#         """
-#         {input.rscript} {input.html} {output}
-#         """
+rule cleanHTML: 
+    input:
+        rscript = "Code/cleanHTML.R",
+        html = "Data/webscrape/{datasets}.html.csv.gz"
+    output: 
+        "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
+    resources: 
+        mem_mb = 20000
+    shell: 
+        """
+        {input.rscript} {input.html} {output}
+        """
 
 
 rule tokenize: 
