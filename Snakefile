@@ -43,7 +43,7 @@ mtry_dict = {
     "data_availability" : 200
 }
 
-dois = pd.read_csv("Data/papers/all_papers.csv", names = ["url", "doi"])
+dois = pd.read_csv("Data/papers/all_papers.csv.gz", names = ["url", "doi"])
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
 
@@ -56,8 +56,10 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-    #    expand("Data/papers/{datasets}.csv", datasets = new_datasets)
-        "Data/papers/all_papers.csv"
+        #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
+        # "Data/papers/all_papers.csv.gz"
+        doi_lookup.keys()
+
       
 
         
@@ -77,7 +79,7 @@ rule all_papers:
         rscript = "Code/get_all_papers.R",
         papers = expand("Data/papers/{datasets}.csv", datasets = new_datasets)
     output: 
-        "Data/papers/all_papers.csv"
+        "Data/papers/all_papers.csv.gz"
     params: 
         paper_dir = "Data/papers"
     shell: 
@@ -85,19 +87,20 @@ rule all_papers:
         {input.rscript} {params.paper_dir} {output} 
         """
 
-# rule all_dois:
-#   input:
-#     doi_lookup.keys()
+rule all_dois:
+    input:
+        doi_lookup.keys()
 
-# rule indiv_dois:
-#   output:
-#     doi = "{doi}"
-#   params:
-#     url = lambda wildcards, output: doi_lookup[output.doi]
-#   shell:
-#     """
-#     wget {params.url} -O --save-headers {output.doi}
-#     """
+rule indiv_dois:
+    output:
+        doi ="10.{dois}"
+    params:
+        url = lambda wildcards, output: doi_lookup[output.doi]
+    shell:
+        """
+        wget {params.url} -O --save-headers {output.doi}
+        """
+
 
 # #20241114 - rule not done yet need work on wildcards for output
 # rule download_html: 
