@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# rds_to_csv.R
+# all_papers.R
 #
 #
 #
@@ -8,12 +8,11 @@ library(tidyverse)
 library(tidytext)
 
 # snakemake input 
-#  {input.rscript} {input.rds} {output}
+#  {input.rscript} {params.dir} {output}
 input <- commandArgs(trailingOnly = TRUE)
-rds <- input[1]
-data_processed <- readRDS(rds)
+papers_dir <- input[1]
 output <- input[2]
-html_dir <- input[3]
+
 
 #local practice 
 # rds <- "Data/metadata/1935-7885_metadata.RDS"

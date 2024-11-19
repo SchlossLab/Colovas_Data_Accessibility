@@ -43,10 +43,52 @@ mtry_dict = {
     "data_availability" : 200
 }
 
+# get lists of files as targets for webscraping using pandas(import at top)
+metadata = {}
+
+for datasets in new_datasets.keys(): 
+    metadata[datasets] = pd.read_csv(f"Data/papers/{datasets}.csv".replace(" ", ""), sep = ",", low_memory = False)["unique_id"]
+
+list_inputs_all = [
+    f"{html_filename}.html".replace(" ", "")
+    for html_filename
+    in metadata.items()
+]
+
+list_of_htmls = {}
+for key in metadata:
+    # print(len(metadata[key]))
+    values = []
+    for value in metadata[key]:
+        values.append(value)
+    list_of_htmls[key] = values
+
+# html_filename =  lambda wildcards: metadata[wildcards.new_datasets]
+
+# list_inputs_all = [
+#     f"{html_filename}.html".replace(" ", "")
+#     for html_filename
+#     in metadata.items()
+# ]
+# print(list_inputs_all)
+
+# input_dict = {}
+# for key in metadata:
+#     values = []
+#     for value in metadata[key]:
+#         values.append(value)
+#     input_dict[key] = values
+# determine_list_by_dataset = lambda dataset : input_dict[dataset]
+
+# def func(wildcards):
+#     return metadata[wildcards.datasets]
+
 
 
 ncores = 1
 seeds = list(range(1, 101))
+
+
 
 
 rule targets:
@@ -59,9 +101,18 @@ rule targets:
     #    ml_variables = ml_variables),  
     #    expand("Data/preprocessed/1098-5522.{ml_variables}.preprocessed_predict.RDS", 
     #    ml_variables = ml_variables)
-        expand("Data/papers/{datasets}.csv", datasets = new_datasets)
         # expand("Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz", 
         # datasets = new_datasets)
+        # expand("Data/papers/{datasets}.csv", datasets = new_datasets), 
+        # lambda wildcards : expand(
+        # "Data/html/{datasets}/{html_filename}.html",
+        # html_filename =  metadata[wildcards.datasets], datasets = new_datasets.keys())
+        # expand("Data/html/{datasets}/{html_filename}", 
+        # datasets = new_datasets, html_filename = determine_list_by_dataset(datasets))
+       expand("Data/hmtl/{issn}/{unique_id}.html")
+      
+
+        
 
 
         
@@ -78,10 +129,22 @@ rule rds_to_csv:
         {input.rscript} {input.rds} {output} {params.html_dir}
         """
 
-# get lists of files as targets for webscraping using pandas(import at top)
+rule all_papers: 
+    input: 
+        rscript = "Code/all_papers.R",
+        rds = "Data/metadata/{datasets}_metadata.RDS"
+    output: 
+        "Data/papers/{datasets}.csv"
+    params: 
+        html_dir = "Data/html/{datasets}/"
+    shell: 
+        """
+        {input.rscript} {input.rds} {output} {params.html_dir}
+        """
 
-for datasets in new_datasets.keys(): 
-    metadata[datasets] = pd.read_csv(f"Data/papers/{datasets}.csv")["html_filename"]
+
+
+
 
 #20241114 - rule not done yet need work on wildcards for output
 rule download_html: 
@@ -89,28 +152,28 @@ rule download_html:
         rscript = "Code/download_html.R",
         csv = "Data/papers/{datasets}.csv"
     output:
-        metadata
-    params: 
-        filepath = "Data/html/{dataset}"
+        list_of_htmls
+    # params: 
+    #     filepath = "Data/html/{datasets}"
     resources: 
         mem_mb = 20000 
     shell: 
         """
-        {input.rscript} {input.csv} {params.filepath} {wildcards.datasets}
+        {input.rscript} {input.csv} {params.filepath}
         """
 
 rule cleanup_html: 
     input: 
-        # need list of files from download_html
+        list_of_htmls
     output: 
         "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
     resources: 
         mem_mb = 20000
     params: 
-        # rdir = directory where all of the files will be
+        filepath = "Data/html/{datasets}"
     shell: 
         """
-        {input.rscript} {input.html} {output}
+        {input.rscript} {input.html} {output} {params.filepath}
         """
 
 
@@ -152,24 +215,26 @@ rule webscrape:
         "Data/webscrape/{datasets}.html.csv.gz"
     resources: 
         mem_mb = 40000 
+    params: 
+        datasets = new_datasets
     shell: 
         """
         {input.rscript} {input.csv} {output}
         """
 
 
-rule cleanHTML: 
-    input:
-        rscript = "Code/cleanHTML.R",
-        html = "Data/webscrape/{datasets}.html.csv.gz"
-    output: 
-        "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-    resources: 
-        mem_mb = 20000
-    shell: 
-        """
-        {input.rscript} {input.html} {output}
-        """
+# rule cleanHTML: 
+#     input:
+#         rscript = "Code/cleanHTML.R",
+#         html = "Data/webscrape/{datasets}.html.csv.gz"
+#     output: 
+#         "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
+#     resources: 
+#         mem_mb = 20000
+#     shell: 
+#         """
+#         {input.rscript} {input.html} {output}
+#         """
 
 
 rule tokenize: 
