@@ -23,7 +23,8 @@ output <- input[2]
 data_processed <-
     data_processed %>%
         mutate(paper = paste0("https://journals.asm.org/doi/", doi), 
-               unique_id = str_replace(doi, "/", "_")) %>%
+               unique_id = str_replace(doi, "/", "_"), 
+               html_filename = paste0("Data/html/", unique_id)) %>%
         relocate(paper, .before = container.title)
 
 write_csv(data_processed, file = output)

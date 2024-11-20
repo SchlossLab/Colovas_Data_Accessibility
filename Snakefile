@@ -93,12 +93,16 @@ rule all_dois:
 
 rule indiv_dois:
     output:
-        doi ="10.{dois}"
+        doi = "{doi}"
+    group:
+        "get_doi"
+    resources:
+        mem_mb = 8 
     params:
         url = lambda wildcards, output: doi_lookup[output.doi]
     shell:
         """
-        wget {params.url} -O --save-headers {output.doi}
+        wget {params.url} --save-headers -O {output.doi}
         """
 
 

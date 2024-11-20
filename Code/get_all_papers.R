@@ -14,22 +14,22 @@ papers_dir <- input[1]
 output <- input[2]
 
 
-#local practice 
-# papers_dir <- "Data/papers"
+# local practice 
+papers_dir <- "Data/papers"
 
 csv_files <- list.files(papers_dir, "*.csv")
 
 
-all_papers <- tribble(~paper, ~unique_id)
+all_papers <- tribble(~paper, ~html_filename)
 
-for (i in 1:length(csv_files)) {
+for (i in 1:12) {
     csv_file <- read_csv(paste0(papers_dir, "/", csv_files[i])) %>%
-        select(., c(paper, unique_id))
+        select(., c(paper, html_filename))
     all_papers <- full_join(all_papers, csv_file)
 }
 
 all_papers <-
     all_papers %>%
-        rename(url = paper, doi = unique_id)
+        rename(url = paper, doi = html_filename)
 
 write_csv(all_papers, file = output)
