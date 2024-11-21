@@ -102,7 +102,7 @@ rule indiv_dois:
         url = lambda wildcards, output: doi_lookup[output.doi]
     shell:
         """
-        wget {params.url} --save-headers -O {output.doi}
+        wget {params.url} --save-headers -O {output.doi} || echo "Error: Download {params.url} failed"
         """
 
 
