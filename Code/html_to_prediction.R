@@ -15,6 +15,7 @@ library(data.table)
 #read in list of html files from filepath
 # pat said do all of them at once...which means they
 # all need to be scraped before this 
+# test with a group of 5 or something
 
 
 #snakemake 
@@ -26,7 +27,13 @@ input_path <- input[2]
 output_file <- input[3]
 
 
+#20241122 local input
+# all_html_files <- 
+ten_html_files <- head(list.files("Data/html/"))
 
+
+#start with making a data.table for all the files
+output_table <- data.table(html_filename = ten_html_files)
 
 #function for reading html, remove figs/tables, 
 #and concatenate abstract and body (using rvest, xml2)
@@ -67,27 +74,25 @@ prep_html_tm <- function(html) {
   html <- lemmatize_strings(html)
 }
 
-for (i in 1:nrow(input_file)) {
-    if(!file.exists(input_file$html_filename[[i]])) {
-        next
-    }
-   html <- webscrape(input_file$html_filename[[i]])
-   html <- prep_html_tm(html)
-   input_file$clean_html[[i]] <- html
+# #20241122- iteration for a small function 
+# #may or may not need this function, 
+# #not the best to iterate through like this
+# for (i in 1:nrow(input_file)) {
+#     if(!file.exists(input_file$html_filename[[i]])) {
+#         next
+#     }
+#    html <- webscrape(input_file$html_filename[[i]])
+#    html <- prep_html_tm(html)
+#    input_file$clean_html[[i]] <- html
     
-}
-
-# remove hmtl_filename we don't need to save it now
-input_file <- input_file %>% 
-    select(!html_filename)
-
-#remove NAs in clean_html column 
+# }
 
 
-write_csv(input_file, file = output_file)
+webscrape_1 <-webscrape(paste0("Data/html/", ten_html_files[1]))
 
 
-#how will it work through the rest of the steps
-# tokenization - this one is beefy
-# prep for prediction - i feel like this one could be better
-# prediction - this part is the easy part 
+
+
+
+
+
