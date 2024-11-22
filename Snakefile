@@ -94,10 +94,10 @@ rule all_dois:
 rule indiv_dois:
     output:
         doi = "{doi}"
-    group:
-        "get_doi"
+    # group:
+    #     "get_doi"
     resources:
-        mem_mb = 8 
+        mem_mb = 1000
     params:
         url = lambda wildcards, output: doi_lookup[output.doi]
     shell:
