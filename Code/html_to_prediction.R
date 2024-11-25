@@ -8,9 +8,12 @@ library(tidyverse)
 library(rvest)
 library(tidytext)
 library(xml2)
+library(httr2)
 library(textstem) #for stemming text variables
 library(tm) #for text manipulation
-library(data.table)
+library(data.table) #unclear if i need this one yet
+
+library(tokenizers)
 
 #read in list of html files from filepath
 # pat said do all of them at once...which means they
@@ -18,18 +21,18 @@ library(data.table)
 # test with a group of 5 or something
 
 
-#snakemake 
-input <- commandArgs(trailingOnly = TRUE)
-input_file <- read.table(input[1])  %>% 
-    select(paper, html_filename) %>%
-    mutate(clean_html = NA)
-input_path <- input[2]
-output_file <- input[3]
+# #snakemake 
+# input <- commandArgs(trailingOnly = TRUE)
+# input_file <- read.table(input[1])  %>% 
+#     select(paper, html_filename) %>%
+#     mutate(clean_html = NA)
+# input_path <- input[2]
+# output_file <- input[3]
 
 
 #20241122 local input
 # all_html_files <- 
-ten_html_files <- head(list.files("Data/html/"))
+ten_html_files <- head(list.files("Data/html", full.names = TRUE))
 
 
 #start with making a data.table for all the files
@@ -74,25 +77,53 @@ prep_html_tm <- function(html) {
   html <- lemmatize_strings(html)
 }
 
-# #20241122- iteration for a small function 
-# #may or may not need this function, 
-# #not the best to iterate through like this
-# for (i in 1:nrow(input_file)) {
-#     if(!file.exists(input_file$html_filename[[i]])) {
-#         next
-#     }
-#    html <- webscrape(input_file$html_filename[[i]])
-#    html <- prep_html_tm(html)
-#    input_file$clean_html[[i]] <- html
-    
-# }
 
+clean_html_1 <- prep_html_tm(webscrape_1)
+# tokenize paper with snowball stopwords
 
-webscrape_1 <-webscrape(paste0("Data/html/", ten_html_files[1]))
+tokenize <- function(clean_html) {
 
+  tokens <- tokenize_ngrams(clean_html_1, 
+                  n_min = 1, n = 3,
+                  stopwords = stopwords::stopwords("en", source = "snowball")) 
+  token_tibble <-tibble(tokens = unlist(tokens))
+  token_tibble <- add_count(token_tibble, tokens, name = "frequency")
+  token_tibble <- unique(token_tibble)
 
+}
 
 
 
+one_html_file <- ten_html_files
 
 
+
+file.size(ten_html_files)
+
+all_html <- list.files("Data/html", full.names = TRUE)
+file_sizes <- file.size(all_html)
+
+str(file_sizes)
+
+tibble(file_size = file_sizes) %>% table() %>% head()
+
+
+# 20241125 - if filesize > 0 
+
+all_html <- list.files("Data/html", full.names = TRUE)
+
+
+some_html <-
+  grep("jmbe", all_html, value = TRUE) %>% 
+  head(20)
+
+file.size(some_html)
+
+
+one_html_file <- some_html[1]
+
+webscrape_1 <- webscrape(one_html_file)
+
+clean_html_1 <- prep_html_tm(webscrape_1)
+
+tokens_1 <- tokenize(clean_html_1)
