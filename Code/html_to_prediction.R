@@ -30,13 +30,7 @@ library(tokenizers)
 # output_file <- input[3]
 
 
-#20241122 local input
-# all_html_files <- 
-ten_html_files <- head(list.files("Data/html", full.names = TRUE))
-
-
-#start with making a data.table for all the files
-output_table <- data.table(html_filename = ten_html_files)
+#functions
 
 #function for reading html, remove figs/tables, 
 #and concatenate abstract and body (using rvest, xml2)
@@ -78,12 +72,12 @@ prep_html_tm <- function(html) {
 }
 
 
-clean_html_1 <- prep_html_tm(webscrape_1)
+
 # tokenize paper with snowball stopwords
 
 tokenize <- function(clean_html) {
 
-  tokens <- tokenize_ngrams(clean_html_1, 
+  tokens <- tokenize_ngrams(clean_html, 
                   n_min = 1, n = 3,
                   stopwords = stopwords::stopwords("en", source = "snowball")) 
   token_tibble <-tibble(tokens = unlist(tokens))
@@ -92,26 +86,40 @@ tokenize <- function(clean_html) {
 
 }
 
+#20241126 - from ml_prep_predict
+#you can't remove near zero variants from things that only
+# appear in one paper, but also it shouldn't really matter
+#need to add the journal name (cotainer.title)
+
+#ok first join to the ztable to find missing tokens
+#how different are the ztables?
+ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+missing_tokens <- anti_join(ztable, tokens_1)
+
+#add missing back into the first table (need to update)
+full_ml_with_missing <- full_ml
+for (i in 1:nrow(missing_full_ml_tokens)) {
+
+    missing_var <- missing_full_ml_tokens$tokens[[i]]
+    
+    full_ml_with_missing <-
+        full_ml_with_missing %>%
+            mutate("{missing_var}" := 0)
+
+}
 
 
-one_html_file <- ten_html_files
 
 
 
-file.size(ten_html_files)
 
-all_html <- list.files("Data/html", full.names = TRUE)
-file_sizes <- file.size(all_html)
-
-str(file_sizes)
-
-tibble(file_size = file_sizes) %>% table() %>% head()
-
+#generate files and use on 1 file
+# 20241126 - need to figure out how to keep doi with it...
+#20241126 - also need to do linkrot in same file bc html is here
 
 # 20241125 - if filesize > 0 
 
 all_html <- list.files("Data/html", full.names = TRUE)
-
 
 some_html <-
   grep("jmbe", all_html, value = TRUE) %>% 
@@ -125,5 +133,7 @@ one_html_file <- some_html[1]
 webscrape_1 <- webscrape(one_html_file)
 
 clean_html_1 <- prep_html_tm(webscrape_1)
+str(clean_html_1)
 
 tokens_1 <- tokenize(clean_html_1)
+
