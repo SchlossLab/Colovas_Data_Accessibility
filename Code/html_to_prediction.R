@@ -130,6 +130,8 @@ file.size(some_html)
 
 one_html_file <- some_html[1]
 
+this_html <-read_html(one_html_file)
+
 webscrape_1 <- webscrape(one_html_file)
 
 clean_html_1 <- prep_html_tm(webscrape_1)
