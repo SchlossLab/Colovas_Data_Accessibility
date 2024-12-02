@@ -19,3 +19,15 @@ for (i in 1:12) {
 
 
 write_csv(all_papers, file = "Data/papers/lookup_table.csv.gz")
+
+
+#20241202 - how diff are the 2 ztables
+# they are the same it doesn't matter - great amazing
+
+ztable_da <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+ztable_nsd <- read_csv("Data/ml_prep/groundtruth.new_seq_data.zscoretable_filtered.csv")
+
+
+total <- full_join(ztable_da, ztable_nsd)
+view(total)
+

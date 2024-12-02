@@ -82,7 +82,11 @@ tokenize <- function(clean_html) {
                   stopwords = stopwords::stopwords("en", source = "snowball")) 
   token_tibble <-tibble(tokens = unlist(tokens))
   token_tibble <- add_count(token_tibble, tokens, name = "frequency")
-  token_tibble <- unique(token_tibble)
+  token_tibble <- unique(token_tibble) 
+
+}
+
+prepare_data <- function(token_table) {
 
 }
 
@@ -90,11 +94,13 @@ tokenize <- function(clean_html) {
 #you can't remove near zero variants from things that only
 # appear in one paper, but also it shouldn't really matter
 #need to add the journal name (cotainer.title)
+# also need to collapse the duplicate tokens
 
 #ok first join to the ztable to find missing tokens
 #how different are the ztables?
+tokenlist <- readRDS("Data/ml_prep/groundtruth.data_availability.tokenlist.RDS")
 ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
-missing_tokens <- anti_join(ztable, tokens_1)
+predict_tokens <- left_join(ztable, tokens_1)
 
 #add missing back into the first table (need to update)
 full_ml_with_missing <- full_ml
@@ -109,6 +115,19 @@ for (i in 1:nrow(missing_full_ml_tokens)) {
 }
 
 
+total_pipeline<-function(filename){
+  index <- grep(filename, lookup_table$html_filename)
+  journal <-lookup_table$container.title[index]
+
+  webscrape <- webscrape(filename)
+
+  clean_html <- prep_html_tm(webscrape)
+
+  tokens <- tokenize(clean_html) 
+    
+
+
+}
 
 
 
@@ -119,23 +138,28 @@ for (i in 1:nrow(missing_full_ml_tokens)) {
 
 # 20241125 - if filesize > 0 
 
-all_html <- list.files("Data/html", full.names = TRUE)
+# all_html <- list.files("Data/html", full.names = TRUE)
 
-some_html <-
-  grep("jmbe", all_html, value = TRUE) %>% 
-  head(20)
+# some_html <-
+#   grep("jmbe", all_html, value = TRUE) %>% 
+#   head(20)
 
-file.size(some_html)
+# file.size(some_html)
+
+# how to keep html with container title 
+# i think loop over the entire table 
+lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
 
 
-one_html_file <- some_html[1]
 
-this_html <-read_html(one_html_file)
+one_html_file <- lookup_table$html_filename[1]
 
 webscrape_1 <- webscrape(one_html_file)
 
 clean_html_1 <- prep_html_tm(webscrape_1)
 str(clean_html_1)
 
-tokens_1 <- tokenize(clean_html_1)
+tokens_1 <- tokenize(clean_html_1) 
+
+
 
