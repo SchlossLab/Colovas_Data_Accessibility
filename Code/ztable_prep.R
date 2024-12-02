@@ -92,4 +92,7 @@ containers_toz %>%
 #sanity check    
 grep("container", ztable_full$tokens, value = TRUE)
 
-write_csv(ztable_full, file = output_file) 
+write_csv(ztable_full, file = output_file)
+write_csv(tokens_withdata, file = "Data/ml_prep/tokens_to_collapse.csv")
+
+

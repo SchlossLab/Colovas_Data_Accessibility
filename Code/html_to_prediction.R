@@ -82,13 +82,29 @@ tokenize <- function(clean_html) {
                   stopwords = stopwords::stopwords("en", source = "snowball")) 
   token_tibble <-tibble(tokens = unlist(tokens))
   token_tibble <- add_count(token_tibble, tokens, name = "frequency")
-  token_tibble <- unique(token_tibble) 
+  token_tibble <- unique(token_tibble)
 
 }
 
-prepare_data <- function(token_table) {
-
+#collapse correlated variables for z scoring
+collapse_correlated <- function(token_tibble) {
+  tokens_to_collapse <-read_csv("Data/ml_prep/tokens_to_collapse.csv")
+  any(tokens_to_collapse %in% token_tibble)
+  for(i in 1:nrow(token_tibble)){
+    for(j in 1:nrow(tokens_to_collapse)){
+      if (token_tibble$tokens[i] == tokens_to_collapse$tokens[j]){
+        token_tibble$tokens[i] <-tokens_to_collapse$grpname[j]
+      } 
+    }
+  }
+  any(tokens_to_collapse %in% token_tibble)
+  return(token_tibble)
 }
+
+
+
+
+
 
 #20241126 - from ml_prep_predict
 #you can't remove near zero variants from things that only
@@ -98,34 +114,40 @@ prepare_data <- function(token_table) {
 
 #ok first join to the ztable to find missing tokens
 #how different are the ztables?
-tokenlist <- readRDS("Data/ml_prep/groundtruth.data_availability.tokenlist.RDS")
+token_list <- readRDS("Data/ml_prep/groundtruth.data_availability.tokenlist.RDS")
+# un_ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable.csv")
 ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
-predict_tokens <- left_join(ztable, tokens_1)
+
 
 #add missing back into the first table (need to update)
-full_ml_with_missing <- full_ml
-for (i in 1:nrow(missing_full_ml_tokens)) {
 
-    missing_var <- missing_full_ml_tokens$tokens[[i]]
-    
-    full_ml_with_missing <-
-        full_ml_with_missing %>%
-            mutate("{missing_var}" := 0)
 
-}
+
 
 
 total_pipeline<-function(filename){
   index <- grep(filename, lookup_table$html_filename)
-  journal <-lookup_table$container.title[index]
+  container.title <-lookup_table$container.title[index]
+  update_journal <-paste0("container.title_", container.title)
 
   webscrape <- webscrape(filename)
 
   clean_html <- prep_html_tm(webscrape)
 
   tokens <- tokenize(clean_html) 
-    
 
+  collapsed <-collapse_correlated(tokens) 
+    
+  #continue filtering for z scoring
+  #get only variables in the model
+  all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
+    filter(!is.na(token_mean)) %>%
+    replace_na(list(frequency = 0))
+
+  #fill journal name
+  
+ which(update_journal %in% all_tokens$tokens)
+  grep("container", all_tokens$tokens, value = TRUE)
 
 }
 
@@ -157,7 +179,6 @@ one_html_file <- lookup_table$html_filename[1]
 webscrape_1 <- webscrape(one_html_file)
 
 clean_html_1 <- prep_html_tm(webscrape_1)
-str(clean_html_1)
 
 tokens_1 <- tokenize(clean_html_1) 
 
