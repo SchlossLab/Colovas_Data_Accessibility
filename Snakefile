@@ -47,18 +47,16 @@ dois = pd.read_csv("Data/papers/all_papers.csv.gz", names = ["url", "doi"])
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
 
-
 ncores = 1
 seeds = list(range(1, 101))
-
-
 
 
 rule targets:
     input:
         #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
         # "Data/papers/all_papers.csv.gz"
-        doi_lookup.keys()
+        doi_lookup.keys(), 
+        "Data/predicted/final_predictions.csv.gz"
 
       
 
@@ -106,50 +104,17 @@ rule indiv_dois:
         """
 
 
-# #20241114 - rule not done yet need work on wildcards for output
-# rule download_html: 
-#     input: 
-#         rscript = "Code/download_html.R",
-#         csv = "Data/papers/{datasets}.csv"
-#     output:
-#         list_of_htmls
-#     # params: 
-#     #     filepath = "Data/html/{datasets}"
-#     resources: 
-#         mem_mb = 20000 
-#     shell: 
-#         """
-#         {input.rscript} {input.csv} {params.filepath}
-#         """
-
-# rule cleanup_html: 
-#     input: 
-#         list_of_htmls
-#     output: 
-#         "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-#     resources: 
-#         mem_mb = 20000
-#     params: 
-#         filepath = "Data/html/{datasets}"
-#     shell: 
-#         """
-#         {input.rscript} {input.html} {output} {params.filepath}
-#         """
-
-
-# rule split: 
-#     input: 
-#         rscript = "Code/dataset_split.R",
-#         rds = "Data/papers/{datasets}.csv"
-#     output: 
-#         "Data/papers/{datasets}-1.csv",
-#         "Data/papers/{datasets}-2.csv"
-#     params: 
-#         filepath = "Data/papers/{datasets}"
-#     shell: 
-#         """
-#         {input.rscript} {input.rds} {params.filepath}
-#         """
+rule make_predictions: 
+    input: 
+        rscript = "Code/html_to_prediction.R"
+    output: 
+        "Data/predicted/final_predictions.csv.gz"
+    resources: 
+        mem_mb = 20000 
+    shell: 
+        """
+        {input.rscript}
+        """
 
 rule doi_linkrot: 
     input: 

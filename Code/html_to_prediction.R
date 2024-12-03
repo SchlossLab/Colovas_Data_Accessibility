@@ -17,14 +17,20 @@ library(randomForest)
 library(tokenizers)
 
 
+# load static files 
+lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
+lookup_table <-
+  lookup_table %>%
+    mutate(da_prediction = NA, 
+          nsd_prediction = NA)
 
-# #snakemake 
-# input <- commandArgs(trailingOnly = TRUE)
-# input_file <- read.table(input[1])  %>% 
-#     select(paper, html_filename) %>%
-#     mutate(clean_html = NA)
-# input_path <- input[2]
-# output_file <- input[3]
+tokens_to_collapse <-read_csv("Data/ml_prep/tokens_to_collapse.csv")
+ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+da_model <- 
+    readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
+nsd_model <- 
+    readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
+
 
 
 #functions
@@ -85,7 +91,6 @@ tokenize <- function(clean_html) {
 
 #collapse correlated variables for z scoring
 collapse_correlated <- function(token_tibble) {
-  tokens_to_collapse <-read_csv("Data/ml_prep/tokens_to_collapse.csv")
   any(tokens_to_collapse %in% token_tibble)
   for(i in 1:nrow(token_tibble)){
     for(j in 1:nrow(tokens_to_collapse)){
@@ -100,11 +105,11 @@ collapse_correlated <- function(token_tibble) {
 
 
 zscore <-function(all_tokens) {
-  ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
 
   zscored <-all_tokens %>%
   mutate(zscore = (frequency - token_mean)/token_sd) %>% 
-  select(c(tokens, zscore)) 
+  select(c(tokens, zscore))  %>% 
+  unique()
 
 
   wide_tokens <- 
@@ -126,16 +131,20 @@ zscore <-function(all_tokens) {
 
 
 
+get_predictions<-function(zscored){
 
-#20241126 - from ml_prep_predict
-#need to add the journal name (cotainer.title)
+da_prediction <-
+     predict(da_model, newdata = zscored, type = "response")
 
-#ok first join to the ztable to find missing tokens
-ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+nsd_prediction <-
+     predict(da_model, newdata = zscored, type = "response")
 
+  return(c(da_prediction, nsd_prediction))
+}
 
 
 total_pipeline<-function(filename){
+  if(file.size(filename) > 0) {
   index <- grep(filename, lookup_table$html_filename)
   container.title <-lookup_table$container.title[index]
   update_journal <-paste0("container.title_", container.title)
@@ -148,7 +157,7 @@ total_pipeline<-function(filename){
 
   collapsed <-collapse_correlated(tokens) 
     
-  #continue filtering for z scoring
+
   #get only variables in the model
   all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
     filter(!is.na(token_mean)) %>%
@@ -162,70 +171,20 @@ total_pipeline<-function(filename){
 
     predictions <- as.character(get_predictions(zscored))
 
-    lookup_table$da_prediction[index] <-predictions[1]
-    lookup_table$nsd_prediction[index] <-predictions[2]
+    # lookup_table$da_prediction[index] <-predictions[1]
+    # lookup_table$nsd_prediction[index] <-predictions[2]
 
+  }
+  return(predictions)
+}
 
-
-  
-
+#need to benchmark this !!! a few seconds for 20, but something ain't right
+for(i in 1:nrow(lookup_table)) { 
+  predictions <-total_pipeline(lookup_table$html_filename[i])
+  lookup_table$da_prediction[i] <-predictions[1]
+  lookup_table$nsd_prediction[i] <-predictions[2]
 }
 
 
 
-
-#generate files and use on 1 file
-# 20241126 - need to figure out how to keep doi with it...
-#20241126 - also need to do linkrot in same file bc html is here
-
-# 20241125 - if filesize > 0 
-
-# all_html <- list.files("Data/html", full.names = TRUE)
-
-# some_html <-
-#   grep("jmbe", all_html, value = TRUE) %>% 
-#   head(20)
-
-# file.size(some_html)
-
-# how to keep html with container title 
-# i think loop over the entire table 
-lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
-
-lookup_table <-
-lookup_table %>%
-  mutate(da_prediction = NA, 
-        nsd_prediction = NA)
-
-
-
-one_html_file <- lookup_table$html_filename[1]
-
-webscrape_1 <- webscrape(one_html_file)
-
-clean_html_1 <- prep_html_tm(webscrape_1)
-
-tokens_1 <- tokenize(clean_html_1) 
-
-collapsed_1 <-collapse_correlated(tokens_1)
-
-
-
-get_predictions<-function(zscored){
-
-da_model <- 
-    readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
-
-nsd_model <- 
-    readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
-
-da_prediction <-
-     predict(da_model, newdata = zscored, type = "response")
-
-nsd_prediction <-
-     predict(da_model, newdata = zscored, type = "response")
-
-  return(c(da_prediction, nsd_prediction))
-}
-
-
+write_csv(lookup_table, file = "Data/predicted/final_predictions.csv.gz")

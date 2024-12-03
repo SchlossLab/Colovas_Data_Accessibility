@@ -1,0 +1,296 @@
+
+R version 4.3.3 (2024-02-29) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-conda-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #!/usr/bin/env Rscript
+> #take scraped html and end with a tibble of predictions
+> #
+> #
+> #
+> # library statements
+> library(tidyverse)
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+> library(rvest)
+
+Attaching package: ‘rvest’
+
+The following object is masked from ‘package:readr’:
+
+    guess_encoding
+
+> library(tidytext)
+> library(xml2)
+> library(httr2)
+
+Attaching package: ‘httr2’
+
+The following object is masked from ‘package:xml2’:
+
+    url_parse
+
+> library(textstem) #for stemming text variables
+Loading required package: koRpus.lang.en
+Loading required package: koRpus
+Loading required package: sylly
+For information on available language packages for 'koRpus', run
+
+  available.koRpus.lang()
+
+and see ?install.koRpus.lang()
+
+
+Attaching package: ‘koRpus’
+
+The following object is masked from ‘package:readr’:
+
+    tokenize
+
+> library(tm) #for text manipulation
+Loading required package: NLP
+
+Attaching package: ‘NLP’
+
+The following object is masked from ‘package:ggplot2’:
+
+    annotate
+
+
+Attaching package: ‘tm’
+
+The following object is masked from ‘package:koRpus’:
+
+    readTagged
+
+> # library(data.table) #unclear if i need this one yet
+> # library(mikropml)
+> library(randomForest)
+randomForest 4.7-1.2
+Type rfNews() to see new features/changes/bug fixes.
+
+Attaching package: ‘randomForest’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+The following object is masked from ‘package:ggplot2’:
+
+    margin
+
+> library(tokenizers)
+> 
+> 
+> # load static files 
+> lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
+Rows: 146945 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (3): paper, html_filename, container.title
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+> lookup_table <-
++   lookup_table %>%
++     mutate(da_prediction = NA, 
++           nsd_prediction = NA)
+> 
+> tokens_to_collapse <-read_csv("Data/ml_prep/tokens_to_collapse.csv")
+Rows: 24 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (2): tokens, grpname
+dbl (2): token_mean, token_sd
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+> ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+Rows: 1828 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): tokens
+dbl (2): token_mean, token_sd
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+> da_model <- 
++     readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
+> nsd_model <- 
++     readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
+> 
+> 
+> 
+> #functions
+> 
+> #function for reading html, remove figs/tables, 
+> #and concatenate abstract and body (using rvest, xml2)
+> webscrape <- function(doi) {
++   
++   abstract <- read_html(doi) %>%
++     html_elements("section#abstract") %>%
++     html_elements("[role = paragraph]")
++   
++   body <- read_html(doi) %>%
++     html_elements("section#bodymatter") 
++   
++   body_notables <- body %>%
++     html_elements(css = ".table > *") %>%
++     html_children() %>%
++     xml_remove()
++   
++   body_nofigures <- body %>%
++     html_elements(css = ".figure-wrap > *") %>%
++     html_children() %>%
++     xml_remove()
++   
++   paper_html <- paste0(abstract, body, collapse = " ") 
++   
++   return(paper_html)
++   
++ }
+> 
+> # function to prep HTML using package tm
+> prep_html_tm <- function(html) {
++   html <- as.character(html)
++   html <- read_html(html) %>% html_text()
++   html <- str_to_lower(html)
++   html <- stripWhitespace(html)
++   html <- removePunctuation(html)
++   html <- str_remove_all(html, "[[:digit:]]")
++   html <- str_remove_all(html, "[[^a-z ]]")
++   html <- lemmatize_strings(html)
++ }
+> 
+> 
+> 
+> # tokenize paper with snowball stopwords
+> 
+> tokenize <- function(clean_html) {
++ 
++   tokens <- tokenize_ngrams(clean_html, 
++                   n_min = 1, n = 3,
++                   stopwords = stopwords::stopwords("en", source = "snowball")) 
++   token_tibble <-tibble(tokens = unlist(tokens))
++   token_tibble <- add_count(token_tibble, tokens, name = "frequency")
++   token_tibble <- unique(token_tibble)
++ 
++ }
+> 
+> #collapse correlated variables for z scoring
+> collapse_correlated <- function(token_tibble) {
++   any(tokens_to_collapse %in% token_tibble)
++   for(i in 1:nrow(token_tibble)){
++     for(j in 1:nrow(tokens_to_collapse)){
++       if (token_tibble$tokens[i] == tokens_to_collapse$tokens[j]){
++         token_tibble$tokens[i] <-tokens_to_collapse$grpname[j]
++       } 
++     }
++   }
++   any(tokens_to_collapse %in% token_tibble)
++   return(token_tibble)
++ }
+> 
+> 
+> zscore <-function(all_tokens) {
++ 
++   zscored <-all_tokens %>%
++   mutate(zscore = (frequency - token_mean)/token_sd) %>% 
++   select(c(tokens, zscore))  %>% 
++   unique()
++ 
++ 
++   wide_tokens <- 
++     pivot_wider(zscored, 
++                 id_cols = NULL,
++                 names_from = tokens, 
++                 values_from = zscore, 
++                 names_repair = "minimal", 
++                 values_fill = 0)
++ 
++   wide_tokens <-
++   wide_tokens %>% 
++       rename("paper.y" = "paper",
++           "`interest importance`_1" = "interest importance",
++           "`material method bacterial`_1" = "material method bacterial")
++ 
++   return(wide_tokens)
++ }
+> 
+> 
+> 
+> get_predictions<-function(zscored){
++ 
++ da_prediction <-
++      predict(da_model, newdata = zscored, type = "response")
++ 
++ nsd_prediction <-
++      predict(da_model, newdata = zscored, type = "response")
++ 
++   return(c(da_prediction, nsd_prediction))
++ }
+> 
+> 
+> total_pipeline<-function(filename){
++   if(file.size(filename) > 0) {
++   index <- grep(filename, lookup_table$html_filename)
++   container.title <-lookup_table$container.title[index]
++   update_journal <-paste0("container.title_", container.title)
++ 
++   webscrape <- webscrape(filename)
++ 
++   clean_html <- prep_html_tm(webscrape)
++ 
++   tokens <- tokenize(clean_html) 
++ 
++   collapsed <-collapse_correlated(tokens) 
++     
++ 
++   #get only variables in the model
++   all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
++     filter(!is.na(token_mean)) %>%
++     replace_na(list(frequency = 0))
++ 
++   #fill journal name 
++    journal_index <-which(all_tokens$tokens %in% update_journal)
++    all_tokens$frequency[journal_index] <-1
++ 
++     zscored <- zscore(all_tokens)
++ 
++     predictions <- as.character(get_predictions(zscored))
++ 
++     # lookup_table$da_prediction[index] <-predictions[1]
++     # lookup_table$nsd_prediction[index] <-predictions[2]
++ 
++   }
++   return(predictions)
++ }
+> 
+> #need to benchmark this !!! a few seconds for 20, but something ain't right
+> for(i in 1:nrow(lookup_table)) { 
++   predictions <-total_pipeline(lookup_table$html_filename[i])
++   lookup_table$da_prediction[i] <-predictions[1]
++   lookup_table$nsd_prediction[i] <-predictions[2]
++ }
