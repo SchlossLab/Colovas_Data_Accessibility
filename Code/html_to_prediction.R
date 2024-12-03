@@ -11,14 +11,11 @@ library(xml2)
 library(httr2)
 library(textstem) #for stemming text variables
 library(tm) #for text manipulation
-library(data.table) #unclear if i need this one yet
-
+# library(data.table) #unclear if i need this one yet
+# library(mikropml)
+library(randomForest)
 library(tokenizers)
 
-#read in list of html files from filepath
-# pat said do all of them at once...which means they
-# all need to be scraped before this 
-# test with a group of 5 or something
 
 
 # #snakemake 
@@ -102,26 +99,39 @@ collapse_correlated <- function(token_tibble) {
 }
 
 
+zscore <-function(all_tokens) {
+  ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+
+  zscored <-all_tokens %>%
+  mutate(zscore = (frequency - token_mean)/token_sd) %>% 
+  select(c(tokens, zscore)) 
+
+
+  wide_tokens <- 
+    pivot_wider(zscored, 
+                id_cols = NULL,
+                names_from = tokens, 
+                values_from = zscore, 
+                names_repair = "minimal", 
+                values_fill = 0)
+
+  wide_tokens <-
+  wide_tokens %>% 
+      rename("paper.y" = "paper",
+          "`interest importance`_1" = "interest importance",
+          "`material method bacterial`_1" = "material method bacterial")
+
+  return(wide_tokens)
+}
 
 
 
 
 #20241126 - from ml_prep_predict
-#you can't remove near zero variants from things that only
-# appear in one paper, but also it shouldn't really matter
 #need to add the journal name (cotainer.title)
-# also need to collapse the duplicate tokens
 
 #ok first join to the ztable to find missing tokens
-#how different are the ztables?
-token_list <- readRDS("Data/ml_prep/groundtruth.data_availability.tokenlist.RDS")
-# un_ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable.csv")
 ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
-
-
-#add missing back into the first table (need to update)
-
-
 
 
 
@@ -144,10 +154,20 @@ total_pipeline<-function(filename){
     filter(!is.na(token_mean)) %>%
     replace_na(list(frequency = 0))
 
-  #fill journal name
+  #fill journal name 
+   journal_index <-which(all_tokens$tokens %in% update_journal)
+   all_tokens$frequency[journal_index] <-1
+
+    zscored <- zscore(all_tokens)
+
+    predictions <- as.character(get_predictions(zscored))
+
+    lookup_table$da_prediction[index] <-predictions[1]
+    lookup_table$nsd_prediction[index] <-predictions[2]
+
+
+
   
- which(update_journal %in% all_tokens$tokens)
-  grep("container", all_tokens$tokens, value = TRUE)
 
 }
 
@@ -172,6 +192,11 @@ total_pipeline<-function(filename){
 # i think loop over the entire table 
 lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
 
+lookup_table <-
+lookup_table %>%
+  mutate(da_prediction = NA, 
+        nsd_prediction = NA)
+
 
 
 one_html_file <- lookup_table$html_filename[1]
@@ -182,5 +207,25 @@ clean_html_1 <- prep_html_tm(webscrape_1)
 
 tokens_1 <- tokenize(clean_html_1) 
 
+collapsed_1 <-collapse_correlated(tokens_1)
+
+
+
+get_predictions<-function(zscored){
+
+da_model <- 
+    readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
+
+nsd_model <- 
+    readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
+
+da_prediction <-
+     predict(da_model, newdata = zscored, type = "response")
+
+nsd_prediction <-
+     predict(da_model, newdata = zscored, type = "response")
+
+  return(c(da_prediction, nsd_prediction))
+}
 
 
