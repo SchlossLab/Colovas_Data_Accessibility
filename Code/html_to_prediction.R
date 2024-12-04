@@ -89,9 +89,9 @@ tokenize <- function(clean_html) {
 
 }
 
+
 #collapse correlated variables for z scoring
 collapse_correlated <- function(token_tibble) {
-  any(tokens_to_collapse %in% token_tibble)
   for(i in 1:nrow(token_tibble)){
     for(j in 1:nrow(tokens_to_collapse)){
       if (token_tibble$tokens[i] == tokens_to_collapse$tokens[j]){
@@ -99,8 +99,7 @@ collapse_correlated <- function(token_tibble) {
       } 
     }
   }
-  any(tokens_to_collapse %in% token_tibble)
-  return(token_tibble)
+  return(unique(token_tibble))
 }
 
 
@@ -108,8 +107,8 @@ zscore <-function(all_tokens) {
 
   zscored <-all_tokens %>%
   mutate(zscore = (frequency - token_mean)/token_sd) %>% 
-  select(c(tokens, zscore))  %>% 
-  unique()
+  select(c(tokens, zscore))  
+
 
 
   wide_tokens <- 
@@ -149,9 +148,9 @@ total_pipeline<-function(filename){
   container.title <-lookup_table$container.title[index]
   update_journal <-paste0("container.title_", container.title)
 
-  webscrape <- webscrape(filename)
+  webscrape_results <- webscrape(filename)
 
-  clean_html <- prep_html_tm(webscrape)
+  clean_html <- prep_html_tm(webscrape_results)
 
   tokens <- tokenize(clean_html) 
 
@@ -161,8 +160,8 @@ total_pipeline<-function(filename){
   #get only variables in the model
   all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
     filter(!is.na(token_mean)) %>%
-    replace_na(list(frequency = 0)) %>%
-    unique()
+    replace_na(list(frequency = 0)) 
+    
 
   #fill journal name 
    journal_index <-which(all_tokens$tokens %in% update_journal)
@@ -179,8 +178,10 @@ total_pipeline<-function(filename){
   return(predictions)
 }
 
+i <-1
 #need to benchmark this !!! a few seconds for 20, but something ain't right
 for(i in 1:nrow(lookup_table)) { 
+  print(i)
   predictions <-total_pipeline(lookup_table$html_filename[i])
   lookup_table$da_prediction[i] <-predictions[1]
   lookup_table$nsd_prediction[i] <-predictions[2]
@@ -189,3 +190,7 @@ for(i in 1:nrow(lookup_table)) {
 
 
 write_csv(lookup_table, file = "Data/predicted/final_predictions.csv.gz")
+
+
+i<-45
+filename<-lookup_table$html_filename[45]
