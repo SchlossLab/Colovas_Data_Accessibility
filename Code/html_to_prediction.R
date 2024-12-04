@@ -161,7 +161,8 @@ total_pipeline<-function(filename){
   #get only variables in the model
   all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
     filter(!is.na(token_mean)) %>%
-    replace_na(list(frequency = 0))
+    replace_na(list(frequency = 0)) %>%
+    unique()
 
   #fill journal name 
    journal_index <-which(all_tokens$tokens %in% update_journal)

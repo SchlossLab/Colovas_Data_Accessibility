@@ -271,7 +271,8 @@ dbl (2): token_mean, token_sd
 +   #get only variables in the model
 +   all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
 +     filter(!is.na(token_mean)) %>%
-+     replace_na(list(frequency = 0))
++     replace_na(list(frequency = 0)) %>%
++     unique()
 + 
 +   #fill journal name 
 +    journal_index <-which(all_tokens$tokens %in% update_journal)
@@ -294,3 +295,24 @@ dbl (2): token_mean, token_sd
 +   lookup_table$da_prediction[i] <-predictions[1]
 +   lookup_table$nsd_prediction[i] <-predictions[2]
 + }
+Error in `pivot_wider()`:
+! Can't convert `fill` <double> to <list>.
+Backtrace:
+     ▆
+  1. ├─global total_pipeline(lookup_table$html_filename[i])
+  2. │ └─global zscore(all_tokens)
+  3. │   ├─tidyr::pivot_wider(...)
+  4. │   └─tidyr:::pivot_wider.data.frame(...)
+  5. │     └─tidyr::pivot_wider_spec(...)
+  6. │       └─vctrs::vec_cast(fill, value, call = error_call)
+  7. └─vctrs (local) `<fn>`()
+  8.   └─vctrs::vec_default_cast(...)
+  9.     ├─base::withRestarts(...)
+ 10.     │ └─base (local) withOneRestart(expr, restarts[[1L]])
+ 11.     │   └─base (local) doWithOneRestart(return(expr), restart)
+ 12.     └─vctrs::stop_incompatible_cast(...)
+ 13.       └─vctrs::stop_incompatible_type(...)
+ 14.         └─vctrs:::stop_incompatible(...)
+ 15.           └─vctrs:::stop_vctrs(...)
+ 16.             └─rlang::abort(message, class = c(class, "vctrs_error"), ..., call = call)
+Execution halted
