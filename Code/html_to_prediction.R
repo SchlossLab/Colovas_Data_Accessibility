@@ -105,6 +105,16 @@ collapse_correlated <- function(token_tibble) {
 
 zscore <-function(all_tokens) {
 
+  while(anyDuplicated(all_tokens$tokens) > 1){
+  index<-anyDuplicated(all_tokens$tokens)
+  value<-all_tokens$tokens[index]
+  all_dups<-grep(value, all_tokens$tokens)
+  dups_table<-all_tokens[all_dups,]
+  max_freq<-which.max(dups_table$frequency)
+  to_remove<-all_dups[-max_freq]
+  all_tokens<-all_tokens[-to_remove,]
+}
+
   zscored <-all_tokens %>%
   mutate(zscore = (frequency - token_mean)/token_sd) %>% 
   select(c(tokens, zscore))  
@@ -152,9 +162,9 @@ total_pipeline<-function(filename){
 
   clean_html <- prep_html_tm(webscrape_results)
 
-  tokens <- tokenize(clean_html) 
+  token_tibble <- tokenize(clean_html) 
 
-  collapsed <-collapse_correlated(tokens) 
+  collapsed <-collapse_correlated(token_tibble) 
     
 
   #get only variables in the model
@@ -178,7 +188,7 @@ total_pipeline<-function(filename){
   return(predictions)
 }
 
-i <-1
+
 #need to benchmark this !!! a few seconds for 20, but something ain't right
 for(i in 1:nrow(lookup_table)) { 
   print(i)
@@ -192,5 +202,12 @@ for(i in 1:nrow(lookup_table)) {
 write_csv(lookup_table, file = "Data/predicted/final_predictions.csv.gz")
 
 
-i<-45
-filename<-lookup_table$html_filename[45]
+#20241205 - error in no.9485 with pivoting wider
+# i<-9485
+# filename<-lookup_table$html_filename[9485]
+#   # too many tokens 1829 instead of 1828- what duplicate
+# all_tokens %>% count(tokens) %>% arrange(-n)
+# #values are diff but not unique 
+# grep("grp6", all_tokens$tokens)
+# all_tokens[c(338, 362),]
+
