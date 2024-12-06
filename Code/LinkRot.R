@@ -5,6 +5,7 @@
 #library statements
 library(tidyverse)
 library(rvest)
+library(xml2)
 library(tidytext)
 library(jsonlite)
 library(httr2)
@@ -147,36 +148,45 @@ links_metadata <- inner_join(link_count_with_metadata,
                               metadata, by = join_by("paper_doi" == "paper"))
 write_csv(links_metadata, metadatalinks_output)
 
-#----- other gathering of data that is out of date but i might need--------------
+#20241206 - re-write program with all html pre-scraped
 
-# # link count by link? 20240605- this is actually nbd so i will just leave it probs
-# link_count_by_link <- count(file_links, by = link_address, paper)
+# load the lookup table for all htmls
+lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
 
+test_set<-lookup_table[1:5,]
 
-
-# #create dataset joining groundtruth_links and groundtruth_linkcount 
-# #to have all paper metadata in the same place
-# # this is also easy so there's no need to do it again 
-# gt_all_links_with_metadata <- left_join(groundtruth_links, groundtruth_linkcount, by = "paper")
-# write_csv(gt_all_links_with_metadata, "Data/gt_all_links_with_metadata.csv")
+html_filename<-lookup_table$html_filename[1]
 
 
+extracted_links <-extract_links(webscraped_data)
 
 
+#we're gonna try and re-write this so that we don't have to run webscrape
+new_extract_links <- function(html_filename) {
+  
+  #read html from snakefile 
+  webscraped_data <- read_html(html_filename)
+  
+    all_html_tags <-
+      #get the html tags <a> for links as characters
+      as.character(html_elements(webscraped_data, css = "a")) %>%
+      #tibble with each tag and what filename it came from
+      tibble(html_tag = ., html_filename = html_filename) %>%
+      #filter for links that start with https
+      filter(str_detect(html_tag, "https")) %>%
+      #mutate to add more colums link itself, text displayed
+      mutate(all_html_tags, 
+        link_address = str_split_i(html_tag, '"', 2), 
+        link_text = str_split_i(html_tag, ">", 2), 
+        link_text = str_remove(link_text, "</a")) %>%
+      #filter for matching links text vs link, unique
+      filter(str_equal(link_address, link_text)) %>%
+      unique()
+  
 
-##------------getting extended count data---------------------------------------
-# not all of this has been recently updated 
-# #count links of each website type 
-# status_type <- count(gt_all_links_with_metadata, hostname, 
-# link_status, website_type) %>% arrange(-n)
-# error_only <- filter(status_type, link_status != 200)
+  
+  #returns all links
+  return(all_html_tags)
+  
+}
 
-#filter for "long lasting" website types
-#website type git, doi, zenodo, figshare, datadryad, and asm
-# long_lasting <- select(gt_all_links_with_metadata, paper, link_address, 
-# link_status, domain, hostname, container.title) %>% 
-#   filter(grepl("doi|git|figshare|datadryad|zenodo|asm", hostname))
-
-# 
-# count(long_lasting, link_status)
-# long_lasting_bypaper <- count(long_lasting, container.title, link_status)
