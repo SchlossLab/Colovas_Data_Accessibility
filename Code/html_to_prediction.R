@@ -153,38 +153,40 @@ nsd_prediction <-
 
 
 total_pipeline<-function(filename){
-  if(file.size(filename) > 0) {
-  index <- grep(filename, lookup_table$html_filename)
-  container.title <-lookup_table$container.title[index]
-  update_journal <-paste0("container.title_", container.title)
+  if(file.size(filename) > 0 && file.exists(filename)) {
+    index <- grep(filename, lookup_table$html_filename)
+    container.title <-lookup_table$container.title[index]
+    update_journal <-paste0("container.title_", container.title)
 
-  webscrape_results <- webscrape(filename)
+    webscrape_results <- webscrape(filename)
 
-  clean_html <- prep_html_tm(webscrape_results)
+    if(webscrape_results != ""){
+      clean_html <- prep_html_tm(webscrape_results)
 
-  token_tibble <- tokenize(clean_html) 
+      token_tibble <- tokenize(clean_html) 
 
-  collapsed <-collapse_correlated(token_tibble) 
-    
+      collapsed <-collapse_correlated(token_tibble) 
+        
 
-  #get only variables in the model
-  all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
-    filter(!is.na(token_mean)) %>%
-    replace_na(list(frequency = 0)) 
-    
+      #get only variables in the model
+      all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
+        filter(!is.na(token_mean)) %>%
+        replace_na(list(frequency = 0)) 
+        
 
-  #fill journal name 
-   journal_index <-which(all_tokens$tokens %in% update_journal)
-   all_tokens$frequency[journal_index] <-1
+      #fill journal name 
+      journal_index <-which(all_tokens$tokens %in% update_journal)
+      all_tokens$frequency[journal_index] <-1
 
-    zscored <- zscore(all_tokens)
+        zscored <- zscore(all_tokens)
 
-    predictions <- as.character(get_predictions(zscored))
+        predictions <- as.character(get_predictions(zscored))
 
-    # lookup_table$da_prediction[index] <-predictions[1]
-    # lookup_table$nsd_prediction[index] <-predictions[2]
-
-  }
+      } 
+      else{
+        predictions <- c(NA, NA)
+      }
+    }
   return(predictions)
 }
 
@@ -210,4 +212,10 @@ write_csv(lookup_table, file = "Data/predicted/final_predictions.csv.gz")
 # #values are diff but not unique 
 # grep("grp6", all_tokens$tokens)
 # all_tokens[c(338, 362),]
+
+# #20241206 - error in [1] 78614- Error in `path_to_connection()`:
+# i<-78614
+# filename<-lookup_table$html_filename[i]
+# #file was actually empty after 'webscrape' - return NA 
+# lookup_table$paper[i]
 
