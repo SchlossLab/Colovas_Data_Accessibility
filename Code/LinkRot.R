@@ -21,9 +21,6 @@ alllinks_output <- input[3]
 metadatalinks_output <- input[4]
 
 
-# load data for local trials
-# html <- "Data/groundtruth.csv.gz"
-# metadata
 
 #load data function from json file 
 #extract links from pre-scraped html
@@ -158,7 +155,7 @@ test_set<-lookup_table[1:5,]
 html_filename<-lookup_table$html_filename[1]
 
 
-extracted_links <-extract_links(webscraped_data)
+extracted_links <-new_extract_links(html_filename)
 
 
 #we're gonna try and re-write this so that we don't have to run webscrape
@@ -173,14 +170,16 @@ new_extract_links <- function(html_filename) {
       #tibble with each tag and what filename it came from
       tibble(html_tag = ., html_filename = html_filename) %>%
       #filter for links that start with https
-      filter(str_detect(html_tag, "https")) %>%
+      filter(str_detect(html_tag, "https")) 
       #mutate to add more colums link itself, text displayed
+    all_html_tags<-
       mutate(all_html_tags, 
         link_address = str_split_i(html_tag, '"', 2), 
         link_text = str_split_i(html_tag, ">", 2), 
         link_text = str_remove(link_text, "</a")) %>%
       #filter for matching links text vs link, unique
       filter(str_equal(link_address, link_text)) %>%
+      filter(html_tag, !contains(c("property=", "class=")))
       unique()
   
 
@@ -190,3 +189,6 @@ new_extract_links <- function(html_filename) {
   
 }
 
+#trying to filter these funky ones out
+extracted_links %>%
+      filter(str_detect(html_tag, c("property=","class="), negate = TRUE))
