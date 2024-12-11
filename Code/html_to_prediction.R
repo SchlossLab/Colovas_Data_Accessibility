@@ -155,51 +155,65 @@ nsd_prediction <-
 total_pipeline<-function(filename){
   if(file.size(filename) > 0 && file.exists(filename)) {
     index <- grep(filename, lookup_table$html_filename)
+    print(index)
     container.title <-lookup_table$container.title[index]
     update_journal <-paste0("container.title_", container.title)
 
     webscrape_results <- webscrape(filename)
+    predictions <- c(NA, NA)
 
     if(webscrape_results != ""){
       clean_html <- prep_html_tm(webscrape_results)
-
-      token_tibble <- tokenize(clean_html) 
-
-      collapsed <-collapse_correlated(token_tibble) 
-        
-
-      #get only variables in the model
-      all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
-        filter(!is.na(token_mean)) %>%
-        replace_na(list(frequency = 0)) 
-        
-
-      #fill journal name 
-      journal_index <-which(all_tokens$tokens %in% update_journal)
-      all_tokens$frequency[journal_index] <-1
-
-        zscored <- zscore(all_tokens)
-
-        predictions <- as.character(get_predictions(zscored))
-
-      } 
-      else{
+    }
+    else{
         predictions <- c(NA, NA)
       }
+    
+      if(clean_html != "") {
+
+        token_tibble <- tokenize(clean_html) 
+
+        collapsed <-collapse_correlated(token_tibble) 
+          
+
+        #get only variables in the model
+        all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
+          filter(!is.na(token_mean)) %>%
+          replace_na(list(frequency = 0)) 
+          
+
+        #fill journal name 
+        journal_index <-which(all_tokens$tokens %in% update_journal)
+        all_tokens$frequency[journal_index] <-1
+
+          zscored <- zscore(all_tokens)
+
+          predictions <- as.character(get_predictions(zscored))
+
+        } 
+        else{
+          predictions <- c(NA, NA)
+        }
     }
+    else{
+        predictions <- c(NA, NA)
+      }
   return(predictions)
 }
 
 
-#need to benchmark this !!! a few seconds for 20, but something ain't right
-for(i in 1:nrow(lookup_table)) { 
-  print(i)
-  predictions <-total_pipeline(lookup_table$html_filename[i])
-  lookup_table$da_prediction[i] <-predictions[1]
-  lookup_table$nsd_prediction[i] <-predictions[2]
-}
+# #need to benchmark this !!! a few seconds for 20, but something ain't right
+# for(i in 1:nrow(lookup_table)) { 
+#   print(i)
+#   predictions <-total_pipeline(lookup_table$html_filename[i])
+#   lookup_table$da_prediction[i] <-predictions[1]
+#   lookup_table$nsd_prediction[i] <-predictions[2]
+# }
 
+#20241211 - using map instead of for loop 
 
+lookup_table$da_nsd <-
+  map(lookup_table$html_filename, total_pipeline)
 
 write_csv(lookup_table, file = "Data/predicted/final_predictions.csv.gz")
 
@@ -218,4 +232,27 @@ write_csv(lookup_table, file = "Data/predicted/final_predictions.csv.gz")
 # filename<-lookup_table$html_filename[i]
 # #file was actually empty after 'webscrape' - return NA 
 # lookup_table$paper[i]
+
+
+#20241211 - forgot to fix the error with tf - empty clean_html
+#somewhere in 108000 - 108727
+
+# mini_108<-lookup_table[108000:109000,]
+# str(mini_108)
+
+# mini_108$da_nsd <-
+#   map(mini_108$html_filename, total_pipeline)
+
+# filename<-mini_108$html_filename[728]
+# total_pipeline(filename)
+
+
+# #20241211 - issue in map statement index 5657 - no predictions found
+# file.size =0, didn't run
+# mini_5657<-lookup_table[5650:5660,]
+# mini_5657$da_nsd <-
+#   map(mini_5657$html_filename, total_pipeline)
+
+# filename<-lookup_table$html_filename[5657]
+# total_pipeline(filename)
 
