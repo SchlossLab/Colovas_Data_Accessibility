@@ -16,6 +16,12 @@ library(tm) #for text manipulation
 library(randomForest)
 library(tokenizers)
 
+# snakemake input 
+#  {input.rscript} {input.infile} {output}
+input <- commandArgs(trailingOnly = TRUE)
+html_filename <- input[1]
+output_file <- input[2]
+
 
 # load static files 
 lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
@@ -31,6 +37,10 @@ da_model <-
 nsd_model <- 
     readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
 
+
+#local testing 
+# html_filename<-lookup_table$html_filename[5]
+# output_file <- "Data/10.1128_mra.00817-18.csv"
 
 
 #functions
@@ -160,15 +170,12 @@ total_pipeline<-function(filename){
     update_journal <-paste0("container.title_", container.title)
 
     webscrape_results <- webscrape(filename)
+    #keeps from erroring if none of the if loops are executed
     predictions <- c(NA, NA)
 
     if(webscrape_results != ""){
       clean_html <- prep_html_tm(webscrape_results)
-    }
-    else{
-        predictions <- c(NA, NA)
-      }
-    
+
       if(clean_html != "") {
 
         token_tibble <- tokenize(clean_html) 
@@ -198,24 +205,28 @@ total_pipeline<-function(filename){
     else{
         predictions <- c(NA, NA)
       }
+      
+    }
+    else{
+        predictions <- c(NA, NA)
+      }
   return(predictions)
 }
 
 
-# #need to benchmark this !!! a few seconds for 20, but something ain't right
-# for(i in 1:nrow(lookup_table)) { 
-#   print(i)
-#   predictions <-total_pipeline(lookup_table$html_filename[i])
-#   lookup_table$da_prediction[i] <-predictions[1]
-#   lookup_table$nsd_prediction[i] <-predictions[2]
-# }
+#20241212 - removing looping for parallelization
+predicted_output <- total_pipeline(html_filename)
+
+write_csv(tibble(predicted_output), file = output_file)
+
+
 
 #20241211 - using map instead of for loop 
 
-lookup_table$da_nsd <-
-  map(lookup_table$html_filename, total_pipeline)
+# lookup_table$da_nsd <-
+#   map(lookup_table$html_filename, total_pipeline)
 
-write_csv(lookup_table, file = "Data/predicted/final_predictions.csv.gz")
+# write_csv(lookup_table, file = "Data/predicted/final_predictions.csv.gz")
 
 
 #20241205 - error in no.9485 with pivoting wider
