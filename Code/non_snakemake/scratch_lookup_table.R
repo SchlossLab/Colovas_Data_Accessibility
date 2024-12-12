@@ -19,9 +19,17 @@ for (i in 1:12) {
 
 all_papers<-
     all_papers %>%
-    mutate(doi_only = str_split_i(html_filename, "/", 3))
+    mutate(predicted = paste0("Data/predicted/", str_split_i(html_filename, "/", 3), ".csv"))
 
 write_csv(all_papers, file = "Data/papers/lookup_table.csv.gz")
+
+html_papers <-
+    all_papers %>%
+        select(html_filename, predicted) %>% 
+        rename(html = html_filename)
+
+write_csv(html_papers, file = "Data/papers/html_table.csv.gz")
+
 
 
 #20241202 - how diff are the 2 ztables

@@ -48,8 +48,8 @@ mtry_dict = {
 dois = pd.read_csv("Data/papers/all_papers.csv.gz", names = ["url", "doi"])
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
-htmls = pd.read_csv("Data/papers/lookup_table.csv.gz", names = ["url", "doi", "doi_only"])
-html_lookup = dict(zip(htmls["doi"], htmls["doi_only"]))
+htmls = pd.read_csv("Data/papers/html_table.csv.gz", names = ["html", "predicted"])
+html_lookup = dict(zip(htmls["html"], htmls["predicted"]))
 
 
 ncores = 1
@@ -61,7 +61,7 @@ rule targets:
         #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
         # "Data/papers/all_papers.csv.gz"
         doi_lookup.keys(),
-        expand("Data/predicted/{doi_only}.csv", doi_only = html_lookup.items())
+        #html_lookup.keys()
 
       
 
@@ -94,13 +94,16 @@ rule all_dois:
     input:
         doi_lookup.keys()
 
+# ruleorder: make_predictions > indiv_dois 
+
+
 rule indiv_dois:
     output:
         doi = "{doi}"
-    # group:
-    #     "get_doi"
+    group:
+        "get_doi"
     resources:
-        mem_mb = 1000
+        mem_mb = 8
     params:
         url = lambda wildcards, output: doi_lookup[output.doi]
     shell:
@@ -108,21 +111,25 @@ rule indiv_dois:
         wget {params.url} --save-headers -O {output.doi} || echo "Error: Download {params.url} failed"
         """
 
+# rule all_predictions:
+#     input:
+#         html_lookup.keys()
 
-rule make_predictions: 
-    input: 
-        rscript = "Code/html_to_prediction.R",
-        doi = "{doi}"
-    output: 
-        "Data/predicted/{doi_only}.csv"
-    group: 
-        "get_doi"
-    resources: 
-        mem_mb = 20000 
-    shell: 
-        """
-        {input.rscript} {input.doi} {output}
-        """
+# rule make_predictions: 
+#     input: 
+#         rscript = "Code/html_to_prediction.R"
+#     output: 
+#         predicted = "{predicted}"
+#     group: 
+#         "get_html"
+#     resources: 
+#         mem_mb = 8
+#     params:
+#         html = lambda wildcards, output: html_lookup[output.predicted]
+#     shell: 
+#         """
+#         {input.rscript} {output.predicted} {params.html}
+#         """
 
 rule doi_linkrot: 
     input: 
