@@ -25,11 +25,6 @@ output_file <- input[2]
 
 # load static files 
 lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
-lookup_table <-
-  lookup_table %>%
-    mutate(da_prediction = NA, 
-          nsd_prediction = NA)
-
 tokens_to_collapse <-read_csv("Data/ml_prep/tokens_to_collapse.csv")
 ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
 da_model <- 

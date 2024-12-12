@@ -17,6 +17,9 @@ for (i in 1:12) {
     all_papers <- full_join(all_papers, csv_file)
 }
 
+all_papers<-
+    all_papers %>%
+    mutate(doi_only = str_split_i(html_filename, "/", 3))
 
 write_csv(all_papers, file = "Data/papers/lookup_table.csv.gz")
 

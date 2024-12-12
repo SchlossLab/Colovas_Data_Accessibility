@@ -43,8 +43,13 @@ mtry_dict = {
     "data_availability" : 200
 }
 
+#doi columns contain paper dois as Data/html/doi with underscore in doi
+#doi_only just contains the doi portion
 dois = pd.read_csv("Data/papers/all_papers.csv.gz", names = ["url", "doi"])
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
+
+htmls = pd.read_csv("Data/papers/lookup_table.csv.gz", names = ["url", "doi", "doi_only"])
+html_lookup = dict(zip(htmls["doi"], htmls["doi_only"]))
 
 
 ncores = 1
@@ -55,8 +60,8 @@ rule targets:
     input:
         #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
         # "Data/papers/all_papers.csv.gz"
-        doi_lookup.keys(), 
-        "Data/predicted/final_predictions.csv.gz"
+        doi_lookup.keys(),
+        expand("Data/predicted/{doi_only}.csv", doi_only = html_lookup.items())
 
       
 
@@ -106,14 +111,17 @@ rule indiv_dois:
 
 rule make_predictions: 
     input: 
-        rscript = "Code/html_to_prediction.R"
+        rscript = "Code/html_to_prediction.R",
+        doi = "{doi}"
     output: 
-        "Data/predicted/final_predictions.csv.gz"
+        "Data/predicted/{doi_only}.csv"
+    group: 
+        "get_doi"
     resources: 
         mem_mb = 20000 
     shell: 
         """
-        {input.rscript}
+        {input.rscript} {input.doi} {output}
         """
 
 rule doi_linkrot: 
