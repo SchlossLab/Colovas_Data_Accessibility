@@ -60,8 +60,8 @@ rule targets:
     input:
         #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
         # "Data/papers/all_papers.csv.gz"
-        doi_lookup.keys(),
-        # html_lookup.items()
+        # doi_lookup.keys(),
+        html_lookup.keys()
 
       
 
@@ -90,46 +90,46 @@ rule all_papers:
         {input.rscript} {params.paper_dir} {output} 
         """
 
-rule all_dois:
+# rule all_dois:
+#     input:
+#         doi_lookup.keys()
+
+# # ruleorder: make_predictions > indiv_dois 
+
+
+# rule indiv_dois:
+#     output:
+#         doi = "{doi}"
+#     # group:
+#     #     "get_doi"
+#     resources:
+#         mem_mb = 8000
+#     params:
+#         url = lambda wildcards, output: doi_lookup[output.doi]
+#     shell:
+#         """
+#         wget {params.url} --save-headers -O {output.doi} || echo "Error: Download {params.url} failed"
+#         """
+
+rule all_predictions:
     input:
-        doi_lookup.keys()
+        html_lookup.items()
 
-# ruleorder: make_predictions > indiv_dois 
-
-
-rule indiv_dois:
-    output:
-        doi = "{doi}"
-    group:
-        "get_doi"
-    resources:
+rule make_predictions: 
+    input: 
+        rscript = "Code/html_to_prediction.R"
+    output: 
+        predicted = "{predicted}"
+    group: 
+        "get_html"
+    resources: 
         mem_mb = 8
     params:
-        url = lambda wildcards, output: doi_lookup[output.doi]
-    shell:
+        html = lambda wildcards, output: html_lookup[output.predicted]
+    shell: 
         """
-        wget {params.url} --save-headers -O {output.doi} || echo "Error: Download {params.url} failed"
+        {input.rscript} {params.html} {output.predicted}
         """
-
-# rule all_predictions:
-#     input:
-#         html_lookup.items()
-
-# rule make_predictions: 
-#     input: 
-#         rscript = "Code/html_to_prediction.R"
-#     output: 
-#         predicted = "{predicted}"
-#     group: 
-#         "get_html"
-#     resources: 
-#         mem_mb = 8
-#     params:
-#         html = lambda wildcards, output: html_lookup[output.predicted]
-#     shell: 
-#         """
-#         {input.rscript} {output.predicted} {params.html}
-#         """
 
 rule doi_linkrot: 
     input: 
