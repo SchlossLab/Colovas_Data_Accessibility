@@ -179,7 +179,6 @@ new_extract_links <- function(html_filename) {
         link_text = str_remove(link_text, "</a")) %>%
       #filter for matching links text vs link, unique
       filter(str_equal(link_address, link_text)) %>%
-      filter(html_tag, !contains(c("property=", "class=")))
       unique()
   
 
@@ -189,6 +188,8 @@ new_extract_links <- function(html_filename) {
   
 }
 
-#trying to filter these funky ones out
+#trying to filter these funky ones out with property="sameAs" and class="to-copy"
+# don't know how to filter using contains
 extracted_links %>%
-      filter(str_detect(html_tag, c("property=","class="), negate = TRUE))
+  map(extracted_links$html_tag, 
+      str_detect("property=", negate = TRUE))
