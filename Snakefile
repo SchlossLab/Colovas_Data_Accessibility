@@ -90,26 +90,26 @@ rule all_papers:
         {input.rscript} {params.paper_dir} {output} 
         """
 
-# rule all_dois:
-#     input:
-#         doi_lookup.keys()
+rule all_dois:
+    input:
+        doi_lookup.keys()
 
-# # ruleorder: make_predictions > indiv_dois 
+# ruleorder: make_predictions > indiv_dois 
 
 
-# rule indiv_dois:
-#     output:
-#         doi = "{doi}"
-#     # group:
-#     #     "get_doi"
-#     resources:
-#         mem_mb = 8000
-#     params:
-#         url = lambda wildcards, output: doi_lookup[output.doi]
-#     shell:
-#         """
-#         wget {params.url} --save-headers -O {output.doi} || echo "Error: Download {params.url} failed"
-#         """
+rule indiv_dois:
+    output:
+        doi = "{doi}"
+    # group:
+    #     "get_doi"
+    resources:
+        mem_mb = 8000
+    params:
+        url = lambda wildcards, output: doi_lookup[output.doi]
+    shell:
+        """
+        wget {params.url} --save-headers -O {output.doi} || echo "Error: Download {params.url} failed"
+        """
 
 rule all_predictions:
     input:
