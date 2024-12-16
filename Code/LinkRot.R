@@ -145,14 +145,14 @@ links_metadata <- inner_join(link_count_with_metadata,
                               metadata, by = join_by("paper_doi" == "paper"))
 write_csv(links_metadata, metadatalinks_output)
 
-#20241206 - re-write program with all html pre-scraped
+#20241206 - re-write program with all html pre-scraped---------------------------------------------------
 
 # load the lookup table for all htmls
 lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
 
 test_set<-lookup_table[1:5,]
 
-html_filename<-lookup_table$html_filename[1]
+html_filename<-lookup_table$html_filename[2]
 
 
 extracted_links <-new_extract_links(html_filename)
@@ -160,7 +160,9 @@ extracted_links <-new_extract_links(html_filename)
 
 #we're gonna try and re-write this so that we don't have to run webscrape
 new_extract_links <- function(html_filename) {
-  
+  #initialize all_html_tags to NULL
+  all_html_tags<-NA
+  if(file.size(html_filename) > 0 && file.exists(html_filename)) {
   #read html from snakefile 
   webscraped_data <- read_html(html_filename)
   
@@ -171,25 +173,35 @@ new_extract_links <- function(html_filename) {
       tibble(html_tag = ., html_filename = html_filename) %>%
       #filter for links that start with https
       filter(str_detect(html_tag, "https")) 
-      #mutate to add more colums link itself, text displayed
-    all_html_tags<-
-      mutate(all_html_tags, 
-        link_address = str_split_i(html_tag, '"', 2), 
-        link_text = str_split_i(html_tag, ">", 2), 
-        link_text = str_remove(link_text, "</a")) %>%
-      #filter for matching links text vs link, unique
-      filter(str_equal(link_address, link_text)) %>%
-      unique()
+      
+      
+    #   #mutate to add more colums link itself, text displayed
+    # all_html_tags<-
+    #   mutate(all_html_tags, 
+    #     link_address = str_split_i(html_tag, '"', 2), 
+    #     link_text = str_split_i(html_tag, ">", 2), 
+    #     link_text = str_remove(link_text, "</a")) %>%
+    #   #filter for matching links text vs link, unique
+    #   filter(str_equal(link_address, link_text)) %>%
+    #   unique()
   
-
+    }
+    # else {
+    #   all_html_tags <- NA
+    # }
   
   #returns all links
   return(all_html_tags)
   
 }
 
-#trying to filter these funky ones out with property="sameAs" and class="to-copy"
-# don't know how to filter using contains
-extracted_links %>%
-  map(extracted_links$html_tag, 
-      str_detect("property=", negate = TRUE))
+
+test_set$practice<-map(test_set$html_filename, new_extract_links)
+
+ts_filtered<-filter(test_set, !is.na(practice))
+
+unnested<-unnest_longer(test_set, col = practice) 
+
+#now a map statement on column practice$html_tag (can be renamed) 
+#to do the rest of the work with filtering and whatnot
+
