@@ -3,9 +3,7 @@
 
 library(tidyverse)
 
-one_csv_file <- read_csv("Data/papers/1935-7885.csv")
 
-head(one_csv_file$unique_id)
+html_table<-read_csv("Data/papers/html_table.csv.gz")
 
-select(one_csv_file, c(paper, unique_id)) %>%
-    tail()
+doi_table<-read_csv("Data/papers/all_papers.csv.gz")

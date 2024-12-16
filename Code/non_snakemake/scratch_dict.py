@@ -73,7 +73,9 @@ len(list_inputs_all)
 
 
 # 20241212 - looking at trying to generate the htmls
-htmls = pd.read_csv("Data/papers/lookup_table.csv.gz", names = ["url", "doi", "doi_only"])
-html_lookup = dict(zip(htmls["doi"], htmls["doi_only"]))
+htmls = pd.read_csv("Data/papers/html_table.csv.gz", names = ["html", "predicted"])
+html_lookup = dict(zip(htmls["html"], htmls["predicted"]))
 
 html_lookup.items()
+
+html_lookup["Data/html/10.1128_mra.00373-24.csv"]

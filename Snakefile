@@ -61,7 +61,7 @@ rule targets:
         #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
         # "Data/papers/all_papers.csv.gz"
         # doi_lookup.keys(),
-        html_lookup.keys()
+        html_lookup.items()
 
       
 
@@ -93,8 +93,6 @@ rule all_papers:
 rule all_dois:
     input:
         doi_lookup.keys()
-
-# ruleorder: make_predictions > indiv_dois 
 
 
 rule indiv_dois:
