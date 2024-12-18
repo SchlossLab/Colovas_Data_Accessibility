@@ -45,7 +45,7 @@ mtry_dict = {
 
 #doi columns contain paper dois as Data/html/doi with underscore in doi
 #doi_only just contains the doi portion
-dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
+dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0, nrows =100)
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
 
@@ -118,10 +118,10 @@ rule make_predictions:
     group: 
         "get_html"
     resources: 
-        mem_mb = 800
+        mem_mb = 8000
     shell: 
         """
-        {input.rscript} {input.html} {output.predicted}
+        {input.rscript} "{input.html}" "{output.predicted}"
         """
 
 rule doi_linkrot: 

@@ -171,8 +171,8 @@ new_extract_links <- function(html_filename) {
       as.character(html_elements(webscraped_data, css = "a")) %>%
       #tibble with each tag and what filename it came from
       tibble(html_tag = ., html_filename = html_filename) %>%
-      #filter for links that start with https
-      filter(str_detect(html_tag, "https")) 
+      #filter for links that start with http(s)
+      filter(str_detect(html_tag, "http")) 
       
       
     #   #mutate to add more colums link itself, text displayed

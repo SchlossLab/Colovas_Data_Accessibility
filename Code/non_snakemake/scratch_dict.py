@@ -79,3 +79,9 @@ html_lookup = dict(zip(htmls["html"], htmls["predicted"]))
 html_lookup.items()
 
 html_lookup["Data/html/10.1128_mra.00373-24.csv"]
+
+
+#20241216 - ugh i just want this to work 
+
+dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"])
+doi_lookup = dict(zip(dois["doi"], dois["url"]))

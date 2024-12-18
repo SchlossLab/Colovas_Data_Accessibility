@@ -151,22 +151,25 @@ da_prediction <-
      predict(da_model, newdata = zscored, type = "response")
 
 nsd_prediction <-
-     predict(da_model, newdata = zscored, type = "response")
+     predict(nsd_model, newdata = zscored, type = "response")
 
-  return(c(da_prediction, nsd_prediction))
+  return(tibble(da = da_prediction, nsd = nsd_prediction))
 }
 
+#need to put .html file extension in lookup table, and re-run entire rule , add " for semicolons"
+#for local testing
+# filename<-paste0(lookup_table$html_filename[201], ".html")
 
 total_pipeline<-function(filename){
   if(file.size(filename) > 0 && file.exists(filename)) {
     index <- grep(filename, lookup_table$html_filename)
-    print(index)
+    #print(index)
     container.title <-lookup_table$container.title[index]
     update_journal <-paste0("container.title_", container.title)
 
     webscrape_results <- webscrape(filename)
     #keeps from erroring if none of the if loops are executed
-    predictions <- c(NA, NA)
+    predictions <- tibble(da = NA, nsd = NA)
 
     if(webscrape_results != ""){
       clean_html <- prep_html_tm(webscrape_results)
@@ -190,29 +193,24 @@ total_pipeline<-function(filename){
 
           zscored <- zscore(all_tokens)
 
-          predictions <- as.character(get_predictions(zscored))
+          predictions <- get_predictions(zscored)
 
         } 
-        else{
-          predictions <- c(NA, NA)
-        }
-    }
-    else{
-        predictions <- c(NA, NA)
+        
       }
       
     }
-    else{
-        predictions <- c(NA, NA)
-      }
+  predictions<-predictions %>% 
+    mutate(file = filename, .before = "da")  
   return(predictions)
 }
+
 
 
 #20241212 - removing looping for parallelization
 predicted_output <- total_pipeline(html_filename)
 
-write_csv(tibble(predicted_output), file = output_file)
+write_csv(predicted_output, file = output_file)
 
 
 

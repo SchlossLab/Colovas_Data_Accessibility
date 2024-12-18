@@ -19,26 +19,10 @@ for (i in 1:12) {
 
 all_papers<-
     all_papers %>%
-    mutate(predicted = paste0("Data/predicted/", str_split_i(html_filename, "/", 3), ".csv"))
+    mutate(predicted = paste0("Data/predicted/", str_split_i(html_filename, "/", 3), ".csv"), 
+    html_filename = paste0(html_filename, ".html"))
 
 write_csv(all_papers, file = "Data/papers/lookup_table.csv.gz")
 
-html_papers <-
-    all_papers %>%
-        select(html_filename, predicted) %>% 
-        rename(html = html_filename)
 
-write_csv(html_papers, file = "Data/papers/html_table.csv.gz")
-
-
-
-#20241202 - how diff are the 2 ztables
-# they are the same it doesn't matter - great amazing
-
-ztable_da <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
-ztable_nsd <- read_csv("Data/ml_prep/groundtruth.new_seq_data.zscoretable_filtered.csv")
-
-
-total <- full_join(ztable_da, ztable_nsd)
-view(total)
 
