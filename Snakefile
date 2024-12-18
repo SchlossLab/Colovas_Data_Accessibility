@@ -45,11 +45,8 @@ mtry_dict = {
 
 #doi columns contain paper dois as Data/html/doi with underscore in doi
 #doi_only just contains the doi portion
-dois = pd.read_csv("Data/papers/all_papers.csv.gz", names = ["url", "doi"])
+dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
-
-htmls = pd.read_csv("Data/papers/html_table.csv.gz", names = ["html", "predicted"])
-html_lookup = dict(zip(htmls["html"], htmls["predicted"]))
 
 
 ncores = 1
@@ -61,9 +58,8 @@ rule targets:
         #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
         # "Data/papers/all_papers.csv.gz"
         # doi_lookup.keys(),
-        html_lookup.items()
-
-      
+        expand("Data/html/{doi}.html", doi = doi_lookup.keys()),
+        expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()) 
 
         
 rule rds_to_csv: 
@@ -90,43 +86,42 @@ rule all_papers:
         {input.rscript} {params.paper_dir} {output} 
         """
 
-rule all_dois:
-    input:
-        doi_lookup.keys()
+# rule all_dois:
+#     input:
+#         expand("Data/html/{doi}.html", doi = doi_lookup.keys()) 
 
 
 rule indiv_dois:
     output:
-        doi = "{doi}"
-    # group:
-    #     "get_doi"
+        doi = "Data/html/{doi}.html"
+    group:
+        "get_doi"
     resources:
-        mem_mb = 8000
+        mem_mb = 8
     params:
-        url = lambda wildcards, output: doi_lookup[output.doi]
+        url = lambda wildcards, output: doi_lookup[wildcards.doi]
     shell:
         """
-        wget {params.url} --save-headers -O {output.doi} || echo "Error: Download {params.url} failed"
+        wget "{params.url}" --save-headers -O "{output.doi}" || echo "Error: Download {params.url} failed"
         """
 
-rule all_predictions:
-    input:
-        html_lookup.items()
+# rule all_predictions:
+#     input:
+#         expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()) 
 
 rule make_predictions: 
     input: 
-        rscript = "Code/html_to_prediction.R"
+        rscript = "Code/html_to_prediction.R",
+        html = "Data/html/{doi}.html"
     output: 
-        predicted = "{predicted}"
+        predicted = "Data/predicted/{doi}.csv"
     group: 
         "get_html"
     resources: 
-        mem_mb = 8
-    params:
-        html = lambda wildcards, output: html_lookup[output.predicted]
+        mem_mb = 800
     shell: 
         """
-        {input.rscript} {params.html} {output.predicted}
+        {input.rscript} {input.html} {output.predicted}
         """
 
 rule doi_linkrot: 

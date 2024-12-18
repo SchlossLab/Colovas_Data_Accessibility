@@ -29,5 +29,5 @@ use-conda: true
 verbose: true
 
 group-components:
-  # - get_doi=1000
-  - get_html=1000
+  - get_doi=1000
+  - get_html=10

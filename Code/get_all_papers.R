@@ -16,7 +16,7 @@ output <- input[2]
 
 # local practice 
 # papers_dir <- "Data/papers"
-output<-"Data/papers/all_papers.csv.gz"
+# output<-"Data/papers/all_papers.csv.gz"
 
 csv_files <- list.files(papers_dir, "*.csv")
 
