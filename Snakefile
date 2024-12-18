@@ -119,7 +119,7 @@ rule make_predictions:
     group: 
         "get_html"
     resources: 
-        mem_mb = 8
+        mem_mb = 800
     shell: 
         """
         {input.rscript} "{input.html}" "{output.predicted}"

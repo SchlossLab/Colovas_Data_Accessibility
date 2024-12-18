@@ -11,8 +11,6 @@ library(xml2)
 library(httr2)
 library(textstem) #for stemming text variables
 library(tm) #for text manipulation
-# library(data.table) #unclear if i need this one yet
-# library(mikropml)
 library(randomForest)
 library(tokenizers)
 
@@ -156,20 +154,17 @@ nsd_prediction <-
   return(tibble(da = da_prediction, nsd = nsd_prediction))
 }
 
-#need to put .html file extension in lookup table, and re-run entire rule , add " for semicolons"
-#for local testing
-# filename<-paste0(lookup_table$html_filename[201], ".html")
 
 total_pipeline<-function(filename){
   if(file.size(filename) > 0 && file.exists(filename)) {
     index <- grep(filename, lookup_table$html_filename)
-    #print(index)
+    print(index)
     container.title <-lookup_table$container.title[index]
     update_journal <-paste0("container.title_", container.title)
 
     webscrape_results <- webscrape(filename)
     #keeps from erroring if none of the if loops are executed
-    predictions <- tibble(da = NA, nsd = NA)
+    predictions <-tibble(da = NA, nsd = NA)
 
     if(webscrape_results != ""){
       clean_html <- prep_html_tm(webscrape_results)
@@ -200,9 +195,10 @@ total_pipeline<-function(filename){
       }
       
     }
-  predictions<-predictions %>% 
-    mutate(file = filename, .before = "da")  
-  return(predictions)
+    predictions <- predictions %>%
+      dplyr::mutate(file = filename, .before = "da")
+
+    return(predictions)
 }
 
 
@@ -212,5 +208,8 @@ predicted_output <- total_pipeline(html_filename)
 
 write_csv(predicted_output, file = output_file)
 
+# #20241218 - screaming crying and throwing up because it has all come crashing down
+# html_filename<-lookup_table$html_filename[38900]
+# filename<-html_filename
 
 
