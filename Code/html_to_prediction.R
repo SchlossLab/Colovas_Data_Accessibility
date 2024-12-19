@@ -151,11 +151,14 @@ da_prediction <-
 nsd_prediction <-
      predict(nsd_model, newdata = zscored, type = "response")
 
-  return(tibble(da = da_prediction, nsd = nsd_prediction))
+  return(tibble::tibble(da = da_prediction, nsd = nsd_prediction))
 }
 
 
 total_pipeline<-function(filename){
+  #keeps from erroring if none of the if loops are executed
+  predictions <-tibble::tibble(da = NA, nsd = NA)
+  
   if(file.size(filename) > 0 && file.exists(filename)) {
     index <- grep(filename, lookup_table$html_filename)
     print(index)
@@ -164,7 +167,7 @@ total_pipeline<-function(filename){
 
     webscrape_results <- webscrape(filename)
     #keeps from erroring if none of the if loops are executed
-    predictions <-tibble(da = NA, nsd = NA)
+    predictions <-tibble::tibble(da = NA, nsd = NA)
 
     if(webscrape_results != ""){
       clean_html <- prep_html_tm(webscrape_results)
@@ -195,8 +198,7 @@ total_pipeline<-function(filename){
       }
       
     }
-    predictions <- predictions %>%
-      dplyr::mutate(file = filename, .before = "da")
+    predictions <- predictions %>% dplyr::mutate(file = filename, .before = "da")
 
     return(predictions)
 }

@@ -43,10 +43,8 @@ mtry_dict = {
     "data_availability" : 200
 }
 
-#doi columns contain paper dois as Data/html/doi with underscore in doi
-#doi_only just contains the doi portion
-#20241218 - will need to remove the nrows when i do this for real
-dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0, nrows =100)
+#import list of dois with their url 
+dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
 
@@ -60,7 +58,8 @@ rule targets:
         # "Data/papers/all_papers.csv.gz"
         # doi_lookup.keys(),
         expand("Data/html/{doi}.html", doi = doi_lookup.keys()),
-        expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()) 
+        expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()),
+        "Data/final/predicted_results.csv.gz" 
 
         
 rule rds_to_csv: 
@@ -87,10 +86,6 @@ rule all_papers:
         {input.rscript} {params.paper_dir} {output} 
         """
 
-# rule all_dois:
-#     input:
-#         expand("Data/html/{doi}.html", doi = doi_lookup.keys()) 
-
 
 rule indiv_dois:
     output:
@@ -106,9 +101,6 @@ rule indiv_dois:
         wget "{params.url}" --save-headers -O "{output.doi}" || echo "Error: Download {params.url} failed"
         """
 
-# rule all_predictions:
-#     input:
-#         expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()) 
 
 rule make_predictions: 
     input: 
@@ -119,11 +111,28 @@ rule make_predictions:
     group: 
         "get_html"
     resources: 
-        mem_mb = 800
+        mem_mb = 8
     shell: 
         """
         {input.rscript} "{input.html}" "{output.predicted}"
         """
+
+rule combine_predictions: 
+    input: 
+        rscript = "Code/combine_predictions.R",
+    output: 
+        "Data/final/predicted_results.csv.gz"
+    resources: 
+        mem_mb = 40000
+    params: 
+        p_dir = "Data/predicted/"
+    shell: 
+        """
+        {input.rscript} {params.p_dir} {output}
+        """
+
+
+
 
 rule doi_linkrot: 
     input: 

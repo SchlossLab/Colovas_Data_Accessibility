@@ -30,4 +30,4 @@ verbose: true
 
 group-components:
   - get_doi=1000
-  - get_html=10
+  - get_html=1000
