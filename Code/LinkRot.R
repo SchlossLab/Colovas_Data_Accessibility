@@ -154,9 +154,6 @@ one_file <-file_list[300]
 
 twenty_files<-file_list[300:400]
 
-bruh<-file_list[1:300]
-
-file.size(bruh)
 
 html_filename<-one_file
 
@@ -178,15 +175,15 @@ new_extract_links <- function(html_filename) {
       filter(str_detect(html_tag, "http")) 
       
       
-    #   #mutate to add more colums link itself, text displayed
-    # all_html_tags<-
-    #   mutate(all_html_tags, 
-    #     link_address = str_split_i(html_tag, '"', 2), 
-    #     link_text = str_split_i(html_tag, ">", 2), 
-    #     link_text = str_remove(link_text, "</a")) %>%
-    #   #filter for matching links text vs link, unique
-    #   filter(str_equal(link_address, link_text)) %>%
-    #   unique()
+      #mutate to add more colums link itself, text displayed
+    some_html_tags<-
+      mutate(all_html_tags, 
+        link_address = str_split_i(html_tag, '"', 2), 
+        link_text = str_split_i(html_tag, ">", 2), 
+        link_text = str_remove(link_text, "</a")) %>%
+      #filter for matching links text vs link, unique
+      filter(str_equal(link_address, link_text)) %>%
+      unique()
   
     }
     # else {
@@ -198,6 +195,7 @@ new_extract_links <- function(html_filename) {
   
 }
 
+view(some_html_tags)
 
 test_set$practice<-map(test_set$html_filename, new_extract_links)
 
@@ -208,3 +206,4 @@ unnested<-unnest_longer(test_set, col = practice)
 #now a map statement on column practice$html_tag (can be renamed) 
 #to do the rest of the work with filtering and whatnot
 
+#20241219 - use lookup table and if link == doi (with https//etc), then throw it out
