@@ -147,15 +147,18 @@ write_csv(links_metadata, metadatalinks_output)
 
 #20241206 - re-write program with all html pre-scraped---------------------------------------------------
 
-# load the lookup table for all htmls
-lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
+#load from Data/html
+file_list <-list.files("Data/html", full.names = TRUE)
+#they're all zeros until 275, why? idk 
+one_file <-file_list[300]
 
-test_set<-lookup_table[1:5,]
+twenty_files<-file_list[300:400]
 
-html_filename<-lookup_table$html_filename[2]
+bruh<-file_list[1:300]
 
+file.size(bruh)
 
-extracted_links <-new_extract_links(html_filename)
+html_filename<-one_file
 
 
 #we're gonna try and re-write this so that we don't have to run webscrape
