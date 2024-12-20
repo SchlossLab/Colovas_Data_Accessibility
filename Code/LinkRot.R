@@ -22,53 +22,6 @@ metadatalinks_output <- input[4]
 
 
 
-# #load data function from json file 
-# #extract links from pre-scraped html
-# extract_links <- function(html) {
-  
-#   #read html from snakefile 
-#   webscraped_data <- read.csv(html)
-  
-#   # turns paper_html into a html readable format using read_html
-#   webscraped_data$paper_html <- map(webscraped_data$paper_html, read_html)
-  
-#   # extracts the links into their own two column nested list using html_elements
-#   paper_links <- tibble(paper = webscraped_data$paper_doi,  
-#                         html_tag = map(webscraped_data$paper_html, 
-#                                        html_elements, css = "a"))
-#   paper_links$html_tag <- map(paper_links$html_tag, paste0)
-  
-  
-#   #unnests and pivots list to have each link as a row with the parent paper
-#   links_list <- unnest_longer(paper_links, col = html_tag)
-  
-#   #extract only papers with 'https' in the link
-#   csv_links_list_short <- links_list %>% 
-#     filter(str_detect(html_tag, "https"))
-  
-#   #split links into the link itself, and the text displayed on the website
-#   csv_links_list_short <- mutate(csv_links_list_short, 
-#                                  link_address = str_split_i(
-#                                    csv_links_list_short$html_tag, '"', 2), 
-#                                  link_text = str_split_i(
-#                                    csv_links_list_short$html_tag, ">", 2))
-  
-#   csv_links_list_short <- mutate(csv_links_list_short, 
-#                                  link_text = str_remove(
-#                                    csv_links_list_short$link_text, "</a"))
-  
-#   #filters for only links with the same text as link address
-#   csv_links <- csv_links_list_short %>% 
-#     filter(str_equal(csv_links_list_short$link_address, csv_links_list_short$link_text))
-  
-#   # #gets only unique links
-#   # csv_links <- unique(csv_links)
-  
-#   #returns all links
-#   return(csv_links)
-  
-# }
-
 #function for retrieving the HTML status of a website using httr2 instead of crul 
 
 get_site_status <- function(websiteurl) {
