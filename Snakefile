@@ -57,8 +57,8 @@ rule targets:
         #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
         # "Data/papers/all_papers.csv.gz"
         # doi_lookup.keys(),
-        expand("Data/html/{doi}.html", doi = doi_lookup.keys()),
-        expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()),
+        # expand("Data/html/{doi}.html", doi = doi_lookup.keys()),
+        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()),
         "Data/final/predicted_results.csv.gz" 
 
         
@@ -125,7 +125,7 @@ rule combine_predictions:
     resources: 
         mem_mb = 40000
     params: 
-        p_dir = "Data/predicted/"
+        p_dir = "Data/predicted"
     shell: 
         """
         {input.rscript} {params.p_dir} {output}
