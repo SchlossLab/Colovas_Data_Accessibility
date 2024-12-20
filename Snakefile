@@ -59,7 +59,8 @@ rule targets:
         # doi_lookup.keys(),
         # expand("Data/html/{doi}.html", doi = doi_lookup.keys()),
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()),
-        "Data/final/predicted_results.csv.gz" 
+        # "Data/final/predicted_results.csv.gz" 
+        "Data/linkrot/all_links.csv.gz"
 
         
 rule rds_to_csv: 
@@ -335,20 +336,19 @@ rule final_model:
 
 #-------------------LINK-------ROT-----------------------------------------------------------
 #20241024 - will need to double check filenames here 
-# 20241001 - need to add unique to linkrot in saving the, 
-# reason to have links and metadata separate 
-# links is all links and then you'd have redundant metadata for papers
+
 rule link_rot: 
     input:
-        rscript = "Code/LinkRot.R",
-        html = "Data/webscrape/{datasets}.html.csv.gz",
-        metadata = "Data/doi_linkrot/alive/{datasets}.csv"
+        rscript = "Code/LinkRot.R"
     output: 
-        all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz",
-        metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
+        "Data/linkrot/all_links.csv.gz"
+    params: 
+        html_dir = "Data/html"
+    resources: 
+        mem_mb = 40000
     shell:
         """
-        {input.rscript}  {input.html} {input.metadata} {output.all_links} {output.metadata_links}
+        {input.rscript} {params.html_dir} {output}
         """
         
 # 20241001 - i think a lot of these have roughly identical code
