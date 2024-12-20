@@ -19,15 +19,15 @@ html_dir <- input[1]
 outfile <-input[2]
 
 
-#local - they're all file.size =0 until index 275
-# some_files<-tibble(file_list = file_list[300:400])
+#local testing
+# # 20241220 - load from Data/html to test 200 files 
+# filenames <-tibble(filenames = list.files("Data/html", full.names = TRUE))
 
-#load from Data/html
-filenames <-list.files("Data/html", full.names = TRUE)
+# filenames<- 
+#   filenames %>% 
+#   slice_tail(n = 200)
 
-filenames<- 
-  filenames %>% 
-  slice_tail(n = 200)
+filenames <-tibble(filenames = list.files(html_dir, full.names = TRUE))
 
 
 #function to get links from pre-scraped html
