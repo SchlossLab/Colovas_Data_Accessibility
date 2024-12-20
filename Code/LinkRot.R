@@ -151,11 +151,15 @@ write_csv(links_metadata, metadatalinks_output)
 file_list <-list.files("Data/html", full.names = TRUE)
 #they're all zeros until 275, why? idk 
 one_file <-file_list[300]
+html_filename<-one_file
 
 twenty_files<-file_list[300:400]
 
+lookup_table<-read_csv("Data/papers/lookup_table.csv.gz")
+head(lookup_table)
 
-html_filename<-one_file
+#i think this is correct so we will have to try it on multiples
+try1<-new_extract_links(html_filename)
 
 
 #we're gonna try and re-write this so that we don't have to run webscrape
@@ -165,6 +169,12 @@ new_extract_links <- function(html_filename) {
   if(file.size(html_filename) > 0 && file.exists(html_filename)) {
   #read html from snakefile 
   webscraped_data <- read_html(html_filename)
+
+  #get just doi from html_filename
+  #"Data/html/10.1128_aac.00005-17.html" > 10.1128/aac.00005-17
+  doi<-str_split_i(html_filename, pattern = "/", 3) %>% 
+      str_replace(., ".html", "") %>%
+      str_replace(., "_", "/")
   
     all_html_tags <-
       #get the html tags <a> for links as characters
@@ -183,6 +193,7 @@ new_extract_links <- function(html_filename) {
         link_text = str_remove(link_text, "</a")) %>%
       #filter for matching links text vs link, unique
       filter(str_equal(link_address, link_text)) %>%
+      filter(str_detect(html_tag, doi, negate = TRUE)) %>%
       unique()
   
     }
@@ -191,7 +202,7 @@ new_extract_links <- function(html_filename) {
     # }
   
   #returns all links
-  return(all_html_tags)
+  return(some_html_tags)
   
 }
 
