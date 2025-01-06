@@ -21,11 +21,11 @@ outfile <-input[2]
 
 #local testing
 # # 20241220 - load from Data/html to test 200 files 
-# filenames <-tibble(filenames = list.files("Data/html", full.names = TRUE))
+all_filenames <-tibble(filenames = list.files("Data/html", full.names = TRUE))
 
-# filenames<- 
-#   filenames %>% 
-#   slice_tail(n = 200)
+filenames<- 
+  all_filenames %>% 
+  slice_tail(n = 200)
 
 filenames <-tibble(filenames = list.files(html_dir, full.names = TRUE))
 
@@ -34,6 +34,7 @@ filenames <-tibble(filenames = list.files(html_dir, full.names = TRUE))
 new_extract_links <- function(html_filename) {
   #initialize all_html_tags to NULL
   all_html_tags<-NA
+  some_html_tags<-NA
   if(file.size(html_filename) > 0 && file.exists(html_filename)) {
   #read html from snakefile 
   webscraped_data <- read_html(html_filename)
