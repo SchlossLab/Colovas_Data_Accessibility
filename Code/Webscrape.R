@@ -15,13 +15,18 @@ input <- commandArgs(trailingOnly = TRUE)
 input_file <- input[1]
 output_file <- input[2]
 
+
+# #local testing
+# doi <- "Data/html/1935-7885/jmbe.8.1.3-12.2007.html"
+# webscrape(doi)
+
 #function for reading html, remove figs/tables, 
 #and concatenate abstract and body (using rvest, xml2)
 webscrape <- function(doi) {
   
   abstract <- read_html(doi) %>%
     html_elements("section#abstract") %>%
-    html_elements("[role = paragraph]") 
+    html_elements("[role = paragraph]")
   
   body <- read_html(doi) %>%
     html_elements("section#bodymatter") 
@@ -42,9 +47,14 @@ webscrape <- function(doi) {
   
 }
 
+
 webscrape_save_html <- function(data, file_path_gz){
 
-  webscraped_data <-  map_chr(data$paper, webscrape)
+ #  webscraped_data <-  map_chr(data$paper, webscrape)
+#20241107 - trycatching errors with webscraping
+ webscraped_data <- tryCatch( {
+    map_chr(data$paper, webscrape)}, 
+    error = \(x){list(webscraped_data = "NA") } )
 
   df <- tibble::tibble(paper_doi = data$paper, 
                       paper_html = webscraped_data)
@@ -52,19 +62,12 @@ webscrape_save_html <- function(data, file_path_gz){
   write.csv(df, file = file_path_gz, row.names = FALSE)
 }
 
+# 20241107 - try catch code from LinkRot
+#  response <- tryCatch( {request(websiteurl) %>% 
+#       req_options(followlocation = TRUE) %>%
+#       req_error(is_error = ~ FALSE) %>% 
+#       req_perform()}, error = \(x){list(status_code = 404) } )
+
 # call function for snakemake use
 dataset <- read_csv(input_file)
 webscrape_save_html(dataset, output_file)
-
-
-# call function on small dataset
-
-#gt_ss30 <- read_csv("Data/gt_subset_30.csv")
-#webscrape_save_html(gt_ss30, "Data/gt_subset_30_data.csv.gz")
-
-
-# call function on larger dataset
-
-#groundtruth <- read_csv("Data/groundtruth.csv")
-#webscrape_save_html(groundtruth, "Data/groundtruth.csv.gz")
-

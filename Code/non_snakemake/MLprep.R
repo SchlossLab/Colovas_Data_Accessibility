@@ -14,12 +14,12 @@ library(mikropml)
 # load files
 
 #for snakemake implementation
-#{input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {wildcards.ncores} {output.rds}
+#{input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {resources.cpus} {output.rds}
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- input[1]
+clean_csv <- input[2]
 ml_var_snake <- input[3]
 ml_var <- c("paper", ml_var_snake, "container.title")
-clean_csv <- input[2]
 threads <- as.numeric(input[4])
 str(threads)
 output_file <- as.character(input[5])
@@ -28,15 +28,7 @@ clean_text <- read.csv(clean_csv)
 metadata <- read.csv(metadata)
 
 
-# doFuture::registerDoFuture()
-# future::plan(future::multicore, workers = 100)
-
-# #other implementation
-# clean_text_small <- read_csv("Data/gt_subset_30.tokens.csv.gz")
-# metadata <- read.csv("Data/gt_subset_30.csv")
-# ml_var_snake <- "new_seq_data"
-# ml_var <- c("paper", ml_var_snake, "container.title")
-
+# #local implementation
 # clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
 # metadata <- read_csv("Data/groundtruth.csv")
 # ml_var_snake <- "availability"

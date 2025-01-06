@@ -6,7 +6,7 @@ cluster:
         --partition=standard
         --mail-user=jocolova@med.umich.edu
         --nodes=1
-        --cpus-per-task={resources.cpus}
+        -c1
         --mem={resources.mem_mb}
         --time={resources.time}
         --output=log/hpc/jobs/{rule}/{rule}.out
@@ -27,3 +27,7 @@ printshellcmds: true
 scheduler: greedy
 use-conda: true
 verbose: true
+
+group-components:
+  - get_doi=1000
+  - get_html=1000

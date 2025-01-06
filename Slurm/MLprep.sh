@@ -55,10 +55,10 @@ source /etc/profile.d/http_proxy.sh
 #conda env
 source ~/miniforge3/etc/profile.d/conda.sh
 conda activate data_acc
-git checkout main
+#git checkout main
 
 cd $SLURM_SUBMIT_DIR
 #R CMD BATCH Code/MLprep.R Slurm/20240613_2_mlprep_gtnewseqdata_glmnet.out
-snakemake --profile config_files/ 
+snakemake --profile config_files/ --rerun-incomplete
 
 ##  If you copied any files to /tmp, make sure you delete them here!

@@ -6,7 +6,7 @@
 #### #### ####  These are the most frequently changing options
 
 ####  Job name
-#SBATCH --job-name=dois
+#SBATCH --job-name=predictions
 
 ####  Request resources here
 ####    These are typically, number of processors, amount of memory,
@@ -16,8 +16,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=8g
-#SBATCH --time=50:00:00
+#SBATCH --mem-per-cpu=20g
+#SBATCH --time=60:00:00
 
  
 
@@ -25,7 +25,7 @@
 ####    These will change if you work on multiple projects, or need
 ####    special hardware, like large memory nodes or GPUs.
 
-#SBATCH --account=pschloss1
+#SBATCH --account=pschloss99
 #SBATCH --partition=standard
 
 #### #### ####  These are the least frequently changing options
@@ -48,7 +48,6 @@
 
 ####  Commands your job should run follow this line
 
-echo "Running from $(pwd)"
 
 #add internet access to the jobs!
 source /etc/profile.d/http_proxy.sh
@@ -56,9 +55,10 @@ source /etc/profile.d/http_proxy.sh
 #conda env
 source ~/miniforge3/etc/profile.d/conda.sh
 conda activate data_acc
-git checkout predict_test_rds
+#git checkout main
 
+cd $SLURM_SUBMIT_DIR
 
-R CMD BATCH Code/DOIgathering.R Slurm/20240320_doigathering.out
+R CMD BATCH Code/html_to_prediction.R Slurm/get_predictions.out
 
 ##  If you copied any files to /tmp, make sure you delete them here!
