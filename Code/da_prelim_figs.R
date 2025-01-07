@@ -20,16 +20,29 @@ papers_dir <- "Data/papers"
 csv_files <- list.files(papers_dir, "*.csv", full.names = TRUE) 
 
 keep_track<-tibble()
-for (i in 1:12) {
+for(i in 1:12) {
     csv_file <- read_csv(csv_files[i])
-    all_papers <- full_join(csv_file, joined_predictions)
-    keep_track <-rbind(keep_track, all_papers)
+    #this does it for the current journal to join with all_papers
+    all_papers <- left_join(csv_file, joined_predictions) %>%
+        mutate_if(is.double, as.character, .vars = "issue") %>%
+        mutate_if(lubridate::is.Date, as.character, .vars = "created")
+    keep_track<-bind_rows(keep_track, all_papers)
+   
 }
 
-#all_papers contains all metadata and all predictions and filenames
-# just kidding some of the data is missing i think!!! great!!!
+# 20250107 - keep_track contains all metadata and all predictions and filenames
 
 #now we can start doing the fun graphing part
 
-view(count(all_papers, created))
-colnames(all_papers)
+# make column for date published (issued) 
+metadata <- keep_track %>% 
+    mutate(year.published = str_sub(issued, start = 1, end = 4))
+metadata %>% count(year.published)
+
+
+#let's graph nsd over time 
+#this doesn't work but honestly what does in my life let's be real 
+
+ggplot(data = metadata, 
+    mapping = aes(x = nsd, .by = year.published)) + 
+    geom_bar(stat = "count")
