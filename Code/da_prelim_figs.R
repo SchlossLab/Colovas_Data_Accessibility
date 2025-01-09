@@ -42,9 +42,6 @@ metadata <- metadata %>%
 
 
 
-
-
-
 #number of papers over time
 
 metadata %>% 
@@ -81,17 +78,40 @@ metadata %>%
         color = "Was Data Available?",
         title = "Number of Papers Published Each Year Containing Available Data in ASM Journals 2000-2024")
 
+# number of citations by nsd status (and then probs by year) "is.referenced.by.count"
+metadata %>%  
+    filter(!is.na(nsd)) %>% 
+    ggplot(mapping = aes(x = nsd,
+                        y = is.referenced.by.count)) + 
+    geom_boxplot() + 
+    ylim(0,100)
 
-#number of da and nsd papers over time 
-#idk what the best way to graph this is
+#by year
+metadata %>%  
+    filter(!is.na(nsd) & !is.na(year.published)) %>% 
+    ggplot(mapping = aes(fill = nsd,
+                        x = year.published,
+                        y = is.referenced.by.count)) + 
+    geom_boxplot() + 
+    ylim(0,200)
+
+
+
+# number of citations by da status (and then probs by year)
+
 metadata %>% 
-    count(year.published, da, nsd) %>% 
-    ggplot(mapping = aes(y = `n`, 
-                    x = as.numeric(year.published),
-                    fill = da)) + 
-    geom_col() + 
-    labs(x = "Year Published", 
-        y = "Number of Papers",
-        color = "Was Data Available?",
-        title = "Number of Papers Published Each Year Containing Available Data in ASM Journals 2000-2024")
+    #count(is.referenced.by.count, nsd) %>% 
+    filter(!is.na(da)) %>% 
+    ggplot(mapping = aes(x = da,
+                        y = is.referenced.by.count)) + 
+    geom_boxplot() + 
+    ylim(0,100)
 
+#by year
+metadata %>%  
+    filter(!is.na(da) & !is.na(year.published)) %>% 
+    ggplot(mapping = aes(fill = da,
+                        x = year.published,
+                        y = is.referenced.by.count)) + 
+    geom_boxplot() + 
+    ylim(0,200)
