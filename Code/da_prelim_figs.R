@@ -38,8 +38,9 @@ metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz")
 
 # make column for date published (issued) 
 metadata <- metadata %>% 
-    mutate(year.published = str_sub(issued, start = 1, end = 4))
-
+    mutate(year.published = str_sub(issued, start = 1, end = 4), 
+            years.since.published = (2024-as.numeric(year.published)), 
+             citations.per.year = (is.referenced.by.count/years.since.published)) 
 
 
 #number of papers over time
@@ -115,3 +116,42 @@ metadata %>%
                         y = is.referenced.by.count)) + 
     geom_boxplot() + 
     ylim(0,200)
+
+
+
+#do avg citations per year by nsd/da status
+metadata %>%  
+    filter(!is.na(nsd) & !is.na(year.published)) %>% 
+    ggplot(mapping = aes(x = nsd,
+                        y = citations.per.year)) + 
+    geom_boxplot() + 
+    ylim(0,15)
+
+#da
+metadata %>%  
+    filter(!is.na(da) & !is.na(year.published)) %>% 
+    ggplot(mapping = aes(x = da,
+                        y = citations.per.year)) + 
+    geom_boxplot() + 
+    ylim(0,15)
+
+
+
+#over time 
+#nsd
+metadata %>%  
+    filter(!is.na(nsd) & !is.na(year.published)) %>% 
+    ggplot(mapping = aes(fill = nsd,
+                        x = year.published,
+                        y = citations.per.year)) + 
+    geom_boxplot() + 
+    ylim(0,15)
+
+#da
+metadata %>%  
+    filter(!is.na(da) & !is.na(year.published)) %>% 
+    ggplot(mapping = aes(fill = da,
+                        x = year.published,
+                        y = citations.per.year)) + 
+    geom_boxplot() + 
+    ylim(0,15)
