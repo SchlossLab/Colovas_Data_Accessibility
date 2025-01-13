@@ -52,7 +52,7 @@ metadata %>%
     geom_point() + 
     labs(x = "Year Published", 
         y = "Number of Papers", 
-        title = "Number of Papers Published Each Year in ASM Journals 2000-2024")
+        title = "Number of Papers Published \nEach Year in ASM Journals 2000-2024")
 
 
 #number of nsd papers over time 
@@ -65,7 +65,7 @@ metadata %>%
     labs(x = "Year Published", 
         y = "Number of Papers",
         color = "New Sequencing \nData Available",
-        title = "Number of Papers Published Each Year Containing New Sequeunce Data in ASM Journals 2000-2024")
+        title = "Number of Papers Published Each Year \nContaining New Sequeunce Data in \nASM Journals 2000-2024")
 
 #number of da papers over time 
 metadata %>% 
@@ -77,7 +77,7 @@ metadata %>%
     labs(x = "Year Published", 
         y = "Number of Papers",
         color = "Was Data Available?",
-        title = "Number of Papers Published Each Year Containing Available Data in ASM Journals 2000-2024")
+        title = "Number of Papers Published Each Year \nContaining Available Data in \nASM Journals 2000-2024")
 
 # number of citations by nsd status (and then probs by year) "is.referenced.by.count"
 metadata %>%  
@@ -85,7 +85,10 @@ metadata %>%
     ggplot(mapping = aes(x = nsd,
                         y = is.referenced.by.count)) + 
     geom_boxplot() + 
-    ylim(0,100)
+    ylim(0,100) + 
+    labs(x = "Contains New Sequence Data?", 
+         y = "Number of Times Referenced", 
+         title = "Number of Times Referenced by \nContains New Sequencing Data Status")
 
 #by year
 metadata %>%  
@@ -94,19 +97,25 @@ metadata %>%
                         x = year.published,
                         y = is.referenced.by.count)) + 
     geom_boxplot() + 
-    ylim(0,200)
+    ylim(0,200) + 
+    labs(y = "Number of Times Referenced", 
+         x = "Year Published", 
+         title = "Number of Times Referenced by New \nSequencing Data Status and Year Published", 
+         fill = "Does this Contain \nNew Sequencing Data?")
 
 
 
 # number of citations by da status (and then probs by year)
 
-metadata %>% 
-    #count(is.referenced.by.count, nsd) %>% 
+  metadata %>%
     filter(!is.na(da)) %>% 
     ggplot(mapping = aes(x = da,
                         y = is.referenced.by.count)) + 
     geom_boxplot() + 
-    ylim(0,100)
+    ylim(0,100) + 
+    labs(x = "Is Data Available?", 
+         y = "Number of Times Referenced", 
+         title = "Number of Times Referenced \nby Data Availability Status")
 
 #by year
 metadata %>%  
@@ -115,7 +124,11 @@ metadata %>%
                         x = year.published,
                         y = is.referenced.by.count)) + 
     geom_boxplot() + 
-    ylim(0,200)
+    ylim(0,200) + 
+    labs(y = "Number of Times Referenced", 
+         x = "Year Published", 
+         title = "Number of Times Referenced by Data \nAvailability Status and Year Published", 
+         fill = "Is Data \nAvailable?")
 
 
 
@@ -125,7 +138,10 @@ metadata %>%
     ggplot(mapping = aes(x = nsd,
                         y = citations.per.year)) + 
     geom_boxplot() + 
-    ylim(0,15)
+    ylim(0,15) + 
+    labs(x = "Does this Contain New Sequencing Data?", 
+         y = "Average Number of Times Referenced/Year", 
+         title = "Average Number of Times Referenced/Year \nby New Sequencing Data Status")
 
 #da
 metadata %>%  
@@ -133,7 +149,10 @@ metadata %>%
     ggplot(mapping = aes(x = da,
                         y = citations.per.year)) + 
     geom_boxplot() + 
-    ylim(0,15)
+    ylim(0,15)  + 
+  labs(x = "Is Data Available?", 
+       y = "Average Number of Times Referenced/Year", 
+       title = "Average Number of Times Referenced/Year \nby Data Availability Status")
 
 
 
@@ -145,13 +164,23 @@ metadata %>%
                         x = year.published,
                         y = citations.per.year)) + 
     geom_boxplot() + 
-    ylim(0,15)
+    ylim(0,15)  + 
+  labs(fill = "Does this Contain \nNew Sequencing Data?", 
+       x = "Year Published",
+       y = "Average Number of Times Referenced/Year", 
+       title = "Average Number of Times Referenced/Year \nby New Sequencing Data Status")
 
 #da
 metadata %>%  
     filter(!is.na(da) & !is.na(year.published)) %>% 
+    filter(nsd == "Yes") %>% 
     ggplot(mapping = aes(fill = da,
                         x = year.published,
                         y = citations.per.year)) + 
     geom_boxplot() + 
-    ylim(0,15)
+    ylim(0,15)   + 
+  labs(fill = "Is Data \nAvailable?", 
+       x = "Year Published",
+       y = "Average Number of Times Referenced/Year", 
+       title = "Average Number of Times Referenced/Year \nby Data Availability Status")
+
