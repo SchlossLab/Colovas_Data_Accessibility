@@ -55,12 +55,22 @@ scopus_req <- request("https://api.elsevier.com/content/abstract/citation-count?
 
 
 #playing with the request to try and get an issn to work 
-scopus_req <- request("http://api.elsevier.com/content/search/scopus?query=issn(1098-6596)&date(2000-2024)&cursor/@next&start=199&count=200&field=citedby-count,prism:doi,date") %>%
+scopus_req <- request("http://api.elsevier.com/content/search/scopus?query=issn(1098-6596)&date(2000-2024)&field=citedby-count,prism:doi,date") %>%
     req_headers("X-ELS-APIKey" = scopus_key) %>%
     req_headers("X-ELS-Insttoken" = scopus_institutional_token)
 
+
+# #20250113 - this one works i just want to play with it 
+# scopus_req <- request("http://api.elsevier.com/content/search/scopus?query=issn(1098-6596)&date(2000-2024)&cursor/@next&start=100&count=200&field=citedby-count,prism:doi,date") %>%
+#     req_headers("X-ELS-APIKey" = scopus_key) %>%
+#     req_headers("X-ELS-Insttoken" = scopus_institutional_token)
+
 scopus_response <- req_perform(scopus_req) %>%
-    resp_body_json()
+    resp_body_json(simplifyVector = TRUE) 
+
+as.numeric(scopus_response$`search-results`$`opensearch:totalResults`)
+
+
 
 # curl -v -H "X-ELS-APIKey:'f24a07ed9eea613f729d6469a816966c', X-ELS-Insttoken:'7c25e0e82b37408e45c8da604e824725'" 
 # "https://api.elsevier.com/content/abstract/citation-count?scopus_id=33646008552"
