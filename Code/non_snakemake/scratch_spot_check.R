@@ -4,6 +4,7 @@
 #
 #library
 library(tidyverse)
+library(caret)
 
 # load in dataset of predicted stuff
 predicted_files <- read_csv("Data/final/predicted_results.csv.gz")
@@ -45,3 +46,8 @@ spot_check_nsd <-
 spot_check_all <- 
     spot_check %>% 
     filter(nsd != actual_nsd | da != actual_da)
+
+confusion_matrix_nsd <- confusionMatrix(data = factor(spot_check$nsd), reference = factor(spot_check$actual_nsd))
+confusion_matrix_da <- confusionMatrix(data = factor(spot_check$da), reference = factor(spot_check$actual_da))
+str(spot_check$nsd)
+str(spot_check$actual_nsd)
