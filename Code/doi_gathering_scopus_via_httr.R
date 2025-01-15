@@ -89,19 +89,21 @@ num_responses<- as.numeric(scopus_response$`search-results`$`opensearch:totalRes
 num_pages <- (num_responses%/%200)
 
 #construcuor for the list
-page_results <- vector(mode = "tibble", length = num_pages+1)
+page_results <- vector(mode = "list", length = num_pages+1)
+length(page_results)
 
 
-
-for(i in 0:length(10)){
+for(i in 0:num_pages){
 
 cursor<-i*200
 request_url<-paste0("http://api.elsevier.com/content/search/scopus?query=issn(1098-6596)&date(2000-2024)&cursor/@next&start=", 
-                cursor, "&count=200&field=citedby-count,prism:doi,date")
+                cursor, "&count=200&field=citedby-count,prism:doi,date&mailto=jocolova@med.umich.edu")
 
 scopus_req <- request(request_url) %>%
     req_headers("X-ELS-APIKey" = scopus_key) %>%
-    req_headers("X-ELS-Insttoken" = scopus_institutional_token)
+    req_headers("X-ELS-Insttoken" = scopus_institutional_token) %>%
+    req_user_agent("jocolova@med.umich.edu") %>%
+    req_throttle(rate = 50/60)
 
 scopus_response <- req_perform(scopus_req) %>%
     resp_body_json(simplifyVector = TRUE) 
@@ -109,6 +111,9 @@ scopus_response <- req_perform(scopus_req) %>%
 page_results[[i+1]]<-as_tibble(scopus_response$`search-results`$entry)
 
 }
+#20250115 - this does the right thing but 
+#will only do up to 25 at a time and 
+#i have no idea how/why so maybe i just need to chunk them diff
 
 #20250113 - 
 #this makes the right list 
