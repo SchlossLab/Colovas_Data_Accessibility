@@ -174,6 +174,18 @@ rule auroc:
         {input.rscript} {input.filepath} {wildcards.method} {wildcards.ml_variables} {output}
         """
 
+
+rule scopus: 
+    input: 
+        rscript = "Code/doi_gathering_scopus_via_httr.R"
+    output: 
+        "Data/scopus/scopus_{datasets}.csv.gz"
+    shell: 
+        """
+        {input.rscript} {input.datasets} 
+        """
+
+
 #-------------------LINK-------ROT-----------------------------------------------------------
 
 rule link_rot: 
