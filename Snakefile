@@ -54,13 +54,7 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
-        # "Data/papers/all_papers.csv.gz"
-        # doi_lookup.keys(),
-        # expand("Data/html/{doi}.html", doi = doi_lookup.keys()),
-        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()),
-        # "Data/final/predicted_results.csv.gz" 
-        "Data/linkrot/all_links.csv.gz"
+        expand("Data/scopus/scopus_{datasets}.csv.gz", datasets = new_datasets)
 
         
 rule rds_to_csv: 
@@ -338,7 +332,7 @@ rule scopus:
         "Data/scopus/scopus_{datasets}.csv.gz"
     shell: 
         """
-        {input.rscript} {input.datasets} 
+        {input.rscript} {wildcards.datasets} 
         """
 
 
