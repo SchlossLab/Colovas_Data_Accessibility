@@ -32,17 +32,17 @@ spot_check <- read_csv("Data/spot_check/spot_check.csv")
 
 #find rows where da!=actual_da and same for nsd
 
-#9 rows/150 = 
+#9 rows/120 = 
 spot_check_da <- 
     spot_check %>% 
     filter(da != actual_da)
 
-#7 rows
+#7/120 rows
 spot_check_nsd <- 
     spot_check %>% 
     filter(nsd != actual_nsd)
 
-#13/150 
+#13/120 
 spot_check_all <- 
     spot_check %>% 
     filter(nsd != actual_nsd | da != actual_da)
@@ -51,3 +51,15 @@ confusion_matrix_nsd <- confusionMatrix(data = factor(spot_check$nsd), reference
 confusion_matrix_da <- confusionMatrix(data = factor(spot_check$da), reference = factor(spot_check$actual_da))
 str(spot_check$nsd)
 str(spot_check$actual_nsd)
+
+
+#filter for only nsd = yes
+
+nsd_yes <- 
+    spot_check %>%
+    filter(nsd == "Yes" | actual_nsd == "Yes")
+
+confusion_matrix_nsd_only_nsd <- confusionMatrix(data = factor(nsd_yes$nsd), reference = factor(nsd_yes$actual_nsd))
+confusion_matrix_nsd_only_da <- confusionMatrix(data = factor(nsd_yes$da), reference = factor(nsd_yes$actual_da))
+
+    

@@ -42,11 +42,21 @@ metadata <- metadata %>%
             years.since.published = (2024-as.numeric(year.published)), 
              citations.per.year = (is.referenced.by.count/years.since.published), 
              issued.date = ymd(issued, truncated = 2), 
-             months.since.y2k = interval(ymd("2000-01-01"), metadata$issued.date) %/% months(1))
+             months.since.y2k = interval(ymd("2000-01-01"), metadata$issued.date) %/% months(1), 
+            age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1))
 
 colnames(metadata)
-#interval for papers
+#modeling using time intervals
 summary(lm(is.referenced.by.count~da + nsd + months.since.y2k, data = metadata))
+summary(lm(is.referenced.by.count~da + nsd + age.in.months, data = metadata))
+
+#modeling with nsd yes only data
+nsd_yes_metadata <- 
+  metadata %>% 
+    filter(nsd == "Yes")
+
+summary(lm(is.referenced.by.count~da + age.in.months, data = nsd_yes_metadata))
+
 
 #number of papers over time
 
