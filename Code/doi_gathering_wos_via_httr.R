@@ -55,12 +55,13 @@ wos_response <- req_perform(wos_req) %>%
 
 page_results[[i]]<-
     tibble(wos_response$hits) %>%
-    unnest()
+    unnest() 
 
 }
 
 all_results<-tibble(page_results, .name_repair = "minimal") %>% 
-    unnest(cols = page_results) 
+    unnest(cols = page_results) %>%
+    select(-authors, -pages, -anonymous, -authorKeywords)
 
 write_csv(all_results, file = paste0("Data/wos/wos_", issn, ".csv.gz"))
 
@@ -68,12 +69,12 @@ write_csv(all_results, file = paste0("Data/wos/wos_", issn, ".csv.gz"))
 
 
 #playing with stuff
-view(wos_response)
+# view(wos_response)
 
-as.numeric(wos_response$metadata$total)
-tibble(wos_response$hits) %>%
-unnest() %>%
-view()
+# as.numeric(wos_response$metadata$total)
+# tibble(wos_response$hits) %>%
+# unnest() %>%
+# view()
 
-colnames(wos_response)
-str(wos_response)
+# colnames(wos_response)
+# str(wos_response)
