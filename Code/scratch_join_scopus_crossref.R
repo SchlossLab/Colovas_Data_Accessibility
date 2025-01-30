@@ -14,19 +14,17 @@ crossref <-
 head(scopus)
 head(crossref)
 
+
+both_only_scopus<-inner_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash))
+both_only_crossref<-inner_join(crossref, scopus, by = join_by(doi_no_slash == `prism:doi`))
 scopus_only<-anti_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash))
 crossref_only<-anti_join(crossref, scopus, by = join_by(doi_no_slash == `prism:doi`))
 
 view(scopus_only)
 
-no_jcm <- scopus_only %>% 
-    filter(str_detect(`prism:doi`, "jcm|JCM", negate = TRUE))
-
-view(no_jcm)
-#ok so i guess there's still 62.5K that appear 
-#in scopus but not crossref and aren't from JCB
-#jcb got SOLD and we're not worried about it 
-
-#and 128K in crossref only and not scopus
-#great
-#so now i need to ask pat if he wants me to scrape those and get data from them 
+#20250130 - all of these from scopus only are 
+#valid records and appear in pubmed
+# crossref only 128K 
+# scopus only 93K
+# both 18K
+# why can't i get the pubyear or date from scopus idk 

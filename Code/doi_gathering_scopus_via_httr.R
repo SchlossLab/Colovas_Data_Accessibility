@@ -12,7 +12,7 @@ issn <- as.character(input[1])
 
 
 #local testing
-# issn <-"1935-7885"
+issn <-"1935-7885"
 
 # scopus API with 2x keys
 #   scopus/elsevier 
@@ -24,7 +24,7 @@ scopus_institutional_token <- "7c25e0e82b37408e45c8da604e824725"
 
 #request for the journal to find out how many records and pages it is 
 scopus_req <- request(paste0("http://api.elsevier.com/content/search/scopus?query=issn(", 
-                            issn, ")&date(2000-2024)&field=citedby-count,prism:doi,date")) %>%
+                            issn, ")&date(2000-2024)&field=citedby-count,prism:doi,pubyear")) %>%
     req_headers("X-ELS-APIKey" = scopus_key) %>%
     req_headers("X-ELS-Insttoken" = scopus_institutional_token)
 
@@ -42,7 +42,7 @@ length(page_results)
 for(i in 0:num_pages){
 if(i == 0){
   request_url<-paste0("http://api.elsevier.com/content/search/scopus?query=issn(", 
-                    issn, ")&date(2000-2024)&cursor=*&count=200&field=citedby-count,prism:doi,date&mailto=jocolova@med.umich.edu")
+                    issn, ")&date(2000-2024)&cursor=*&count=200&field=citedby-count,prism:doi,pubyear&mailto=jocolova@med.umich.edu")
     }
 else {
 request_url<-cursor_next
