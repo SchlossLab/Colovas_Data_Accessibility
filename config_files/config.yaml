@@ -27,3 +27,5 @@ printshellcmds: true
 scheduler: greedy
 use-conda: true
 verbose: true
+set-threads:
+    wos: 4
