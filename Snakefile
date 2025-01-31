@@ -54,8 +54,9 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/scopus/scopus_{datasets}.csv.gz", datasets = new_datasets), 
-        expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets)
+        # "Data/scopus/scopus_1935-7885.csv.gz"
+        # expand("Data/scopus/scopus_{datasets}.csv.gz", datasets = new_datasets)
+       expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets)
 
         
 rule rds_to_csv: 

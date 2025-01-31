@@ -12,7 +12,7 @@ issn <- as.character(input[1])
 
 
 #local testing
-issn <-"1935-7885"
+# issn <-"1098-5522"
 
 # scopus API with 2x keys
 #   scopus/elsevier 
