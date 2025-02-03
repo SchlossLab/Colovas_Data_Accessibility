@@ -53,7 +53,8 @@ metadata %>% count(container.title)
 
 #20250203 - how many mra papers are there from 2024? 
 metadata %>% 
-  filter(year.published == 2024 & container.title == "Microbiology Resource Announcements" & nsd == "Yes", da == "No") %>% 
+  filter(year.published == 2024 & container.title == "Microbiology Resource Announcements" & nsd == "Yes", da == "No") %>%
+  select(c(paper, doi, da, nsd, year.published)) %>%  
   write_csv(file = "Data/spot_check/mra_2024_nsd_yes_da_no.csv")
 
 
