@@ -34,6 +34,7 @@ library(tidyverse)
 
 metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz")
 
+
 #now we can start doing the fun graphing part
 
 # make column for date published (issued) 
@@ -47,6 +48,15 @@ metadata <- metadata %>%
           age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1))
 
 colnames(metadata)
+
+metadata %>% count(container.title)
+
+#20250203 - how many mra papers are there from 2024? 
+metadata %>% 
+  filter(year.published == 2024 & container.title == "Microbiology Resource Announcements" & nsd == "Yes", da == "No") %>% 
+  write_csv(file = "Data/spot_check/mra_2024_nsd_yes_da_no.csv")
+
+
 #modeling using time intervals
 summary(lm(is.referenced.by.count~da + nsd + months.since.y2k, data = metadata))
 summary(lm(is.referenced.by.count~ 0 + da + nsd + age.in.months, data = metadata))
