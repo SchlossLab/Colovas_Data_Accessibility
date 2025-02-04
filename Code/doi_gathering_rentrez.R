@@ -13,7 +13,7 @@ pubmed$ISBN
 issn <- "1935-7885" #jmbe
 ncbi_key <-"fb31376a19d721e1c68199bbe6fae7cb7f08"
 
-#practice run 
+#20250204 practice run - this works to get a list of things
 query <-"1935-7885[ISBN]"
 search <- entrez_search("pubmed", rettype = "json", 
                         term = issn, retmax = 100, use_history = TRUE)
@@ -23,5 +23,6 @@ search$QueryTranslation
 search$file
 search$web_history
 
+#20250204 - this part does not fetch the records that i need?
 fetch <-entrez_fetch("pubmed", web_history = search$web_history, rettype = "json")
 str(fetch)
