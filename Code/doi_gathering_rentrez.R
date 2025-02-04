@@ -4,4 +4,4 @@
 #
 #library statements 
 library(tidyverse)
-library(entrez)
+library(rentrez)
