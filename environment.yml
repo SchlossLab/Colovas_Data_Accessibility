@@ -21,6 +21,8 @@ dependencies:
   - r-cowplot
   - r-rscopus
   - r-rentrez
+  - r-caret
+  - r-randomforest
   
 
 
