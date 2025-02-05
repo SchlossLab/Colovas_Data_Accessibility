@@ -26,14 +26,16 @@ entrez_db_searchable("pubmed")
 
 
 search <- entrez_search("pubmed", rettype = "json", 
-                        term = "1098-5522[issn]+AND+20000101[mindate]+AND+20250101[maxdate]", retmax = 10000, use_history = TRUE)
+                        term = "1098-5522[issn]+AND+20000101[mindate]+AND+20250101[maxdate]", 
+                        retmax = 1000, use_history = TRUE, retstart = 1000)
 
 search$web_history
 
 #20250205- fetches 10K, but how do i get the rest of them
-fetch <-entrez_fetch("pubmed", web_history = search$web_history, rettype = "csv", retstart = 10000)
+fetch <-entrez_fetch("pubmed", web_history = search$web_history, rettype = "csv")
 
-columns <- c("UID", "title", "authors", "citation_info", "first_author", "journal_name", "pub_year", "pub_date", "NA", "NA", "doi")
+columns <- c("UID", "title", "authors", "citation_info", "first_author", "journal_name",
+ "pub_year", "pub_date", "NA", "NA", "doi")
 
 fetched_csv <-read_csv(fetch, col_names = columns)
 
