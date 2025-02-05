@@ -56,7 +56,8 @@ rule targets:
     input:
         # "Data/scopus/scopus_1935-7885.csv.gz"
         # expand("Data/scopus/scopus_{datasets}.csv.gz", datasets = new_datasets)
-       expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets)
+    #    expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets)
+        expand("Data/ncbi/ncbi_{datasets}.csv.gz", datasets = new_datasets)
 
         
 rule rds_to_csv: 
@@ -342,6 +343,16 @@ rule wos:
         rscript = "Code/doi_gathering_wos_via_httr.R"
     output: 
         "Data/wos/wos_{datasets}.csv.gz"
+    shell: 
+        """
+        {input.rscript} {wildcards.datasets} 
+        """
+
+rule ncbi: 
+    input: 
+        rscript = "Code/doi_gathering_rentrez.R"
+    output: 
+        "Data/ncbi/ncbi_{datasets}.csv.gz"
     shell: 
         """
         {input.rscript} {wildcards.datasets} 
