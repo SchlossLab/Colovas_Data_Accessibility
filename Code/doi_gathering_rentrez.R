@@ -9,8 +9,8 @@ library(xml2)
 
 
 #snakemake
-input <- commandArgs(trailingOnly = TRUE)
-issn <- as.character(input[1])
+# input <- commandArgs(trailingOnly = TRUE)
+# issn <- as.character(input[1])
 
 #local testing
 issn <- "1098-5522" #I&I
@@ -26,10 +26,14 @@ entrez_db_searchable("pubmed")
 
 
 search <- entrez_search("pubmed", rettype = "json", 
-                        term = "1098-5522[issn]+AND+20000101[mindate]+AND+20250101[maxdate]", 
-                        retmax = 1000, use_history = TRUE, retstart = 1000)
+                        term = "1098-5522", 
+                        retmax = 500, use_history = TRUE, retstart = 0)
 
-search$web_history
+search_2 <-entrez_search("pubmed", rettype = "json", 
+                        term = "1098-5522", 
+                        retmax = 500, use_history = TRUE, retstart = 500)
+head(search)
+head(search_2)
 
 #20250205- fetches 10K, but how do i get the rest of them
 fetch <-entrez_fetch("pubmed", web_history = search$web_history, rettype = "csv")
@@ -39,6 +43,14 @@ columns <- c("UID", "title", "authors", "citation_info", "first_author", "journa
 
 fetched_csv <-read_csv(fetch, col_names = columns)
 
-write_csv(fetched_csv, file = paste0("Data/ncbi/ncbi_", issn, ".csv.gz"))
+
+
+
+fetch_2 <-entrez_fetch("pubmed", web_history = search_2$web_history, rettype = "csv")
+
+
+fetched_csv_2 <-read_csv(fetch_2, col_names = columns)
+
+#write_csv(fetched_csv, file = paste0("Data/ncbi/ncbi_", issn, ".csv.gz"))
 
 
