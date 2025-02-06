@@ -18,33 +18,50 @@ head(scopus)
 head(crossref)
 colnames(ncbi)
 
-#from when it was just scopus and crossref
-both_only_scopus<-inner_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash))
-both_only_crossref<-inner_join(crossref, scopus, by = join_by(doi_no_slash == `prism:doi`))
-scopus_only<-anti_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash))
-crossref_only<-anti_join(crossref, scopus, by = join_by(doi_no_slash == `prism:doi`))
 
-view(scopus_only)
 
-#20250130 - all of these from scopus only are 
-#valid records and appear in pubmed
-# crossref only 128K 
-# scopus only 93K
-# both 18K
-# why can't i get the pubyear or date from scopus idk 
 
 unique(ncbi)
+ncbi <-ncbi %>%
+filter(!is.na(doi))
+
+dupes<- which(duplicated(ncbi$doi))
+dupe_table <- rbind(ncbi[dupes,])
+ncbi <-anti_join(ncbi, dupe_table)
+
+scopus <-
+scopus %>%
+filter(!is.na(`prism:doi`))
+
+crossref %>%
+filter(is.na(`doi_no_slash`))
+
 unique(scopus)
 unique(crossref)
 
-all_three<-inner_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash)) %>%
+all_three_scn<-inner_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash)) %>%
     inner_join(., ncbi, by = join_by(`prism:doi` == doi))
 
-scopus_and_crossref<-inner_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash))
-crossref_and_scopus<-inner_join(crossref, scopus, by = join_by(doi_no_slash == `prism:doi`))
+# all_three_nsc <-inner_join(ncbi, scopus, by = join_by(doi == `prism:doi`), relationship = "many-to-many") %>%
+#     inner_join(., crossref, by = join_by(doi == doi_no_slash))
 
-scopus_and_ncbi<-inner_join(scopus, ncbi, by = join_by(`prism:doi` == doi), relationship = "many-to-many")
-crossref_and_ncbi<-inner_join(crossref, ncbi, by = join_by(doi_no_slash == doi))
+scopus_and_crossref<-inner_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash)) %>%
+    anti_join(., all_three_scn)
+
+# crossref_and_scopus<-inner_join(crossref, scopus, by = join_by(doi_no_slash == `prism:doi`)) %>%
+#     anti_join(., all_three, by = join_by(doi_no_slash == `prism:doi`))
+
+scopus_and_ncbi<-inner_join(scopus, ncbi, by = join_by(`prism:doi` == doi)) %>%
+    anti_join(., all_three)
+
+
+crossref_and_ncbi<-inner_join(crossref, ncbi, by = join_by(doi_no_slash == doi)) %>%
+    anti_join(., all_three, by = join_by(doi_no_slash == `prism:doi`))
+
+
+ncbi_crossref <-inner_join(crossref, ncbi, by = join_by(doi_no_slash == doi)) %>%
+    anti_join(., all_three, by = join_by(doi_no_slash == `prism:doi`))
+
 
 
 
@@ -60,3 +77,7 @@ ncbi_only <- anti_join(ncbi, scopus, by = join_by(doi == `prism:doi`)) %>%
 ncbi
 crossref
 scopus
+
+view(rbind(ncbi[127041,], ncbi[127081,],ncbi[127166,]))
+
+
