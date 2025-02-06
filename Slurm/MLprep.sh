@@ -55,6 +55,10 @@ source /etc/profile.d/http_proxy.sh
 #conda env
 source ~/miniforge3/etc/profile.d/conda.sh
 conda activate data_acc
+
+#if you need to use the ncbi edirect to run rule ncbi
+# export PATH=${HOME}/edirect:${PATH}
+
 #git checkout main
 
 cd $SLURM_SUBMIT_DIR

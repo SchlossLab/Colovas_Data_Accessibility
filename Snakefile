@@ -347,20 +347,7 @@ rule wos:
         """
         {input.rscript} {wildcards.datasets} 
         """
-#20250206 - here for reference for the ncbi rule 
-# rule indiv_dois: 
-#     output:
-#         doi = "Data/html/{doi}.html"
-#     group:
-#         "get_doi"
-#     resources:
-#         mem_mb = 8
-#     params:
-#         url = lambda wildcards, output: doi_lookup[wildcards.doi]
-#     shell:
-#         """
-#         wget "{params.url}" --save-headers -O "{output.doi}" || echo "Error: Download {params.url} failed"
-#         """
+
 
 rule ncbi: 
     output: 
