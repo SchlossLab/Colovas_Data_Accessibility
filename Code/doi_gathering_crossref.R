@@ -27,7 +27,14 @@ issn <-"1935-7885"
 metadata <- metadata_list[["data"]]
 
 #filter for 2000-2024 & link has the journal name
-  
+
+as.Date(metadata$published.print)
+metadata %>% count(published.print) %>% print(n = Inf)
+
+ymd(metadata$published.print)
+
+metadata %>%
+  grep(published.print < "2025-01-01")
 
 #save as an RDS file
 write_csv(metadata, paste0("Data/crossref/crossref_", issn, ".csv.gz"))
