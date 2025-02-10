@@ -56,17 +56,18 @@ rule targets:
     input:
         expand("Data/crossref/crossref_{datasets}.csv.gz", datasets = new_datasets)
 
-        
-rule rds_to_csv: 
-    input: 
-        rscript = "Code/rds_to_csv.R",
-        rds = "Data/metadata/{datasets}_metadata.RDS"
-    output: 
-        "Data/papers/{datasets}.csv"
-    shell: 
-        """
-        {input.rscript} {input.rds} {output}
-        """
+
+#20250210 - should be redundant now that crossref data is in .csv.gz form      
+# rule rds_to_csv: 
+#     input: 
+#         rscript = "Code/rds_to_csv.R",
+#         rds = "Data/metadata/{datasets}_metadata.RDS"
+#     output: 
+#         "Data/papers/{datasets}.csv"
+#     shell: 
+#         """
+#         {input.rscript} {input.rds} {output}
+#         """
 
 rule all_papers: 
     input: 
@@ -125,7 +126,6 @@ rule combine_predictions:
         """
         {input.rscript} {params.p_dir} {output}
         """
-
 
 
 
