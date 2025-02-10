@@ -39,7 +39,11 @@ filter(is.na(`doi_no_slash`))
 unique(scopus)
 unique(crossref)
 
-all_three_scn<-inner_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash)) %>%
+ncbi$doi <- tolower(ncbi$doi)
+scopus$`prism:doi` <-tolower(scopus$`prism:doi`)
+crossref$doi_no_slash<-tolower(crossref$doi_no_slash)
+
+all_three<-inner_join(scopus, crossref, by = join_by(`prism:doi` == doi_no_slash)) %>%
     inner_join(., ncbi, by = join_by(`prism:doi` == doi))
 
 # all_three_nsc <-inner_join(ncbi, scopus, by = join_by(doi == `prism:doi`), relationship = "many-to-many") %>%
