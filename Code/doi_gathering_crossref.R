@@ -11,7 +11,7 @@ input <- commandArgs(trailingOnly = TRUE)
 issn <- as.character(input[1])
 
 #local testing
-issn <-"1935-7885"
+#issn <-"1935-7885"
 
 
  #crossref query
@@ -26,18 +26,25 @@ issn <-"1935-7885"
 #get only metadata part of the list 
 metadata <- metadata_list[["data"]]
 
-#filter for 2000-2024 & link has the journal name
+#filter for 2000-2024 
 
-as.Date(metadata$published.print)
-metadata %>% count(published.print) %>% print(n = Inf)
+metadata <-
+  metadata %>%
+  mutate(year.published = str_sub(issued, start = 1, end = 4)) %>%
+  filter(year.published <= 2024)
 
-ymd(metadata$published.print)
+#make sure doi has journal name 
 
-metadata %>%
-  grep(published.print < "2025-01-01")
+digits<- grep("10.1128/\\d", metadata$doi)
+punct<-grep("10.1128/\\.", metadata$doi)
+to_remove <-c(digits, punct)
 
-#save as an RDS file
-write_csv(metadata, paste0("Data/crossref/crossref_", issn, ".csv.gz"))
+removal_table <-rbind(metadata[to_remove,])
+metadata_good_dois<-anti_join(metadata, removal_table)
+
+
+#save as a csv.gz file
+write_csv(metadata_good_dois, paste0("Data/crossref/crossref_", issn, ".csv.gz"))
   
 
 
