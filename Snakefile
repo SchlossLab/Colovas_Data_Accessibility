@@ -54,13 +54,7 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
-        # "Data/papers/all_papers.csv.gz"
-        # doi_lookup.keys(),
-        # expand("Data/html/{doi}.html", doi = doi_lookup.keys()),
-        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()),
-        # "Data/final/predicted_results.csv.gz" 
-        "Data/linkrot/all_links.csv.gz"
+        expand("Data/crossref/crossref_{datasets}.csv.gz", datasets = new_datasets)
 
         
 rule rds_to_csv: 
@@ -360,6 +354,15 @@ rule ncbi:
         esearch -db pubmed -query "{wildcards.datasets}" | efetch -format csv > "{output}"
         """
 
+rule crossref: 
+    input: 
+        rscript = "Code/doi_gathering_crossref.R"
+    output: 
+        "Data/crossref/crossref_{datasets}.csv.gz"
+    shell: 
+        """
+        {input.rscript} {wildcards.datasets} 
+        """
 
 #-------------------LINK-------ROT-----------------------------------------------------------
 # 20241024 - will need to double check filenames here 

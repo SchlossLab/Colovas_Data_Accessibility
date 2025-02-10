@@ -53,7 +53,7 @@
 source /etc/profile.d/http_proxy.sh
 
 #conda env
-source ~/miniforge3/etc/profile.d/conda.sh
+source ~/conda/etc/profile.d/conda.sh
 conda activate data_acc
 
 #if you need to use the ncbi edirect to run rule ncbi

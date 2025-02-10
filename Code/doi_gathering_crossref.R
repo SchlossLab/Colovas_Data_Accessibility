@@ -30,7 +30,7 @@ metadata <- metadata_list[["data"]]
 
 metadata <-
   metadata %>%
-  mutate(year.published = str_sub(issued, start = 1, end = 4)) %>%
+  mutate(year.published = str_sub(published.print, start = 1, end = 4)) %>%
   filter(year.published <= 2024)
 
 #make sure doi has journal name 
