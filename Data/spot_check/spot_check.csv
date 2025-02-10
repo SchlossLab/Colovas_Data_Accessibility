@@ -31,10 +31,10 @@ Data/html/10.1128_154288100x14285805552330.html,NA,NA,https://journals.asm.org/d
 Data/html/10.1128_.38.6.2398-2399.2000.html,NA,NA,https://journals.asm.org/doi/10.1128/.38.6.2398-2399.2000,Journal of Clinical Microbiology,Data/predicted/10.1128_.38.6.2398-2399.2000.csv,NA,NA,
 Data/html/10.1128_iai.01122-09.html,No,No,https://journals.asm.org/doi/10.1128/iai.01122-09,Infection and Immunity,Data/predicted/10.1128_iai.01122-09.csv,No,No,
 Data/html/10.1128_jcm.38.10.3843-3845.2000.html,No,No,https://journals.asm.org/doi/10.1128/jcm.38.10.3843-3845.2000,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.38.10.3843-3845.2000.csv,No,No,
-Data/html/10.1128_jcm.41.2.886-888.2003.html,No,No,https://journals.asm.org/doi/10.1128/jcm.41.2.886-888.2003,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.41.2.886-888.2003.csv,Yes,Yes,genbank numbers in a table
+Data/html/10.1128_jcm.41.2.886-888.2003.html,No,No,https://journals.asm.org/doi/10.1128/jcm.41.2.886-888.2003,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.41.2.886-888.2003.csv,Yes,Yes,"genbank numbers in a table, model missed them "
 Data/html/10.1128_jvi.01471-15.html,No,No,https://journals.asm.org/doi/10.1128/jvi.01471-15,Journal of Virology,Data/predicted/10.1128_jvi.01471-15.csv,No,No,
 Data/html/10.1128_iai.00188-21.html,No,No,https://journals.asm.org/doi/10.1128/iai.00188-21,Infection and Immunity,Data/predicted/10.1128_iai.00188-21.csv,No,No,
-Data/html/10.1128_jcm.02291-14.html,No,No,https://journals.asm.org/doi/10.1128/jcm.02291-14,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.02291-14.csv,No,Yes,MLST and NGS
+Data/html/10.1128_jcm.02291-14.html,No,No,https://journals.asm.org/doi/10.1128/jcm.02291-14,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.02291-14.csv,No,Yes,MLST and NGS comparison
 Data/html/10.1128_jcm.01247-21.html,No,No,https://journals.asm.org/doi/10.1128/jcm.01247-21,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.01247-21.csv,No,No,
 Data/html/10.1128_aem.00071-10.html,No,No,https://journals.asm.org/doi/10.1128/aem.00071-10,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.00071-10.csv,No,No,
 Data/html/10.1128_aem.66.2.529-534.2000.html,No,No,https://journals.asm.org/doi/10.1128/aem.66.2.529-534.2000,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.66.2.529-534.2000.csv,No,No,confirmation 16S
@@ -51,7 +51,7 @@ Data/html/10.1128_aem.00375-09.html,No,No,https://journals.asm.org/doi/10.1128/a
 Data/html/10.1128_jcm.38.4.1694-1695.2000.html,No,No,https://journals.asm.org/doi/10.1128/jcm.38.4.1694-1695.2000,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.38.4.1694-1695.2000.csv,No,No,
 Data/html/10.1128_jvi.76.13.6701-6709.2002.html,No,No,https://journals.asm.org/doi/10.1128/jvi.76.13.6701-6709.2002,Journal of Virology,Data/predicted/10.1128_jvi.76.13.6701-6709.2002.csv,No,No,
 Data/html/10.1128_aac.00710-13.html,No,No,https://journals.asm.org/doi/10.1128/aac.00710-13,Antimicrobial Agents and Chemotherapy,Data/predicted/10.1128_aac.00710-13.csv,No,No,
-Data/html/10.1128_jb.01466-10.html,No,No,https://journals.asm.org/doi/10.1128/jb.01466-10,Journal of Bacteriology,Data/predicted/10.1128_jb.01466-10.csv,No,Yes,
+Data/html/10.1128_jb.01466-10.html,No,No,https://journals.asm.org/doi/10.1128/jb.01466-10,Journal of Bacteriology,Data/predicted/10.1128_jb.01466-10.csv,No,No,this was a verification study and the model was correct
 Data/html/10.1128_aac.01122-10.html,No,No,https://journals.asm.org/doi/10.1128/aac.01122-10,Antimicrobial Agents and Chemotherapy,Data/predicted/10.1128_aac.01122-10.csv,No,No,
 Data/html/10.1128_jvi.78.24.14023-14032.2004.html,No,No,https://journals.asm.org/doi/10.1128/jvi.78.24.14023-14032.2004,Journal of Virology,Data/predicted/10.1128_jvi.78.24.14023-14032.2004.csv,No,No,
 Data/html/10.1128_jcm.42.10.4832-4834.2004.html,No,No,https://journals.asm.org/doi/10.1128/jcm.42.10.4832-4834.2004,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.42.10.4832-4834.2004.csv,No,No,
@@ -94,7 +94,7 @@ Data/html/10.1128_aem.00598-24.html,No,Yes,https://journals.asm.org/doi/10.1128/
 Data/html/10.1128_aac.01144-12.html,No,Yes,https://journals.asm.org/doi/10.1128/aac.01144-12,Antimicrobial Agents and Chemotherapy,Data/predicted/10.1128_aac.01144-12.csv,No,Yes,
 Data/html/10.1128_aac.01500-19.html,No,Yes,https://journals.asm.org/doi/10.1128/aac.01500-19,Antimicrobial Agents and Chemotherapy,Data/predicted/10.1128_aac.01500-19.csv,No,Yes,
 Data/html/10.1128_aem.01827-12.html,No,Yes,https://journals.asm.org/doi/10.1128/aem.01827-12,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.01827-12.csv,No,Yes,
-Data/html/10.1128_iai.00613-19.html,No,Yes,https://journals.asm.org/doi/10.1128/iai.00613-19,Infection and Immunity,Data/predicted/10.1128_iai.00613-19.csv,Yes,Yes,protein seq deposited
+Data/html/10.1128_iai.00613-19.html,No,Yes,https://journals.asm.org/doi/10.1128/iai.00613-19,Infection and Immunity,Data/predicted/10.1128_iai.00613-19.csv,No,Yes,"RNA sequencing transcriptome, actually model was correct"
 Data/html/10.1128_jcm.38.8.3048-3054.2000.html,No,Yes,https://journals.asm.org/doi/10.1128/jcm.38.8.3048-3054.2000,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.38.8.3048-3054.2000.csv,No,Yes,
 Data/html/10.1128_spectrum.01957-22.html,No,Yes,https://journals.asm.org/doi/10.1128/spectrum.01957-22,Microbiology Spectrum,Data/predicted/10.1128_spectrum.01957-22.csv,No,Yes,
 Data/html/10.1128_aac.02630-13.html,No,Yes,https://journals.asm.org/doi/10.1128/aac.02630-13,Antimicrobial Agents and Chemotherapy,Data/predicted/10.1128_aac.02630-13.csv,No,Yes,
@@ -114,21 +114,21 @@ Data/html/10.1128_aem.00017-09.html,No,Yes,https://journals.asm.org/doi/10.1128/
 Data/html/10.1128_jvi.00755-17.html,No,Yes,https://journals.asm.org/doi/10.1128/jvi.00755-17,Journal of Virology,Data/predicted/10.1128_jvi.00755-17.csv,No,Yes,
 Data/html/10.1128_spectrum.00823-24.html,No,Yes,https://journals.asm.org/doi/10.1128/spectrum.00823-24,Microbiology Spectrum,Data/predicted/10.1128_spectrum.00823-24.csv,No,Yes,
 Data/html/10.1128_mra.00351-23.html,No,Yes,https://journals.asm.org/doi/10.1128/mra.00351-23,Microbiology Resource Announcements,Data/predicted/10.1128_mra.00351-23.csv,No,Yes,
-Data/html/10.1128_jvi.00437-17.html,No,Yes,https://journals.asm.org/doi/10.1128/jvi.00437-17,Journal of Virology,Data/predicted/10.1128_jvi.00437-17.csv,No,No,cell culture system
+Data/html/10.1128_jvi.00437-17.html,No,Yes,https://journals.asm.org/doi/10.1128/jvi.00437-17,Journal of Virology,Data/predicted/10.1128_jvi.00437-17.csv,No,No,"cell culture system talking about DNA sequences in paper, would guess high instance of ""DNA"""
 Data/html/10.1128_aem.01787-18.html,No,Yes,https://journals.asm.org/doi/10.1128/aem.01787-18,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.01787-18.csv,No,Yes,
 Data/html/10.1128_aem.01571-10.html,No,Yes,https://journals.asm.org/doi/10.1128/aem.01571-10,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.01571-10.csv,No,Yes,
 Data/html/10.1128_aem.02291-05.html,No,Yes,https://journals.asm.org/doi/10.1128/aem.02291-05,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.02291-05.csv,No,Yes,
-Data/html/10.1128_jvi.02662-09.html,No,Yes,https://journals.asm.org/doi/10.1128/jvi.02662-09,Journal of Virology,Data/predicted/10.1128_jvi.02662-09.csv,Yes,No,proteins
-Data/html/10.1128_spectrum.03893-22.html,Yes,No,https://journals.asm.org/doi/10.1128/spectrum.03893-22,Microbiology Spectrum,Data/predicted/10.1128_spectrum.03893-22.csv,No,No,
+Data/html/10.1128_jvi.02662-09.html,No,Yes,https://journals.asm.org/doi/10.1128/jvi.02662-09,Journal of Virology,Data/predicted/10.1128_jvi.02662-09.csv,Yes,No,proteins deposited in PDB
+Data/html/10.1128_spectrum.03893-22.html,Yes,No,https://journals.asm.org/doi/10.1128/spectrum.03893-22,Microbiology Spectrum,Data/predicted/10.1128_spectrum.03893-22.csv,No,No,a bunch of protein IDs in a table but this shouldn't have been considered by the model
 Data/html/10.1128_spectrum.02713-22.html,Yes,No,https://journals.asm.org/doi/10.1128/spectrum.02713-22,Microbiology Spectrum,Data/predicted/10.1128_spectrum.02713-22.csv,Yes,No,
-Data/html/10.1128_jcm.00519-10.html,Yes,No,https://journals.asm.org/doi/10.1128/jcm.00519-10,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.00519-10.csv,No,No,
+Data/html/10.1128_jcm.00519-10.html,Yes,No,https://journals.asm.org/doi/10.1128/jcm.00519-10,Journal of Clinical Microbiology,Data/predicted/10.1128_jcm.00519-10.csv,Yes,No,"this one was correct in the model, but was not explicitly named that these were newly deposited"
 Data/html/10.1128_iai.00631-10.html,Yes,No,https://journals.asm.org/doi/10.1128/iai.00631-10,Infection and Immunity,Data/predicted/10.1128_iai.00631-10.csv,Yes,No,microarray
 Data/html/10.1128_msystems.00835-21.html,Yes,No,https://journals.asm.org/doi/10.1128/msystems.00835-21,mSystems,Data/predicted/10.1128_msystems.00835-21.csv,Yes,No,metabolomics
 Data/html/10.1128_mbio.03629-21.html,Yes,No,https://journals.asm.org/doi/10.1128/mbio.03629-21,mBio,Data/predicted/10.1128_mbio.03629-21.csv,Yes,No,metabolomics
-Data/html/10.1128_aem.01040-20.html,Yes,No,https://journals.asm.org/doi/10.1128/aem.01040-20,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.01040-20.csv,No,No,
-Data/html/10.1128_jb.00417-10.html,Yes,No,https://journals.asm.org/doi/10.1128/jb.00417-10,Journal of Bacteriology,Data/predicted/10.1128_jb.00417-10.csv,No,No,
+Data/html/10.1128_aem.01040-20.html,Yes,No,https://journals.asm.org/doi/10.1128/aem.01040-20,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.01040-20.csv,No,No,links to existing PDB files that they used to model a new protein/confirm predictions
+Data/html/10.1128_jb.00417-10.html,Yes,No,https://journals.asm.org/doi/10.1128/jb.00417-10,Journal of Bacteriology,Data/predicted/10.1128_jb.00417-10.csv,Yes,Yes,"used pcr product to determine sequence of one gene, ""nucleotide sequence"" language"
 Data/html/10.1128_jvi.02444-06.html,Yes,No,https://journals.asm.org/doi/10.1128/jvi.02444-06,Journal of Virology,Data/predicted/10.1128_jvi.02444-06.csv,Yes,No,verification
-Data/html/10.1128_spectrum.04233-22.html,Yes,No,https://journals.asm.org/doi/10.1128/spectrum.04233-22,Microbiology Spectrum,Data/predicted/10.1128_spectrum.04233-22.csv,No,No,
+Data/html/10.1128_spectrum.04233-22.html,Yes,No,https://journals.asm.org/doi/10.1128/spectrum.04233-22,Microbiology Spectrum,Data/predicted/10.1128_spectrum.04233-22.csv,No,No,"letter about new mpox diagnostic technique, contains accessions to published sequence it was based on "
 Data/html/10.1128_aem.03386-16.html,Yes,No,https://journals.asm.org/doi/10.1128/aem.03386-16,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.03386-16.csv,Yes,No,
 Data/html/10.1128_jvi.01471-21.html,Yes,No,https://journals.asm.org/doi/10.1128/jvi.01471-21,Journal of Virology,Data/predicted/10.1128_jvi.01471-21.csv,Yes,No,protein
 Data/html/10.1128_jvi.00529-21.html,Yes,No,https://journals.asm.org/doi/10.1128/jvi.00529-21,Journal of Virology,Data/predicted/10.1128_jvi.00529-21.csv,Yes,No,protein
@@ -139,13 +139,13 @@ Data/html/10.1128_jcm.41.9.4279-4284.2003.html,Yes,No,https://journals.asm.org/d
 Data/html/10.1128_jb.00025-12.html,Yes,No,https://journals.asm.org/doi/10.1128/jb.00025-12,Journal of Bacteriology,Data/predicted/10.1128_jb.00025-12.csv,No,No,discussion of recently published sequences
 Data/html/10.1128_jvi.00638-10.html,Yes,No,https://journals.asm.org/doi/10.1128/jvi.00638-10,Journal of Virology,Data/predicted/10.1128_jvi.00638-10.csv,Yes,No,
 Data/html/10.1128_mra.00108-21.html,Yes,No,https://journals.asm.org/doi/10.1128/mra.00108-21,Microbiology Resource Announcements,Data/predicted/10.1128_mra.00108-21.csv,Yes,No,
-Data/html/10.1128_aem.00809-24.html,Yes,No,https://journals.asm.org/doi/10.1128/aem.00809-24,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.00809-24.csv,No,Yes,
+Data/html/10.1128_aem.00809-24.html,Yes,No,https://journals.asm.org/doi/10.1128/aem.00809-24,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.00809-24.csv,No,Yes,"new plasmid found, whole genome sequenced, but not deposited"
 Data/html/10.1128_jvi.00074-20.html,Yes,No,https://journals.asm.org/doi/10.1128/jvi.00074-20,Journal of Virology,Data/predicted/10.1128_jvi.00074-20.csv,Yes,No,protein
 Data/html/10.1128_jb.01677-09.html,Yes,No,https://journals.asm.org/doi/10.1128/jb.01677-09,Journal of Bacteriology,Data/predicted/10.1128_jb.01677-09.csv,Yes,No,protein
 Data/html/10.1128_mbio.02660-18.html,Yes,No,https://journals.asm.org/doi/10.1128/mbio.02660-18,mBio,Data/predicted/10.1128_mbio.02660-18.csv,Yes,No,protein
 Data/html/10.1128_jb.01465-08.html,Yes,No,https://journals.asm.org/doi/10.1128/jb.01465-08,Journal of Bacteriology,Data/predicted/10.1128_jb.01465-08.csv,Yes,No,microarray
-Data/html/10.1128_aem.00359-13.html,Yes,No,https://journals.asm.org/doi/10.1128/aem.00359-13,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.00359-13.csv,No,Yes,
+Data/html/10.1128_aem.00359-13.html,Yes,No,https://journals.asm.org/doi/10.1128/aem.00359-13,Applied and Environmental Microbiology,Data/predicted/10.1128_aem.00359-13.csv,No,No,"confirmation seq on a plasmid for enzyme bioengineering, reference to the deposited sequences of things they're using "
 Data/html/10.1128_jvi.00942-09.html,Yes,No,https://journals.asm.org/doi/10.1128/jvi.00942-09,Journal of Virology,Data/predicted/10.1128_jvi.00942-09.csv,Yes,No,protein
 Data/html/10.1128_spectrum.03651-22.html,Yes,No,https://journals.asm.org/doi/10.1128/spectrum.03651-22,Microbiology Spectrum,Data/predicted/10.1128_spectrum.03651-22.csv,Yes,No,
-Data/html/10.1128_jb.184.8.2260-2272.2002.html,Yes,No,https://journals.asm.org/doi/10.1128/jb.184.8.2260-2272.2002,Journal of Bacteriology,Data/predicted/10.1128_jb.184.8.2260-2272.2002.csv,No,No,
+Data/html/10.1128_jb.184.8.2260-2272.2002.html,Yes,No,https://journals.asm.org/doi/10.1128/jb.184.8.2260-2272.2002,Journal of Bacteriology,Data/predicted/10.1128_jb.184.8.2260-2272.2002.csv,No,No,used previously published data and included discussion of genbank
 Data/html/10.1128_jvi.00810-17.html,Yes,No,https://journals.asm.org/doi/10.1128/jvi.00810-17,Journal of Virology,Data/predicted/10.1128_jvi.00810-17.csv,Yes,No,
