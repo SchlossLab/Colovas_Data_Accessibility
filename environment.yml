@@ -23,6 +23,12 @@ dependencies:
   - r-randomforest
   - r-microbenchmark
   - r-quarto
+  - r-rscopus
+  - r-rentrez
+  - r-caret
+  - r-randomforest
+  
+
 
   
 

@@ -331,7 +331,34 @@ rule final_model:
         {input.rscript} {input.rds} {wildcards.ml_variables} {params.mtry_value} {input.rdir}
         """
 
+rule scopus: 
+    input: 
+        rscript = "Code/doi_gathering_scopus_via_httr.R"
+    output: 
+        "Data/scopus/scopus_{datasets}.csv.gz"
+    shell: 
+        """
+        {input.rscript} {wildcards.datasets} 
+        """
 
+rule wos: 
+    input: 
+        rscript = "Code/doi_gathering_wos_via_httr.R"
+    output: 
+        "Data/wos/wos_{datasets}.csv.gz"
+    shell: 
+        """
+        {input.rscript} {wildcards.datasets} 
+        """
+
+
+rule ncbi: 
+    output: 
+        "Data/ncbi/ncbi_{datasets}.csv.gz"
+    shell: 
+        """
+        esearch -db pubmed -query "{wildcards.datasets}" | efetch -format csv > "{output}"
+        """
 
 
 #-------------------LINK-------ROT-----------------------------------------------------------
