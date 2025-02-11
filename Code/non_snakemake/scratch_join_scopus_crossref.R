@@ -53,10 +53,15 @@ scopus_and_ncbi<-inner_join(scopus, ncbi, by = join_by(`prism:doi` == doi)) %>%
 
 crossref_and_ncbi<-inner_join(crossref, ncbi, by = join_by(doi == doi)) %>%
     anti_join(., all_three, by = join_by(doi == `prism:doi`))
+any(duplicated(crossref_and_ncbi)) 
+which(is.na(crossref_and_ncbi$title)) 
 
+filter(crossref_and_ncbi, title.x != title.y) %>%
+    select(title.x, title.y) %>% 
+    view()
 
-ncbi_crossref <-inner_join(crossref, ncbi, by = join_by(doi == doi)) %>%
-    anti_join(., all_three, by = join_by(doi == `prism:doi`))
+# ncbi_crossref <-inner_join(crossref, ncbi, by = join_by(doi == doi)) %>%
+#     anti_join(., all_three, by = join_by(doi == `prism:doi`))
 
 
 
@@ -78,3 +83,5 @@ grep("withdrawn", ncbi$title, value = TRUE, ignore.case = TRUE) #7
 
 grep("retracted", crossref$title, value = TRUE, ignore.case = TRUE) #6
 grep("withdrawn", crossref$title, value = TRUE, ignore.case = TRUE) #0
+
+filter(crossref_only, is.referenced.by.count ==0)
