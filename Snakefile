@@ -359,6 +359,8 @@ rule crossref:
         rscript = "Code/doi_gathering_crossref.R"
     output: 
         "Data/crossref/crossref_{datasets}.csv.gz"
+    group:
+        "crossref"
     shell: 
         """
         {input.rscript} {wildcards.datasets} 
