@@ -11,12 +11,27 @@ library(tidyverse)
 papers_dir <- "Data/crossref"
 csv_files <- list.files(papers_dir, "*.csv", full.names = TRUE) 
 
-all_metadata <- read_csv(csv_files)
 
-write_csv(keep_track, file = "Data/final/predictions_with_metadata.csv.gz")
 
-file_1 <-read_csv(csv_files[1])
+keep_track<-read_csv(csv_files[1]) %>% 
+    # mutate(created = as.character(created))
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue"))
 
-file_2<-read_csv(csv_files[2])
+for(i in 2:12) {
+    #read in journal
+    csv_file <- read_csv(csv_files[i]) %>% 
+        mutate_if(lubridate::is.Date, as.character) %>% 
+        mutate_if(is.double, as.character, .vars = vars("issue"))
+        
 
-read_csv(csv_files[3])
+    #this does it for the current journal to join with all_papers
+    keep_track <- full_join(keep_track, csv_file) 
+        
+    # keep_track<-bind_rows(keep_track, all_papers)
+   
+}
+
+
+write_csv(keep_track, file = "Data/crossref/crossref_all_papers.csv.gz")
+
