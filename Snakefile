@@ -46,6 +46,9 @@ mtry_dict = {
 dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
+new_gt_dois = pd.read_csv("Data/new_groundtruth_dois.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
+new_gt_doi_lookup = dict(zip(new_gt_dois["doi"], new_gt_dois["url"]))
+
 
 ncores = 1
 seeds = list(range(1, 101))
@@ -113,8 +116,6 @@ rule combine_predictions:
         """
         {input.rscript} {params.p_dir} {output}
         """
-
-
 
 rule webscrape:
     input: 

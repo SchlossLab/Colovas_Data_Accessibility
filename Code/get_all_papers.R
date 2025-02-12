@@ -34,3 +34,22 @@ all_papers <-
         rename(url = paper, doi = unique_id)
 
 write_csv(all_papers, file = output)
+
+
+#20250212 - i have no idea why this was set up for snakemake, but i need to use it to get all groundtruth dois
+
+#let's see what this one looks like 
+all_papers <-read_csv("Data/papers/all_papers.csv.gz")
+
+papers <- read_csv("Data/new_groundtruth.csv") 
+papers <- papers %>%
+    mutate(doi_underscore = str_replace(doi, "/", "_")) 
+
+#make doi list like all_papers
+doi_list <- papers %>% 
+    select(paper, doi_underscore) %>% 
+    rename(url = paper, doi = doi_underscore)
+
+write_csv(doi_list, "Data/new_groundtruth_dois.csv.gz")
+
+# output<-"Data/papers/all_papers.csv.gz"
