@@ -1,8 +1,7 @@
 import pandas as pd 
 
 training_datasets = {
-    "groundtruth" : "Data/groundtruth.csv",
-    "gt_subset_30" : "Data/gt_subset_30.csv",
+    "groundtruth" : "Data/new_groundtruth.csv"
 }
 
 # practice_datasets = { 
@@ -56,18 +55,6 @@ rule targets:
     input:
         expand("Data/crossref/crossref_{datasets}.csv.gz", datasets = new_datasets)
 
-
-#20250210 - should be redundant now that crossref data is in .csv.gz form      
-# rule rds_to_csv: 
-#     input: 
-#         rscript = "Code/rds_to_csv.R",
-#         rds = "Data/metadata/{datasets}_metadata.RDS"
-#     output: 
-#         "Data/papers/{datasets}.csv"
-#     shell: 
-#         """
-#         {input.rscript} {input.rds} {output}
-#         """
 
 rule all_papers: 
     input: 
@@ -128,22 +115,6 @@ rule combine_predictions:
         """
 
 
-
-rule doi_linkrot: 
-    input: 
-        rscript = "Code/doi_linkrot.R",
-        csv = "Data/papers/{datasets}.csv"
-    output:
-        "Data/doi_linkrot/alive/{datasets}.csv",
-        "Data/doi_linkrot/dead/{datasets}.csv"
-    params: 
-        filepath = "Data/doi_linkrot"
-    resources: 
-        mem_mb = 20000 
-    shell: 
-        """
-        {input.rscript} {input.csv} {params.filepath} {wildcards.datasets}
-        """
 
 rule webscrape:
     input: 
