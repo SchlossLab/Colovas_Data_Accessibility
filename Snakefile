@@ -43,7 +43,7 @@ mtry_dict = {
 }
 
 #import list of dois with their url 
-dois = pd.read_csv("Data/crossref/all_papers_dois.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
+dois = pd.read_csv("Data/all_api_dois.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
 

@@ -53,3 +53,55 @@ doi_list <- papers %>%
 
 write_csv(doi_list, "Data/crossref/all_papers_dois.csv.gz")
 
+#20250212 - get all dois after filtering them 
+#load files
+scopus <-read_csv("Data/scopus/all_scopus_citations.csv.gz")
+
+crossref <-read_csv("Data/crossref/crossref_all_papers.csv.gz")
+
+ncbi <-read_csv("Data/ncbi/ncbi_all_papers.csv.gz")
+
+
+ncbi <-ncbi %>%
+filter(!is.na(doi))
+
+dupes<- which(duplicated(ncbi$doi))
+dupe_table <- rbind(ncbi[dupes,])
+ncbi <-anti_join(ncbi, dupe_table)
+
+scopus <-
+scopus %>%
+filter(!is.na(`prism:doi`))
+
+ncbi$doi <- tolower(ncbi$doi)
+scopus$`prism:doi` <-tolower(scopus$`prism:doi`)
+crossref$doi<-tolower(crossref$doi)
+
+#remove pre-y2k for scopus 12927
+scopus <-
+    scopus %>%
+    filter(!str_detect(`prism:doi`, "19\\d\\d$")) 
+
+full_joined <-full_join(scopus, crossref, by = join_by(`prism:doi` == doi)) %>%
+    full_join(., ncbi, by = join_by(`prism:doi` == doi)) 
+
+
+all_dois<-c(scopus$`prism:doi`, crossref$doi, ncbi$doi)
+head(all_dois)
+
+str(all_dois) 
+# grep("10.1128/\\d", all_dois) # this one is 0
+grep("10.1128/\\.", all_dois, value = TRUE)
+
+unique_dois <-tibble(all_dois) %>% 
+    filter(!str_detect("10.1128/\\.", all_dois)) %>%
+    unique()
+
+renamed <-
+unique_dois %>%
+     mutate(doi_underscore = str_replace(all_dois, "/", "_"), 
+            paper = paste0("https://journals.asm.org/doi/", all_dois)) %>%
+    rename(url = paper, doi = doi_underscore) %>% 
+    select(url, doi)
+
+write_csv(renamed, "Data/all_api_dois.csv.gz")

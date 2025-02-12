@@ -103,7 +103,7 @@ full_joined %>%
     filter(is.na(ncbi_doi) & is.na(scopus_doi) & !is.na(crossref_doi)) %>%
     nrow()
 
-#scopus only
+#scopus only and remove prey2k
 full_joined %>% 
     filter(is.na(ncbi_doi) & !is.na(scopus_doi) & is.na(crossref_doi)) %>% 
     filter(str_detect(scopus_doi, "19\\d\\d$"))
@@ -151,3 +151,5 @@ full_joined %>%
 full_joined %>% 
     filter(str_detect(scopus_doi, "\\D$")) %>% 
     print(n =  Inf)
+
+
