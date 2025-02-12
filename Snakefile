@@ -46,9 +46,6 @@ mtry_dict = {
 dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
-new_gt_dois = pd.read_csv("Data/new_groundtruth_dois.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
-new_gt_doi_lookup = dict(zip(new_gt_dois["doi"], new_gt_dois["url"]))
-
 
 ncores = 1
 seeds = list(range(1, 101))
@@ -56,21 +53,21 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/crossref/crossref_{datasets}.csv.gz", datasets = new_datasets)
+        new_gt_doi_lookup.keys()
 
 
-rule all_papers: 
-    input: 
-        rscript = "Code/get_all_papers.R",
-        papers = expand("Data/papers/{datasets}.csv", datasets = new_datasets)
-    output: 
-        "Data/papers/all_papers.csv.gz"
-    params: 
-        paper_dir = "Data/papers"
-    shell: 
-        """
-        {input.rscript} {params.paper_dir} {output} 
-        """
+# rule all_papers: 
+#     input: 
+#         rscript = "Code/get_all_papers.R",
+#         papers = expand("Data/papers/{datasets}.csv", datasets = new_datasets)
+#     output: 
+#         "Data/papers/all_papers.csv.gz"
+#     params: 
+#         paper_dir = "Data/papers"
+#     shell: 
+#         """
+#         {input.rscript} {params.paper_dir} {output} 
+#         """
 
 
 rule indiv_dois:
