@@ -43,7 +43,7 @@ mtry_dict = {
 }
 
 #import list of dois with their url 
-dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
+dois = pd.read_csv("Data/crossref/all_papers_dois.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
 
@@ -53,22 +53,26 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        new_gt_doi_lookup.keys()
+        doi_lookup.keys()
 
 
-# rule all_papers: 
-#     input: 
-#         rscript = "Code/get_all_papers.R",
-#         papers = expand("Data/papers/{datasets}.csv", datasets = new_datasets)
-#     output: 
-#         "Data/papers/all_papers.csv.gz"
-#     params: 
-#         paper_dir = "Data/papers"
-#     shell: 
-#         """
-#         {input.rscript} {params.paper_dir} {output} 
-#         """
 
+rule all_papers: 
+    input: 
+        rscript = "Code/get_all_papers.R",
+        papers = expand("Data/papers/{datasets}.csv", datasets = new_datasets)
+    output: 
+        "Data/papers/all_papers.csv.gz"
+    params: 
+        paper_dir = "Data/papers"
+    shell: 
+        """
+        {input.rscript} {params.paper_dir} {output} 
+        """
+        
+rule all_dois:
+    input:
+        doi_lookup.keys()
 
 rule indiv_dois:
     output:

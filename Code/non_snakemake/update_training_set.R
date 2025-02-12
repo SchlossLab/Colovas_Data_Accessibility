@@ -41,3 +41,23 @@ new_groundtruth <- full_join(groundtruth, sc_metadata) %>%
 
 
 write_csv(new_groundtruth, "Data/new_groundtruth.csv")
+
+
+#ok so i want to know if all the gt files are in crossref so that they will be scraped with the normal rule 
+#why is there literally 1 missing 
+
+groundtruth <- 
+groundtruth %>%
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue"))
+
+crossref <-
+crossref %>%
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue"))
+
+inner <-inner_join(groundtruth, crossref)
+left <- left_join(groundtruth, crossref)
+
+view(inner)
+view(left)
