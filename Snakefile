@@ -53,7 +53,7 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        doi_lookup.keys()
+        expand("Data/html/{doi}.html", doi = doi_lookup.keys())
 
 
 
@@ -70,9 +70,6 @@ rule all_papers:
         {input.rscript} {params.paper_dir} {output} 
         """
         
-rule all_dois:
-    input:
-        doi_lookup.keys()
 
 rule indiv_dois:
     output:
