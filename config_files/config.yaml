@@ -32,3 +32,4 @@ group-components:
   - get_doi=1000
   - get_html=1000
   - crossref=6
+  - wos = 12

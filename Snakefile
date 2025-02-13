@@ -53,7 +53,8 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/html/{doi}.html", doi = doi_lookup.keys())
+        # expand("Data/html/{doi}.html", doi = doi_lookup.keys())
+        expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets)
 
 
 
@@ -310,6 +311,8 @@ rule wos:
         rscript = "Code/doi_gathering_wos_via_httr.R"
     output: 
         "Data/wos/wos_{datasets}.csv.gz"
+    group: 
+        "wos"
     shell: 
         """
         {input.rscript} {wildcards.datasets} 

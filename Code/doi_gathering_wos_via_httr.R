@@ -12,7 +12,7 @@ issn <- as.character(input[1])
 
 
 #local testing
-#issn <-"2379-5042"
+issn <-"2379-5042"
 
 #   clarivate - 
 clarivate_key <- "fba06c10b8832254cfed5f514778b86e9f888e51"
@@ -47,7 +47,7 @@ request_url<-paste0(
 wos_req <- request(request_url) %>%
     req_headers("X-ApiKey" = clarivate_key) %>% 
     req_user_agent("jocolova@med.umich.edu") %>%
-    req_throttle(rate = 1/60)
+    req_throttle(rate = 5/60)
 
 wos_response <- req_perform(wos_req) %>%
     resp_body_json(simplifyVector = TRUE) 
