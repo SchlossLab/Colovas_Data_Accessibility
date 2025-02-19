@@ -78,7 +78,7 @@ rule indiv_dois:
     group:
         "get_doi"
     resources:
-        mem_mb = 8
+        mem_mb = 800
     params:
         url = lambda wildcards, output: doi_lookup[wildcards.doi]
     shell:

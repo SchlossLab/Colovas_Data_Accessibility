@@ -12,7 +12,7 @@ issn <- as.character(input[1])
 
 
 #local testing
-issn <-"2379-5042"
+# issn <-"2379-5042"
 
 #   clarivate - 
 clarivate_key <- "fba06c10b8832254cfed5f514778b86e9f888e51"
