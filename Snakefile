@@ -111,49 +111,65 @@ rule combine_predictions:
         """
         {input.rscript} {params.p_dir} {output}
         """
-
-rule webscrape:
+#20250220 - this rule replaces webscrape, cleanHTML, tokenize
+rule train_tokens: 
     input: 
-        rscript = "Code/Webscrape.R",
-        csv = "Data/doi_linkrot/alive/{datasets}.csv"
+        rscript = "Code/train_html_tokens.R",
+        csv = "Data/new_groundtruth_dois.csv.gz", 
+        metadata = "Data/new_groundtruth_metadata.csv.gz"
     output: 
-        "Data/webscrape/{datasets}.html.csv.gz"
+        "Data/groundtruth/{datasets}.tokens.csv.gz"
     resources: 
-        mem_mb = 40000 
+        mem_mb: 40000
     params: 
-        datasets = new_datasets
     shell: 
         """
-        {input.rscript} {input.csv} {output}
-        """
+        {input.rscript} {input.csv} {input.metadata} {output}
+        """   
 
 
-rule cleanHTML: 
-    input:
-        rscript = "Code/cleanHTML.R",
-        html = "Data/webscrape/{datasets}.html.csv.gz"
-    output: 
-        "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-    resources: 
-        mem_mb = 20000
-    shell: 
-        """
-        {input.rscript} {input.html} {output}
-        """
+# rule webscrape:
+#     input: 
+#         rscript = "Code/Webscrape.R",
+#         csv = "Data/doi_linkrot/alive/{datasets}.csv"
+#     output: 
+#         "Data/webscrape/{datasets}.html.csv.gz"
+#     resources: 
+#         mem_mb = 40000 
+#     params: 
+#         datasets = new_datasets
+#     shell: 
+#         """
+#         {input.rscript} {input.csv} {output}
+#         """
 
 
-rule tokenize: 
-    input:
-        rscript = "Code/tokenize.R",
-        html = "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-    output: 
-        "Data/tokens/{datasets}.tokens.csv.gz"
-    resources: 
-        mem_mb = 80000 
-    shell: 
-        """
-        {input.rscript} {input.html} {output}
-        """      
+# rule cleanHTML: 
+#     input:
+#         rscript = "Code/cleanHTML.R",
+#         html = "Data/webscrape/{datasets}.html.csv.gz"
+#     output: 
+#         "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
+#     resources: 
+#         mem_mb = 20000
+#     shell: 
+#         """
+#         {input.rscript} {input.html} {output}
+#         """
+
+
+# rule tokenize: 
+#     input:
+#         rscript = "Code/tokenize.R",
+#         html = "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
+#     output: 
+#         "Data/tokens/{datasets}.tokens.csv.gz"
+#     resources: 
+#         mem_mb = 80000 
+#     shell: 
+#         """
+#         {input.rscript} {input.html} {output}
+#         """      
 
 
 rule ml_prep_train:

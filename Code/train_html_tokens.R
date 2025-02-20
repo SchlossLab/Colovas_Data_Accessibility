@@ -25,10 +25,13 @@ output_file <- input[3]
 #20250220 - use new_groundtruth to get prepped for model training
 
 
-doi <- "Data/html/10.1128_jmbe.8.1.3-12.2007.html"
-file.exists(doi)
-html<-webscrape(doi)
-clean<- prep_html_tm(html)
+# doi <- "Data/html/10.1128_jmbe.8.1.3-12.2007.html"
+# file.exists(doi)
+# html<-webscrape(doi)
+# clean<- prep_html_tm(html)
+
+
+
 
 
 #function for reading html, remove figs/tables, 
