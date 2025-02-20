@@ -4,10 +4,6 @@ training_datasets = {
     "groundtruth" : "Data/new_groundtruth.csv"
 }
 
-# practice_datasets = { 
-#     "1935-7885_alive" : "Data/1935-7885.csv", 
-#     "1098-5530_small" : "Data/1098-5530_small.csv",
-# }
 
 new_datasets = {
     "1098-5530" : "Data/1098-5530_metadata.RDS", #jb

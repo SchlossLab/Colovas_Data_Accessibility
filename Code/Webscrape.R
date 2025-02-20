@@ -17,7 +17,8 @@ output_file <- input[2]
 
 
 # #local testing
-# doi <- "Data/html/1935-7885/jmbe.8.1.3-12.2007.html"
+# doi <- "Data/html/10.1128_jmbe.8.1.3-12.2007.html"
+# file.exists(doi)
 # webscrape(doi)
 
 #function for reading html, remove figs/tables, 
@@ -30,16 +31,6 @@ webscrape <- function(doi) {
   
   body <- read_html(doi) %>%
     html_elements("section#bodymatter") 
-  
-  body_notables <- body %>%
-    html_elements(css = ".table > *") %>%
-    html_children() %>%
-    xml_remove()
-  
-  body_nofigures <- body %>%
-    html_elements(css = ".figure-wrap > *") %>%
-    html_children() %>%
-    xml_remove()
   
   paper_html <- paste0(abstract, body, collapse = " ") 
   

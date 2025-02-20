@@ -49,15 +49,6 @@ webscrape <- function(doi) {
   body <- read_html(doi) %>%
     html_elements("section#bodymatter") 
   
-  body_notables <- body %>%
-    html_elements(css = ".table > *") %>%
-    html_children() %>%
-    xml_remove()
-  
-  body_nofigures <- body %>%
-    html_elements(css = ".figure-wrap > *") %>%
-    html_children() %>%
-    xml_remove()
   
   paper_html <- paste0(abstract, body, collapse = " ") 
   

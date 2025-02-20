@@ -21,18 +21,14 @@ input_path <- input[2]
 output_file <- input[3]
 
 
-# #local
-# input_file <- read_csv("Data/papers/1935-7885.csv") %>% 
-#     select(paper, html_filename) %>%
-#     mutate(clean_html = NA)
+#local 
+#20250220 - use new_groundtruth to get prepped for model training
 
-# input_file <- as.data.table(input_file)
-# str(input_file)
-# input_path <- "Data/html/1935-7885"
 
-# # doi <- "Data/html/1935-7885/jmbe.8.1.3-12.2007.html"
-# doi_webscraped <- webscrape(doi)
-# good_html <- prep_html_tm(doi_webscraped)
+doi <- "Data/html/10.1128_jmbe.8.1.3-12.2007.html"
+file.exists(doi)
+html<-webscrape(doi)
+clean<- prep_html_tm(html)
 
 
 #function for reading html, remove figs/tables, 
@@ -46,15 +42,6 @@ webscrape <- function(doi) {
   body <- read_html(doi) %>%
     html_elements("section#bodymatter") 
   
-  body_notables <- body %>%
-    html_elements(css = ".table > *") %>%
-    html_children() %>%
-    xml_remove()
-  
-  body_nofigures <- body %>%
-    html_elements(css = ".figure-wrap > *") %>%
-    html_children() %>%
-    xml_remove()
   
   paper_html <- paste0(abstract, body, collapse = " ") 
   
