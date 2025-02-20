@@ -8,7 +8,8 @@ library(tidyverse)
 
 #import data 
 
-papers_dir <- "Data/crossref"
+# papers_dir <- "Data/crossref"
+papers_dir <- "Data/wos"
 csv_files <- list.files(papers_dir, "*.csv", full.names = TRUE) 
 
 
@@ -32,6 +33,11 @@ for(i in 2:12) {
    
 }
 
+#for wos year only 
+keep_track <-
+keep_track %>%
+    filter(as.numeric(publishYear) >= 2000 & as.numeric(publishYear) < 2025)
 
-write_csv(keep_track, file = "Data/crossref/crossref_all_papers.csv.gz")
+#write_csv(keep_track, file = "Data/crossref/crossref_all_papers.csv.gz")
 
+write_csv(keep_track, file = "Data/wos/wos_all_papers.csv.gz")

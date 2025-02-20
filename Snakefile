@@ -53,8 +53,8 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        # expand("Data/html/{doi}.html", doi = doi_lookup.keys())
-        expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets)
+        #expand("Data/html/{doi}.html", doi = doi_lookup.keys()) #get all htmls
+        # expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets) #get wos data
 
 
 
@@ -78,7 +78,7 @@ rule indiv_dois:
     group:
         "get_doi"
     resources:
-        mem_mb = 800
+        mem_mb = 8000
     params:
         url = lambda wildcards, output: doi_lookup[wildcards.doi]
     shell:
