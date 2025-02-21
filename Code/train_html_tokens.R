@@ -11,26 +11,28 @@ library(xml2)
 library(textstem) #for stemming text variables
 library(tm) #for text manipulation
 library(data.table)
+library(randomForest)
+library(tokenizers)
 
 #snakemake 
 input <- commandArgs(trailingOnly = TRUE)
-input_file <- read.table(input[1])  %>% 
-    select(paper, html_filename) %>%
-    mutate(clean_html = NA)
-input_path <- input[2]
-output_file <- input[3]
+input_file <- read_csv(input[1])  %>% 
+    select(doi_underscore, container.title) %>%
+    mutate(clean_html = NA, 
+          html_filename = paste0("Data/html/", doi_underscore, ".html"), 
+          tokens = NA)
+output_file <- input[2]
 
 
 #local 
 #20250220 - use new_groundtruth to get prepped for model training
 
-
-# doi <- "Data/html/10.1128_jmbe.8.1.3-12.2007.html"
-# file.exists(doi)
-# html<-webscrape(doi)
-# clean<- prep_html_tm(html)
-
-
+# #import new groundtruth to get the html filename 
+# input_file <- read_csv("Data/new_groundtruth_metadata.csv.gz")  %>% 
+#     select(doi_underscore, container.title) %>%
+#     mutate(clean_html = NA, 
+#           html_filename = paste0("Data/html/", doi_underscore, ".html"), 
+#           tokens = NA)
 
 
 
@@ -64,6 +66,20 @@ prep_html_tm <- function(html) {
   html <- lemmatize_strings(html)
 }
 
+# tokenize paper with snowball stopwords
+
+tokenize <- function(clean_html) {
+
+  tokens <- tokenize_ngrams(clean_html, 
+                  n_min = 1, n = 3,
+                  stopwords = stopwords::stopwords("en", source = "snowball")) 
+  token_tibble <-tibble(tokens = unlist(tokens))
+  token_tibble <- add_count(token_tibble, tokens, name = "frequency")
+  token_tibble <- unique(token_tibble)
+
+}
+
+#about 2 mins 
 for (i in 1:nrow(input_file)) {
     if(!file.exists(input_file$html_filename[[i]])) {
         next
@@ -74,17 +90,17 @@ for (i in 1:nrow(input_file)) {
     
 }
 
-# remove hmtl_filename we don't need to save it now
-input_file <- input_file %>% 
-    select(!html_filename)
+# any(is.na(input_file$clean_html))
 
-#remove NAs in clean_html column 
+#about 3 mins
+input_file$tokens <-map(input_file$clean_html, tokenize)
+
+token_list <-
+  input_file %>%
+    select(doi_underscore, tokens) %>%
+    unnest(cols = tokens)
 
 
-write_csv(input_file, file = output_file)
+write_csv(token_list, file = output_file)
 
 
-#how will it work through the rest of the steps
-# tokenization - this one is beefy
-# prep for prediction - i feel like this one could be better
-# prediction - this part is the easy part 

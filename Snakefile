@@ -51,7 +51,7 @@ rule targets:
     input:
         #expand("Data/html/{doi}.html", doi = doi_lookup.keys()) #get all htmls
         # expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets) #get wos data
-
+        "Data/groundtruth/groundtruth.tokens.csv.gz"
 
 
 rule all_papers: 
@@ -115,16 +115,14 @@ rule combine_predictions:
 rule train_tokens: 
     input: 
         rscript = "Code/train_html_tokens.R",
-        csv = "Data/new_groundtruth_dois.csv.gz", 
         metadata = "Data/new_groundtruth_metadata.csv.gz"
     output: 
         "Data/groundtruth/{datasets}.tokens.csv.gz"
     resources: 
-        mem_mb: 40000
-    params: 
+        mem_mb = 40000
     shell: 
         """
-        {input.rscript} {input.csv} {input.metadata} {output}
+        {input.rscript} {input.metadata} {output}
         """   
 
 
