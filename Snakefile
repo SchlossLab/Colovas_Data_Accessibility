@@ -51,7 +51,9 @@ rule targets:
     input:
         #expand("Data/html/{doi}.html", doi = doi_lookup.keys()) #get all htmls
         # expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets) #get wos data
-        "Data/groundtruth/groundtruth.tokens.csv.gz"
+        # "Data/groundtruth/groundtruth.tokens.csv.gz"
+        expand("Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
+        ml_variables = ml_variables)
 
 
 rule all_papers: 
@@ -125,64 +127,20 @@ rule train_tokens:
         {input.rscript} {input.metadata} {output}
         """   
 
-
-# rule webscrape:
-#     input: 
-#         rscript = "Code/Webscrape.R",
-#         csv = "Data/doi_linkrot/alive/{datasets}.csv"
-#     output: 
-#         "Data/webscrape/{datasets}.html.csv.gz"
-#     resources: 
-#         mem_mb = 40000 
-#     params: 
-#         datasets = new_datasets
-#     shell: 
-#         """
-#         {input.rscript} {input.csv} {output}
-#         """
-
-
-# rule cleanHTML: 
-#     input:
-#         rscript = "Code/cleanHTML.R",
-#         html = "Data/webscrape/{datasets}.html.csv.gz"
-#     output: 
-#         "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-#     resources: 
-#         mem_mb = 20000
-#     shell: 
-#         """
-#         {input.rscript} {input.html} {output}
-#         """
-
-
-# rule tokenize: 
-#     input:
-#         rscript = "Code/tokenize.R",
-#         html = "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-#     output: 
-#         "Data/tokens/{datasets}.tokens.csv.gz"
-#     resources: 
-#         mem_mb = 80000 
-#     shell: 
-#         """
-#         {input.rscript} {input.html} {output}
-#         """      
-
+ 
 
 rule ml_prep_train:
     input:
         rscript = "Code/ml_preprocess.R",
-        tokens = "Data/tokens/{datasets}.tokens.csv.gz",
-        metadata = "Data/doi_linkrot/alive/{datasets}.csv",
+        tokens = "Data/groundtruth/groundtruth.tokens.csv.gz",
+        metadata = "Data/new_groundtruth.csv",
     output: 
-        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed.RDS",
-        ztable = "Data/ml_prep/{datasets}.{ml_variables}.zscoretable.csv", 
-        tokenlist = "Data/ml_prep/{datasets}.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/ml_prep/{datasets}.{ml_variables}.container_titles.RDS"
+        rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS",
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", 
+        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable} {output.tokenlist} {output.containerlist}
+        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable} {output.containerlist}
         """
 
 rule ztable: 

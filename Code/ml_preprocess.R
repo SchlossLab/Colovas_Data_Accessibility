@@ -10,33 +10,35 @@ library(mikropml)
 
 # load files
 #for snakemake implementation
-#  {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} 
-# {output.rds} {output.ztable} {output.tokenlist} {output.containerlist}
+#      {input.rscript} {input.metadata} {input.tokens} 
+# {wildcards.ml_variables} {output.rds} {output.ztable} {output.tokenlist} 
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- input[1]
-clean_csv <- input[2]
+clean_csv <- input[2] 
 ml_var_snake <- input[3]
 ml_var <- c("paper", ml_var_snake, "container.title")
 output_file <- as.character(input[4])
 str(output_file)
-clean_text <- read.csv(clean_csv)
+clean_text <- read.csv(clean_csv) %>%
+    rename(paper_doi = doi_underscore)
 metadata <- read.csv(metadata)
 ztable_filename <- as.character(input[5])
-token_filename <- as.character(input[6])
-container_title_filename <-as.character(input[7])
+# token_filename <- as.character(input[])
+container_title_filename <-as.character(input[6])
 
 
-# # # #local implementation
-# clean_text <- read_csv("Data/groundtruth.tokens.csv.gz")
-# metadata <- read_csv("Data/groundtruth.csv")
-# ml_var_snake <- "data_availability"
-# ml_var <- c("paper", ml_var_snake, "container.title") 
+ # #local implementation
+# clean_text <- read_csv("Data/groundtruth/groundtruth.tokens.csv.gz") %>%
+#     rename(paper_doi = doi_underscore)
+# metadata <- read_csv("Data/new_groundtruth.csv")
+# ml_var_snake <- "new_seq_data"
+# ml_var <- c("paper", ml_var_snake, "container.title")
 # #don't run this unless you really need it so that you don't
 # # accidentally save a file over this
-# # output_file <- "groundtruth.data_availability.preprocessed.RDS"
+# output_file <- "Data/preprocessed/groundtruth.new_seq_data.preprocessed.RDS"
 # str(output_file)
-# ztable_filename <- "groundtruth.data_availability.zscoretable.csv"
-# token_filename <- "groundtruth.data_availability.tokenlist.RDS"
+# ztable_filename <- "Data/ml_prep/groundtruth.new_seq_data.zscoretable.csv "
+# token_filename <- "Data/ml_prep/groundtruth.new_seq_data.tokenlist.RDS"
 # container_title_filename <- "Data/groundtruth.data_availability.container_titles.RDS"
 
 
@@ -44,22 +46,27 @@ container_title_filename <-as.character(input[7])
 # set up the format of the clean_text dataframe
 total_papers <- n_distinct(clean_text$paper_doi)
 
+#this is the most computationally intensive part takes 11:57-
 clean_tibble <-
     clean_text %>%
-        mutate(n_papers = n(), .by = paper_tokens) %>% #n papers contain token
+        mutate(n_papers = n(), .by = tokens) %>% #n papers contain token
         filter(n_papers > 1 ) %>% #filter - tokens n_papers>1
-        nest(data = -paper_tokens) %>% #nest everything except paper tokens?
+        nest(data = -tokens) %>% #nest everything except paper tokens?
         # mutate to find near zero variants
         mutate(nzv = map_dfr(data, \(x) {z = c(x$frequency, 
                                         rep(0,total_papers - nrow(x)));
-                                        caret::nearZeroVar(z, saveMetrics = TRUE)})) %>%
+                                        caret::nearZeroVar(z, saveMetrics = TRUE)}))
+clean_tibble <- 
+    clean_tibble %>% 
         unnest(nzv) %>% #pull the nzv column out
         filter(!nzv) %>% # filter for things without nzv
         unnest(data) %>%  #unnest all the data
-        select(paper_doi, paper_tokens, frequency) %>% #select these columns
-        pivot_wider(id_cols = c(paper_doi),
-                    names_from = paper_tokens, values_from = frequency,
+        select(paper_doi, tokens, frequency) %>% #select these columns
+        unique() %>%
+        pivot_wider(id_cols = paper_doi,
+                    names_from = tokens, values_from = frequency, 
                     values_fill = 0) #pivot wider and fill in zeros
+
 
 # make 3 col df of token, mean, sd for the z scoring --------------------------
 
@@ -85,7 +92,9 @@ z_score_table <- tibble(tokens, token_mean, token_sd)
 # save out z score table 
 write_csv(z_score_table, file = ztable_filename)
 
+#i need to find the version that has the regular data_availability in it ---- everything above this works 
 # grab the needed metadata for the papers
+colnames(metadata)
 need_meta <- select(metadata, all_of(ml_var))
 
 # join clean_tibble and need_meta 
@@ -115,16 +124,16 @@ full_ml_pre$dat_transformed
 saveRDS(full_ml_pre, file = output_file)
 
 
-
+#20250225 - plot twist there aren't any grouped variables
 #make a vector of the names of the grouped variables 
 # that are collapsed by preprocess_data
-token_groups <- vector(mode="list")
-for(i in 1:8) {
-    grp_var <- paste0("grp", i)
-    token_groups[i] <- full_ml_pre$grp_feats[grp_var]
-}
-# save token groups out 
-saveRDS(token_groups, file = token_filename)
+# token_groups <- vector(mode="list")
+# for(i in 1:8) {
+#     grp_var <- paste0("grp", i)
+#     token_groups[i] <- full_ml_pre$grp_feats[grp_var]
+# }
+# # save token groups out 
+# saveRDS(token_groups, file = token_filename)
 
 
 
