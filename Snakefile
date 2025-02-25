@@ -52,7 +52,11 @@ rule targets:
         #expand("Data/html/{doi}.html", doi = doi_lookup.keys()) #get all htmls
         # expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets) #get wos data
         # "Data/groundtruth/groundtruth.tokens.csv.gz"
-        expand("Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
+        #expand("Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
+        # ml_variables = ml_variables)
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
+        # ml_variables = ml_variables, seeds = seeds)
+        expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", 
         ml_variables = ml_variables)
 
 
@@ -127,7 +131,6 @@ rule train_tokens:
         {input.rscript} {input.metadata} {output}
         """   
 
- 
 
 rule ml_prep_train:
     input:
@@ -143,60 +146,15 @@ rule ml_prep_train:
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable} {output.containerlist}
         """
 
-rule ztable: 
-    input: 
-        rscript = "Code/ztable_prep.R",
-        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv", 
-        tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
-    output: 
-        "Data/ml_prep/{datasets}.{ml_variables}.zscoretable_filtered.csv"
-    shell: 
-        """
-        {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
-        """
-
-
-rule ml_prep_predict:
-    input:
-        rscript = "Code/ml_prep_predict.R",
-        tokens = "Data/tokens/{datasets}.tokens.csv.gz",
-        metadata = "Data/doi_linkrot/alive/{datasets}.csv",
-        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
-        tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
-    output: 
-        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed_predict.RDS"
-    resources: 
-        mem_mb = 40000 
-    shell:
-        """
-        {input.rscript} {input.metadata} {input.tokens} {input.ztable} {input.tokenlist} {input.containerlist} {output.rds}
-        """
-
-
-rule predict: 
-    input: 
-        rscript = "Code/predict.R",
-        da = "Data/preprocessed/{datasets}.data_availability.preprocessed_predict.RDS",
-        nsd = "Data/preprocessed/{datasets}.new_seq_data.preprocessed_predict.RDS", 
-        metadata = "Data/doi_linkrot/alive/{datasets}.csv"
-    output: 
-        "Data/predicted/{datasets}.data_predicted.RDS"
-    shell: 
-        """
-        {input.rscript} {input.da} {input.nsd} {input.metadata} {output}
-        """
-
 rule rf: 
     input:
         rscript = "Code/trainML_rf.R",
-        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed_predict.RDS", 
-        rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
+        rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
+        rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.performance.csv", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.hp_performance.csv"
+        "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.performance.csv", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.hp_performance.csv"
     resources: 
         mem_mb = 20000 
     shell:
@@ -263,6 +221,56 @@ rule final_model:
         """
         {input.rscript} {input.rds} {wildcards.ml_variables} {params.mtry_value} {input.rdir}
         """
+
+#20250225 - i don't even think i need this rule anymore
+# rule ztable: 
+#     input: 
+#         rscript = "Code/ztable_prep.R",
+#         ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv", 
+#         #tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
+#         containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
+#     output: 
+#         "Data/ml_prep/{datasets}.{ml_variables}.zscoretable_filtered.csv"
+#     shell: 
+#         """
+#         {input.rscript} {input.ztable} {input.containerlist} {output} 
+#         """
+
+
+rule ml_prep_predict:
+    input:
+        rscript = "Code/ml_prep_predict.R",
+        tokens = "Data/tokens/{datasets}.tokens.csv.gz",
+        metadata = "Data/doi_linkrot/alive/{datasets}.csv",
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", 
+       # tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
+    output: 
+        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed_predict.RDS"
+    resources: 
+        mem_mb = 40000 
+    shell:
+        """
+        {input.rscript} {input.metadata} {input.tokens} {input.ztable} {input.containerlist} {output.rds}
+        """
+
+
+rule predict: 
+    input: 
+        rscript = "Code/predict.R",
+        da = "Data/preprocessed/{datasets}.data_availability.preprocessed_predict.RDS",
+        nsd = "Data/preprocessed/{datasets}.new_seq_data.preprocessed_predict.RDS", 
+        metadata = "Data/doi_linkrot/alive/{datasets}.csv"
+    output: 
+        "Data/predicted/{datasets}.data_predicted.RDS"
+    shell: 
+        """
+        {input.rscript} {input.da} {input.nsd} {input.metadata} {output}
+        """
+
+
+
+###---------------geting dois from multiple apis---------------------------------
 
 rule scopus: 
     input: 
