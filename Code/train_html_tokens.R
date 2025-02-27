@@ -30,6 +30,7 @@ output_file <- input[2]
 # #import new groundtruth to get the html filename 
 input_file <- read_csv("Data/new_groundtruth_metadata.csv.gz")  %>% 
     select(doi_underscore, container.title) %>%
+    unique() %>% 
     mutate(clean_html = NA, 
           html_filename = paste0("Data/html/", doi_underscore, ".html"), 
           tokens = NA)

@@ -58,7 +58,6 @@ clean_tibble <-
         filter(!nzv) %>% # filter for things without nzv
         unnest(data) %>%  #unnest all the data
         select(doi_underscore, tokens, frequency) %>% #select these columns
-        unique() %>%
         pivot_wider(id_cols = doi_underscore,
                     names_from = tokens, values_from = frequency, 
                     values_fill = 0) #pivot wider and fill in zeros

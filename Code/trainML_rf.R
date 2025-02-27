@@ -33,7 +33,7 @@ output_dir <- input[4]
 ml_results <- run_ml(data_processed$dat_transformed,
                    method = "rf",  
                    outcome_colname = ml_var_snake,
-                   hyperparameters = list(mtry =  c(2, 3, 6, 12, 25, 50, 100, 150)),
+                   hyperparameters = list(mtry = c(84, 100, 150, 200, 300)),
                    find_feature_importance = TRUE,
                    seed = seed)
 
