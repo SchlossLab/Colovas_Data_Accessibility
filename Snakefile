@@ -139,11 +139,10 @@ rule ml_prep_train:
         metadata = "Data/new_groundtruth.csv",
     output: 
         rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS",
-        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", 
-        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz"
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable} {output.containerlist}
+        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable}
         """
 
 rule rf: 
