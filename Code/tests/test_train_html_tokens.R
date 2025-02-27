@@ -35,7 +35,7 @@ input_file <- read_csv("Data/new_groundtruth_metadata.csv.gz")  %>%
 #do this for 10 files for testing 
 
 test_input <-
-    input_file[1:10, ] %>%
+    unique(input_file) %>%
     mutate(html_filename = paste0("Data/html/", doi_underscore, ".html"),
             old_clean_html = NA, 
             new_clean_html = NA,
@@ -137,6 +137,11 @@ for (i in 1:nrow(test_input)) {
 test_input$old_tokens <-map(test_input$old_clean_html, tokenize)
 test_input$new_tokens<-map(test_input$new_clean_html, tokenize)
 
+test_input<- 
+  test_input %>% 
+    mutate(n_old_tokens = NA, 
+    n_new_tokens = NA)
+
 for(i in 1:nrow(test_input)) {
     test_input$n_old_tokens[[i]] <- nrow(test_input$old_tokens[[i]])
     test_input$n_new_tokens[[i]] <- nrow(test_input$new_tokens[[i]])
@@ -152,12 +157,14 @@ old_token_list <-
   test_input %>%
     select(doi_underscore, old_tokens) %>%
     unnest(cols = old_tokens)
+
 write_csv(old_token_list, file = "Data/tests/train_html_tokens/old_token_list.csv")
 
 new_token_list <-
   test_input %>%
     select(doi_underscore, new_tokens) %>%
     unnest(cols = new_tokens)
+    
 write_csv(old_token_list, file = "Data/tests/train_html_tokens/new_token_list.csv")
 
 
