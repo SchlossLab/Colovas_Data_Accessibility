@@ -51,13 +51,13 @@ rule targets:
     input:
         #expand("Data/html/{doi}.html", doi = doi_lookup.keys()) #get all htmls
         # expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets) #get wos data
-        "Data/groundtruth/groundtruth.tokens.csv.gz",
-        expand("Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
-        ml_variables = ml_variables),
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
-        ml_variables = ml_variables, seeds = seeds),
+        # "Data/groundtruth/groundtruth.tokens.csv.gz",
+        # expand("Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
+        # ml_variables = ml_variables),
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
+        # ml_variables = ml_variables, seeds = seeds),
         #this one makes the figures and will have to be done after these all get updated
-        # expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", ml_variables = ml_variables)
+        expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", ml_variables = ml_variables)
 
 
 rule all_papers: 
