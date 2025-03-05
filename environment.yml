@@ -26,8 +26,8 @@ dependencies:
   - r-rscopus
   - r-rentrez
   - r-caret
-  - r-randomforest
   
+  - r-rlang
 
 
   

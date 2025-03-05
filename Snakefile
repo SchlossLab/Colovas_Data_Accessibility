@@ -49,15 +49,10 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        #expand("Data/html/{doi}.html", doi = doi_lookup.keys()) #get all htmls
-        # expand("Data/wos/wos_{datasets}.csv.gz", datasets = new_datasets) #get wos data
-        # "Data/groundtruth/groundtruth.tokens.csv.gz",
-        # expand("Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
-        # ml_variables = ml_variables),
-        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
-        # ml_variables = ml_variables, seeds = seeds),
-        #this one makes the figures and will have to be done after these all get updated
-        expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", ml_variables = ml_variables)
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS",
+        ml_variables = ml_variables, seeds = 102899)
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
+        # ml_variables = ml_variables) 
 
 
 rule all_papers: 
@@ -190,15 +185,15 @@ rule auroc:
 
 rule best_mtry: 
     input:
-        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+        rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML_rf_bestmtry.R",
-        rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
+        rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.bestTune.csv", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.hp_performance.csv" 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.bestTune.csv", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.hp_performance.csv" 
     resources: 
-        mem_mb = 20000 
+        mem_mb = 40000 
     shell:
         """
         {input.rscript} {input.rds} {wildcards.ml_variables} {input.rdir}
@@ -206,12 +201,12 @@ rule best_mtry:
 
 rule final_model: 
     input:
-        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed.RDS", 
+        rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML_rf_finalmodel.R",
-        rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
+        rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.RDS",
-        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.model.RDS"
+        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.RDS",
+        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.model.RDS"
     params: 
         mtry_value = lambda wildcards : mtry_dict[wildcards.ml_variables]
     resources: 
