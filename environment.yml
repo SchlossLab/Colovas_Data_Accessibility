@@ -26,7 +26,6 @@ dependencies:
   - r-rscopus
   - r-rentrez
   - r-caret
-  
   - r-rlang
 
 

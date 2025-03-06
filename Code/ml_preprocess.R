@@ -113,7 +113,7 @@ container_titles <- full_ml %>%
     select(-`n`)
 
 
-full_z_table <-full_join(z_score_table, container_titles)
+full_z_table <- c(z_score_table, container_titles)
 
 
 # save out z score table with container titles

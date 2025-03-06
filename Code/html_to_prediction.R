@@ -23,8 +23,8 @@ output_file <- input[2]
 
 # load static files 
 lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
-tokens_to_collapse <-read_csv("Data/ml_prep/tokens_to_collapse.csv")
-ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+# tokens_to_collapse <-read_csv("Data/ml_prep/tokens_to_collapse.csv")
+ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable.csv.gz")
 da_model <- 
     readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
 nsd_model <- 
@@ -32,8 +32,8 @@ nsd_model <-
 
 
 #local testing 
-# html_filename<-lookup_table$html_filename[5]
-# output_file <- "Data/10.1128_mra.00817-18.csv"
+html_filename<-lookup_table$html_filename[470]
+output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
 
 
 #functions
@@ -85,16 +85,16 @@ tokenize <- function(clean_html) {
 
 
 #collapse correlated variables for z scoring
-collapse_correlated <- function(token_tibble) {
-  for(i in 1:nrow(token_tibble)){
-    for(j in 1:nrow(tokens_to_collapse)){
-      if (token_tibble$tokens[i] == tokens_to_collapse$tokens[j]){
-        token_tibble$tokens[i] <-tokens_to_collapse$grpname[j]
-      } 
-    }
-  }
-  return(unique(token_tibble))
-}
+# collapse_correlated <- function(token_tibble) {
+#   for(i in 1:nrow(token_tibble)){
+#     for(j in 1:nrow(tokens_to_collapse)){
+#       if (token_tibble$tokens[i] == tokens_to_collapse$tokens[j]){
+#         token_tibble$tokens[i] <-tokens_to_collapse$grpname[j]
+#       } 
+#     }
+#   }
+#   return(unique(token_tibble))
+# }
 
 
 zscore <-function(all_tokens) {
@@ -123,11 +123,11 @@ zscore <-function(all_tokens) {
                 names_repair = "minimal", 
                 values_fill = 0)
 
-  wide_tokens <-
-  wide_tokens %>% 
-      rename("paper.y" = "paper",
-          "`interest importance`_1" = "interest importance",
-          "`material method bacterial`_1" = "material method bacterial")
+  # wide_tokens <-
+  # wide_tokens %>% 
+  #     rename("paper.y" = "paper",
+  #         "`interest importance`_1" = "interest importance",
+  #         "`material method bacterial`_1" = "material method bacterial")
 
   return(wide_tokens)
 }
@@ -167,7 +167,7 @@ total_pipeline<-function(filename){
 
         token_tibble <- tokenize(clean_html) 
 
-        collapsed <-collapse_correlated(token_tibble) 
+        # collapsed <-collapse_correlated(token_tibble) 
           
 
         #get only variables in the model

@@ -49,8 +49,9 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS",
-        ml_variables = ml_variables, seeds = 102899)
+        expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", ml_variables = ml_variables)
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS",
+        # ml_variables = ml_variables, seeds = 102899)
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
         # ml_variables = ml_variables) 
 
@@ -205,8 +206,8 @@ rule final_model:
         rscript = "Code/trainML_rf_finalmodel.R",
         rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
-        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.RDS",
-        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.model.RDS"
+        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS",
+        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.model.RDS"
     params: 
         mtry_value = lambda wildcards : mtry_dict[wildcards.ml_variables]
     resources: 
