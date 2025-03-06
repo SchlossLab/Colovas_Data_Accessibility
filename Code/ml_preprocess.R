@@ -26,16 +26,16 @@ ztable_filename <- as.character(input[5])
 
 
  # #local implementation
-# clean_text <- read_csv("Data/groundtruth/groundtruth.tokens.csv.gz") 
-# metadata <- read_csv("Data/new_groundtruth.csv") %>%
-#     mutate(doi_underscore = str_replace(doi, "\\/", "_"))
-# ml_var_snake <- "new_seq_data"
-# ml_var <- c("doi_underscore", ml_var_snake, "container.title")
-# #don't run this unless you really need it so that you don't
-# # accidentally save a file over this
+clean_text <- read_csv("Data/groundtruth/groundtruth.tokens.csv.gz") 
+metadata <- read_csv("Data/new_groundtruth.csv") %>%
+    mutate(doi_underscore = str_replace(doi, "\\/", "_"))
+ml_var_snake <- "new_seq_data"
+ml_var <- c("doi_underscore", ml_var_snake, "container.title")
+#don't run this unless you really need it so that you don't
+# accidentally save a file over this
 # output_file <- "Data/preprocessed/groundtruth.new_seq_data.preprocessed.RDS"
 # str(output_file)
-# ztable_filename <- "Data/ml_prep/groundtruth.new_seq_data.zscoretable.csv "
+# ztable_filename <- "Data/ml_prep/groundtruth.new_seq_data.zscoretable.csv"
 
 
 
@@ -110,10 +110,11 @@ container_titles <- full_ml %>%
     count(container.title) %>%
     mutate(token_mean = (`n`/total_papers), 
             token_sd = sqrt(token_mean*(1-token_mean))) %>%
-    select(-`n`)
+    select(-`n`) %>% 
+    rename(tokens = container.title)
 
 
-full_z_table <- c(z_score_table, container_titles)
+full_z_table <- rbind(z_score_table, container_titles)
 
 
 # save out z score table with container titles

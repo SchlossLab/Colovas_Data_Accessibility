@@ -145,6 +145,7 @@ nsd_prediction <-
   return(tibble::tibble(da = da_prediction, nsd = nsd_prediction))
 }
 
+filename<-html_filename
 
 total_pipeline<-function(filename){
   #keeps from erroring if none of the if loops are executed
@@ -158,7 +159,7 @@ total_pipeline<-function(filename){
 
     webscrape_results <- webscrape(filename)
     #keeps from erroring if none of the if loops are executed
-    predictions <-tibble::tibble(da = NA, nsd = NA)
+    # predictions <-tibble::tibble(da = NA, nsd = NA)
 
     if(webscrape_results != ""){
       clean_html <- prep_html_tm(webscrape_results)
@@ -171,7 +172,7 @@ total_pipeline<-function(filename){
           
 
         #get only variables in the model
-        all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
+        all_tokens <- full_join(token_tibble, ztable, by = "tokens") %>%
           filter(!is.na(token_mean)) %>%
           replace_na(list(frequency = 0)) 
           
