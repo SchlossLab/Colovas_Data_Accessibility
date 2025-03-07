@@ -18,6 +18,7 @@ library(tokenizers)
 input <- commandArgs(trailingOnly = TRUE)
 input_file <- read_csv(input[1])  %>% 
     select(doi_underscore, container.title) %>%
+    unique() %>% 
     mutate(clean_html = NA, 
           html_filename = paste0("Data/html/", doi_underscore, ".html"), 
           tokens = NA)
@@ -27,13 +28,13 @@ output_file <- input[2]
 #local 
 #20250220 - use new_groundtruth to get prepped for model training
 
-# #import new groundtruth to get the html filename 
-input_file <- read_csv("Data/new_groundtruth_metadata.csv.gz")  %>% 
-    select(doi_underscore, container.title) %>%
-    unique() %>% 
-    mutate(clean_html = NA, 
-          html_filename = paste0("Data/html/", doi_underscore, ".html"), 
-          tokens = NA)
+# # #import new groundtruth to get the html filename 
+# input_file <- read_csv("Data/new_groundtruth_metadata.csv.gz")  %>% 
+#     select(doi_underscore, container.title) %>%
+#     unique() %>% 
+#     mutate(clean_html = NA, 
+#           html_filename = paste0("Data/html/", doi_underscore, ".html"), 
+#           tokens = NA)
 
 
 
@@ -92,6 +93,7 @@ for (i in 1:nrow(input_file)) {
 }
 
 # any(is.na(input_file$clean_html))
+any(is.na(input_file$tokens))
 
 #about 3 mins
 input_file$tokens <-map(input_file$clean_html, tokenize)
@@ -106,48 +108,4 @@ write_csv(token_list, file = output_file)
 
 
 
-#20250226 - troubleshooting fewer tokens in mob
-# if(!file.exists(input_file$html_filename[[1]])) {
-#         next
-#     }
-#    html <- webscrape(input_file$html_filename[[1]])
 
-
-
-#    html_clean <- prep_html_tm(html)
-#    tokens<-tokenize(html_clean)
-#    input_file$clean_html[[i]] <- html
-
-#   html_notables<-webscrape_notables(input_file$html_filename[[1]])
-#  html_clean_notables <- prep_html_tm(html_notables)
-#    tokens_notables<-tokenize(html_clean_notables)
-
-# doi<-input_file$html_filename[[1]]
-# webscrape_notables <- function(doi) {
-  
-#   abstract <- read_html(doi) %>%
-#     html_elements("section#abstract") %>%
-#     html_elements("[role = paragraph]")
-  
-#   body <- read_html(doi) %>%
-#     html_elements("section#bodymatter") 
-  
-#   body_notables <- body %>%
-#     html_elements(css = ".table > *") %>%
-#     html_children() %>%
-#     xml_remove()
-  
-#   body_nofigures <- body %>%
-#     html_elements(css = ".figure-wrap > *") %>%
-#     html_children() %>%
-#     xml_remove()
-
-#   paper_html <- paste0(abstract, body, collapse = " ") 
-  
-#   return(paper_html)
-  
-# }
-
-# tokens %>%
-#   filter(!str_detect(tokens, " ")) %>% 
-#   print(n = Inf)

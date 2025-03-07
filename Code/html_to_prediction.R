@@ -109,6 +109,10 @@ zscore <-function(all_tokens) {
   all_tokens<-all_tokens[-to_remove,]
 }
 
+ifelse(all_tokens$tokens == "container.title_Journal of Microbiology and Biology Education", 
+                          "container.title_Journal of Microbiology &amp; Biology Education",
+                          "container.title_Journal of Microbiology &amp; Biology Education")
+  
   zscored <-all_tokens %>%
   mutate(zscore = (frequency - token_mean)/token_sd) %>% 
   select(c(tokens, zscore))  
@@ -206,4 +210,14 @@ write_csv(predicted_output, file = output_file)
 # html_filename<-lookup_table$html_filename[38900]
 # filename<-html_filename
 
+#20250307 - trying to get this working again
+#what variables are missing? 
+which(!colnames(zscored) %in% da_model$xNames)
+missingz<-which(!da_model$xNames %in% colnames(zscored)) 
 
+da_model$xNames
+zscored[1344]
+da_model$xNames[missingz]
+zscored[da_model$xNames[missingz],]
+#i am going to start screaming 
+str(da_model)
