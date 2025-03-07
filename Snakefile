@@ -136,10 +136,27 @@ rule ml_prep_train:
     output: 
         rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS",
         ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz"
+        tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.csv"
     shell:
         """
-        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable}
+        {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable} {output.tokenlist} {output.containerlist}
         """
+
+
+rule ztable: 
+    input: 
+        rscript = "Code/ztable_prep.R",
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv", 
+        tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.csv"
+    output: 
+        "Data/ml_prep/{datasets}.{ml_variables}.zscoretable_filtered.csv"
+    shell: 
+        """
+        {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
+        """
+
 
 rule rf: 
     input:

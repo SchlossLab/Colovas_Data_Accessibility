@@ -21,3 +21,20 @@ new_metadata<-inner_join(gt_dois, crossref, by = join_by(doi_slash == doi)) %>%
 
 #save new metadat 
 write_csv(new_metadata, file = "Data/new_groundtruth_metadata.csv.gz")
+
+
+
+#20250307 - apparently this table has more duplicates than i knew about 
+#and i am deeply annoyed that i got the same papers multiple times
+
+metadata <- read_csv("Data/new_groundtruth.csv") %>%
+    mutate(doi_underscore = str_replace(doi, "\\/", "_"))
+
+which(duplicated(metadata$doi_underscore)) 
+metadata$doi_underscore[603]
+
+grep("10.1128_jvi.00529-21", metadata$doi_underscore)
+
+metadata <-metadata[-202,]
+
+which(duplicated(metadata$doi_underscore))

@@ -10,8 +10,8 @@ library(mikropml)
 
 # load files
 #for snakemake implementation
-#      {input.rscript} {input.metadata} {input.tokens} 
-# {wildcards.ml_variables} {output.rds} {output.ztable} {output.tokenlist} 
+#  {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} 
+# {output.rds} {output.ztable} {output.tokenlist} {output.containerlist}
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- input[1]
 clean_csv <- input[2] 
@@ -21,21 +21,29 @@ output_file <- as.character(input[4])
 clean_text <- read.csv(clean_csv)
 metadata <- read.csv(metadata) %>%
     mutate(doi_underscore = str_replace(doi, "\\/", "_"))
+metadata <-metadata[-202, ]
 ztable_filename <- as.character(input[5])
+token_filename <- as.character(input[6])
+container_title_filename <-as.character(input[7])
 
 
 
  # #local implementation
 clean_text <- read_csv("Data/groundtruth/groundtruth.tokens.csv.gz") 
 metadata <- read_csv("Data/new_groundtruth.csv") %>%
-    mutate(doi_underscore = str_replace(doi, "\\/", "_"))
-ml_var_snake <- "new_seq_data"
+    mutate(doi_underscore = str_replace(doi, "\\/", "_")) 
+metadata <-metadata[-202, ]
+ml_var_snake <- "data_availability"
 ml_var <- c("doi_underscore", ml_var_snake, "container.title")
 #don't run this unless you really need it so that you don't
 # accidentally save a file over this
 # output_file <- "Data/preprocessed/groundtruth.new_seq_data.preprocessed.RDS"
 # str(output_file)
-# ztable_filename <- "Data/ml_prep/groundtruth.new_seq_data.zscoretable.csv"
+ztable_filename <- "Data/ml_prep/groundtruth.new_seq_data.zscoretable.csv"
+token_filename <- "Data/ml_prep/groundtruth.data_availability.tokenlist.RDS"
+container_title_filename <- "Data/ml_prep/groundtruth.data_availability.container_titles.csv"
+
+
 
 
 
@@ -63,13 +71,16 @@ clean_tibble <-
                     values_fill = 0) #pivot wider and fill in zeros
 
 
+
 #i need to find the version that has the regular data_availability in it ---- everything above this works 
 # grab the needed metadata for the papers
 colnames(metadata)
 need_meta <- select(metadata, all_of(ml_var))
 
+
+
 # join clean_tibble and need_meta 
-full_ml <- left_join(need_meta, clean_tibble, by = join_by(doi_underscore))
+full_ml <- left_join(clean_tibble, need_meta, by = join_by(doi_underscore))
 
 # remove paper doi
 full_ml <- select(full_ml, !doi_underscore)
@@ -79,6 +90,8 @@ full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake,
                                 remove_var = NULL)
 full_ml_pre$dat_transformed
 
+#20250307 - maybe i am just losing my mind and this was always here and i need to bring this code back 
+full_ml_pre$grp_feats
 
 # save preprocessed data as an RDS file 
 saveRDS(full_ml_pre, file = output_file)
@@ -114,9 +127,31 @@ container_titles <- full_ml %>%
     select(-`n`, -container.title)
 
 
-full_z_table <- rbind(z_score_table, container_titles)
+write_csv(container_titles, file = container_title_filename)
 
 
 # save out z score table with container titles
 write_csv(full_z_table, file = ztable_filename)
 
+
+#20250307 - bringing this back because apparently i need it
+#make a vector of the names of the grouped variables 
+# that are collapsed by preprocess_data
+
+#looking to always get the right number of groups out of this
+
+names<- names(full_ml_pre$grp_feats)
+n_groups <-length(grep("grp", names, value = TRUE))
+
+typeof(full_ml_pre$grp_feats)
+str(full_ml_pre$grp_feats)
+
+
+
+token_groups <- vector(mode="list")
+for(i in 1:n_groups) {
+    grp_var <- paste0("grp", i)
+    token_groups[i] <- full_ml_pre$grp_feats[grp_var]
+}
+# save token groups out 
+saveRDS(token_groups, file = token_filename)

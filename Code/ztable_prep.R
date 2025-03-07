@@ -14,7 +14,7 @@ library(jsonlite)
 input <- commandArgs(trailingOnly = TRUE)
 ztable <- read_csv(input[1])
 token_list <- readRDS(input[2])
-container_titles <-readRDS(input[3])
+container_titles <-read_csv(input[3])
 output_file <- as.character(input[4])
 str(output_file)
 
@@ -24,7 +24,7 @@ str(output_file)
 # ztable <- read_csv(ztable_filename)
 # token_list <- readRDS(token_filename)
 # container_titles <-
-#     readRDS("Data/groundtruth.data_availability.container_titles.RDS")
+#     read_csv("Data/groundtruth.data_availability.container_titles.csv")
 # output_file <- "Data/groundtruth.data_availability.zscoretable_filtered.csv"
 
 #collapse correlated variables in ztable --------------------------------------
