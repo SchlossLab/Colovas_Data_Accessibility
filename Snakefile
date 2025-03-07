@@ -49,7 +49,7 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", ml_variables = ml_variables)
+        # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", ml_variables = ml_variables)
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS",
         # ml_variables = ml_variables, seeds = 102899)
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
