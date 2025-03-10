@@ -49,7 +49,7 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", ml_variables = ml_variables)
+        expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS",
         # ml_variables = ml_variables, seeds = 102899)
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
@@ -135,7 +135,7 @@ rule ml_prep_train:
         metadata = "Data/new_groundtruth.csv",
     output: 
         rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS",
-        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz"
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz",
         tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
         containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.csv"
     shell:
@@ -147,14 +147,15 @@ rule ml_prep_train:
 rule ztable: 
     input: 
         rscript = "Code/ztable_prep.R",
-        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv", 
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", 
         tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
         containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.csv"
     output: 
-        "Data/ml_prep/{datasets}.{ml_variables}.zscoretable_filtered.csv"
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
+        tokens = "Data/ml_prep/groundtruth.{ml_variables}.tokens_to_collapse.csv"
     shell: 
         """
-        {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
+        {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output.ztable} {output.tokens}
         """
 
 
@@ -233,20 +234,6 @@ rule final_model:
         """
         {input.rscript} {input.rds} {wildcards.ml_variables} {params.mtry_value} {input.rdir}
         """
-
-#20250225 - i don't even think i need this rule anymore
-# rule ztable: 
-#     input: 
-#         rscript = "Code/ztable_prep.R",
-#         ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv", 
-#         #tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
-#         containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
-#     output: 
-#         "Data/ml_prep/{datasets}.{ml_variables}.zscoretable_filtered.csv"
-#     shell: 
-#         """
-#         {input.rscript} {input.ztable} {input.containerlist} {output} 
-#         """
 
 
 rule ml_prep_predict:
