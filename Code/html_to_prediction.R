@@ -22,9 +22,16 @@ output_file <- input[2]
 
 
 # load static files 
-lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
-# tokens_to_collapse <-read_csv("Data/ml_prep/tokens_to_collapse.csv")
-ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable.csv.gz")
+lookup_table <-read_csv("Data/papers/lookup_table.csv.gz") %>%
+    mutate(container.title = ifelse(container.title == "container.title_Journal of Microbiology and Biology Education", 
+                          "container.title_Journal of Microbiology &amp; Biology Education",
+                          "container.title_Journal of Microbiology &amp; Biology Education"))
+
+#the tokens to collapse and z tables are the same for both so we should be good there
+tokens_to_collapse <-read_csv("Data/ml_prep/groundtruth.data_availability.tokens_to_collapse.csv")
+da_ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+
+
 da_model <- 
     readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
 nsd_model <- 
@@ -84,18 +91,22 @@ tokenize <- function(clean_html) {
 }
 
 
-#collapse correlated variables for z scoring
-# collapse_correlated <- function(token_tibble) {
-#   for(i in 1:nrow(token_tibble)){
-#     for(j in 1:nrow(tokens_to_collapse)){
-#       if (token_tibble$tokens[i] == tokens_to_collapse$tokens[j]){
-#         token_tibble$tokens[i] <-tokens_to_collapse$grpname[j]
-#       } 
-#     }
-#   }
-#   return(unique(token_tibble))
-# }
+# collapse correlated variables for z scoring
+collapse_correlated <- function(token_tibble) {
+  for(i in 1:nrow(token_tibble)){
+    for(j in 1:nrow(tokens_to_collapse)){
+      if (token_tibble$tokens[i] == tokens_to_collapse$tokens[j]){
+        token_tibble$tokens[i] <-tokens_to_collapse$grpname[j]
+      } 
+    }
+  }
+  return(unique(token_tibble))
+}
 
+
+
+#20250310 - testing 
+# zscored <- zscore(all_tokens)
 
 zscore <-function(all_tokens) {
 
@@ -109,15 +120,14 @@ zscore <-function(all_tokens) {
   all_tokens<-all_tokens[-to_remove,]
 }
 
-ifelse(all_tokens$tokens == "container.title_Journal of Microbiology and Biology Education", 
-                          "container.title_Journal of Microbiology &amp; Biology Education",
-                          "container.title_Journal of Microbiology &amp; Biology Education")
+
   
   zscored <-all_tokens %>%
   mutate(zscore = (frequency - token_mean)/token_sd) %>% 
   select(c(tokens, zscore))  
 
 
+# grep("`interest importance`_1", zscored$tokens, value = TRUE)
 
   wide_tokens <- 
     pivot_wider(zscored, 
@@ -126,6 +136,8 @@ ifelse(all_tokens$tokens == "container.title_Journal of Microbiology and Biology
                 values_from = zscore, 
                 names_repair = "minimal", 
                 values_fill = 0)
+
+
 
   # wide_tokens <-
   # wide_tokens %>% 
@@ -172,11 +184,11 @@ total_pipeline<-function(filename){
 
         token_tibble <- tokenize(clean_html) 
 
-        # collapsed <-collapse_correlated(token_tibble) 
+        collapsed <-collapse_correlated(token_tibble) 
           
 
         #get only variables in the model
-        all_tokens <- full_join(token_tibble, ztable, by = "tokens") %>%
+        all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
           filter(!is.na(token_mean)) %>%
           replace_na(list(frequency = 0)) 
           
@@ -212,12 +224,17 @@ write_csv(predicted_output, file = output_file)
 
 #20250307 - trying to get this working again
 #what variables are missing? 
-which(!colnames(zscored) %in% da_model$xNames)
-missingz<-which(!da_model$xNames %in% colnames(zscored)) 
+missingda<-which(!(colnames(wide_tokens) %in% da_model$xNames))
+da_model$xNames[missingda]
 
-da_model$xNames
-zscored[1344]
-da_model$xNames[missingz]
-zscored[da_model$xNames[missingz],]
-#i am going to start screaming 
-str(da_model)
+missingnsd<-which(!(colnames(wide_tokens) %in% nsd_model$xNames))
+nsd_model$xNames[missingnsd]
+
+missing_t<-which(!(nsd_model$xNames %in% colnames(wide_tokens)))
+colnames(wide_tokens)[missing_t]
+
+
+
+
+
+
