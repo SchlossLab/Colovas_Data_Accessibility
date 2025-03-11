@@ -29,7 +29,7 @@ lookup_table <-read_csv("Data/papers/lookup_table.csv.gz") %>%
 
 #the tokens to collapse and z tables are the same for both so we should be good there
 tokens_to_collapse <-read_csv("Data/ml_prep/groundtruth.data_availability.tokens_to_collapse.csv")
-da_ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
 
 
 da_model <- 
