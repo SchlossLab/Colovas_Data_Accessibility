@@ -102,6 +102,8 @@ saveRDS(full_ml_pre, file = output_file)
 # get tokens from the names of the columns
 # remove doi_underscore from tokens list
 tokens <- names(clean_tibble)
+
+
 tokens <-
     tokens[!tokens == "doi_underscore"]
 
@@ -142,7 +144,6 @@ write_csv(container_titles, file = container_title_filename)
 
 names<- names(full_ml_pre$grp_feats)
 n_groups <-length(grep("grp", names, value = TRUE))
-
 
 
 token_groups <- vector(mode="list")

@@ -139,11 +139,10 @@ zscore <-function(all_tokens) {
 
 
 
-  # wide_tokens <-
-  # wide_tokens %>% 
-  #     rename("paper.y" = "paper",
-  #         "`interest importance`_1" = "interest importance",
-  #         "`material method bacterial`_1" = "material method bacterial")
+  wide_tokens <-
+  wide_tokens %>% 
+      rename("`interest importance`_1" = "interest importance",
+          "`material method bacterial`_1" = "material method bacterial")
 
   return(wide_tokens)
 }
@@ -160,6 +159,8 @@ nsd_prediction <-
 
   return(tibble::tibble(da = da_prediction, nsd = nsd_prediction))
 }
+
+
 
 filename<-html_filename
 
@@ -191,13 +192,14 @@ total_pipeline<-function(filename){
         all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
           filter(!is.na(token_mean)) %>%
           replace_na(list(frequency = 0)) 
-          
+
 
         #fill journal name 
         journal_index <-which(all_tokens$tokens %in% update_journal)
         all_tokens$frequency[journal_index] <-1
 
           zscored <- zscore(all_tokens)
+       
 
           predictions <- get_predictions(zscored)
 
@@ -224,17 +226,25 @@ write_csv(predicted_output, file = output_file)
 
 #20250307 - trying to get this working again
 #what variables are missing? 
-missingda<-which(!(colnames(wide_tokens) %in% da_model$xNames))
-da_model$xNames[missingda]
-
-missingnsd<-which(!(colnames(wide_tokens) %in% nsd_model$xNames))
-nsd_model$xNames[missingnsd]
-
-missing_t<-which(!(nsd_model$xNames %in% colnames(wide_tokens)))
-colnames(wide_tokens)[missing_t]
 
 
+# missingda<-which(!(colnames(zscored) %in% da_model$xNames))
+# missing_tokens <-da_model$xNames[missingda]
 
+# missingnsd<-which(!(colnames(zscored) %in% nsd_model$xNames))
+# nsd_model$xNames[missingnsd]
+
+# missing_t<-which(!(nsd_model$xNames %in% colnames(wide_tokens)))
+# missing_tb<-which(!(colnames(wide_tokens) %in% nsd_model$xNames))
+# colnames(wide_tokens)[missing_tb]
+
+# nums<-which(ztable$tokens %in% missing_tokens)
+# ztable[nums,]
+
+# head(ztable$tokens)
+
+# colnames(zscored)
+# colnames()
 
 
 

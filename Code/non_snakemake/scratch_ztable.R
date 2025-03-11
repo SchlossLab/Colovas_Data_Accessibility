@@ -10,6 +10,16 @@ ztable_og <-read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable.csv
 
 da_model <- 
     readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
-nsd_model <- 
-    readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
 
+
+#assign vars to each thing so that it's easier to get what i want out
+model_names <- da_model$xNames
+og_z_names <-ztable_og$tokens
+filtered_z_names<-ztable_filtered$tokens
+
+#okay is it missing from the og z table 
+missing<-which(!(og_z_names %in% model_names))
+model_names[missing]
+
+missing_2<-which(!(filtered_z_names %in% model_names))
+model_names[missing_2]
