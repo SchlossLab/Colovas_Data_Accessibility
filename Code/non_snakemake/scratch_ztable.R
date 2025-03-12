@@ -44,5 +44,7 @@ da_model_diff$trainingData[c("`interest importance`_1", "`interest importance`_0
 da_model_diff$trainingData[c("`material method bacterial`_1", "`material method bacterial`_0") ]
 head(da_model_diff$trainingData[c("grp1", "grp2", "grp3", "dodecyl sulfate", "sodium dodecyl sulfate")])
 
+
 str(da_model)
 str(da_model_diff)
+da_model_diff$trainingData$grp4

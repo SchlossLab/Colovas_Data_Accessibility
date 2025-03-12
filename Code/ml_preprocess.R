@@ -71,7 +71,7 @@ clean_tibble <-
                     values_fill = 0) #pivot wider and fill in zeros
 
 # #20250312 - saved clean_tibble for testing
-# clean_tibble <- read_csv("Data/clean_tibble_testing.csv.gz")
+clean_tibble <- read_csv("Data/clean_tibble_testing.csv.gz")
 # ct_colnames<-colnames(clean_tibble)
 # #ok so this step does not introduce the underscores
 # grep("_", ct_colnames, value = TRUE) 
@@ -115,6 +115,7 @@ full_ml_pre$dat_transformed
 # grep("material", pre_colnames, value = TRUE) 
 
 
+full_ml_pre$grp_feats
 
 #20250307 - maybe i am just losing my mind and this was always here and i need to bring this code back 
 # full_ml_pre$grp_feats
@@ -172,6 +173,14 @@ names<- names(full_ml_pre$grp_feats)
 n_groups <-length(grep("grp", names, value = TRUE))
 
 
+# #where is grp4?
+# lengths <- vector(mode="list", length = length(full_ml_pre$grp_feats))
+# for (i in 1:length(full_ml_pre$grp_feats)) {
+#     lengths[[i]] <- length(full_ml_pre$grp_feats[[i]])
+# }
+
+# tail(lengths)
+
 token_groups <- vector(mode="list")
 for(i in 1:n_groups) {
     grp_var <- paste0("grp", i)
@@ -179,3 +188,7 @@ for(i in 1:n_groups) {
 }
 # save token groups out 
 saveRDS(token_groups, file = token_filename)
+
+
+#looking at categorical vars
+clean_tibble$`interest importance` %>% table()

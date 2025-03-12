@@ -139,10 +139,10 @@ zscore <-function(all_tokens) {
 
 
 
-  wide_tokens <-
-  wide_tokens %>% 
-      rename("`interest importance`_1" = "interest importance",
-          "`material method bacterial`_1" = "material method bacterial")
+  # wide_tokens <-
+  # wide_tokens %>% 
+  #     rename("`interest importance`_1" = "interest importance",
+  #         "`material method bacterial`_1" = "material method bacterial")
 
   return(wide_tokens)
 }
@@ -161,7 +161,7 @@ nsd_prediction <-
 }
 
 
-
+#20250312 - for testing 
 filename<-html_filename
 
 total_pipeline<-function(filename){
@@ -248,18 +248,22 @@ write_csv(predicted_output, file = output_file)
 
 
 # 20250312 - collapsed, all_tokens, zscored, and the da model
-collapsed_names<-collapsed$tokens %>% sort() %>% tibble()
-all_tokens_names<-all_tokens$tokens %>% sort() %>% tibble()
-zscored_names<-colnames(zscored) %>% sort() %>% tibble()
-model_names<-da_model$xNames %>% sort() %>% tibble()
+# collapsed_names<-collapsed$tokens %>% sort() %>% tibble()
+# all_tokens_names<-all_tokens$tokens %>% sort() %>% tibble()
+# zscored_names<-colnames(zscored) %>% sort() %>% tibble()
 
-which(!model_names %in% zscored_names, arr.ind = TRUE)
-model_names[1, ]
+model_names<-da_model$xNames %>% sort()
+ztable_names<-ztable$tokens %>% sort()
+
+which_missing<-which(!(model_names %in% ztable_names), arr.ind = TRUE)
+model_names[which_missing]
+tokens_to_collapse
 
 grep("interest", zscored_names$., value = TRUE)
 
 grep("interest", model_names$., value = TRUE)
-grep("_", model_names$., value = TRUE)
+grep("grp", model_names, value = TRUE)
+
 
 view(zscored_names)
 view(model_names)
