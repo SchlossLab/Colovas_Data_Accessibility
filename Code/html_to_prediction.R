@@ -247,4 +247,19 @@ write_csv(predicted_output, file = output_file)
 # colnames()
 
 
+# 20250312 - collapsed, all_tokens, zscored, and the da model
+collapsed_names<-collapsed$tokens %>% sort() %>% tibble()
+all_tokens_names<-all_tokens$tokens %>% sort() %>% tibble()
+zscored_names<-colnames(zscored) %>% sort() %>% tibble()
+model_names<-da_model$xNames %>% sort() %>% tibble()
 
+which(!model_names %in% zscored_names, arr.ind = TRUE)
+model_names[1, ]
+
+grep("interest", zscored_names$., value = TRUE)
+
+grep("interest", model_names$., value = TRUE)
+grep("_", model_names$., value = TRUE)
+
+view(zscored_names)
+view(model_names)

@@ -23,3 +23,26 @@ model_names[missing]
 
 missing_2<-which(!(filtered_z_names %in% model_names))
 model_names[missing_2]
+
+
+
+da_model <- 
+    readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
+nsd_model <- 
+    readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
+
+
+da_model_diff <- 
+    readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.model.RDS")
+nsd_model_diff <- 
+    readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.model.RDS")
+
+str(da_model_diff$trainingData["`material method bactericidal`_1"])
+grep("_", da_model_diff$trainingData)
+
+da_model_diff$trainingData[c("`interest importance`_1", "`interest importance`_0") ]
+da_model_diff$trainingData[c("`material method bacterial`_1", "`material method bacterial`_0") ]
+head(da_model_diff$trainingData[c("grp1", "grp2", "grp3", "dodecyl sulfate", "sodium dodecyl sulfate")])
+
+str(da_model)
+str(da_model_diff)

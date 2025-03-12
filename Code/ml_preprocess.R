@@ -29,12 +29,12 @@ container_title_filename <-as.character(input[7])
 
 
  # #local implementation
-# clean_text <- read_csv("Data/groundtruth/groundtruth.tokens.csv.gz") 
-# metadata <- read_csv("Data/new_groundtruth.csv") %>%
-#     mutate(doi_underscore = str_replace(doi, "\\/", "_")) 
-# metadata <-metadata[-202, ]
-# ml_var_snake <- "data_availability"
-# ml_var <- c("doi_underscore", ml_var_snake, "container.title")
+clean_text <- read_csv("Data/groundtruth/groundtruth.tokens.csv.gz") 
+metadata <- read_csv("Data/new_groundtruth.csv") %>%
+    mutate(doi_underscore = str_replace(doi, "\\/", "_")) 
+metadata <-metadata[-202, ]
+ml_var_snake <- "data_availability"
+ml_var <- c("doi_underscore", ml_var_snake, "container.title")
 # #don't run this unless you really need it so that you don't
 # # accidentally save a file over this
 # # output_file <- "Data/preprocessed/groundtruth.new_seq_data.preprocessed.RDS"
@@ -70,7 +70,13 @@ clean_tibble <-
                     names_from = tokens, values_from = frequency, 
                     values_fill = 0) #pivot wider and fill in zeros
 
-
+# #20250312 - saved clean_tibble for testing
+# clean_tibble <- read_csv("Data/clean_tibble_testing.csv.gz")
+# ct_colnames<-colnames(clean_tibble)
+# #ok so this step does not introduce the underscores
+# grep("_", ct_colnames, value = TRUE) 
+# grep("interest", ct_colnames, value = TRUE) 
+# grep("material", ct_colnames, value = TRUE) 
 
 #i need to find the version that has the regular data_availability in it ---- everything above this works 
 # grab the needed metadata for the papers
@@ -84,11 +90,31 @@ full_ml <- left_join(clean_tibble, need_meta, by = join_by(doi_underscore))
 
 # remove paper doi
 full_ml <- select(full_ml, !doi_underscore)
+# why is this column getting multiples in the training set
+
+
+
+# # #lets look for the underscores here
+# fml_colnames<-colnames(full_ml)
+# any(duplicated(fml_colnames))
+# #ok so this step does not introduce the underscores
+# grep("_", fml_colnames, value = TRUE) 
+# grep("interest", fml_colnames, value = TRUE) 
+# grep("material", fml_colnames, value = TRUE) 
+
 
 # use mikropml::preprocess_data on dataset
 full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake, 
                                 remove_var = NULL)
 full_ml_pre$dat_transformed
+
+# pre_colnames<-colnames(full_ml_pre$dat_transformed)
+# #ok so this step does not introduce the underscores
+# grep("_", pre_colnames, value = TRUE) 
+# grep("interest", pre_colnames, value = TRUE) 
+# grep("material", pre_colnames, value = TRUE) 
+
+
 
 #20250307 - maybe i am just losing my mind and this was always here and i need to bring this code back 
 # full_ml_pre$grp_feats
