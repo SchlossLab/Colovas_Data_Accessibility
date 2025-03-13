@@ -29,12 +29,12 @@ container_title_filename <-as.character(input[7])
 
 
  # #local implementation
-clean_text <- read_csv("Data/groundtruth/groundtruth.tokens.csv.gz") 
-metadata <- read_csv("Data/new_groundtruth.csv") %>%
-    mutate(doi_underscore = str_replace(doi, "\\/", "_")) 
-metadata <-metadata[-202, ]
-ml_var_snake <- "data_availability"
-ml_var <- c("doi_underscore", ml_var_snake, "container.title")
+# clean_text <- read_csv("Data/groundtruth/groundtruth.tokens.csv.gz") 
+# metadata <- read_csv("Data/new_groundtruth.csv") %>%
+#     mutate(doi_underscore = str_replace(doi, "\\/", "_")) 
+# metadata <-metadata[-202, ]
+# ml_var_snake <- "data_availability"
+# ml_var <- c("doi_underscore", ml_var_snake, "container.title")
 # #don't run this unless you really need it so that you don't
 # # accidentally save a file over this
 # # output_file <- "Data/preprocessed/groundtruth.new_seq_data.preprocessed.RDS"
@@ -66,23 +66,20 @@ clean_tibble <-
         filter(!nzv) %>% # filter for things without nzv
         unnest(data) %>%  #unnest all the data
         select(doi_underscore, tokens, frequency) %>% #select these columns
+        mutate(tokens = str_replace_all(tokens, " ", "_")) %>% #change spaces to underscores
+        filter(tokens != "interest_importance" & tokens != "material_method_bacterial") %>%
         pivot_wider(id_cols = doi_underscore,
                     names_from = tokens, values_from = frequency, 
                     values_fill = 0) #pivot wider and fill in zeros
 
-# #20250312 - saved clean_tibble for testing
-clean_tibble <- read_csv("Data/clean_tibble_testing.csv.gz")
-# ct_colnames<-colnames(clean_tibble)
-# #ok so this step does not introduce the underscores
-# grep("_", ct_colnames, value = TRUE) 
-# grep("interest", ct_colnames, value = TRUE) 
-# grep("material", ct_colnames, value = TRUE) 
+#20250313 - filter statement on line 70 ie
+#(filter(tokens != "interest_importance" & tokens != "material_method_bacterial"))
+#included to remove two tokens that were causing issues with the training of the model
+#they are not believed to have significant impact on the model and can be removed without fear
 
-#i need to find the version that has the regular data_availability in it ---- everything above this works 
+
 # grab the needed metadata for the papers
-# colnames(metadata)
 need_meta <- select(metadata, all_of(ml_var))
-
 
 
 # join clean_tibble and need_meta 
@@ -90,17 +87,6 @@ full_ml <- left_join(clean_tibble, need_meta, by = join_by(doi_underscore))
 
 # remove paper doi
 full_ml <- select(full_ml, !doi_underscore)
-# why is this column getting multiples in the training set
-
-
-
-# # #lets look for the underscores here
-# fml_colnames<-colnames(full_ml)
-# any(duplicated(fml_colnames))
-# #ok so this step does not introduce the underscores
-# grep("_", fml_colnames, value = TRUE) 
-# grep("interest", fml_colnames, value = TRUE) 
-# grep("material", fml_colnames, value = TRUE) 
 
 
 # use mikropml::preprocess_data on dataset
@@ -108,17 +94,6 @@ full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake,
                                 remove_var = NULL)
 full_ml_pre$dat_transformed
 
-# pre_colnames<-colnames(full_ml_pre$dat_transformed)
-# #ok so this step does not introduce the underscores
-# grep("_", pre_colnames, value = TRUE) 
-# grep("interest", pre_colnames, value = TRUE) 
-# grep("material", pre_colnames, value = TRUE) 
-
-
-full_ml_pre$grp_feats
-
-#20250307 - maybe i am just losing my mind and this was always here and i need to bring this code back 
-# full_ml_pre$grp_feats
 
 # save preprocessed data as an RDS file 
 saveRDS(full_ml_pre, file = output_file)
@@ -129,7 +104,6 @@ saveRDS(full_ml_pre, file = output_file)
 # get tokens from the names of the columns
 # remove doi_underscore from tokens list
 tokens <- names(clean_tibble)
-
 
 tokens <-
     tokens[!tokens == "doi_underscore"]
@@ -161,25 +135,11 @@ container_titles <- full_ml %>%
 write_csv(container_titles, file = container_title_filename)
 
 
-
-
-#20250307 - bringing this back because apparently i need it
 #make a vector of the names of the grouped variables 
 # that are collapsed by preprocess_data
-
-#looking to always get the right number of groups out of this
-
 names<- names(full_ml_pre$grp_feats)
 n_groups <-length(grep("grp", names, value = TRUE))
 
-
-# #where is grp4?
-# lengths <- vector(mode="list", length = length(full_ml_pre$grp_feats))
-# for (i in 1:length(full_ml_pre$grp_feats)) {
-#     lengths[[i]] <- length(full_ml_pre$grp_feats[[i]])
-# }
-
-# tail(lengths)
 
 token_groups <- vector(mode="list")
 for(i in 1:n_groups) {
@@ -189,6 +149,3 @@ for(i in 1:n_groups) {
 # save token groups out 
 saveRDS(token_groups, file = token_filename)
 
-
-#looking at categorical vars
-clean_tibble$`interest importance` %>% table()
