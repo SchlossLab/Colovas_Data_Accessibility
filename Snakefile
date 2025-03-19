@@ -232,37 +232,6 @@ rule final_model:
         {input.rscript} {input.rds} {wildcards.ml_variables} {params.mtry_value} {input.rdir}
         """
 
-#20250310- i think html_to_prediction replaces this rule
-# rule ml_prep_predict:
-#     input:
-#         rscript = "Code/ml_prep_predict.R",
-#         tokens = "Data/tokens/{datasets}.tokens.csv.gz",
-#         metadata = "Data/doi_linkrot/alive/{datasets}.csv",
-#         ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", 
-#         tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
-#         containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
-#     output: 
-#         rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed_predict.RDS"
-#     resources: 
-#         mem_mb = 40000 
-#     shell:
-#         """
-#         {input.rscript} {input.metadata} {input.tokens} {input.ztable} {input.tokenlist} {input.containerlist} {output.rds}
-#         """
-
-
-rule predict: 
-    input: 
-        rscript = "Code/predict.R",
-        da = "Data/preprocessed/{datasets}.data_availability.preprocessed_predict.RDS",
-        nsd = "Data/preprocessed/{datasets}.new_seq_data.preprocessed_predict.RDS", 
-        metadata = "Data/doi_linkrot/alive/{datasets}.csv"
-    output: 
-        "Data/predicted/{datasets}.data_predicted.RDS"
-    shell: 
-        """
-        {input.rscript} {input.da} {input.nsd} {input.metadata} {output}
-        """
 
 
 
