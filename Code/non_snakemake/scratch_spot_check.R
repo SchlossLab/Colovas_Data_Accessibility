@@ -13,7 +13,7 @@ head(predicted_files)
 
 #okay need to make column with the link in it or join with other table 
 
-lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
+lookup_table <-read_csv("Data/all_dois_lookup_table.csv.gz")
 head(lookup_table)
 
 joined_predictions <- full_join(predicted_files, lookup_table, by = join_by("file" == "html_filename")) %>%

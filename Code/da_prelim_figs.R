@@ -7,28 +7,28 @@
 library(tidyverse)
 
 #import data 
-# predicted_files <-read_csv("Data/final/predicted_results.csv.gz")
-# head(predictions)
+predicted_files <-read_csv("Data/final/predicted_results.csv.gz")
+head(predictions)
 
-# lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
-# head(lookup_table)
+lookup_table <-read_csv("Data/all_dois_lookup_table.csv.gz")
+head(lookup_table)
 
-# joined_predictions <- full_join(predicted_files, lookup_table, by = join_by("file" == "html_filename")) 
-# head(joined_predictions)
+joined_predictions <- full_join(predicted_files, lookup_table, by = join_by("file" == "html_filename")) 
+head(joined_predictions)
 
-# papers_dir <- "Data/papers"
-# csv_files <- list.files(papers_dir, "*.csv", full.names = TRUE) 
+papers_dir <- "Data/papers"
+csv_files <- list.files(papers_dir, "*.csv", full.names = TRUE) 
 
-# keep_track<-tibble()
-# for(i in 1:12) {
-#     csv_file <- read_csv(csv_files[i])
-#     #this does it for the current journal to join with all_papers
-#     all_papers <- left_join(csv_file, joined_predictions) %>%
-#         mutate_if(is.double, as.character, .vars = "issue") %>%
-#         mutate_if(lubridate::is.Date, as.character, .vars = "created")
-#     keep_track<-bind_rows(keep_track, all_papers)
+keep_track<-tibble()
+for(i in 1:12) {
+    csv_file <- read_csv(csv_files[i])
+    #this does it for the current journal to join with all_papers
+    all_papers <- left_join(csv_file, joined_predictions) %>%
+        mutate_if(is.double, as.character, .vars = "issue") %>%
+        mutate_if(lubridate::is.Date, as.character, .vars = "created")
+    keep_track<-bind_rows(keep_track, all_papers)
    
-# }
+}
 
 # write_csv(keep_track, file = "Data/final/predictions_with_metadata.csv.gz")
 
