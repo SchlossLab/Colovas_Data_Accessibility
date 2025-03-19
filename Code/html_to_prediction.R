@@ -38,9 +38,9 @@ nsd_model <-
     readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
 
 
-#local testing 
-html_filename<-lookup_table$html_filename[470]
-output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
+# #local testing 
+# html_filename<-lookup_table$html_filename[470]
+# output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
 
 
 #functions
@@ -161,9 +161,6 @@ nsd_prediction <-
 }
 
 
-#20250312 - for testing 
-filename<-html_filename
-
 total_pipeline<-function(filename){
   #keeps from erroring if none of the if loops are executed
   predictions <-tibble::tibble(da = NA, nsd = NA)
@@ -214,56 +211,8 @@ total_pipeline<-function(filename){
 }
 
 
-
 #20241212 - removing looping for parallelization
 predicted_output <- total_pipeline(html_filename)
 
 write_csv(predicted_output, file = output_file)
 
-# #20241218 - screaming crying and throwing up because it has all come crashing down
-# html_filename<-lookup_table$html_filename[38900]
-# filename<-html_filename
-
-#20250307 - trying to get this working again
-#what variables are missing? 
-
-
-# missingda<-which(!(colnames(zscored) %in% da_model$xNames))
-# missing_tokens <-da_model$xNames[missingda]
-
-# missingnsd<-which(!(colnames(zscored) %in% nsd_model$xNames))
-# nsd_model$xNames[missingnsd]
-
-# missing_t<-which(!(nsd_model$xNames %in% colnames(wide_tokens)))
-# missing_tb<-which(!(colnames(wide_tokens) %in% nsd_model$xNames))
-# colnames(wide_tokens)[missing_tb]
-
-# nums<-which(ztable$tokens %in% missing_tokens)
-# ztable[nums,]
-
-# head(ztable$tokens)
-
-# colnames(zscored)
-# colnames()
-
-
-# 20250312 - collapsed, all_tokens, zscored, and the da model
-# collapsed_names<-collapsed$tokens %>% sort() %>% tibble()
-# all_tokens_names<-all_tokens$tokens %>% sort() %>% tibble()
-# zscored_names<-colnames(zscored) %>% sort() %>% tibble()
-
-model_names<-da_model$xNames %>% sort()
-ztable_names<-ztable$tokens %>% sort()
-
-which_missing<-which(!(model_names %in% ztable_names), arr.ind = TRUE)
-model_names[which_missing]
-tokens_to_collapse
-
-grep("interest", zscored_names$., value = TRUE)
-
-grep("interest", model_names$., value = TRUE)
-grep("grp", model_names, value = TRUE)
-
-
-view(zscored_names)
-view(model_names)
