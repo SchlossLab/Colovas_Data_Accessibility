@@ -6,13 +6,31 @@
 #library statements
 library(tidyverse)
 
-
+#load metadata
 metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz")
 
+which(!is.na(metadata$pub_date))
+which(is.na(metadata$issued))
 
-#now we can start doing the fun graphing part
+#get the year published out of as many of these as possible
+metadata <- metadata %>% 
+    mutate(year.published = dplyr::case_when((is.na(pub_date) & !is.na(issued) & is.na(publishYear)) ~ str_sub(issued, start = 1, end = 4), 
+                        (!is.na(pub_date) & is.na(issued) & is.na(publishYear)) ~ as.character(pub_year), 
+                        (is.na(pub_date) & is.na(issued) & !is.na(publishYear)) ~ as.character(publishYear), 
+                        FALSE ~ NA_character_))
 
-# make column for date published (issued) 
+metadata %>%
+  count(year.published) %>%
+  print(n = Inf)
+
+#find out how many don't have one of those 3 n = 429
+# metadata %>%
+#   filter(is.na(pub_date) & is.na(issued) & is.na(publishYear)) %>%
+#   view()
+
+#these are the columns i want for the data 
+# year.published - done 20250320 
+# need to do age.in.months, and citation number for those that have it 
 metadata <- metadata %>% 
     mutate(year.published = str_sub(issued, start = 1, end = 4), 
             years.since.published = (2024-as.numeric(year.published)), 
