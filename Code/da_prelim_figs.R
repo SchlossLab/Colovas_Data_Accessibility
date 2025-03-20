@@ -7,28 +7,90 @@
 library(tidyverse)
 
 #import data 
-predicted_files <-read_csv("Data/final/predicted_results.csv.gz")
-head(predictions)
 
+#total predicted files n = 149,064
+predicted_files <-read_csv("Data/final/predicted_results.csv.gz")
+head(predicted_files)
+
+#lookup table n = 149,324
 lookup_table <-read_csv("Data/all_dois_lookup_table.csv.gz")
 head(lookup_table)
 
-joined_predictions <- full_join(predicted_files, lookup_table, by = join_by("file" == "html_filename")) 
+#join predicted files with lookup table n = 149,322
+#this means there are duplicates 
+joined_predictions <- inner_join(predicted_files, lookup_table, by = join_by("file" == "html_filename"))
 head(joined_predictions)
 
-papers_dir <- "Data/papers"
-csv_files <- list.files(papers_dir, "*.csv", full.names = TRUE) 
+#there are n = 1315 duplicates
+dupes<-which(duplicated(joined_predictions$doi_no_underscore))
+length(dupes)
 
-keep_track<-tibble()
-for(i in 1:12) {
-    csv_file <- read_csv(csv_files[i])
-    #this does it for the current journal to join with all_papers
-    all_papers <- left_join(csv_file, joined_predictions) %>%
-        mutate_if(is.double, as.character, .vars = "issue") %>%
-        mutate_if(lubridate::is.Date, as.character, .vars = "created")
-    keep_track<-bind_rows(keep_track, all_papers)
+#removed dupes n = 148,007
+remove_doi_dupes<-joined_predictions[-dupes,]
+
+#look for anything that actually was alive n = 147,577
+alive_predictions <-
+  remove_doi_dupes %>%
+  filter(!is.na(da) & !is.na(nsd)) 
+
+#get metadata from crossref and see how many are in crossref n = 147,325
+crossref <- read_csv("Data/crossref/crossref_all_papers.csv.gz")
+#i think anything missing should be in ncbi
+ncbi <-read_csv("Data/ncbi/ncbi_all_papers.csv.gz")
+wos <-read_csv("Data/wos/wos_all_papers.csv.gz")
+scopus <-read_csv("Data/scopus/all_scopus_citations.csv.gz")
+
+#join with crossref metadata n = 146398 (1609 missing)
+metadata_crossref<-inner_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
+
+#1609 missing from crossref
+missing_from_crossref<-anti_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
+
+#how many of the ones missing from crossref have no predictions
+#of 1609 missing from crossref, 1180 have predictions 
+missing_cross_predictions<-
+missing_from_crossref %>%
+  filter(!is.na(da) & !is.na(nsd))
+
+#445 of missing crossref with predictions found in ncbi 1180-445 = 735
+metadata_ncbi<-inner_join(missing_cross_predictions, ncbi, by = join_by(doi_no_underscore == doi))
+#745 still missing/1609
+missing_cross_ncbi<-anti_join(missing_cross_predictions, ncbi, by = join_by(doi_no_underscore == doi))
+
+
+#4 of missing crossref/ncbi found in wos 
+metadata_wos <-inner_join(missing_cross_ncbi, wos, by = join_by(doi_no_underscore == doi))
+#741 still missing metadata
+missing_cr_ncbi_wos <-anti_join(missing_cross_ncbi, wos, by = join_by(doi_no_underscore == doi))
+
+#159 of missing crossref/ncbi/wos found in scopus
+metadata_scopus <-inner_join(missing_cr_ncbi_wos, scopus, by = join_by(doi_no_underscore == `prism:doi`))
+#582 still missing metadata? where did they come from ????
+missing_all <-anti_join(missing_cr_ncbi_wos, scopus, by = join_by(doi_no_underscore == `prism:doi`))
+
+
+#20250320 - what
+#ok are these real papers in missing_all
+missing_all$doi_no_underscore
+#these papers don't have the doi printed on the page and 
+#must not be indexed by any of the metadata services
+#but how did i get them????
+
+
+#20250320 - for the old set of metadata
+# papers_dir <- "Data/papers"
+# csv_files <- list.files(papers_dir, "*.csv", full.names = TRUE) 
+
+# keep_track<-tibble()
+# for(i in 1:12) {
+#     csv_file <- read_csv(csv_files[i])
+#     #this does it for the current journal to join with all_papers
+#     all_papers <- left_join(csv_file, joined_predictions) %>%
+#         mutate_if(is.double, as.character, .vars = "issue") %>%
+#         mutate_if(lubridate::is.Date, as.character, .vars = "created")
+#     keep_track<-bind_rows(keep_track, all_papers)
    
-}
+# }
 
 # write_csv(keep_track, file = "Data/final/predictions_with_metadata.csv.gz")
 
