@@ -95,7 +95,7 @@ count(nsd_yes_metadata, container.title, year.published)
 #get mra and spectrum 
 nsd_yes_metadata %>% 
     filter(da == "No" & (container.title == "Microbiology Resource Announcements" | container.title == "Microbiology Spectrum")) %>% 
-    select(., c(doi_no_underscore, da, nsd, container.title, year.published)) %>%
+    select(., c(paper, doi_no_underscore, nsd, da, container.title, year.published)) %>%
     slice_sample(., by = c(container.title, year.published), n = 5) %>%
     write_csv(., file = "Data/spot_check/20250324_mra_spec_nsd_yes_da_no.csv")
 
