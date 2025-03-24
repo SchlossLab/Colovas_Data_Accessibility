@@ -87,7 +87,8 @@ metadata <- metadata %>%
 #filter for nsd yes
 nsd_yes_metadata <- 
   metadata %>% 
-  filter(nsd == "Yes")
+  filter(nsd == "Yes") %>% 
+  unique()
 
 count(nsd_yes_metadata, container.title, year.published)
 
