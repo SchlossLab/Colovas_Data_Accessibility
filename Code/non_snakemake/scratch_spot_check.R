@@ -63,3 +63,38 @@ confusion_matrix_nsd_only_nsd <- confusionMatrix(data = factor(nsd_yes$nsd), ref
 confusion_matrix_nsd_only_da <- confusionMatrix(data = factor(nsd_yes$da), reference = factor(nsd_yes$actual_da))
 
     
+
+#20250324 - spot check nsd yes, da no for mra, and spectrum
+#
+#library statements
+library(tidyverse)
+
+
+# load in dataset of predicted stuff with metadata
+metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz")
+
+# #add year published
+metadata <- metadata %>% 
+    mutate(year.published = dplyr::case_when((is.na(pub_date) & !is.na(issued) & is.na(publishYear)) ~ str_sub(issued, start = 1, end = 4), 
+                        (!is.na(pub_date) & is.na(issued) & is.na(publishYear)) ~ as.character(pub_year), 
+                        (is.na(pub_date) & is.na(issued) & !is.na(publishYear)) ~ as.character(publishYear), 
+                        FALSE ~ NA_character_), 
+          issued.date = ymd(issued, truncated = 2) %||% ymd(pub_date, truncated = 2))
+
+# metadata <- metadata %>% 
+#   mutate(age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1))
+
+#filter for nsd yes
+nsd_yes_metadata <- 
+  metadata %>% 
+  filter(nsd == "Yes")
+
+count(nsd_yes_metadata, container.title, year.published)
+
+#get mra and spectrum 
+nsd_yes_metadata %>% 
+    filter(da == "No" & (container.title == "Microbiology Resource Announcements" | container.title == "Microbiology Spectrum")) %>% 
+    select(., c(doi_no_underscore, da, nsd, container.title, year.published)) %>%
+    slice_sample(., by = c(container.title, year.published), n = 5) %>%
+    write_csv(., file = "Data/spot_check/20250324_mra_spec_nsd_yes_da_no.csv")
+
