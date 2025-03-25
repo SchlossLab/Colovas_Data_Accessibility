@@ -61,7 +61,7 @@ post_2020 %>%
   labs(x = "Year Published (2020-2024)", 
        y = "Fraction of Papers Containing New\nSequencing Data with Data Available", 
        title = "Fraction of Papers Containing New Sequencing Data\nwith Data Available Over 2020-2024 by ASM Journal") 
-  ggsave(filename = "Figures/nsdyes_da_over_time.png")
+  ggsave(filename = "Figures/nsdyes_da_2020_2024.png")
 
   nsd_yes_metadata %>% 
     group_by(year.published, container.title) %>%  
