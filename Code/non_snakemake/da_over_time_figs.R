@@ -29,13 +29,19 @@ nsd_yes_metadata <-
 #yes i understand that both yes and no are here
 #i want percentages!
 nsd_yes_metadata %>% 
- # filter(year.published >= 2020) %>%
-  count(year.published, da, container.title) %>% 
-  ggplot(aes(y = year.published)) +
-  geom_bar() +
+  group_by(year.published, container.title) %>% 
+  count(year.published, container.title, da) %>% 
+  mutate(da_total = sum(`n`), 
+         da_fract = `n`/da_total) %>%
+ filter(da == "Yes") %>% 
+  ggplot(aes(x = year.published, y = da_fract)) +
+  geom_col() +
   facet_wrap(vars(container.title),
-             labeller = labeller(container.title = label_wrap_gen(12)))
-  
+             labeller = labeller(container.title = label_wrap_gen(14))) + 
+  labs(x = "Year Published (2000-2024)", 
+       y = "Fraction of Papers Containing New\nSequencing Data with Data Available", 
+       title = "Fraction of Papers Containing New Sequencing Data\nwith Data Available Over 2020-2024 by ASM Journal") 
+  ggsave(filename = "Figures/nsdyes_da_2000_2024.png")
     
 #calculate fraction of papers with nsd yes and da yes
 post_2020 <- nsd_yes_metadata %>% 
