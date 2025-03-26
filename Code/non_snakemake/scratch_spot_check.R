@@ -100,3 +100,8 @@ nsd_yes_metadata %>%
     slice_sample(., by = c(container.title, year.published), n = 5) %>%
     write_csv(., file = "Data/spot_check/20250324_mra_spec_nsd_yes_da_no.csv")
 
+#20250203 - how many mra papers are there from 2024? 
+metadata %>% 
+  filter(year.published == 2024 & container.title == "Microbiology Resource Announcements" & nsd == "Yes", da == "No") %>%
+  select(c(paper, doi, da, nsd, year.published)) %>%  
+  write_csv(file = "Data/spot_check/mra_2024_nsd_yes_da_no.csv")

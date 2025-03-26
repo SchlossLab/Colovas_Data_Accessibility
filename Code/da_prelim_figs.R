@@ -5,13 +5,10 @@
 #
 #library statements
 library(tidyverse)
+library(MASS)
 
 #load metadata
 metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz")
-count(metadata, pub_date)
-
-which(!is.na(metadata$pub_date))
-which(is.na(metadata$issued))
 
 #get the year published out of as many of these as possible
 metadata <- metadata %>% 
@@ -19,37 +16,14 @@ metadata <- metadata %>%
                         (!is.na(pub_date) & is.na(issued) & is.na(publishYear)) ~ as.character(pub_year), 
                         (is.na(pub_date) & is.na(issued) & !is.na(publishYear)) ~ as.character(publishYear), 
                         FALSE ~ NA_character_), 
-          issued.date = ymd(issued, truncated = 2) %||% ymd(pub_date, truncated = 2))
+          # issued.date = ymd(issued, truncated = 2) %||% ymd(pub_date, truncated = 2), 
+          is.referenced.by.count = ifelse(!is.na(is.referenced.by.count), is.referenced.by.count, `citedby-count`))
 
 metadata <- metadata %>% 
   mutate(age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1))
 
 
-
-#these are the columns i want for the data 
-# year.published - done 20250320 
-# need to do age.in.months, and citation number for those that have it 
-# metadata <- metadata %>% 
-#     mutate(year.published = str_sub(issued, start = 1, end = 4), 
-#             years.since.published = (2024-as.numeric(year.published)), 
-#              citations.per.year = (is.referenced.by.count/years.since.published), 
-#              issued.date = ymd(issued, truncated = 2))
-# metadata <- metadata %>% 
-#   mutate(months.since.y2k = interval(ymd("2000-01-01"), metadata$issued.date) %/% months(1), 
-#           age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1))
-
-colnames(metadata)
-
-metadata %>% count(container.title)
-
-#20250203 - how many mra papers are there from 2024? 
-metadata %>% 
-  filter(year.published == 2024 & container.title == "Microbiology Resource Announcements" & nsd == "Yes", da == "No") %>%
-  select(c(paper, doi, da, nsd, year.published)) %>%  
-  write_csv(file = "Data/spot_check/mra_2024_nsd_yes_da_no.csv")
-
-
-#modeling using time intervals
+#modeling using time intervals -------------------------------------------------------------------------------
 # summary(lm(is.referenced.by.count~da + nsd + months.since.y2k, data = metadata))
 
 #without 0 intercept 
@@ -57,13 +31,45 @@ summary(lm(is.referenced.by.count~ da + nsd + age.in.months, data = metadata))
 #with 0 intercept 
 summary(lm(is.referenced.by.count~ 0 + da + nsd + age.in.months, data = metadata))
 
-#modeling with nsd yes only data
+
+
+#modeling with nsd yes only data #482 without is.referenced.by.count
 nsd_yes_metadata <- 
   metadata %>% 
     filter(nsd == "Yes")
 
+summary(lm(is.referenced.by.count~da + age.in.months, data = nsd_yes_metadata))
 summary(lm(is.referenced.by.count~0+da + age.in.months, data = nsd_yes_metadata))
 
+nsd_yes_da_factor <- 
+nsd_yes_metadata %>%
+  mutate(da_factor = factor(da))
+
+#factored da 
+# summary(lm(is.referenced.by.count~+da + age.in.months, data = nsd_yes_da_factor))
+summary(lm(is.referenced.by.count~0+da_factor + age.in.months, data = nsd_yes_da_factor))
+
+# summary(lm(is.referenced.by.count~+da + da:age.in.months, data = nsd_yes_da_factor))
+summary(lm(is.referenced.by.count~0+da_factor + da_factor:age.in.months, data = nsd_yes_da_factor))
+
+#summary(lm(is.referenced.by.count~0+da_factor + da_factor*age.in.months, data = nsd_yes_da_factor))
+
+
+# #using negative binomial regression
+# summary(glm.nb(is.referenced.by.count~0+da + age.in.months, data = nsd_yes_da_factor))
+
+# summary(glm.nb(is.referenced.by.count~0+da + da:age.in.months, data = nsd_yes_da_factor))
+#statistical models end --------------------------------------------------------------------------------------
+
+
+#is.referenced.by.count~0+da_factor + da_factor:age.in.months, data = nsd_yes_da_factor
+#graphing of the model data
+nsd_yes_da_factor %>%
+  ggplot(aes(x = age.in.months, y = is.referenced.by.count, color = da_factor)) + 
+  geom_jitter() + 
+  geom_smooth(method = "lm", se = TRUE) + 
+  ylim(0,200) 
+ggsave(filename = "Figures/lm_by_da.jpg")
 
 #number of papers over time
 
