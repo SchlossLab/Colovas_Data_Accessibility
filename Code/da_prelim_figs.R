@@ -16,7 +16,7 @@ metadata <- metadata %>%
                         (!is.na(pub_date) & is.na(issued) & is.na(publishYear)) ~ as.character(pub_year), 
                         (is.na(pub_date) & is.na(issued) & !is.na(publishYear)) ~ as.character(publishYear), 
                         FALSE ~ NA_character_), 
-          # issued.date = ymd(issued, truncated = 2) %||% ymd(pub_date, truncated = 2), 
+          issued.date = ymd(issued, truncated = 2) %||% ymd(pub_date, truncated = 2), 
           is.referenced.by.count = ifelse(!is.na(is.referenced.by.count), is.referenced.by.count, `citedby-count`))
 
 metadata <- metadata %>% 
@@ -65,11 +65,35 @@ summary(lm(is.referenced.by.count~0+da_factor + da_factor:age.in.months, data = 
 #is.referenced.by.count~0+da_factor + da_factor:age.in.months, data = nsd_yes_da_factor
 #graphing of the model data
 nsd_yes_da_factor %>%
-  ggplot(aes(x = age.in.months, y = is.referenced.by.count, color = da_factor)) + 
-  geom_jitter() + 
-  geom_smooth(method = "lm", se = TRUE) + 
-  ylim(0,200) 
+  ggplot(aes(x = age.in.months, 
+            y = is.referenced.by.count, 
+            color = da_factor)) + 
+  geom_point(alpha = 0.5, size = 0.2) + 
+  geom_smooth(method = "lm", formula = y ~ 0 + x, se = TRUE) + 
+  coord_cartesian(ylim = c(0, 200)) #doesn't remove the data before stats 
+
+
 ggsave(filename = "Figures/lm_by_da.jpg")
+
+#20250327 - mob 
+library(Hmisc) #new package for stats
+nsd_yes_da_factor %>%
+  ggplot(aes(x = age.in.months, 
+            y = is.referenced.by.count, 
+            color = da_factor)) + 
+  stat_summary(fun.data = "median_hilow", 
+              fun.args = list(conf.int = 0.5), 
+              linewidth = 0.1, size = 0.2) +
+  #median_hilow = median center, line = 95%CI, conf.int = 0.5 gives iqr
+  facet_wrap(~container.title, scales = "free_y") + 
+  geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 3) 
+
+
+colnames(nsd_yes_da_factor)
+
+nsd_yes_da_factor %>%
+filter(is.referenced.by.count > 1000 & container.title == "mSystems" & da == "No") %>% 
+view()
 
 #number of papers over time
 
