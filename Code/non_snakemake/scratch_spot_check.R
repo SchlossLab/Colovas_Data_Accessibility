@@ -108,6 +108,6 @@ nsd_yes_metadata %>%
 nsd_yes_metadata %>%
     filter(year.published == "2024") %>%
     dplyr::select(., paper, doi_no_underscore, nsd, da, container.title, year.published) %>% 
-    mutate(actual_nsd = NA, actual_da = NA) %>%
+    mutate(actual_nsd = NA, actual_da = NA, notes = NA) %>%
     write_csv(., file = "Data/spot_check/20250327_all_2024_nsd_yes.csv")
     
