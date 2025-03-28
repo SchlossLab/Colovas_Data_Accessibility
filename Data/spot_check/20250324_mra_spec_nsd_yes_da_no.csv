@@ -9,17 +9,17 @@ https://journals.asm.org/doi/10.1128/mra.00371-23,10.1128/mra.00371-23,Yes,No,Mi
 https://journals.asm.org/doi/10.1128/mra.00916-23,10.1128/mra.00916-23,Yes,No,Microbiology Resource Announcements,2023,Yes,No,
 https://journals.asm.org/doi/10.1128/mra.00640-23,10.1128/mra.00640-23,Yes,No,Microbiology Resource Announcements,2023,Yes,No,
 https://journals.asm.org/doi/10.1128/mra.00270-23,10.1128/mra.00270-23,Yes,No,Microbiology Resource Announcements,2023,Yes,No,
-https://journals.asm.org/doi/10.1128/mra.00644-22,10.1128/mra.00644-22,Yes,No,Microbiology Resource Announcements,2022,No,Yes,"new tool announcement RRAP pipeline, no nsd, but yes code available "
-https://journals.asm.org/doi/10.1128/mra.00107-22,10.1128/mra.00107-22,Yes,No,Microbiology Resource Announcements,2022,No,Yes,"new tool announcement virmine 2.0, no nsd, but yes code available "
+https://journals.asm.org/doi/10.1128/mra.00644-22,10.1128/mra.00644-22,Yes,No,Microbiology Resource Announcements,2022,No,No,"new tool announcement RRAP pipeline, no nsd, but yes code available "
+https://journals.asm.org/doi/10.1128/mra.00107-22,10.1128/mra.00107-22,Yes,No,Microbiology Resource Announcements,2022,No,No,"new tool announcement virmine 2.0, no nsd, but yes code available "
 https://journals.asm.org/doi/10.1128/mra.00833-22,10.1128/mra.00833-22,Yes,No,Microbiology Resource Announcements,2022,Yes,Yes,available on Addgene
 https://journals.asm.org/doi/10.1128/mra.00351-22,10.1128/mra.00351-22,Yes,No,Microbiology Resource Announcements,2022,Yes,Yes,available on JGI
 https://journals.asm.org/doi/10.1128/mra.00695-22,10.1128/mra.00695-22,Yes,No,Microbiology Resource Announcements,2022,Yes,Yes,available on genbank and SRA (but sequence read archive spelled out) 
 https://journals.asm.org/doi/10.1128/mra.01323-20,10.1128/mra.01323-20,Yes,No,Microbiology Resource Announcements,2021,Yes,Yes,available on DDBJ and GenBank
-https://journals.asm.org/doi/10.1128/mra.01468-20,10.1128/mra.01468-20,Yes,No,Microbiology Resource Announcements,2021,No,Yes,"new tool announcement viromatch, no nsd, but yes code available "
+https://journals.asm.org/doi/10.1128/mra.01468-20,10.1128/mra.01468-20,Yes,No,Microbiology Resource Announcements,2021,No,No,"new tool announcement viromatch, no nsd, but yes code available "
 https://journals.asm.org/doi/10.1128/mra.00206-21,10.1128/mra.00206-21,Yes,No,Microbiology Resource Announcements,2021,Yes,Yes,"available on NCBI (spelled out), and JGI "
 https://journals.asm.org/doi/10.1128/mra.00460-21,10.1128/mra.00460-21,Yes,No,Microbiology Resource Announcements,2021,No,No,"letter response about classifcation, uses previously published data"
 https://journals.asm.org/doi/10.1128/mra.00466-21,10.1128/mra.00466-21,Yes,No,Microbiology Resource Announcements,2021,No,No,"letter response about classifcation, uses previously published data"
-https://journals.asm.org/doi/10.1128/mra.00932-18,10.1128/mra.00932-18,Yes,No,Microbiology Resource Announcements,2018,No,Yes,"new tool announcement ZetaHunter pipeline, no nsd, but yes code available "
+https://journals.asm.org/doi/10.1128/mra.00932-18,10.1128/mra.00932-18,Yes,No,Microbiology Resource Announcements,2018,No,No,"new tool announcement ZetaHunter pipeline, no nsd, but yes code available "
 https://journals.asm.org/doi/10.1128/mra.00943-18,10.1128/mra.00943-18,Yes,No,Microbiology Resource Announcements,2018,Yes,Yes,available on SRA and GenBank
 https://journals.asm.org/doi/10.1128/mra.01361-19,10.1128/mra.01361-19,Yes,No,Microbiology Resource Announcements,2020,Yes,Yes,available on JGI
 https://journals.asm.org/doi/10.1128/mra.01464-18,10.1128/mra.01464-18,Yes,No,Microbiology Resource Announcements,2019,Yes,Yes,available on genbank
@@ -36,9 +36,9 @@ https://journals.asm.org/doi/10.1128/spectrum.01258-23,10.1128/spectrum.01258-23
 https://journals.asm.org/doi/10.1128/spectrum.04291-23,10.1128/spectrum.04291-23,Yes,No,Microbiology Spectrum,2024,Yes,No,
 https://journals.asm.org/doi/10.1128/spectrum.01172-24,10.1128/spectrum.01172-24,Yes,No,Microbiology Spectrum,2024,Yes,Yes,available on SRA
 https://journals.asm.org/doi/10.1128/spectrum.00974-22,10.1128/spectrum.00974-22,Yes,No,Microbiology Spectrum,2022,Yes,Yes,available on genbank
-https://journals.asm.org/doi/10.1128/spectrum.00293-22,10.1128/spectrum.00293-22,Yes,No,Microbiology Spectrum,2022,Yes,No,"proteins, not uploaded anywhere"
+https://journals.asm.org/doi/10.1128/spectrum.00293-22,10.1128/spectrum.00293-22,Yes,No,Microbiology Spectrum,2022,No,No,"proteins, not uploaded anywhere"
 https://journals.asm.org/doi/10.1128/spectrum.03757-22,10.1128/spectrum.03757-22,Yes,No,Microbiology Spectrum,2022,Yes,No,
-https://journals.asm.org/doi/10.1128/spectrum.02478-21,10.1128/spectrum.02478-21,Yes,No,Microbiology Spectrum,2022,Yes,No,proteins 
+https://journals.asm.org/doi/10.1128/spectrum.02478-21,10.1128/spectrum.02478-21,Yes,No,Microbiology Spectrum,2022,No,No,proteins 
 https://journals.asm.org/doi/10.1128/spectrum.02534-21,10.1128/spectrum.02534-21,Yes,No,Microbiology Spectrum,2022,Yes,No,
 https://journals.asm.org/doi/10.1128/spectrum.01882-21,10.1128/spectrum.01882-21,Yes,No,Microbiology Spectrum,2021,Yes,Yes,"Available on GISAID, but no associated number"
 https://journals.asm.org/doi/10.1128/spectrum.00690-21,10.1128/spectrum.00690-21,Yes,No,Microbiology Spectrum,2021,No,No,confirmation sequencing
