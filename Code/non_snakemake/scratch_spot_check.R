@@ -106,8 +106,16 @@ nsd_yes_metadata %>%
 # nsd yes, da status in the table
 
 nsd_yes_metadata %>%
-    filter(year.published == "2024") %>%
+    filter(year.published == "2024" ) %>%
     dplyr::select(., paper, doi_no_underscore, nsd, da, container.title, year.published) %>% 
     mutate(actual_nsd = NA, actual_da = NA, notes = NA) %>%
     write_csv(., file = "Data/spot_check/20250327_all_2024_nsd_yes.csv")
     
+
+#20250328 - take nsd yes metadata and grab a few dozen from 2024
+metadata %>%
+    filter(year.published == "2024" & (container.title != "Microbiology Resource Announcements" | container.title != "Microbiology Spectrum")) %>%
+    dplyr::select(., paper, doi_no_underscore, nsd, da, container.title, year.published) %>% 
+    mutate(actual_nsd = NA, actual_da = NA, notes = NA) %>%
+    slice_sample(., by = container.title, n = 4) %>% 
+    write_csv(., file = "Data/spot_check/20250328_2024_no_mra_spec.csv")
