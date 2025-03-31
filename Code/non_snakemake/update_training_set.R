@@ -21,7 +21,7 @@ crossref<-read_csv("Data/crossref/crossref_all_papers.csv.gz")
 #make sure there's a variable in common - here paper 
 crossref <-
 crossref %>%
-    mutate(paper = paste0("https://journals.asm.org/doi/", doi))
+    mutate(paper = paste0("https://journals.asm.org/doi/", doi)) 
 
 #join with metadata and give correct names to columns
 sc_metadata <-inner_join(spot_check, crossref) %>% 
@@ -61,3 +61,35 @@ left <- left_join(groundtruth, crossref)
 
 view(inner)
 view(left)
+
+#20250331 - continuing to update the training set
+new_groundtruth <-read_csv("Data/new_groundtruth.csv")
+colnames(new_groundtruth)
+to_add_1 <- read_csv("Data/spot_check/20250324_mra_spec_nsd_yes_da_no.csv")
+to_add_2<-read_csv("Data/spot_check/20250328_2024_no_mra_spec.csv")
+
+to_add<- full_join(to_add_1, to_add_2) %>%
+mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+add_metadata <-inner_join(to_add, crossref) %>% 
+    rename(new_seq_data = actual_nsd, data_availability = actual_da) %>%
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+#there are 7 that aren't in crossref but i can't use them because i want the
+# uniform metadata in the gt
+anti_join(to_add, crossref) %>% 
+view()
+
+#making sure all nsd nos are da nos, ~50 papers changed from da yes to da no
+new_groundtruth <-
+new_groundtruth %>%
+mutate(data_availability = ifelse(new_seq_data == "No", "No", data_availability)) %>% 
+mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+#combine new_gt with the newest spot check data
+newest_gt <- full_join(new_groundtruth, add_metadata)  %>% 
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+write_csv(newest_gt, "Data/new_groundtruth.csv")
