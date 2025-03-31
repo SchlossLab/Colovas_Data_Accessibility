@@ -90,6 +90,12 @@ mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
 #combine new_gt with the newest spot check data
 newest_gt <- full_join(new_groundtruth, add_metadata)  %>% 
     mutate_if(lubridate::is.Date, as.character) %>% 
-    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
 
 write_csv(newest_gt, "Data/new_groundtruth.csv")
+
+new_groundtruth <-read_csv("Data/new_groundtruth.csv") %>%
+    mutate(doi_underscore = str_replace_all(doi, "/", "_"))
+
+write_csv(new_groundtruth, "Data/new_groundtruth.csv")
+#this means we don't need new_groundtruth_metadata anymore

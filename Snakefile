@@ -114,7 +114,7 @@ rule combine_predictions:
 rule train_tokens: 
     input: 
         rscript = "Code/train_html_tokens.R",
-        metadata = "Data/new_groundtruth_metadata.csv.gz"
+        metadata = "Data/new_groundtruth.csv"
     output: 
         "Data/groundtruth/{datasets}.tokens.csv.gz"
     resources: 
