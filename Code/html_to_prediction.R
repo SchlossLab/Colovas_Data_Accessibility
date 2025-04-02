@@ -13,6 +13,7 @@ library(textstem) #for stemming text variables
 library(tm) #for text manipulation
 library(randomForest)
 library(tokenizers)
+source("Code/utilities.R")
 
 # snakemake input 
 #  {input.rscript} {input.infile} {output}
@@ -45,50 +46,50 @@ nsd_model <-
 
 #functions
 
-#function for reading html, remove figs/tables, 
-#and concatenate abstract and body (using rvest, xml2)
-webscrape <- function(doi) {
+# #function for reading html, remove figs/tables, 
+# #and concatenate abstract and body (using rvest, xml2)
+# webscrape <- function(doi) {
   
-  abstract <- read_html(doi) %>%
-    html_elements("section#abstract") %>%
-    html_elements("[role = paragraph]")
+#   abstract <- read_html(doi) %>%
+#     html_elements("section#abstract") %>%
+#     html_elements("[role = paragraph]")
   
-  body <- read_html(doi) %>%
-    html_elements("section#bodymatter") 
+#   body <- read_html(doi) %>%
+#     html_elements("section#bodymatter") 
   
   
-  paper_html <- paste0(abstract, body, collapse = " ") 
+#   paper_html <- paste0(abstract, body, collapse = " ") 
   
-  return(paper_html)
+#   return(paper_html)
   
-}
+# }
 
-# function to prep HTML using package tm
-prep_html_tm <- function(html) {
-  html <- as.character(html)
-  html <- read_html(html) %>% html_text()
-  html <- str_to_lower(html)
-  html <- stripWhitespace(html)
-  html <- removePunctuation(html)
-  html <- str_remove_all(html, "[[:digit:]]")
-  html <- str_remove_all(html, "[[^a-z ]]")
-  html <- lemmatize_strings(html)
-}
+# # function to prep HTML using package tm
+# prep_html_tm <- function(html) {
+#   html <- as.character(html)
+#   html <- read_html(html) %>% html_text()
+#   html <- str_to_lower(html)
+#   html <- stripWhitespace(html)
+#   html <- removePunctuation(html)
+#   html <- str_remove_all(html, "[[:digit:]]")
+#   html <- str_remove_all(html, "[[^a-z ]]")
+#   html <- lemmatize_strings(html)
+# }
 
 
 
-# tokenize paper with snowball stopwords
+# # tokenize paper with snowball stopwords
 
-tokenize <- function(clean_html) {
+# tokenize <- function(clean_html) {
 
-  tokens <- tokenize_ngrams(clean_html, 
-                  n_min = 1, n = 3,
-                  stopwords = stopwords::stopwords("en", source = "snowball")) 
-  token_tibble <-tibble(tokens = unlist(tokens))
-  token_tibble <- add_count(token_tibble, tokens, name = "frequency")
-  token_tibble <- unique(token_tibble)
+#   tokens <- tokenize_ngrams(clean_html, 
+#                   n_min = 1, n = 3,
+#                   stopwords = stopwords::stopwords("en", source = "snowball")) 
+#   token_tibble <-tibble(tokens = unlist(tokens))
+#   token_tibble <- add_count(token_tibble, tokens, name = "frequency")
+#   token_tibble <- unique(token_tibble)
 
-}
+# }
 
 
 # collapse correlated variables for z scoring

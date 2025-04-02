@@ -24,12 +24,16 @@ webscrape <- function(doi) {
   body <- read_html(doi) %>%
     html_elements("section#bodymatter") 
   
+  side_panel<-read_html(doi) %>% 
+    html_elements("#core-collateral-info")
   
-  paper_html <- paste0(abstract, body, collapse = " ") 
+  
+  paper_html <- paste0(abstract, body, side_panel, collapse = " ") 
   
   return(paper_html)
   
 }
+
 
 
 # function to prep HTML using package tm
@@ -63,18 +67,23 @@ html_file <-metadata$file[141934]
 
 
 #can we just grab the core-data-availability section? yes
-html_da<- read_html(html_file) %>% 
-    html_elements(".core-data-availability") %>%
+html_da<- 
+read_html(html_file) %>% 
+    html_elements("#core-collateral-info") %>%
     paste0()
 
-paste0(webscrape(html_file), html_da, collapse = " ")
+html_article<-paste0(webscrape(html_file), html_da, collapse = " ")
+prepped_article <-prep_html_tm(html_article)
+view(prepped_article)
+tokenized_article<-tokenize(prepped_article)
 
-#what about tokenizing everything between <article> and </article>
-html_article<- read_html(html_file) %>% 
-    html_elements("article") %>%
-    paste0(collapse = " ")
+# #what about tokenizing everything between <article> and </article>
+# html_article<- read_html(html_file) %>% 
+#     html_elements("article") %>%
+#     paste0(collapse = " ")
 
 prepped_article <-prep_html_tm(html_article)
+view(prepped_article)
 tokenized_article<-tokenize(prepped_article)
 
 #we can do this but 15K tokens and kinda funky 

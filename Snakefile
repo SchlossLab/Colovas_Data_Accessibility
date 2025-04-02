@@ -49,8 +49,9 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
-        "Data/final/predicted_results.csv.gz"
+        # "Data/groundtruth/groundtruth.tokens.csv.gz"
+        expand("Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
+        ml_variables = ml_variables)
 
 
 rule all_papers: 
@@ -116,7 +117,7 @@ rule train_tokens:
         rscript = "Code/train_html_tokens.R",
         metadata = "Data/new_groundtruth.csv"
     output: 
-        "Data/groundtruth/{datasets}.tokens.csv.gz"
+        "Data/groundtruth/groundtruth.tokens.csv.gz"
     resources: 
         mem_mb = 40000
     shell: 
