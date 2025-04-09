@@ -12,14 +12,14 @@ cluster:
         --output=log/hpc/jobs/{rule}/{rule}.out
 default-resources:
   - cpus=1
-  - mem_mb=10000
-  - time="24:00:00"
+  - mem_mb=20000
+  - time="48:00:00"
   - job_name="data"
 conda-frontend: "mamba"
 immediate-submit: False
 jobs: 4999
 keep-going: true
-latency-wait: 180
+latency-wait: 120
 max-jobs-per-second: 100
 max-status-checks-per-second: 100
 notemp: true
