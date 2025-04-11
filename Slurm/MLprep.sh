@@ -26,7 +26,7 @@
 ####    special hardware, like large memory nodes or GPUs.
 
 #SBATCH --account=pschloss99
-#SBATCH --partition=standard
+#SBATCH --partition=largemem,standard
 
 #### #### ####  These are the least frequently changing options
 

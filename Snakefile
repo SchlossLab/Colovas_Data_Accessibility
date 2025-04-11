@@ -50,8 +50,14 @@ seeds = list(range(1, 101))
 rule targets:
     input:
         # "Data/groundtruth/groundtruth.tokens.csv.gz"
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
-        ml_variables = ml_variables, seeds = seeds)
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
+        # ml_variables = ml_variables, seeds = seeds)
+        expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", ml_variables = ml_variables),
+        expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", ml_variables = ml_variables), 
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
+        ml_variables = ml_variables)
+
+
 
 
 rule all_papers: 
@@ -177,9 +183,9 @@ rule rf:
 rule merge_results_figs: 
     input: 
         rscript = "Code/combine_models.R",
-        filepath = "Data/ml_results/{datasets}/{method}/{ml_variables}"
+        filepath = "Data/ml_results/groundtruth/{method}/{ml_variables}"
     output: 
-        "Figures/ml_results/{datasets}/{method}/hp_perf.{method}.{ml_variables}.png"
+        "Figures/ml_results/groundtruth/{method}/hp_perf.{method}.{ml_variables}.png"
     resources: 
         mem_mb = 20000 
     shell: 
@@ -190,9 +196,9 @@ rule merge_results_figs:
 rule auroc: 
     input: 
         rscript = "Code/auroc_fig.R",
-        filepath = "Data/ml_results/{datasets}/{method}/{ml_variables}"
+        filepath = "Data/ml_results/groundtruth/{method}/{ml_variables}"
     output: 
-        "Figures/ml_results/{datasets}/{method}/auroc.{ml_variables}.png"
+        "Figures/ml_results/groundtruth/{method}/auroc.{ml_variables}.png"
     resources: 
         mem_mb = 20000 
     shell: 
