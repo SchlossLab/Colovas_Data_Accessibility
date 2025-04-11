@@ -5,7 +5,7 @@
 #library statements 
 library(tidyverse)
 library(rvest)
-library(tidytext)
+# library(tidytext) #20250411 - i actually don't think we need tidytext
 library(xml2)
 library(textstem) #for stemming text variables
 library(tm) #for text manipulation
