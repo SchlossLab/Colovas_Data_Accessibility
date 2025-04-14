@@ -28,8 +28,7 @@ editor: visual
             development
             -   Comparison of sequencing across conditions for not so popular model organisms?
                 -   BLAST - does BLAST use everything in NCBI? 
-                -   Tragedy of the commons? if no one uploads to NCBI then there's nothing to search
-                and the tools are basically useless?
+                -   Tragedy of the commons? if no one uploads to NCBI then there's nothing to search and the tools are basically useless?
 
     -   Current data availability and reproducibility guidelines
         -   NIH funded research must make data available as of January 2023
@@ -51,8 +50,7 @@ editor: visual
             -   ROIS - NGL (Japan)
             -   EMBL - EBI (Europe)
             -   NLM - NCBI (USA)
-        -   This is actually more work for the data generator to make sure that their data
-        is uploaded somewhere
+        -   This is actually more work for the data generator to make sure that their data is uploaded somewhere
 
 
     -   ASM journals
@@ -62,43 +60,50 @@ editor: visual
         -   Enforcement of da policies of the journal
         -   Why are we starting here with these journals? 
             -   Microbiology research generates large amounts of data
-            -   It's common to upload them to a secondary database and not just
-            include the data in a publication
-             -   Want to evaluate how well this community is using
-            reproducible data analysis as a metric because we think they will be 
-            early adopters of the technology
+            -   It's common to upload them to a secondary database and not just include the data in a publication
+             -   Want to evaluate how well this community is using reproducible data analysis as a metric because we think they will be early adopters of the technology
 
     -   Microbiology data 
         -   Why do people upload sequences?
         -   Incentives? 
 
     -   Goals
-        -   Investigate metrics of making data publicly available in 12 ASM
-        journals
+        -   Investigate metrics of making data publicly available in 12 ASM journals
         -   Using machine learning models 
-        -   To see what kind of data availability uptake we have in sequencing 
-        fields where there's a known repository
+        -   To see what kind of data availability uptake we have in sequencing fields where there's a known repository
         
 -   Results
     -   Models
+        -   random forest modeling gave the best results
     -   Model prediction results
+        -   AUROC
+        -   hyperparameter tuning 
     -   Confusion Matrices for each model
         -   Spot checking and error methodology
     -   Regression modeling
-    -   Regression modeling/confusion matrices for papers that contain
-        new sequence data
-    -   Citations corrected for time
+        -   regression equations
+        -   number of citations corrected for the month published
+        -   Regression modeling/confusion matrices for only papers that contain new sequence data
+    
 -   Discussion
-    -   Making data available provides more citations per paper than not
-        doing so.
-    -   Allows for replication of studies
+    -   Percent of ASM papers that have new sequence data available (nsd Yes, da Yes)
+        -   would it be more informative by journal? 
+    -   Making data available 
+        -   provides more citations per paper than not doing so by *XXX* number
+        -   Allows for replication of studies
     -   Why bother doing this?
         -   What advantage does it give you as a data generator 
         -   Is it worth the work? 
     -   
 -   Materials and Methods
     -   Creation of the training set
-        -   Original data set from Adena, downloaded from crossref when? 
+        -   Original data set from Adena,
+            -   downloaded from crossref when? *need to find*
+                -   did i update the metadata when i re-pulled from crossref
+            -   how did she choose these? this is my guess
+                -   variety of the 12 journals, years represented
+                -   date published from 2000 to 2024
+                -   adding of additional papers to cover gaps in representative-ness of datasets as well as the change of format in 2023
         -   Must have metadata from crossref
         -   Hand identifying 500 papers for da and nsd status
             -   new_seq_data(nsd) = "Is this paper about new sequencing data that has been generated?"
@@ -115,20 +120,15 @@ editor: visual
             -   Adding +150 *(need to check number)* from spot checking exercises to get to N = ***
     -   Creation of the actual training data
         -   Webscraping the HTML for the paper using wget
-        -   Cleaning and of the HTML using r packages rvest and xml2 to get the desired 
-        portions of the paper from the HTML
-            -   Want abstract, body of paper, tables with captions, and figure captions, 
-            as well as the side panels for all papers, but especially those containing the data 
-            availability statements in papers published after 2022
+        -   Cleaning and of the HTML using r packages rvest and xml2 to get the desired portions of the paper from the HTML
+            -   Want abstract, body of paper, tables with captions, and figure captions, as well as the side panels for all papers, but especially those containing the data availability statements in papers published after 2022
         -   Remove unnecessary text using r packages tm(text manipulation) and textstem
             -   Convert all text to lowercase
             -   Remove digits and non-alphabetic characters such as whitespace
-            -   Lemmatize strings to trace them back to their root words and eliminate 
-            any possible issues with word tense, helps have the fewest number of unique words
+            -   Lemmatize strings to trace them back to their root words and eliminate any possible issues with word tense, helps have the fewest number of unique words
         -   Creation of tokens and token count table for model using r package tokenizers and stopwords
             -   phrases of up to 1-3 consecutive words from the text of the paper
-            -   removal of 'stopwords' from the Snowball dictionary, words that do not enhance 
-            the meaning of a sentence, a, an, the, then, etc
+            -   removal of 'stopwords' from the Snowball dictionary, words that do not enhance the meaning of a sentence, a, an, the, then, etc
             -   create a table showing which paper the word is from and how many times it occurs in the paper
         -   Unnest the data into the format required by mikropml (sparse matrix) using caret and dplyr
             -   filter tokens for only those that appear in more than one paper
