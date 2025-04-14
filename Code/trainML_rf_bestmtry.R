@@ -38,7 +38,7 @@ results_cv <- mikropml::run_ml(data_processed$dat_transformed,
                    training_frac = 1.0,
                    kfold = 5, 
                    cv_times = 100, 
-                   hyperparameters = list(mtry =  c(84, 100, 150, 200, 300)),
+                   hyperparameters = list(mtry = c(100, 200, 300, 400, 500, 600)),
                    seed = best_seed, 
                    calculate_performance = FALSE)
 # save besttune
