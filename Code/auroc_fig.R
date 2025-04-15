@@ -50,7 +50,7 @@ auroc <-
     all_mtry %>% 
         ggplot(aes(x = AUC, y = factor(mtry), color = factor(mtry))) +
         geom_jitter(height=0.2,width=0,alpha = 0.4,size=2) + 
-        scale_y_discrete(breaks = c(84, 100, 150, 200, 300)) + 
+        scale_y_discrete(breaks = c(100, 200, 300, 400, 500, 600)) + 
         stat_summary(fun = mean, geom="pointrange",
                     fun.max = function(x) mean(x) + sd(x),
                     fun.min = function(x) mean(x) - sd(x),
