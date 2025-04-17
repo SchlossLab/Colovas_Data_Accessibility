@@ -5,7 +5,7 @@
 #
 # library statements
 library(tidyverse)
-library(tidytext)
+# library(tidytext)
 
 # snakemake input 
 #  {input.rscript} {params.dir} {output}
@@ -126,3 +126,14 @@ unique_dois %>%
     select(url, doi)
 
 write_csv(renamed, "Data/all_api_dois.csv.gz")
+
+#20250417 - remove 1 doi with space character 
+all_dois <-read_csv("Data/all_api_dois.csv.gz")
+# grep(" ", all_dois, value = )
+which(str_detect(all_dois$doi, "10.1128_aac.01037-16 "))
+
+all_dois$doi[[62190]] <- "10.1128_aac.01037-16"
+all_dois$url[[62190]] <- "https://journals.asm.org/doi/10.1128/aac.01037-16"
+all_dois[62190,]
+
+write_csv(all_dois, "Data/all_api_dois.csv.gz")

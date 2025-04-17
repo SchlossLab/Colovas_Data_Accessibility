@@ -35,7 +35,7 @@ method = [
 
 mtry_dict = {
     "new_seq_data" : 300, 
-    "data_availability" : 200
+    "data_availability" : 400
 }
 
 #import list of dois with their url 
@@ -54,11 +54,12 @@ rule targets:
         # ml_variables = ml_variables, seeds = seeds)
         # expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", ml_variables = ml_variables),
         # expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", ml_variables = ml_variables) 
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
-        ml_variables = ml_variables)
-        #update mtry value before you do the final model 
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
+        # ml_variables = ml_variables)
+        #update mtry value before you do the final model - check  
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
         # ml_variables = ml_variables)
+        expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
 
 
 
@@ -101,7 +102,7 @@ rule make_predictions:
     group: 
         "get_html"
     resources: 
-        mem_mb = 8000
+        mem_mb = 8
     shell: 
         """
         {input.rscript} "{input.html}" "{output.predicted}"

@@ -6,7 +6,6 @@
 # library statements
 library(tidyverse)
 library(rvest)
-library(tidytext)
 library(xml2)
 library(httr2)
 library(textstem) #for stemming text variables
