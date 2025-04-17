@@ -39,7 +39,7 @@ nsd_model <-
 
 
 # #local testing 
-# html_filename<-lookup_table$html_filename[470]
+# filename<-lookup_table$html_filename[470]
 # output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
 
 
@@ -159,6 +159,7 @@ nsd_prediction <-
 
   return(tibble::tibble(da = da_prediction, nsd = nsd_prediction))
 }
+
 
 
 total_pipeline<-function(filename){
