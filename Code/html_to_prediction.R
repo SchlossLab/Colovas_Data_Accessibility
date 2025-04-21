@@ -38,9 +38,9 @@ nsd_model <-
     readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
 
 
-# #local testing 
-# filename<-lookup_table$html_filename[470]
-# output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
+#local testing 
+filename<-lookup_table$html_filename[470]
+output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
 
 
 #functions
@@ -217,3 +217,14 @@ predicted_output <- total_pipeline(html_filename)
 
 write_csv(predicted_output, file = output_file)
 
+
+#20240421 - what is actually missing to show pat 
+zcols<-colnames(zscored)
+model_names<-da_model$xNames
+
+# missingz<-which(!(zcols %in% model_names))
+missingmod<-which(!(model_names %in% zcols))
+# model_names[missingz]
+# zcols[missingz]
+model_names[missingmod] #this is the one that makes the most sense
+# zcols[missingmod]

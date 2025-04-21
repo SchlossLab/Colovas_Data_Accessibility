@@ -59,7 +59,8 @@ rule targets:
         #update mtry value before you do the final model - check  
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
         # ml_variables = ml_variables)
-        expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
+        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
+        expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
 
 
 

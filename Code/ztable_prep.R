@@ -56,35 +56,6 @@ tokens_withdata <-
     token_unlist %>% 
         left_join(., ztable, by = "tokens")
 
-#get tokens with nas
-na_tokens<-
-filter(tokens_withdata, is.na(token_mean)) %>%
-select(tokens, grpname)
-na_tokens$tokens <-str_replace(na_tokens$tokens, pattern = "_1", replacement ="")
-
-na_containers_withdata<-
-    na_tokens %>%
-    left_join(., container_titles, by = "tokens") %>%
-    filter(., !is.na(token_mean))
-
-na_ztable_withdata<-
-    na_tokens%>%
-    inner_join(., ztable, by = "tokens") %>%
-    filter(., !is.na(token_mean))
-
-#combine the two tables back up 
-na_tokens_withdata <-rbind(na_containers_withdata, na_ztable_withdata)
-#need to add _1 back into the nas
-na_tokens_withdata$tokens<-str_c(na_tokens_withdata$tokens, "_1")
-
-#these are the rest of the tokens in the table to collapse which is fine 
-tokens_withdata_nonas<-
-tokens_withdata %>% 
-    filter(!is.na(token_mean))
-
-#combine with the ones that were fine before
-tokens_withdata <-rbind(tokens_withdata_nonas, na_tokens_withdata)
-
 ztable_without_collapsed <-
     ztable %>% 
         anti_join(., tokens_withdata, by = "tokens")
@@ -93,7 +64,7 @@ tokens_toz <-
     tokens_withdata %>%
         select(-tokens) %>% 
         rename(tokens = grpname) %>%
-        unique()
+        unique()  
 
 ztable_withgrps <-
     tokens_toz %>% 
