@@ -183,7 +183,7 @@ total_pipeline<-function(filename){
 
         token_tibble <- tokenize(clean_html) 
 
-        collapsed <-collapse_correlated(token_tibble) 
+        collapsed <-collapse_correlated(token_tibble)
           
 
         #get only variables in the model
@@ -222,9 +222,16 @@ write_csv(predicted_output, file = output_file)
 zcols<-colnames(zscored)
 model_names<-da_model$xNames
 
-# missingz<-which(!(zcols %in% model_names))
+missingz<-which(!(zcols %in% model_names))
 missingmod<-which(!(model_names %in% zcols))
 # model_names[missingz]
-# zcols[missingz]
+zcols[missingz]
 model_names[missingmod] #this is the one that makes the most sense
 # zcols[missingmod]
+
+
+missing_model<-anti_join(tibble(model_names), tibble(zcols), by = join_by(model_names == zcols))
+
+missing_ztable<-anti_join(tibble(zcols), tibble(model_names), by = join_by(zcols == model_names))
+ztable[missing]
+view(missing)
