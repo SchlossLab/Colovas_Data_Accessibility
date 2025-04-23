@@ -18,17 +18,20 @@ container_titles <-read_csv(input[3])
 output_ztable <- as.character(input[4])
 output_tokens <- as.character(input[5])
 # str(output_file)
+da_model <- 
+    readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
 
 
 # # #local implementation
 # # {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
-ztable_filename <- "Data/ml_prep/groundtruth.data_availability.zscoretable.csv.gz"
-token_filename <- "Data/ml_prep/groundtruth.data_availability.tokenlist.RDS"
-ztable <- read_csv(ztable_filename)
-token_list <- readRDS(token_filename)
-container_titles <-
-    read_csv("Data/ml_prep/groundtruth.data_availability.container_titles.csv")
-output_file <- "Data/groundtruth.data_availability.zscoretable_filtered.csv"
+# ztable_filename <- "Data/ml_prep/groundtruth.data_availability.zscoretable.csv.gz"
+# token_filename <- "Data/ml_prep/groundtruth.data_availability.tokenlist.RDS"
+# ztable <- read_csv(ztable_filename)
+# token_list <- readRDS(token_filename)
+# container_titles <-
+#     read_csv("Data/ml_prep/groundtruth.data_availability.container_titles.csv")
+# output_file <- "Data/groundtruth.data_availability.zscoretable_filtered.csv"
+
 
 
 #collapse correlated variables in ztable --------------------------------------
@@ -54,37 +57,9 @@ token_unlist <-
 
 tokens_withdata <-
     token_unlist %>% 
-        left_join(., ztable, by = "tokens")
-
-#get tokens with nas
-na_tokens<-
-filter(tokens_withdata, is.na(token_mean)) %>%
-select(tokens, grpname)
-na_tokens$tokens <-str_replace(na_tokens$tokens, pattern = "_1", replacement ="")
-
-na_containers_withdata<-
-    na_tokens %>%
-    left_join(., container_titles, by = "tokens") %>%
-    filter(., !is.na(token_mean))
-
-na_ztable_withdata<-
-    na_tokens%>%
-    inner_join(., ztable, by = "tokens") %>%
-    filter(., !is.na(token_mean))
-
-#combine the two tables back up 
-na_tokens_withdata <-rbind(na_containers_withdata, na_ztable_withdata)
-#need to add _1 back into the nas
-na_tokens_withdata$tokens<-str_c(na_tokens_withdata$tokens, "_1")
-
-#these are the rest of the tokens in the table to collapse which is fine 
-tokens_withdata_nonas<-
-tokens_withdata %>% 
-    filter(!is.na(token_mean))
-
-#don't combine the "_1" tokens into their groups and add to the collapse list
-#these tokens exist in the model by themselves and in their groups
-tokens_withdata <-rbind(tokens_withdata_nonas, na_tokens_withdata)
+        left_join(., ztable, by = "tokens") %>%
+        mutate(token_mean = ifelse(is.na(token_mean), 0, token_mean), 
+                token_sd = ifelse(is.na(token_sd), 1, token_sd)) 
 
 ztable_without_collapsed <-
     ztable %>% 
@@ -98,50 +73,38 @@ tokens_toz <-
         summarize(token_mean = mean(token_mean),
                 token_sd = mean(token_sd)) 
 
-# tokens_toz_tokens <- 
-#     na_tokens_withdata %>%
-#         select(-grpname) %>% 
-#         unique()
-
-# tokens_toz <- rbind(tokens_toz_grps, tokens_toz_tokens)
-
 ztable_withgrps <-
     tokens_toz %>% 
         full_join(., ztable_without_collapsed) 
     
 
-
-#sanity checks 
-grep("grp", ztable_withgrps$tokens, value = TRUE)
-grep("_1", ztable_withgrps$tokens, value = TRUE)
-
 for(i in 1:length(token_list)){
     print(token_list[i] %in% ztable_withgrps$tokens)
 }
 
-#sanity check for one specific thing
-grep("creative common", ztable_withgrps$tokens, value = TRUE)
-
-#add container.titles to the z score table-----------------------------------
-# container_titles <-
-#     container_titles %>% 
-#         mutate(var_name = paste0("container.title_", container.title)) 
-
-# containers_toz <-
-# container_titles %>% 
-#     select(var_name, token_mean, token_sd) %>% 
-#     rename(tokens = var_name) 
 
 ztable_full <-
 container_titles %>% 
     full_join(., ztable_withgrps) 
-    
-#sanity check    
-grep("container", ztable_full$tokens, value = TRUE)
-grep("grp", ztable_full$tokens, value = TRUE)
-grep("_1", tokens_withdata$tokens, value = TRUE)
 
-write_csv(ztable_full, file = output_ztable)
+#20250423 - combine with the model so that you can truly be sure 
+# model_names<-da_model$xNames
+model_names<-tibble(model_names = da_model$xNames, in_model = "Yes")
+ztable_stuff<-mutate(ztable_full, in_ztable = "Yes")
+
+everything<-full_join(model_stuff, ztable_stuff, by = join_by(model_names == tokens)) %>% 
+    filter(., in_model == "Yes") %>% 
+    mutate(token_mean = ifelse(is.na(token_mean), 0, token_mean), 
+                token_sd = ifelse(is.na(token_sd), 1, token_sd)) %>%
+    select(model_names, token_mean, token_sd) %>%
+    rename(tokens = model_names)
+
+#sanity check 
+filter(everything, is.na(token_sd))
+which(is.na(everything), arr.ind = TRUE)
+view(everything)
+
+write_csv(everything, file = output_ztable)
 write_csv(tokens_withdata, file = output_tokens)
 
 
