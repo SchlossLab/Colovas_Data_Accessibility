@@ -158,13 +158,14 @@ rule ztable:
         rscript = "Code/ztable_prep.R",
         ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", 
         tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.csv"
+        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.csv", 
+        model = "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS"
     output: 
         ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
         tokens = "Data/ml_prep/groundtruth.{ml_variables}.tokens_to_collapse.csv"
     shell: 
         """
-        {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output.ztable} {output.tokens}
+        {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output.ztable} {output.tokens} {input.model}
         """
 
 

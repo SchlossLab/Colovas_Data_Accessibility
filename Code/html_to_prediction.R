@@ -39,56 +39,11 @@ nsd_model <-
 
 
 #local testing 
-filename<-lookup_table$html_filename[470]
-output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
+# filename<-lookup_table$html_filename[470]
+# output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
 
 
-#functions
-
-# #function for reading html, remove figs/tables, 
-# #and concatenate abstract and body (using rvest, xml2)
-# webscrape <- function(doi) {
-  
-#   abstract <- read_html(doi) %>%
-#     html_elements("section#abstract") %>%
-#     html_elements("[role = paragraph]")
-  
-#   body <- read_html(doi) %>%
-#     html_elements("section#bodymatter") 
-  
-  
-#   paper_html <- paste0(abstract, body, collapse = " ") 
-  
-#   return(paper_html)
-  
-# }
-
-# # function to prep HTML using package tm
-# prep_html_tm <- function(html) {
-#   html <- as.character(html)
-#   html <- read_html(html) %>% html_text()
-#   html <- str_to_lower(html)
-#   html <- stripWhitespace(html)
-#   html <- removePunctuation(html)
-#   html <- str_remove_all(html, "[[:digit:]]")
-#   html <- str_remove_all(html, "[[^a-z ]]")
-#   html <- lemmatize_strings(html)
-# }
-
-
-
-# # tokenize paper with snowball stopwords
-
-# tokenize <- function(clean_html) {
-
-#   tokens <- tokenize_ngrams(clean_html, 
-#                   n_min = 1, n = 3,
-#                   stopwords = stopwords::stopwords("en", source = "snowball")) 
-#   token_tibble <-tibble(tokens = unlist(tokens))
-#   token_tibble <- add_count(token_tibble, tokens, name = "frequency")
-#   token_tibble <- unique(token_tibble)
-
-# }
+#functions - first three removed into utilites.R
 
 
 # collapse correlated variables for z scoring
@@ -218,20 +173,5 @@ predicted_output <- total_pipeline(html_filename)
 write_csv(predicted_output, file = output_file)
 
 
-#20240421 - what is actually missing to show pat 
-zcols<-colnames(zscored)
-model_names<-da_model$xNames
-
-missingz<-which(!(zcols %in% model_names))
-missingmod<-which(!(model_names %in% zcols))
-# model_names[missingz]
-zcols[missingz]
-model_names[missingmod] #this is the one that makes the most sense
-# zcols[missingmod]
 
 
-missing_model<-anti_join(tibble(model_names), tibble(zcols), by = join_by(model_names == zcols))
-
-missing_ztable<-anti_join(tibble(zcols), tibble(model_names), by = join_by(zcols == model_names))
-ztable[missing]
-view(missing)

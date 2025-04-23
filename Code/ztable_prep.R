@@ -18,8 +18,8 @@ container_titles <-read_csv(input[3])
 output_ztable <- as.character(input[4])
 output_tokens <- as.character(input[5])
 # str(output_file)
-da_model <- 
-    readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
+model <- 
+    readRDS(as.character(input[6]))
 
 
 # # #local implementation
@@ -89,7 +89,7 @@ container_titles %>%
 
 #20250423 - combine with the model so that you can truly be sure 
 # model_names<-da_model$xNames
-model_names<-tibble(model_names = da_model$xNames, in_model = "Yes")
+model_stuff<-tibble(model_names = model$xNames, in_model = "Yes")
 ztable_stuff<-mutate(ztable_full, in_ztable = "Yes")
 
 everything<-full_join(model_stuff, ztable_stuff, by = join_by(model_names == tokens)) %>% 
