@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 #create metadata from all dois list with predictions
 #
 #
@@ -57,7 +58,7 @@ missing_from_crossref<-anti_join(remove_doi_dupes, crossref, by = join_by(doi_no
 # missing_from_crossref %>%
 #   filter(!is.na(da) & !is.na(nsd))
 
-#1016 of missing crossref with predictions found in ncbi 
+#1036 of missing crossref with predictions found in ncbi 
 metadata_ncbi<-inner_join(missing_from_crossref, ncbi, by = join_by(doi_no_underscore == doi))
 #174 still missing/1190
 missing_cross_ncbi<-anti_join(missing_from_crossref, ncbi, by = join_by(doi_no_underscore == doi))

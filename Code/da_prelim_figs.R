@@ -86,7 +86,7 @@ nsd_yes_da_factor %>%
               linewidth = 0.1, size = 0.2) +
   #median_hilow = median center, line = 95%CI, conf.int = 0.5 gives iqr
   facet_wrap(~container.title, scales = "free_y") + 
-  geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 3) 
+  geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 2) 
 
 
 colnames(nsd_yes_da_factor)

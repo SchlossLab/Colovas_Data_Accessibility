@@ -21,10 +21,10 @@ joined_predictions <- full_join(predicted_files, lookup_table, by = join_by("fil
 
 
 #slice however many n 150 maybe? 
-sliced <-slice_sample(joined_predictions, by = c(da, nsd), n = 30)
-
+sliced <-slice_sample(joined_predictions, by = c(journal_abrev), n = 10)
+view(sliced)
 #save it so that i can spot check them using excel 
-# write_csv(sliced, file = "Data/spot_check/spot_check.csv")
+# write_csv(sliced, file = "Data/spot_check/20250424_spot_check.csv")
 
 #20250110 - spot check metrics
 #read in spot check file
