@@ -27,5 +27,6 @@
     - Papers about protein sequencing; 
         - if they have actual nucleotide sequencing data are nsd = Yes, da = Yes if uploaded to a database
         - if they are only about protein structure, nsd = No, da = No, even if they have data uploaded, see above.
+    - iRNA and pyrosequencing are nsd = No
     
   
