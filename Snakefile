@@ -18,6 +18,7 @@ new_datasets = {
     "1098-5514" : "Data/1098-5514_metadata.RDS", #jv
     "1098-5522" : "Data/1098-5522_metadata.RDS", #i&i
     "1098-6596" : "Data/1098-6596_metadata.RDS", #aac
+    "2169-8287" : "Data/2169-8287_metadata.RDS" #ga
 }
 
   
@@ -63,7 +64,8 @@ rule targets:
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
         #combine predictions
-        "Data/final/predicted_results.csv.gz"
+        # "Data/final/predicted_results.csv.gz"
+        "Data/crossref/crossref_2169-8287.csv.gz"
 
 
 
