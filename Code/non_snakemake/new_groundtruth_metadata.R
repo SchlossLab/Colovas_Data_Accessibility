@@ -69,3 +69,27 @@ colnames(groundtruth)
 view(groundtruth)
 
 
+#20250430 - adding genome announcements and extra spot checked data to dois list
+spot_check <- read_csv("Data/spot_check/20250424_spot_check.csv")
+ga <- read_csv("Data/spot_check/20250429_genome_announcements.csv")
+
+doi_spot_check <- 
+spot_check %>%
+   select(paper, doi) %>% 
+   rename(url = paper)
+
+doi_ga <- 
+    ga %>%
+    mutate(url = paste0("https://journals.asm.org/doi/", doi), 
+    doi = str_replace_all(doi, "/", "_")) %>%
+    select(url, doi)
+
+
+
+gt_dois <-read_csv("Data/new_groundtruth_dois.csv.gz")
+
+new_gt_dois<-rbind(gt_dois, doi_spot_check, doi_ga)
+write_csv(new_gt_dois, file = "Data/new_groundtruth_dois.csv.gz")
+
+#ok this is just doi_underscore and the webscrape url (paper)
+groundtruth<-read_csv("Data/new_groundtruth.csv")

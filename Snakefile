@@ -65,7 +65,7 @@ rule targets:
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
         #combine predictions
         # "Data/final/predicted_results.csv.gz"
-        "Data/crossref/crossref_2169-8287.csv.gz"
+        expand("Data/html/{doi}.html", doi = doi_lookup.keys())
 
 
 
@@ -90,7 +90,7 @@ rule indiv_dois:
     group:
         "get_doi"
     resources:
-        mem_mb = 8000
+        mem_mb = 800
     params:
         url = lambda wildcards, output: doi_lookup[wildcards.doi]
     shell:

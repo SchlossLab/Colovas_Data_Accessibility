@@ -29,7 +29,7 @@ use-conda: true
 verbose: true
 
 group-components:
-  - get_doi=1
+  - get_doi=100
   - get_html=1
   - crossref=6
   - wos = 12

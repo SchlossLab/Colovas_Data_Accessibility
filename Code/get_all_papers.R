@@ -137,3 +137,18 @@ all_dois$url[[62190]] <- "https://journals.asm.org/doi/10.1128/aac.01037-16"
 all_dois[62190,]
 
 write_csv(all_dois, "Data/all_api_dois.csv.gz")
+
+
+#20250430 - add from the new genome announcements 
+all_apis <- read_csv("Data/all_api_dois.csv.gz")
+ga_data <-read_csv("Data/crossref/crossref_2169-8287.csv.gz")
+
+
+doi_ga <- 
+    ga_data %>%
+    mutate(url = paste0("https://journals.asm.org/doi/", doi), 
+    doi = str_replace_all(doi, "/", "_")) %>%
+    select(url, doi)
+
+apis_pus_ga <- rbind(all_apis, doi_ga)
+write_csv(apis_pus_ga, file = "Data/all_api_dois.csv.gz")
