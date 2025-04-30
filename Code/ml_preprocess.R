@@ -4,7 +4,7 @@
 #
 #library statements
 library(tidyverse)
-library(tidytext)
+# library(tidytext)
 library(jsonlite)
 library(mikropml)
 
@@ -67,7 +67,7 @@ clean_tibble <-
         unnest(data) %>%  #unnest all the data
         select(doi_underscore, tokens, frequency) %>% #select these columns
         mutate(tokens = str_replace_all(tokens, " ", "_")) %>% #change spaces to underscores
-        filter(tokens != "interest_importance" & tokens != "material_method_bacterial") %>%
+        filter(!tokens %in% "_1") %>%
         pivot_wider(id_cols = doi_underscore,
                     names_from = tokens, values_from = frequency, 
                     values_fill = 0) #pivot wider and fill in zeros
