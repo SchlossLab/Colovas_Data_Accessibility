@@ -6,6 +6,8 @@
 #library 
 library(tidyverse)
 
+#20250430 - redone lines 11-28 
+
 #file import
 gt_dois <-read_csv("Data/new_groundtruth_dois.csv.gz") %>%
     mutate(doi_slash = str_replace(doi, "_", "/")) %>%
@@ -14,14 +16,15 @@ gt_dois <-read_csv("Data/new_groundtruth_dois.csv.gz") %>%
 #get metadata from crossref
 crossref <- read_csv("Data/crossref/crossref_all_papers.csv.gz")
 
-#combine gt dois and metadata - there's a dupicate so n = 655
-new_metadata<-inner_join(gt_dois, crossref, by = join_by(doi_slash == doi)) %>%
-    rename(doi_underscore = doi)
+#combine gt dois and metadata - there's a dupicate so n = 902
+new_metadata<-inner_join(gt_dois, crossref, by = join_by(doi_slash == doi)) 
 
+dupes <-which(duplicated(new_metadata))
 
-#save new metadat 
+new_metadata <-new_metadata[-dupes,]
+
+#save new metadata
 write_csv(new_metadata, file = "Data/new_groundtruth_metadata.csv.gz")
-
 
 
 #20250307 - apparently this table has more duplicates than i knew about 
