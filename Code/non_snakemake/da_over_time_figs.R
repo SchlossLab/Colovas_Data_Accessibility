@@ -6,7 +6,7 @@ library(tidyverse)
 
 
 # load in dataset of predicted stuff with metadata
-metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz")
+metadata <- read_csv("Data/final/20250423/20250423_predictions_with_metadata.csv.gz")
 
 #add year published
 metadata <- metadata %>% 
@@ -35,12 +35,13 @@ nsd_yes_metadata %>%
          da_fract = `n`/da_total) %>%
  filter(da == "Yes") %>% 
   ggplot(aes(x = year.published, y = da_fract)) +
-  geom_col() +
+  geom_point(aes(size = da_total, alpha = .5)) +
   facet_wrap(vars(container.title),
              labeller = labeller(container.title = label_wrap_gen(14))) + 
   labs(x = "Year Published (2000-2024)", 
        y = "Fraction of Papers Containing New\nSequencing Data with Data Available", 
-       title = "Fraction of Papers Containing New Sequencing Data\nwith Data Available Over 2020-2024 by ASM Journal") 
+       title = "Fraction of Papers Containing New Sequencing Data\nwith Data Available Over 2020-2024 by ASM Journal") + 
+  scale_x_discrete(breaks = c("2000", "2005", "2010", "2015", "2020", "2024")) 
   ggsave(filename = "Figures/nsdyes_da_2000_2024.png")
     
 #calculate fraction of papers with nsd yes and da yes
@@ -55,7 +56,7 @@ post_2020 %>%
   filter(da == "Yes") %>% 
   ggplot(aes(x = year.published, y = da_fract)) +
   # geom_line() + 
-  geom_col() +
+   geom_point(aes(size = da_total)) +
   facet_wrap(vars(container.title),
              labeller = labeller(container.title = label_wrap_gen(14))) + 
   labs(x = "Year Published (2020-2024)", 
@@ -63,21 +64,21 @@ post_2020 %>%
        title = "Fraction of Papers Containing New Sequencing Data\nwith Data Available Over 2020-2024 by ASM Journal") 
   ggsave(filename = "Figures/nsdyes_da_2020_2024.png")
 
-  nsd_yes_metadata %>% 
-    group_by(year.published, container.title) %>%  
-    count(year.published, container.title, da) %>% 
-    mutate(da_total = sum(`n`), 
-           da_fract = `n`/da_total) %>% 
-    filter(da == "Yes") %>% 
-    ggplot(aes(x = year.published, y = da_fract)) +
-    geom_line() + 
-    geom_point() +
-    facet_wrap(vars(container.title),
-               labeller = labeller(container.title = label_wrap_gen(14))) + 
-    labs(x = "Year Published (2020-2024)", 
-         y = "Fraction of Papers Containing New\nSequencing Data with Data Available", 
-         title = "Fraction of Papers Containing New Sequencing Data\nwith Data Available Over 2020-2024 by ASM Journal") 
-  ggsave(filename = "Figures/nsdyes_da_over_time_2000.png")
+  # nsd_yes_metadata %>% 
+  #   group_by(year.published, container.title) %>%  
+  #   count(year.published, container.title, da) %>% 
+  #   mutate(da_total = sum(`n`), 
+  #          da_fract = `n`/da_total) %>% 
+  #   filter(da == "Yes") %>% 
+  #   ggplot(aes(x = year.published, y = da_fract)) +
+  #   geom_line() + 
+  #   geom_point() +
+  #   facet_wrap(vars(container.title),
+  #              labeller = labeller(container.title = label_wrap_gen(14))) + 
+  #   labs(x = "Year Published (2020-2024)", 
+  #        y = "Fraction of Papers Containing New\nSequencing Data with Data Available", 
+  #        title = "Fraction of Papers Containing New Sequencing Data\nwith Data Available Over 2020-2024 by ASM Journal") 
+  # ggsave(filename = "Figures/nsdyes_da_over_time_2000.png")
   
 
 
