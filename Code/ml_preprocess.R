@@ -45,7 +45,7 @@ container_title_filename <-as.character(input[7])
 
 
 
-
+clean_text
 
 # set up the format of the clean_text dataframe
 total_papers <- n_distinct(clean_text$doi_underscore)
@@ -60,6 +60,7 @@ clean_tibble <-
         mutate(nzv = map_dfr(data, \(x) {z = c(x$frequency, 
                                         rep(0,total_papers - nrow(x)));
                                         caret::nearZeroVar(z, saveMetrics = TRUE)}))
+
 clean_tibble <- 
     clean_tibble %>% 
         unnest(nzv) %>% #pull the nzv column out
@@ -67,16 +68,13 @@ clean_tibble <-
         unnest(data) %>%  #unnest all the data
         select(doi_underscore, tokens, frequency) %>% #select these columns
         mutate(tokens = str_replace_all(tokens, " ", "_")) %>% #change spaces to underscores
-        filter(!tokens %in% "_1") %>%
+        filter(str_detect(tokens, "_1", negate = TRUE)) %>% 
         pivot_wider(id_cols = doi_underscore,
                     names_from = tokens, values_from = frequency, 
                     values_fill = 0) #pivot wider and fill in zeros
 
-#20250313 - filter statement on line 70 ie
-#(filter(tokens != "interest_importance" & tokens != "material_method_bacterial"))
-#included to remove two tokens that were causing issues with the training of the model
-#they are not believed to have significant impact on the model and can be removed without fear
-
+# #for testing!
+# clean_tibble<-read_csv("Data/clean_tibble_testing.csv.gz")
 
 # grab the needed metadata for the papers
 need_meta <- select(metadata, all_of(ml_var))
@@ -92,8 +90,14 @@ full_ml <- select(full_ml, !doi_underscore)
 # use mikropml::preprocess_data on dataset
 full_ml_pre <- preprocess_data(full_ml, outcome_colname = ml_var_snake, 
                                 remove_var = NULL)
-full_ml_pre$dat_transformed
 
+#removal of "_1" variables
+colnames<- colnames(full_ml_pre$dat_transformed)
+to_remove_cols<- grep("_1", colnames)
+full_ml_pre$dat_transformed <-full_ml_pre$dat_transformed[-to_remove_cols]
+
+to_remove_fts<-grep("_1", full_ml_pre$grp_feats)
+full_ml_pre$grp_feats<-full_ml_pre$grp_feats[-to_remove_fts]
 
 # save preprocessed data as an RDS file 
 saveRDS(full_ml_pre, file = output_file)
