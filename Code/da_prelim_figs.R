@@ -87,11 +87,19 @@ nsd_yes_da_factor %>%
   #median_hilow = median center, line = 95%CI, conf.int = 0.5 gives iqr
   facet_wrap(~container.title, scales = "free_y") + 
   geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 2) 
-
+ggsave(file = "Figures/citationrate_byjournal.png")
 
 colnames(nsd_yes_da_factor)
 
 #looking for specific papers
+#mra outlier - da no, citations >40 about 60 months old
+#2019 paper about kenyan bat coronavirus sequence
+nsd_yes_da_factor %>%
+filter(is.referenced.by.count > 40 & container.title == "Microbiology Resource Announcements" & da == "No") %>% 
+view()
+
+
+
 nsd_yes_da_factor %>%
 filter(is.referenced.by.count > 1000 & container.title == "mSystems" & da == "No") %>% 
 view()

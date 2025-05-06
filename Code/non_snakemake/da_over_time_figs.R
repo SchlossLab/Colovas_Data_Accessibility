@@ -41,7 +41,7 @@ nsd_yes_metadata %>%
   labs(x = "Year Published (2000-2024)", 
        y = "Fraction of Papers Containing New\nSequencing Data with Data Available", 
        title = "Fraction of Papers Containing New Sequencing Data\nwith Data Available Over 2020-2024 by ASM Journal") + 
-  scale_x_discrete(breaks = c("2000", "2005", "2010", "2015", "2020", "2024")) 
+  scale_x_discrete(breaks = c("2000", "2005", "2010", "2015", "2020")) 
   ggsave(filename = "Figures/nsdyes_da_2000_2024.png")
     
 #calculate fraction of papers with nsd yes and da yes

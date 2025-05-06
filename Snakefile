@@ -55,6 +55,7 @@ rule targets:
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables), 
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
         # ml_variables = ml_variables, seeds = seeds)
+        #auroc figures next 2 lines
         # expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", ml_variables = ml_variables),
         # expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", ml_variables = ml_variables) 
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
@@ -110,7 +111,7 @@ rule make_predictions:
     group: 
         "get_html"
     resources: 
-        mem_mb = 8000
+        mem_mb = 8
     shell: 
         """
         {input.rscript} "{input.html}" "{output.predicted}"
