@@ -254,6 +254,18 @@ rule final_model:
         """
 
 
+rule nsdyes_figs: 
+    input: 
+        rscript = "Code/create_nsdyes_summary_figures.R",
+        metadata = "Data/final/predictions_with_metadata.csv.gz"
+    output: 
+        "Figures/citationrate_byjournal.png", 
+        "Figures/nsdyes_da_2000_2024.png"
+    shell: 
+        """
+        {input.rscript} {input.metadata} 
+        """
+
 
 
 ###---------------geting dois from multiple apis---------------------------------
