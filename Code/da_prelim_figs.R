@@ -8,7 +8,7 @@ library(tidyverse)
 library(MASS)
 
 #load metadata
-metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz")
+metadata <- read_csv("Data/final/20250423/20250423_predictions_with_metadata.csv.gz")
 
 #get the year published out of as many of these as possible
 metadata <- metadata %>% 
@@ -91,9 +91,13 @@ nsd_yes_da_factor %>%
 
 colnames(nsd_yes_da_factor)
 
+#looking for specific papers
 nsd_yes_da_factor %>%
 filter(is.referenced.by.count > 1000 & container.title == "mSystems" & da == "No") %>% 
 view()
+
+
+
 
 #number of papers over time
 

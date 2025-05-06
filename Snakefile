@@ -53,8 +53,8 @@ rule targets:
         # "Data/groundtruth/groundtruth.tokens.csv.gz"
         # expand("Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", ml_variables = ml_variables), 
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables), 
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
-        ml_variables = ml_variables, seeds = seeds)
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
+        # ml_variables = ml_variables, seeds = seeds)
         # expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", ml_variables = ml_variables),
         # expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", ml_variables = ml_variables) 
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
@@ -63,9 +63,9 @@ rule targets:
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
         # ml_variables = ml_variables)
         #to get predictions
-        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
+        expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
-        #combine predictions
+        # combine predictions
         # "Data/final/predicted_results.csv.gz"
         # expand("Data/html/{doi}.html", doi = doi_lookup.keys())
 
