@@ -67,8 +67,9 @@ rule targets:
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
         # combine predictions
-        "Data/all_dois_lookup_table.csv.gz"
+        # "Data/all_dois_lookup_table.csv.gz"
         # "Data/final/predicted_results.csv.gz"
+        "Figures/citationrate_byjournal.png"
         
 
 
