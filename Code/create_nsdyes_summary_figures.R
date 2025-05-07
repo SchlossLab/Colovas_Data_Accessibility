@@ -14,7 +14,7 @@ metadata <- read_csv(input[1])
 
 
 # local data
-metadata <- read_csv("Data/final/20250423/20250423_predictions_with_metadata.csv.gz")
+# metadata <- read_csv("Data/final/20250423/20250423_predictions_with_metadata.csv.gz")
 
 #getting the right metadata variables
 #get the year published out of as many of these as possible

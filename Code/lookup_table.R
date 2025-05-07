@@ -1,28 +1,8 @@
-# no shebang, doesn't need to be run on the cluster
+#!/usr/bin/env Rscript
 #
 #
 #library statements
 library(tidyverse)
-
-#need to import all the metadata files
-papers_dir <- "Data/papers"
-csv_files <- list.files(papers_dir, "*.csv")
-
-
-all_papers <- tribble(~paper, ~html_filename, ~container.title)
-
-for (i in 1:12) {
-    csv_file <- read_csv(paste0(papers_dir, "/", csv_files[i])) %>%
-        select(., c(`paper`, `container.title`, `html_filename`))
-    all_papers <- full_join(all_papers, csv_file)
-}
-
-all_papers<-
-    all_papers %>%
-    mutate(predicted = paste0("Data/predicted/", str_split_i(html_filename, "/", 3), ".csv"), 
-    html_filename = paste0(html_filename, ".html"))
-
-write_csv(all_papers, file = "Data/papers/lookup_table.csv.gz")
 
 
 #20250306 - new lookup table for the new doi set
@@ -30,10 +10,9 @@ write_csv(all_papers, file = "Data/papers/lookup_table.csv.gz")
 #load files that might help me
 all_dois <-read_csv("Data/all_api_dois.csv.gz")%>%
     mutate(doi_no_underscore = str_replace(doi, "_", "\\/"))
-scopus <-read_csv("Data/scopus/all_scopus_citations.csv.gz")
+
 crossref <-read_csv("Data/crossref/crossref_all_papers.csv.gz")
-ncbi <-read_csv("Data/ncbi/ncbi_all_papers.csv.gz")
-wos <-read_csv("Data/wos/wos_all_papers.csv.gz")
+
 
 #get the container title for all of these papers and --------------------
 #throw out garbage dois without right formatting
@@ -42,7 +21,7 @@ container.title <- crossref %>%
     select(container.title)
     
 j_table<- tibble(
-    journal_abrev = c("aac", "aem", "iai", "jb", "jcm", "jmbe", 
+    journal_abrev = c("aac", "aem", "mra", "iai", "jb", "jcm", "jmbe", 
     "jmbe", "jvi", "mra", "spectrum", "mbio", "msphere", "msystems"), 
     container.title
 )

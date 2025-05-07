@@ -49,7 +49,7 @@ scopus <-read_csv("Data/scopus/all_scopus_citations.csv.gz") %>%
 #join with crossref metadata n = 146398 (1609 missing)
 metadata_crossref<-inner_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
 
-#1609 missing from crossref
+#7438 missing from crossref
 missing_from_crossref<-anti_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
 
 #how many of the ones missing from crossref have no predictions

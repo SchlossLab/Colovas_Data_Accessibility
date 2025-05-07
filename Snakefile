@@ -64,11 +64,12 @@ rule targets:
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
         # ml_variables = ml_variables)
         #to get predictions
-        expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
+        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
         # combine predictions
+        "Data/all_dois_lookup_table.csv.gz"
         # "Data/final/predicted_results.csv.gz"
-        # expand("Data/html/{doi}.html", doi = doi_lookup.keys())
+        
 
 
 
@@ -269,6 +270,17 @@ rule nsdyes_figs:
 
 
 ###---------------geting dois from multiple apis---------------------------------
+rule lookup_table: 
+    input:
+        "Data/all_api_dois.csv.gz", 
+        "Data/crossref/crossref_all_papers.csv.gz", 
+        rscript = "Code/lookup_table.R" 
+    output: 
+        "Data/all_dois_lookup_table.csv.gz"
+    shell:
+        """
+        {input.rscript}
+        """
 
 rule scopus: 
     input: 
