@@ -30,7 +30,7 @@ view(sliced)
 #read in spot check file
 # spot_check <- read_csv("Data/spot_check/spot_check.csv")
 # spot_check <- read_csv("Data/spot_check/20250324_mra_spec_nsd_yes_da_no.csv")
-spot_check <- read_csv("Data/spot_check/20250424_spot_check.csv")
+spot_check <- read_csv("Data/spot_check/20250507_spot_check.csv")
 
 #find rows where da!=actual_da and same for nsd
 
