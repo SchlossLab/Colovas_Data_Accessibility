@@ -15,9 +15,9 @@ head(predicted_files)
 
 lookup_table <-read_csv("Data/all_dois_lookup_table.csv.gz")
 head(lookup_table)
-
+#yes i know these are backwards for da/nsd but the model are in that order so it's easier to see
 joined_predictions <- full_join(predicted_files, lookup_table, by = join_by("file" == "html_filename")) %>%
-    mutate(actual_nsd = 0, actual_da = 0, notes = NA)
+    mutate(actual_da = 0, actual_nsd = 0, notes = NA)
 
 
 #slice however many n 150 maybe? 
