@@ -34,17 +34,17 @@ spot_check <- read_csv("Data/spot_check/20250507_spot_check.csv")
 
 #find rows where da!=actual_da and same for nsd
 
-#8/130 = 
+#4/150 = 2%
 spot_check_da <- 
     spot_check %>% 
     filter(da != actual_da)
 
-#8/130 rows
+#5/150 rows = 3%
 spot_check_nsd <- 
     spot_check %>% 
     filter(nsd != actual_nsd)
 
-#16/130
+#8/150 = 5%
 spot_check_all <- 
     spot_check %>% 
     filter(nsd != actual_nsd | da != actual_da)
