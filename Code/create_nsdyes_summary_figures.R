@@ -46,19 +46,29 @@ nsd_yes_da_factor %>%
               fun.args = list(conf.int = 0.5), 
               linewidth = 0.1, size = 0.2) +
   #median_hilow = median center, line = 95%CI, conf.int = 0.5 gives iqr
-  facet_wrap(~container.title, scales = "free_y") + 
-  geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 2) 
+  facet_wrap(~journal_abrev, scales = "free_y", 
+  labeller = as_labeller(c(aac = "Antimicrobial Agents\nand Chemotherapy", aem = "Applied and Environmental\nMicrobiology", 
+  iai = "Infection and Immunity", jb = "Journal of Bacteriology", jcm = "Journal of Clinical Microbiology", jmbe = "Journal of Microbiology\nand Biology Education", 
+  jvi = "Journal of Virology", mbio = "mBio", mra = "Microbiology Resource\nand Genome Announcements", 
+  msphere = "mSphere", msystems = "mSystems", spectrum = "Microbiology Spectrum"))) + 
+  geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 2) +
+  labs(title = "Citation Rate by Journal for Sequencing Papers 2000-2024",
+  subtitle = "Data aggregated by month", 
+  color = "Is raw sequence\ndata available?", 
+  x = "Age in Months Since Publication", 
+  y = "Number of Citations")
 ggsave(file = "Figures/citationrate_byjournal.png")
 
 
 nsd_yes_metadata %>% 
+filter(year.published <= 2024) %>% 
   group_by(year.published, container.title) %>% 
   count(year.published, container.title, da) %>% 
   mutate(da_total = sum(`n`), 
          da_fract = `n`/da_total) %>%
  filter(da == "Yes") %>% 
   ggplot(aes(x = year.published, y = da_fract)) +
-  geom_point(aes(size = da_total, alpha = .5)) +
+  geom_point(aes(size = da_total, color = da_total)) +
   facet_wrap(vars(container.title),
              labeller = labeller(container.title = label_wrap_gen(14))) + 
   labs(x = "Year Published (2000-2024)", 
