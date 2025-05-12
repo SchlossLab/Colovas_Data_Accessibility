@@ -52,5 +52,9 @@ write_csv(hyperparameters,paste0(output_dir, "/best/best.rf.", ml_var_snake, "."
 # write out model
 saveRDS(results_cv$trained_model,file = paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", best_seed, ".model.RDS"))
 
+# write out model
+saveRDS(results_cv, file = paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", best_seed, ".wholeModel.RDS"))
+
+
 
 

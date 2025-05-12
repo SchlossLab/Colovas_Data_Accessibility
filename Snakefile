@@ -58,11 +58,11 @@ rule targets:
         #auroc figures next 2 lines
         # expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", ml_variables = ml_variables),
         # expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", ml_variables = ml_variables) 
-        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
-        # ml_variables = ml_variables)
-        #update mtry value before you do the final model - check  
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
         ml_variables = ml_variables)
+        #update mtry value before you do the final model - check  
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
+        # ml_variables = ml_variables)
         #to get predictions
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
@@ -229,6 +229,7 @@ rule best_mtry:
         rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
         "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.wholeModel.RDS", 
         "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.bestTune.csv", 
         "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.hp_performance.csv" 
     resources: 
@@ -245,7 +246,6 @@ rule final_model:
         rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
         "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS",
-        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.allfinalModel.RDS",
         "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.model.RDS"
     params: 
         mtry_value = lambda wildcards : mtry_dict[wildcards.ml_variables]

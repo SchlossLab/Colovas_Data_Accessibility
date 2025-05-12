@@ -2,8 +2,8 @@
 library(tidyverse)
 library(caret)
 
-da <- readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
-nsd<- readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
+da_final <- readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.allfinalModel.RDS")
+nsd_final<- readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.allfinalModel.RDS")
 
 da_model_final <- readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.model.RDS")
 nsd_model_final <- readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.model.RDS")
@@ -31,3 +31,5 @@ da_model_final$results
 
 str(da_model_best$trainingData)
 str(da_model_best)
+
+da_final$performance
