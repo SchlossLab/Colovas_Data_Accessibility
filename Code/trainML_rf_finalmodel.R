@@ -76,8 +76,8 @@ final_model <- final_result$trained_model$finalModel
 saveRDS(final_model, 
          file = paste0(output_dir, "/final/final.rf.", ml_var_snake, ".", best_seed, ".finalModel.RDS"))
 
-# write_csv(final_model, 
-#          file = paste0(output_dir, "/final/final.rf.", ml_var_snake, ".", best_seed, ".finalModel.csv"))
+saveRDS(final_result, 
+         file = paste0(output_dir, "/final/final.rf.", ml_var_snake, ".", best_seed, ".allfinalModel.RDS"))
 
 # write out model
 saveRDS(final_result$trained_model,

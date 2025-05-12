@@ -61,15 +61,15 @@ rule targets:
         # expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
         # ml_variables = ml_variables)
         #update mtry value before you do the final model - check  
-        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
-        # ml_variables = ml_variables)
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
+        ml_variables = ml_variables)
         #to get predictions
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
         # combine predictions
         # "Data/all_dois_lookup_table.csv.gz"
         # "Data/final/predicted_results.csv.gz"
-        "Figures/citationrate_byjournal.png"
+        # "Figures/citationrate_byjournal.png"
         
 
 
@@ -245,6 +245,7 @@ rule final_model:
         rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
         "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS",
+        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.allfinalModel.RDS",
         "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.model.RDS"
     params: 
         mtry_value = lambda wildcards : mtry_dict[wildcards.ml_variables]
