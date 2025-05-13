@@ -11,25 +11,18 @@ nsd_model_final <- readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/fi
 da_model_best <- readRDS("Data/ml_results/groundtruth/rf/data_availability/best/best.rf.data_availability.102899.model.RDS")
 nsd_model_best <- readRDS("Data/ml_results/groundtruth/rf/new_seq_data/best/best.rf.new_seq_data.102899.model.RDS")
 
-str(da_model)
-da$confusion
-nsd$confusion
-da$tuneValue
-str(da_model_best)
-str(da_model_best$finalModel)
-view(da_model_best$results)
-da_model_best$resample
-d
+da_all <- readRDS("Data/ml_results/groundtruth/rf/data_availability/best/best.rf.data_availability.102899.wholeModel.RDS")
 
-str(da_model$finalModel)
-da_model$finalModel$confusion
+#20250513 - the piece of data that i've been waiting for all day
+#actually was not included in the model that i painstakingly retrained and have been waiting 
+#all day for to come back 
+
+da_seed_1 <- readRDS("Data/ml_results/groundtruth/rf/data_availability/rf.data_availability.1.model.RDS")
+da_seed_1$results
+
+#da = 400, nsd = 300
+# now i have to wait for this to finish becasue i thought i needed it to be retrained
+da_model_best$results[4, ]
+nsd_model_best$results[3, ]
 
 
-da_model_best$finalModel$confusion
-da_model_best$results
-da_model_final$results
-
-str(da_model_best$trainingData)
-str(da_model_best)
-
-da_final$performance
