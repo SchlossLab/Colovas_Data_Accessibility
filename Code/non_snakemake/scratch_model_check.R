@@ -22,7 +22,11 @@ da_seed_1$results
 
 #da = 400, nsd = 300
 # now i have to wait for this to finish becasue i thought i needed it to be retrained
-da_model_best$results[4, ]
-nsd_model_best$results[3, ]
+da_best_stats<-da_model_best$results[4, ] %>% pivot_longer(1:29, names_to = "key", values_to = "value") %>% 
+    rename(da_model = value)
+nsd_best_stats<-nsd_model_best$results[3, ] %>% pivot_longer(1:29, names_to = "key", values_to = "value") %>% 
+    rename(nsd_model = value)
 
 
+all_model_stats<-full_join(da_best_stats, nsd_best_stats) %>% view()
+write_csv(all_model_stats, file = "Data/final/best_model_stats.csv")
