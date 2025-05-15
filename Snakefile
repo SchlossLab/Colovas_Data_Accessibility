@@ -50,29 +50,10 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        # "Data/groundtruth/groundtruth.tokens.csv.gz"
-        # expand("Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", ml_variables = ml_variables), 
-        # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables), 
-        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
-        # ml_variables = ml_variables, seeds = seeds)
-        #auroc figures next 2 lines
-        # expand("Figures/ml_results/groundtruth/rf/hp_perf.rf.{ml_variables}.png", ml_variables = ml_variables),
-        # expand("Figures/ml_results/groundtruth/rf/auroc.{ml_variables}.png", ml_variables = ml_variables) 
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
-        ml_variables = ml_variables)
-        #update mtry value before you do the final model - check  
-        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
-        # ml_variables = ml_variables)
-        #to get predictions
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
-        # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", ml_variables = ml_variables)
-        # combine predictions
-        # "Data/all_dois_lookup_table.csv.gz"
-        # "Data/final/predicted_results.csv.gz"
-        # "Figures/citationrate_byjournal.png"
+        expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
+    
         
-
-
 
 
 rule all_papers: 
@@ -336,10 +317,10 @@ rule link_rot:
         html = "Data/html/{doi}.html"
     output: 
         links = "Data/linkrot/{doi}.csv"
-   group: 
+    group: 
         "linkrot"
     resources: 
-        mem_mb = 8
+        mem_mb = 800
     shell:
         """
         {input.rscript} {input.html} {output.links}

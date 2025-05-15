@@ -32,7 +32,7 @@ output_file <- input[2]
 # filenames<-lookup_table$html_filename[200:300]
 
 # filenames <-tibble(filenames = list.files(html_dir, full.names = TRUE))
-html_filename <- filenames[1,]
+# html_filename <- filenames[1,]
 
 #function to get links from pre-scraped html
 new_extract_links <- function(html_filename) {
