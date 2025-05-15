@@ -53,7 +53,7 @@ nsd_yes_da_factor %>%
   jvi = "Journal of Virology", mbio = "mBio", mra = "Microbiology Resource\nand Genome Announcements", 
   msphere = "mSphere", msystems = "mSystems", spectrum = "Microbiology Spectrum"))) + 
   geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 2) +
-  scale_y_continuous(transform = "sqrt") + 
+  # scale_x_continuous(transform = "exp") + 
   labs(title = "Citation Rate by Journal for Sequencing Papers 2000-2024",
   subtitle = "Data aggregated by month", 
   color = "Is raw sequence\ndata available?", 
@@ -61,7 +61,7 @@ nsd_yes_da_factor %>%
   y = "Number of Citations")
 ggsave(file = "Figures/citationrate_byjournal.png")
 # ggsave(file = "Figures/log2_citationrate_byjournal.png")
-ggsave(file = "Figures/sqrtx_citationrate_byjournal.png")
+# ggsave(file = "Figures/expx_citationrate_byjournal.png")
 
 
 nsd_yes_metadata %>% 
