@@ -41,7 +41,7 @@ nsd_yes_metadata %>%
 #graph showing the rate of change over time for each journal
 nsd_yes_da_factor %>%
   ggplot(aes(x = age.in.months, 
-            y = ref_count_log2, 
+            y = is.referenced.by.count, 
             color = da_factor)) + 
   stat_summary(fun.data = "median_hilow", 
               fun.args = list(conf.int = 0.5), 
@@ -53,13 +53,15 @@ nsd_yes_da_factor %>%
   jvi = "Journal of Virology", mbio = "mBio", mra = "Microbiology Resource\nand Genome Announcements", 
   msphere = "mSphere", msystems = "mSystems", spectrum = "Microbiology Spectrum"))) + 
   geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 2) +
+  scale_y_continuous(transform = "sqrt") + 
   labs(title = "Citation Rate by Journal for Sequencing Papers 2000-2024",
   subtitle = "Data aggregated by month", 
   color = "Is raw sequence\ndata available?", 
   x = "Age in Months Since Publication", 
-  y = "Log2 Number of Citations")
+  y = "Number of Citations")
 ggsave(file = "Figures/citationrate_byjournal.png")
 # ggsave(file = "Figures/log2_citationrate_byjournal.png")
+ggsave(file = "Figures/sqrtx_citationrate_byjournal.png")
 
 
 nsd_yes_metadata %>% 
