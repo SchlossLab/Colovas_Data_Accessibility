@@ -14,7 +14,7 @@ metadata <- read_csv(input[1])
 
 
 # local data
-metadata <- read_csv("Data/final/20250423/20250423_predictions_with_metadata.csv.gz")
+# metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz")
 
 #getting the right metadata variables
 #get the year published out of as many of these as possible
@@ -27,7 +27,8 @@ metadata <- metadata %>%
           is.referenced.by.count = ifelse(!is.na(is.referenced.by.count), is.referenced.by.count, `citedby-count`))
 
 metadata <- metadata %>% 
-  mutate(age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1))
+  mutate(age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1), 
+    ref_count_log2 = log2(is.referenced.by.count + 0.01))
 
 nsd_yes_metadata <- 
   metadata %>% 
@@ -40,7 +41,7 @@ nsd_yes_metadata %>%
 #graph showing the rate of change over time for each journal
 nsd_yes_da_factor %>%
   ggplot(aes(x = age.in.months, 
-            y = is.referenced.by.count, 
+            y = ref_count_log2, 
             color = da_factor)) + 
   stat_summary(fun.data = "median_hilow", 
               fun.args = list(conf.int = 0.5), 
@@ -56,8 +57,9 @@ nsd_yes_da_factor %>%
   subtitle = "Data aggregated by month", 
   color = "Is raw sequence\ndata available?", 
   x = "Age in Months Since Publication", 
-  y = "Number of Citations")
+  y = "Log2 Number of Citations")
 ggsave(file = "Figures/citationrate_byjournal.png")
+# ggsave(file = "Figures/log2_citationrate_byjournal.png")
 
 
 nsd_yes_metadata %>% 
