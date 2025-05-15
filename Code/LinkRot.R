@@ -6,8 +6,8 @@
 library(tidyverse)
 library(rvest)
 library(xml2)
-library(tidytext)
-library(jsonlite)
+# library(tidytext)
+# library(jsonlite)
 library(httr2)
 
 #need to update for snakemake 
@@ -15,20 +15,24 @@ library(httr2)
 # load data from snakemake input
 # {input.rscript}  {paras.html_dir} {output}
 input <- commandArgs(trailingOnly = TRUE)
-html_dir <- input[1]
-outfile <-input[2]
+html_filename <- input[1]
+output_file <- input[2]
 
 
 #local testing
 # # 20241220 - load from Data/html to test 200 files 
-all_filenames <-tibble(filenames = list.files("Data/html", full.names = TRUE))
+# all_filenames <-tibble(filenames = list.files("Data/html", full.names = TRUE))
 
-filenames<- 
-  all_filenames %>% 
-  slice_tail(n = 200)
+# filenames<- 
+#   all_filenames %>% 
+#   slice_tail(n = 200)
 
-filenames <-tibble(filenames = list.files(html_dir, full.names = TRUE))
+#20250515 - using the lookup table to get files to test
+# lookup_table <- read_csv("Data/all_dois_lookup_table.csv.gz")
+# filenames<-lookup_table$html_filename[200:300]
 
+# filenames <-tibble(filenames = list.files(html_dir, full.names = TRUE))
+html_filename <- filenames[1,]
 
 #function to get links from pre-scraped html
 new_extract_links <- function(html_filename) {
@@ -87,8 +91,8 @@ get_site_status <- function(websiteurl) {
 }
 
 # run function to get all links from dataset, check status, and write to file
-all_links <- filenames %>%
-  mutate(link_tibble = map(filenames, new_extract_links)) %>% 
+all_links <- html_filename %>%
+  mutate(link_tibble = map(html_filename, new_extract_links)) %>% 
   unnest(link_tibble)
 
 
@@ -111,7 +115,7 @@ all_links <- all_links %>%
         )
 
 
-write_csv(all_links, file = outfile)
+write_csv(all_links, file = output_file)
 
 
 

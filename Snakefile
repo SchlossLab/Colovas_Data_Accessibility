@@ -332,17 +332,33 @@ rule crossref:
 
 rule link_rot: 
     input:
-        rscript = "Code/LinkRot.R"
+        rscript = "Code/LinkRot.R", 
+        html = "Data/html/{doi}.html"
     output: 
-        "Data/linkrot/all_links.csv.gz"
-    params: 
-        html_dir = "Data/html"
+        links = "Data/linkrot/{doi}.csv"
+   group: 
+        "linkrot"
     resources: 
-        mem_mb = 40000
+        mem_mb = 8
     shell:
         """
-        {input.rscript} {params.html_dir} {output}
+        {input.rscript} {input.html} {output.links}
         """
+
+rule combine_linkrot: 
+    input: 
+        rscript = "Code/combine_linkrot.R",
+    output: 
+        "Data/final/linkrot_combined.csv.gz"
+    resources: 
+        mem_mb = 40000
+    params: 
+        rot_dir = "Data/linkrot"
+    shell: 
+        """
+        {input.rscript} {params.rot_dir} {output}
+        """
+
         
 # 20241001 - i think a lot of these have roughly identical code
 # could combine into one file and just tell it what kind of variables 
