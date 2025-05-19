@@ -33,4 +33,4 @@ group-components:
   - get_html=1000
   - crossref=6
   - wos = 12
-  - linkrot = 100
+  - linkrot = 10
