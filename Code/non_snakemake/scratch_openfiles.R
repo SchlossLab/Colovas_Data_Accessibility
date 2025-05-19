@@ -28,4 +28,10 @@ metadata <- metadata %>%
   mutate(age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1), 
     ref_count_log2 = log2(is.referenced.by.count + 0.01))
 
-select(final_results_cscar, c(paper.x, da, nsd, doi journal_abrev, container.title, ))
+cscar<-select(metadata, c(paper.x, da, nsd, doi, journal_abrev, container.title, issued.date, age.in.months, is.referenced.by.count ))
+
+cscar <- 
+    cscar %>%
+    rename(paper_url = paper.x, data_availability = da, new_seq_data = nsd, journal_name = container.title)
+
+write_csv(cscar, file = "Data/final/cscar_metadata.csv")
