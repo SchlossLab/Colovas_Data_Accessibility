@@ -15,8 +15,7 @@ unique_output <- input[2]
 
 
 #non-snakemake implementation
-#alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
-#metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
+alllinks <- read_csv("Data/final/linkrot_combined.csv.gz")
 # unique_output <- "Figures/linkrot/groundtruth/alllinks_byhostname.png"
 
 # 20240730 - we only care about unique links 
@@ -34,8 +33,12 @@ unique_sum <- as.numeric(sum(unique_type_tally$n))
 
 distinct <- distinct(alllinks)
 #plot status of "more permanent hostname links" 
-long_lasting <- filter(distinct, 
-                       grepl("doi|git|figshare|datadryad|zenodo|asm", hostname)) 
+# long_lasting <- filter(distinct, 
+#                        grepl("doi|git|figshare|datadryad|zenodo|asm", hostname)) 
+
+#20250520 - working on making this filter better for the graph, needs fewer things on the graph 
+long_lasting <- distinct %>% 
+    filter(str_detect(hostname, "doi|git|figshare|datadryad|zenodo|asm")) 
 
 #get count data per hostname 
 long_lasting <-
@@ -44,7 +47,7 @@ long_lasting <-
     
 long_lasting <-
   long_lasting %>% 
-    mutate(.by = short_hostname, 
+    mutate(.by = hostname, 
           n_links = n(), 
           n_dead = sum(!is_alive),
           dead_fract = ((n_dead) / n_links), 
