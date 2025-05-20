@@ -59,7 +59,7 @@ long_count <-
     mutate(fancy_name = paste0(str_to_title(collapse_hostname), "\n(", `n`, ")"))
       
 
-
+#graph the results 
   ggplot(
     data = long_count, 
     mapping = aes(x = dead_fract, 
@@ -67,8 +67,8 @@ long_count <-
   geom_point(size = 2.5) +
   labs( x = "Fraction of Dead Links per Website Hostname (%)", 
         y = "Website Hostname (N)",
-        title = stringr::str_glue("Percentage of Dead External User-Added Links\nby Hostname and Status for 'Long-Lasting' Hostnames (N={unique_sum})")) +
+        title = stringr::str_glue("Percentage of Dead External User-Added Links\nby Hostname and Status for 'Long-Lasting' Hostnames (N={sum})")) +
   scale_x_continuous(labels = scales::percent) 
 
-
-ggsave(filename = unique_output)
+#save the result
+ggsave(filename = output)

@@ -52,7 +52,8 @@ rule targets:
     input:
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
         # expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
-        "Data/final/linkrot_combined.csv.gz"
+        # "Data/final/linkrot_combined.csv.gz"
+        "Figures/linkrot/longlasting_byhostname.png"
     
         
 
@@ -393,17 +394,16 @@ rule lr_by_type:
         """
         {input.rscript} {input.all_links} {output.unique_filename}
         """
-
+#updated 20250520 
 rule lr_by_hostname:
     input: 
         rscript = "Code/linkrot/links_byhostname.R",
-        all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz"
-        # metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
+        linkrot = "Data/final/linkrot_combined.csv.gz"
     output:
-        filename = "Figures/linkrot/{datasets}/longlasting_byhostname.png"
+        "Figures/linkrot/longlasting_byhostname.png"
     shell: 
         """
-        {input.rscript} {input.all_links} {output.filename}
+        {input.rscript} {input.linkrot} {output}
         """
 
 rule lr_error_hostname: 
