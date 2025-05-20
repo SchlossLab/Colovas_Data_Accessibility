@@ -22,7 +22,7 @@ output <- input[2]
 tally <- linkrot %>% 
           group_by(hostname) %>%
           tally()
-sum <- as.numeric(sum(tally$n))
+
 
 #filter for the long lasting links
 # use ^asm = aka starts with asm 
@@ -37,7 +37,7 @@ long_lasting <- linkrot %>%
                                   str_detect(hostname, "zenodo") ~ "zenodo",
                                   str_detect(hostname, "bitbucket") ~ "bitbucket",
                                   TRUE ~ "other") )
-
+sum <- nrow(long_lasting)
     
 long_lasting <-
   long_lasting %>% 
@@ -67,7 +67,7 @@ long_count <-
   geom_point(size = 2.5) +
   labs( x = "Fraction of Dead Links per Website Hostname (%)", 
         y = "Website Hostname (N)",
-        title = stringr::str_glue("Percentage of Dead External User-Added Links\nby Hostname and Status for 'Long-Lasting' Hostnames (N={sum})")) +
+        title = stringr::str_glue("Percentage of Dead External User-Added Links\nby Hostname and Status for\n'Long-Lasting' Hostnames (N={sum})")) +
   scale_x_continuous(labels = scales::percent) 
 
 #save the result
