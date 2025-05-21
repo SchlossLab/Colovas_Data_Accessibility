@@ -143,6 +143,8 @@ write_csv(all_dois, "Data/all_api_dois.csv.gz")
 all_apis <- read_csv("Data/all_api_dois.csv.gz")
 ga_data <-read_csv("Data/crossref/crossref_2169-8287.csv.gz")
 
+# all_apis %>%
+#     filter(str_detect(url, "genome"))
 
 doi_ga <- 
     ga_data %>%

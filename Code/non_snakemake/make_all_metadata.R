@@ -11,17 +11,23 @@ library(tidyverse)
 #total predicted files n = 149,064
 predicted_files <-read_csv("Data/final/predicted_results.csv.gz")
 head(predicted_files)
+predicted_files %>% 
+  filter(str_detect(file, "genome"))
 
 #lookup table n = 149,324
 lookup_table <-read_csv("Data/all_dois_lookup_table.csv.gz")
 head(lookup_table)
 
-#we have mra/ga here
+lookup_table %>% 
+  filter(str_detect(paper, "genome"))
+
+
+# #we have mra/ga here
 lookup_table %>%
-  filter(container.title == "Microbiology Resource Announcements"| container.title == "Genome Announcements" )  %>%
+  filter(str_detect(paper, "genome"))  %>%
   view()
 
-#20250521 - the lookup table is missing the GA data 
+#20250521 - the lookup table is NOT missing the GA data 
 
 #join predicted files with lookup table n = 149,322
 #this means there are duplicates 

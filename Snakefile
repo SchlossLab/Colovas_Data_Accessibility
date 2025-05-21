@@ -53,7 +53,8 @@ rule targets:
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
         # expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
         # "Data/final/linkrot_combined.csv.gz"
-        "Figures/linkrot/longlasting_byhostname.png"
+        # "Figures/linkrot/longlasting_byhostname.png"
+        "Data/all_dois_lookup_table.csv.gz"
     
         
 
