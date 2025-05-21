@@ -11,59 +11,44 @@ library(tidyverse)
 #total predicted files n = 149,064
 predicted_files <-read_csv("Data/final/predicted_results.csv.gz")
 head(predicted_files)
-predicted_files %>% 
-  filter(str_detect(file, "genome"))
+#6714 predicted genome announcements 
+# predicted_files %>% 
+#   filter(str_detect(file, "genome")) %>% 
+#   view()
 
-#lookup table n = 149,324
+#lookup table n = 156038
 lookup_table <-read_csv("Data/all_dois_lookup_table.csv.gz")
 head(lookup_table)
 
-lookup_table %>% 
-  filter(str_detect(paper, "genome"))
+# lookup_table %>% 
+#   filter(str_detect(paper, "genome"))
 
 
-# #we have mra/ga here
-lookup_table %>%
-  filter(str_detect(paper, "genome"))  %>%
-  view()
 
-#20250521 - the lookup table is NOT missing the GA data 
 
-#join predicted files with lookup table n = 149,322
+#join predicted files with lookup table n = 157037
 #this means there are duplicates 
 joined_predictions <- inner_join(predicted_files, lookup_table, by = join_by("file" == "html_filename"))
 head(joined_predictions)
 
-#we have mra/ga here
-joined_predictions %>%
-  filter(container.title == "Genome Announcements" & str_detect(doi, "15"))  %>%
-  view()
-
-#there are n = 7203 duplicates
+# 
+#there are n = 1316 duplicates, mra duplications removed somehow 
 dupes<-which(duplicated(joined_predictions$doi_no_underscore))
 length(dupes)
-joined_predictions[dupes,] %>% view()
+# joined_predictions[dupes,] %>% view()
 
-#removed dupes n = 148,007
+#removed dupes n = 154721
 remove_doi_dupes<-joined_predictions[-dupes,]
 
 # remove_doi_dupes %>%
 #   filter(container.title == "Microbiology Resource Announcements"| container.title == "Genome Announcements")  %>%
 #   view()
 
-# #look for anything that actually was alive n = 147,577
-# alive_predictions <-
-#   remove_doi_dupes %>%
-#   filter(!is.na(da) & !is.na(nsd)) 
 
 #get metadata from crossref and see how many are in crossref n = 147,325
 crossref <- read_csv("Data/crossref/crossref_all_papers.csv.gz") %>%
   mutate(doi = tolower(doi))
 
-#all the GA/MRA has published dates and referenced by numbers here
-# crossref %>%
-#   filter(container.title == "Microbiology Resource Announcements"| container.title == "Genome Announcements")  %>%
-#   view()
 
 #i think anything missing should be in ncbi
 ncbi <-read_csv("Data/ncbi/ncbi_all_papers.csv.gz") %>%
@@ -76,9 +61,9 @@ scopus <-read_csv("Data/scopus/all_scopus_citations.csv.gz") %>%
 #join with crossref metadata n = 146398 (1609 missing)
 metadata_crossref<-inner_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
 
-metadata_crossref %>%
-  filter(container.title == "Microbiology Resource Announcements"| container.title == "Genome Announcements")  %>%
-  view()
+# metadata_crossref %>%
+#   filter(container.title == "Microbiology Resource Announcements"| container.title == "Genome Announcements")  %>%
+#   view()
 
 
 #7438 missing from crossref
