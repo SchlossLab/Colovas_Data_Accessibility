@@ -26,9 +26,10 @@ metadata <- metadata %>%
           issued.date = ymd(issued, truncated = 2) %||% ymd(pub_date, truncated = 2), 
           is.referenced.by.count = ifelse(!is.na(is.referenced.by.count), is.referenced.by.count, `citedby-count`))
 
+#change to make sure journal abrev is the same for mra/ga
 metadata <- metadata %>% 
   mutate(age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1), 
-    ref_count_log2 = log2(is.referenced.by.count + 0.01))
+  journal_abrev = ifelse(journal_abrev == "genomea", "mra", journal_abrev))
 
 nsd_yes_metadata <- 
   metadata %>% 
@@ -51,8 +52,8 @@ nsd_yes_da_factor %>%
   #median_hilow = median center, line = 95%CI, conf.int = 0.5 gives iqr
   facet_wrap(~journal_abrev, scales = "free_y", 
   labeller = as_labeller(c(aac = "Antimicrobial Agents\nand Chemotherapy", aem = "Applied and Environmental\nMicrobiology", 
-  iai = "Infection and Immunity", jb = "Journal of Bacteriology", jcm = "Journal of Clinical Microbiology", jmbe = "Journal of Microbiology\nand Biology Education", 
-  jvi = "Journal of Virology", mbio = "mBio", mra = "Microbiology Resource\nand Genome Announcements", 
+  iai = "Infection and Immunity", jb = "Journal of Bacteriology", jcm = "Journal of Clinical\nMicrobiology", jmbe = "Journal of Microbiology\nand Biology Education", 
+  jvi = "Journal of Virology", mbio = "mBio", mra = "Microbiology\nResource and Genome\nAnnouncements", 
   msphere = "mSphere", msystems = "mSystems", spectrum = "Microbiology Spectrum"))) + 
   geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 2) +
   # scale_x_continuous(transform = "exp") + 
@@ -61,7 +62,7 @@ nsd_yes_da_factor %>%
   color = "Is raw sequence\ndata available?", 
   x = "Age in Months Since Publication", 
   y = "Number of Citations")
-ggsave(file = "Figures/citationrate_byjournal.png")
+ggsave(file = "Figures/citationrate_byjournal.png", scale = .98)
 # ggsave(file = "Figures/log2_citationrate_byjournal.png")
 # ggsave(file = "Figures/expx_citationrate_byjournal.png")
 

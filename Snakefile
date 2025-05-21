@@ -54,7 +54,8 @@ rule targets:
         # expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
         # "Data/final/linkrot_combined.csv.gz"
         # "Figures/linkrot/longlasting_byhostname.png"
-        "Data/all_dois_lookup_table.csv.gz"
+        "Figures/citationrate_byjournal.png"
+      
     
         
 
