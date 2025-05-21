@@ -38,11 +38,13 @@ nsd_yes_da_factor <-
 nsd_yes_metadata %>%
   mutate(da_factor = factor(da))
 
+
 #graph showing the rate of change over time for each journal
 nsd_yes_da_factor %>%
   ggplot(aes(x = age.in.months, 
             y = is.referenced.by.count, 
             color = da_factor)) + 
+  # geom_point() +
   stat_summary(fun.data = "median_hilow", 
               fun.args = list(conf.int = 0.5), 
               linewidth = 0.1, size = 0.2) +

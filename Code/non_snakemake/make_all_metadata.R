@@ -16,17 +16,34 @@ head(predicted_files)
 lookup_table <-read_csv("Data/all_dois_lookup_table.csv.gz")
 head(lookup_table)
 
+#we have mra/ga here
+lookup_table %>%
+  filter(container.title == "Microbiology Resource Announcements"| container.title == "Genome Announcements" )  %>%
+  view()
+
+#20250521 - the lookup table is missing the GA data 
+
 #join predicted files with lookup table n = 149,322
 #this means there are duplicates 
 joined_predictions <- inner_join(predicted_files, lookup_table, by = join_by("file" == "html_filename"))
 head(joined_predictions)
 
-#there are n = 1315 duplicates
+#we have mra/ga here
+joined_predictions %>%
+  filter(container.title == "Genome Announcements" & str_detect(doi, "15"))  %>%
+  view()
+
+#there are n = 7203 duplicates
 dupes<-which(duplicated(joined_predictions$doi_no_underscore))
 length(dupes)
+joined_predictions[dupes,] %>% view()
 
 #removed dupes n = 148,007
 remove_doi_dupes<-joined_predictions[-dupes,]
+
+# remove_doi_dupes %>%
+#   filter(container.title == "Microbiology Resource Announcements"| container.title == "Genome Announcements")  %>%
+#   view()
 
 # #look for anything that actually was alive n = 147,577
 # alive_predictions <-
@@ -37,6 +54,10 @@ remove_doi_dupes<-joined_predictions[-dupes,]
 crossref <- read_csv("Data/crossref/crossref_all_papers.csv.gz") %>%
   mutate(doi = tolower(doi))
 
+#all the GA/MRA has published dates and referenced by numbers here
+# crossref %>%
+#   filter(container.title == "Microbiology Resource Announcements"| container.title == "Genome Announcements")  %>%
+#   view()
 
 #i think anything missing should be in ncbi
 ncbi <-read_csv("Data/ncbi/ncbi_all_papers.csv.gz") %>%
@@ -48,6 +69,11 @@ scopus <-read_csv("Data/scopus/all_scopus_citations.csv.gz") %>%
 
 #join with crossref metadata n = 146398 (1609 missing)
 metadata_crossref<-inner_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
+
+metadata_crossref %>%
+  filter(container.title == "Microbiology Resource Announcements"| container.title == "Genome Announcements")  %>%
+  view()
+
 
 #7438 missing from crossref
 missing_from_crossref<-anti_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
