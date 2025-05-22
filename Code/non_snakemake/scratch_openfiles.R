@@ -32,6 +32,6 @@ cscar<-select(metadata, c(paper.x, da, nsd, doi, journal_abrev, container.title,
 
 cscar <- 
     cscar %>%
-    rename(paper_url = paper.x, data_availability = da, new_seq_data = nsd, journal_name = container.title)
+    rename(paper_url = paper.x, data_availability = da, new_seq_data = nsd)
 
 write_csv(cscar, file = "Data/final/cscar_metadata.csv")
