@@ -27,6 +27,7 @@ dependencies:
   - r-rentrez
   - r-caret
   - r-rlang
+  - r-emmeans
 
 
   
