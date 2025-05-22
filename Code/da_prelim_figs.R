@@ -63,6 +63,7 @@ summary(lm(is.referenced.by.count~0+da_factor + da_factor:age.in.months, data = 
 
 
 #is.referenced.by.count~0+da_factor + da_factor:age.in.months, data = nsd_yes_da_factor
+
 #graphing of the model data
 nsd_yes_da_factor %>%
   ggplot(aes(x = age.in.months, 
