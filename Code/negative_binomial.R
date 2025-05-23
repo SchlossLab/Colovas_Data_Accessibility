@@ -24,13 +24,36 @@ metadata <- metadata %>%
   mutate(age.in.months = interval(metadata$issued.date, ymd("2025-02-10")) %/% months(1))
 
 
-#pat said start with one journal - let's try jvi 
+#pat said start with one journal, but i think that i need to start with all of them 
 nsd_yes_metadata <- 
   metadata %>% 
-    filter(nsd == "Yes" & journal_abrev == "jvi") %>%
+    filter(nsd == "Yes") %>%
     mutate(da_factor = factor(da)) 
 
 
-jvi<-glm.nb(is.referenced.by.count~0+da + age.in.months, data = nsd_yes_metadata, link = log)
+interaction <-glm.nb(is.referenced.by.count~ da_factor * age.in.months, data = nsd_yes_metadata, link = log)
+
+EMM <-emmeans(interaction, ~ da_factor * age.in.months)
+
+con<-pairs(EMM, simple = "da_factor")
+pairs(EMM, simple = "age.in.months")
+
+contrast(con, "consec", by = NULL)
+
+test(pairs(EMM, by = "age.in.months"), by = NULL, adjust = "mvt")
+
+
+no_interaction <- update(interaction, . ~ da_factor + age.in.months)
 #let's try and graph it 
+summary(no_interaction)
+
+pairs(interaction, simple = "da_factor")
+
 emmeans(jvi ~ da * age.in.months)
+
+
+#pigs dataset from emmeans
+data(pigs)
+mod1 <- lm(conc ~ source * factor(percent), data = pigs)
+mod2 <- update(mod1, . ~ source + factor(percent))   # no interaction
+summary(mod1)
