@@ -3,7 +3,7 @@
 #
 # library statements
 library(tidyverse)
-library(ggplot2)
+# library(ggplot2)
 library(MASS)
 library(foreign) #dubs i had this one installed, must be part of stomething else
 
@@ -38,7 +38,7 @@ dat <- within(dat, {
 
 summary(dat)
 
-#mean referenced by count has a loner right tail in da = no than yes
+#mean referenced by count has a longer right tail in da = no than yes
 ggplot(dat, aes(x = is.referenced.by.count, fill = da_factor)) + 
     geom_histogram() + 
     facet_grid(da_factor ~ ., margins = TRUE, scales = "free")
@@ -57,4 +57,22 @@ with(dat, tapply(is.referenced.by.count, da_factor, function(x) {
 ))
 
 mean(dat$is.referenced.by.count)
-?mean
+
+#let's do some modeling 
+summary(m1<-glm.nb(is.referenced.by.count ~ age.in.months + da_factor, data = dat))
+
+#let's see if the model changes with and without da factor 
+m2<-update(m1, . ~ ., - da_factor)
+
+#i am not sure it does
+anova(m1, m2)
+
+#checking the model assumption 
+m3 <-glm(is.referenced.by.count ~ age.in.months + da_factor, data = dat, family = "poisson")
+
+pchisq(2 * (logLik(m1) - logLik(m3)), df = 1, lower.tail = FALSE)
+
+#i do not know what any of this means!!!!! yayay!!!
+#confidence intervals 
+(est <- cbind(Estimate = coef(m1), confint(m1)))
+exp(est)
