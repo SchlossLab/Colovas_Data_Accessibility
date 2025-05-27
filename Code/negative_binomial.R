@@ -50,10 +50,3 @@ summary(no_interaction)
 pairs(interaction, simple = "da_factor")
 
 emmeans(jvi ~ da * age.in.months)
-
-
-#pigs dataset from emmeans
-data(pigs)
-mod1 <- lm(conc ~ source * factor(percent), data = pigs)
-mod2 <- update(mod1, . ~ source + factor(percent))   # no interaction
-summary(mod1)
