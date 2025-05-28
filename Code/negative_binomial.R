@@ -5,6 +5,7 @@
 library(tidyverse)
 library(MASS)
 library(emmeans)
+library(jtools)
 
 
 #load metadata
@@ -31,7 +32,32 @@ nsd_yes_metadata <-
     mutate(da_factor = factor(da)) 
 
 
-interaction <-glm.nb(is.referenced.by.count~ da_factor * age.in.months, data = nsd_yes_metadata, link = log)
+interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + da_factor * age.in.months, data = nsd_yes_metadata, link = log)
+no_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = nsd_yes_metadata, link = log)
+three_terms_no_int <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + container.title, data = nsd_yes_metadata, link = log)
+three_terms_int <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + container.title + da_factor*container.title, data = nsd_yes_metadata, link = log)
+three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+jtools::summ(interaction)
+jtools::summ(no_interaction)
+jtools::summ(three_terms_no_int)
+jtools::summ(three_terms_int)
+jtools::summ(three_terms_int_all)
+
+#i actually want to see if i filter these better if the models make more sense 
+jvi <- nsd_yes_metadata %>% 
+  filter(journal_abrev == "jvi")
+
+iai <- nsd_yes_metadata %>% 
+  filter(journal_abrev == "iai")
+
+jvi_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = jvi, link = log)
+jvi_interaction_2 <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + da_factor*log(age.in.months), data = jvi, link = log)
+jtools::summ(jvi_interaction_2)
+
+
+iai_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = iai, link = log)
+iai_interaction_2 <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + da_factor*log(age.in.months), data = iai, link = log)
+jtools::summ(iai_interaction_2)
 
 EMM <-emmeans(interaction, ~ da_factor * age.in.months)
 
