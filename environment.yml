@@ -28,6 +28,8 @@ dependencies:
   - r-caret
   - r-rlang
   - r-emmeans
+  - r-jtools
+  
 
 
   
