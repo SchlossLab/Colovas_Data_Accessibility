@@ -4,7 +4,7 @@
 #library statements 
 library(tidyverse)
 library(MASS)
-library(emmeans)
+# library(emmeans)
 library(jtools)
 
 
@@ -32,13 +32,26 @@ nsd_yes_metadata <-
     filter(nsd == "Yes") %>%
     mutate(da_factor = factor(da)) 
 
-#318-320
+
 interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + da_factor * age.in.months, data = nsd_yes_metadata, link = log)
 # no_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = nsd_yes_metadata, link = log)
 # three_terms_no_int <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + container.title, data = nsd_yes_metadata, link = log)
 # three_terms_int <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + container.title + da_factor*container.title, data = nsd_yes_metadata, link = log)
-three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+      log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
+three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+       log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+three_terms_0 <-glm.nb(is.referenced.by.count~ 1+ da_factor + log(age.in.months) + container.title + 
+      log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+three_sqrt <-glm.nb(is.referenced.by.count~ da_factor + sqrt(age.in.months) + container.title + 
+      sqrt(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+inverse <-glm.nb(is.referenced.by.count~ da_factor + 1/age.in.months + container.title + 
+      1/age.in.months*da_factor*container.title, data = nsd_yes_metadata, link = log)
 jtools::summ(interaction)
+summ(three_sqrt)
+summ(inverse)
 # jtools::summ(no_interaction)
 # jtools::summ(three_terms_no_int)
 # jtools::summ(three_terms_int)
@@ -51,9 +64,17 @@ jvi <- nsd_yes_metadata %>%
 iai <- nsd_yes_metadata %>% 
   filter(journal_abrev == "iai")
 
+msys <- nsd_yes_metadata %>% 
+  filter(journal_abrev == "msystems")
+
+
 jvi_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = jvi, link = log)
 jvi_interaction_2 <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + da_factor*log(age.in.months), data = jvi, link = log)
-jtools::summ(jvi_interaction_2)
+jtools::summ(jvi_interaction)
+
+msys_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = msys, link = log)
+msys_interaction_2 <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + da_factor*log(age.in.months), data = msys, link = log)
+jtools::summ(msys_interaction_2)
 
 
 iai_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = iai, link = log)
@@ -68,7 +89,7 @@ plot_2<-effect_plot(three_terms_int_all, age.in.months, interval = TRUE, int.typ
                     int.width = 0.8, plot.points = TRUE, data = nsd_yes_metadata, line.colors = "blue", 
                     outcome.scale = "link")
 
-plot_2_no_points<-effect_plot(three_terms_int_all, age.in.months, interval = TRUE, int.type = "confidence", 
+plot_2_no_points<-effect_plot(three_terms_0, age.in.months, interval = TRUE, int.type = "confidence", 
                     int.width = 0.8, data = nsd_yes_metadata, line.colors = "blue", 
                     outcome.scale = "link")
 
@@ -80,28 +101,3 @@ ggsave(plot_2_no_points, file = "Figures/test_nopoints_2.png")
 ggsave(plot_3, file = "Figures/test_3.png")
 
 
-
-
-
-
-
-
-
-#emmeans stuff but idk how much i like this 
-EMM <-emmeans(interaction, ~ da_factor * age.in.months)
-
-con<-pairs(EMM, simple = "da_factor")
-pairs(EMM, simple = "age.in.months")
-
-contrast(con, "consec", by = NULL)
-
-test(pairs(EMM, by = "age.in.months"), by = NULL, adjust = "mvt")
-
-
-no_interaction <- update(interaction, . ~ da_factor + age.in.months)
-#let's try and graph it 
-summary(no_interaction)
-
-pairs(interaction, simple = "da_factor")
-
-emmeans(jvi ~ da * age.in.months)
