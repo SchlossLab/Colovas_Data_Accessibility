@@ -37,12 +37,13 @@ interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + da_fact
 # no_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = nsd_yes_metadata, link = log)
 # three_terms_no_int <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + container.title, data = nsd_yes_metadata, link = log)
 # three_terms_int <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + container.title + da_factor*container.title, data = nsd_yes_metadata, link = log)
-three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-      log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+# three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+#       log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
 
 three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
       + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
        log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
 three_terms_0 <-glm.nb(is.referenced.by.count~ 1+ da_factor + log(age.in.months) + container.title + 
       log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
 three_sqrt <-glm.nb(is.referenced.by.count~ da_factor + sqrt(age.in.months) + container.title + 
@@ -101,3 +102,68 @@ ggsave(plot_2_no_points, file = "Figures/test_nopoints_2.png")
 ggsave(plot_3, file = "Figures/test_3.png")
 
 
+# 20250603 - after meeting with pat
+# working on: 
+# removing the top 1% of data and looking at model fit 
+# truncating data at 5 years (60 mos) and 10 years (120 mos) and looking at model fit 
+# looking at it by journals 
+
+# removing the top 1% of data and looking at model fit 
+no_1percent <-nsd_yes_metadata %>%
+    filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
+                                              na.rm = TRUE, prob = 0.99))
+
+#this model fits exactly the same with the top 1% removed R^2 = 0.68
+all_terms_no_1percent <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+       log(age.in.months)*da_factor*container.title, data = no_1percent, link = log)
+
+jtools::summ(all_terms_no_1percent)
+
+#this model fits exactly the same with the top 10% removed R^2 = 0.67
+no_10percent <-nsd_yes_metadata %>%
+    filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
+                                              na.rm = TRUE, prob = 0.90))
+
+all_terms_no_10percent <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+       log(age.in.months)*da_factor*container.title, data = no_10percent, link = log)
+
+jtools::summ(all_terms_no_10percent)
+
+# ok now let's look at cutting it off at 10 years (120 months)
+ten_years <- 
+  nsd_yes_metadata %>% 
+    filter(age.in.months <= 120)
+
+all_terms_ten_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+       log(age.in.months)*da_factor*container.title, data = ten_years, link = log)
+#fits exactly the same - R^2 = 0.68 
+jtools::summ(all_terms_ten_years)
+
+
+#how about 5 years (60 months )
+five_years <- 
+  nsd_yes_metadata %>% 
+    filter(age.in.months <= 60)
+
+all_terms_five_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+       log(age.in.months)*da_factor*container.title, data = five_years, link = log)
+#fits a little worse - R^2 = 0.66
+jtools::summ(all_terms_five_years)
+
+
+#ok let's look at this by journal - want to be able to get R^2 out of the model 
+str(summ(all_terms_five_years)$model)
+pluck(summ(all_terms_five_years), "rsq")
+summary
+
+journals <- 
+  nsd_yes_metadata %>%
+  count(journal_abrev)
+
+fit_glm.nb<- function(journal_data) { 
+
+}
