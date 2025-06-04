@@ -108,6 +108,7 @@ ggsave(plot_3, file = "Figures/test_3.png")
 # truncating data at 5 years (60 mos) and 10 years (120 mos) and looking at model fit 
 # looking at it by journals 
 
+#double check that the number of rows is 1%/10% of the model data 
 # removing the top 1% of data and looking at model fit 
 no_1percent <-nsd_yes_metadata %>%
     filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
@@ -156,14 +157,64 @@ jtools::summ(all_terms_five_years)
 
 
 #ok let's look at this by journal - want to be able to get R^2 out of the model 
-str(summ(all_terms_five_years)$model)
-pluck(summ(all_terms_five_years), "rsq")
-summary
+str(summ(all_terms_five_years))
+pluck_exists(summary, "")
+summary<- summ(all_terms_five_years)
+unlisted <-unlist(summary)
+str(summary)
 
-journals <- 
-  nsd_yes_metadata %>%
-  count(journal_abrev)
+pluck(summary, "model")
+summary$model
+attr(summary, "rsq")
 
-fit_glm.nb<- function(journal_data) { 
+journals <-nsd_yes_metadata %>%
+  count(journal_abrev) %>% 
+  filter(journal_abrev != "jmbe")
 
+journals <-journals %>% 
+  mutate(all_journal_data_rsq = NA, no_1percent_rsq = NA, five_years_rsq = NA, ten_years_rsq = NA)
+
+
+
+for(i in 1:nrow(journals)) { 
+  journal_data <- 
+  nsd_yes_metadata %>% 
+    filter(journal_abrev == journals[[i,1]])
+
+  journal_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
+       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = journal_data, link = log)
+  
+  journals$all_journal_data_rsq[i] <- jtools::summ(journal_fit) %>% attr(., "rsq")
+
+  no_1percent  <-journal_data %>%
+    filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
+                                              na.rm = TRUE, prob = 0.99))
+  
+  no_1p_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
+       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data =  no_1percent, link = log)
+  
+  journals$no_1percent_rsq[i]<-jtools::summ(no_1p_fit) %>% attr(., "rsq")
+
+  five_years <-journal_data %>% 
+    filter(age.in.months <= 60)
+  if(nrow(five_years) > 0 ) {
+  five_years_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
+       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data =  five_years, link = log)
+
+    journals$five_years_rsq[i]<-jtools::summ(five_years_fit) %>% attr(., "rsq")
+  } else {journals$five_years_rsq[i]<-NA}
+
+  if(nrow(ten_years) > 0 ) {
+  ten_years <-journal_data %>% 
+    filter(age.in.months <= 120)
+
+  ten_years_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
+       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data =  ten_years, link = log)
+  
+  journals$ten_years_rsq[i]<-jtools::summ(ten_years_fit) %>% attr(., "rsq")
+  }
+  else {journals$ten_years_rsq[i] <- NA}
+print(i)
 }
+
+
