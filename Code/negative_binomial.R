@@ -44,12 +44,14 @@ three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.mont
       + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
        log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
 
-three_terms_0 <-glm.nb(is.referenced.by.count~ 1+ da_factor + log(age.in.months) + container.title + 
-      log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
-three_sqrt <-glm.nb(is.referenced.by.count~ da_factor + sqrt(age.in.months) + container.title + 
-      sqrt(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
-inverse <-glm.nb(is.referenced.by.count~ da_factor + 1/age.in.months + container.title + 
-      1/age.in.months*da_factor*container.title, data = nsd_yes_metadata, link = log)
+jtools::summ(three_terms_int_all) %>% attr(., "rsq")
+
+# three_terms_0 <-glm.nb(is.referenced.by.count~ 1+ da_factor + log(age.in.months) + container.title + 
+#       log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+# three_sqrt <-glm.nb(is.referenced.by.count~ da_factor + sqrt(age.in.months) + container.title + 
+#       sqrt(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+# inverse <-glm.nb(is.referenced.by.count~ da_factor + 1/age.in.months + container.title + 
+#       1/age.in.months*da_factor*container.title, data = nsd_yes_metadata, link = log)
 jtools::summ(interaction)
 summ(three_sqrt)
 summ(inverse)
@@ -217,4 +219,13 @@ for(i in 1:nrow(journals)) {
 print(i)
 }
 
+all_jounals<-c(journal_abrev = "all_journals", 
+              `n` = nrow(nsd_yes_metadata),
+              all_journal_data_rsq = jtools::summ(three_terms_int_all) %>% attr(., "rsq"), 
+              no_1percent_rsq = jtools::summ(all_terms_no_1percent) %>% attr(., "rsq"), 
+              five_years_rsq = jtools::summ(all_terms_five_years) %>% attr(., "rsq"), 
+              ten_years_rsq = jtools::summ(all_terms_ten_years) %>% attr(., "rsq"))
 
+all_rsq<-rbind(journals, all_jounals)
+
+write_csv(all_rsq, "Data/final/negative_binomial_models.csv")
