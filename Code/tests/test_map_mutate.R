@@ -13,7 +13,15 @@ punct <-linkrot %>%
     | str_ends(link_address, "\\:") | str_ends(link_address, "\\(") | str_ends(link_address, "\\)") | str_ends(link_address, "[:punct:]")) %>%
     filter(link_status != 200)
 
+checks <- linkrot %>%
+    filter(str_ends(link_address, "\\.")| str_ends(link_address, "\\,") | str_ends(link_address, "\\;") 
+    | str_ends(link_address, "\\:") | str_ends(link_address, "\\(") | str_ends(link_address, "\\)") | str_ends(link_address, "[:punct:]")) %>%
+    filter(link_status == 200)
+
 punct <-punct %>%
+    mutate(no_punct = str_sub(link_address, start = 1, end = -2)) 
+
+checks <-checks %>%
     mutate(no_punct = str_sub(link_address, start = 1, end = -2)) 
 
 #from linkrot 
@@ -48,7 +56,21 @@ punct <-punct %>%
             og_link_status = get_site_status(link_address), 
             og_link_no_follow = get_site_status_no_follow(link_address))
 
-count(punct, link_status, no_punct_status, no_punct_no_follow_status, og_link_status, og_link_no_follow) %>% view()
+
+checks <-checks %>%
+    mutate(no_punct_status = get_site_status(no_punct), 
+            no_punct_no_follow_status = get_site_status_no_follow(no_punct), 
+            og_link_status = get_site_status(link_address), 
+            og_link_no_follow = get_site_status_no_follow(link_address))
+
+punct %>% 
+    count(link_status, no_punct_status, no_punct_no_follow_status, og_link_status, og_link_no_follow) %>% 
+    View()
+
+checks %>% 
+    count(link_status, no_punct_status, no_punct_no_follow_status, og_link_status, og_link_no_follow) %>% 
+    View()
+
 
 #ok here we look at map vs mutate with a smaller dataset
  
@@ -69,3 +91,4 @@ for (i in 1:nrow(punct_5)) {
 
 count(punct_5, no_punct_status)
 
+#i have no idea what's wrong with this and why it's not working? 
