@@ -6,8 +6,8 @@
 #library statements
 library(tidyverse)
 library(httr2)
-library(rvest)
-library(xml2)
+# library(rvest)
+# library(xml2)
 # library(tidytext)
 # library(jsonlite)
 
