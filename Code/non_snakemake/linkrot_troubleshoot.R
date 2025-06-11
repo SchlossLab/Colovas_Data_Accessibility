@@ -10,12 +10,13 @@ library(httr2)
 #read in linkrot file 
 linkrot<-read_csv("Data/final/linkrot_combined.csv.gz") 
 
-
+#12045 links ending with punctuation/ and not 200 status (link OK)
 punctuation <-linkrot %>%
     filter(str_ends(link_address, "\\.")| str_ends(link_address, "\\,") | str_ends(link_address, "\\;") 
     | str_ends(link_address, "\\:") | str_ends(link_address, "\\(") | str_ends(link_address, "\\)") | str_ends(link_address, "[:punct:]")) %>%
     filter(link_status != 200)
 
+#remove the final punctuation
 punctuation <-punctuation %>%
     mutate(no_punctuation = str_sub(link_address, start = 1, end = -2)) 
 
@@ -64,7 +65,11 @@ githubt_test
 punctuation <-punctuation %>%
     mutate(no_punctuation_status = get_site_status(no_punctuation), 
         no_punctuation_no_follow_status = get_site_status_no_follow(no_punctuation),
-        reg_no_follow_status = get_site_status_no_follow(link_address),
-        regular_status = get_site_status(link_address))
+        link_status_no_follow = get_site_status_no_follow(link_address),
+        link_status_retry = get_site_status(link_address))
 
+#why does the "link_status_retry" differ from the original link status??
+#see line 98 in linkrot to compare original application of function get_site_status
+punctuation %>% count(link_status, no_punctuation_status, no_punctuation_no_follow_status, link_status_no_follow, link_status_retry) %>% 
+view()
 
