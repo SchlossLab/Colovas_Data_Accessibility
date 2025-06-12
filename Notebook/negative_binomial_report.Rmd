@@ -10,6 +10,9 @@ We are using data from the American Society of Microbiology's (ASM) 12 published
 
 ```{r include=FALSE}
 library(tidyverse)
+library(MASS)
+library(jtools)
+
 csv_report <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/negative_binomial_models.csv") %>%  
   rename(all_data_rsq = all_journal_data_rsq)
 ```

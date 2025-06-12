@@ -21,7 +21,10 @@ three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.mont
        log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
 
 jtools::summ(three_terms_int_all) %>% attr(., "rsq")
-str(jtools::summ(three_terms_int_all))
+coefficients <-jtools::summ(three_terms_int_all)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+full_model_value <- jtools::summ(three_terms_int_all)$model$coefficients %>% unname() %>% 
+    tibble(full_model_value = `.`)
+
 
 
 
@@ -93,17 +96,19 @@ all_terms_no_1percent <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.mo
        log(age.in.months)*da_factor*container.title, data = no_1percent, link = log)
 
 jtools::summ(all_terms_no_1percent)
+no_1percent_value <- jtools::summ(all_terms_no_1percent)$model$coefficients %>% unname() %>% 
+    tibble(no_1percent_value = `.`)
 
 #this model fits exactly the same with the top 10% removed R^2 = 0.67
-no_10percent <-nsd_yes_metadata %>%
-    filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
-                                              na.rm = TRUE, prob = 0.90))
+# no_10percent <-nsd_yes_metadata %>%
+#     filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
+#                                               na.rm = TRUE, prob = 0.90))
 
-all_terms_no_10percent <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
-       log(age.in.months)*da_factor*container.title, data = no_10percent, link = log)
+# all_terms_no_10percent <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+#       + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+#        log(age.in.months)*da_factor*container.title, data = no_10percent, link = log)
 
-jtools::summ(all_terms_no_10percent)
+# jtools::summ(all_terms_no_10percent)
 
 # ok now let's look at cutting it off at 10 years (120 months)
 ten_years <- 
@@ -115,6 +120,8 @@ all_terms_ten_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.mont
        log(age.in.months)*da_factor*container.title, data = ten_years, link = log)
 #fits exactly the same - R^2 = 0.68 
 jtools::summ(all_terms_ten_years)
+ten_years_value <- jtools::summ(all_terms_ten_years)$model$coefficients %>% unname() %>% 
+    tibble(ten_years_value = `.`)
 
 
 #how about 5 years (60 months )
@@ -127,7 +134,12 @@ all_terms_five_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.mon
        log(age.in.months)*da_factor*container.title, data = five_years, link = log)
 #fits a little worse - R^2 = 0.66
 jtools::summ(all_terms_five_years)
+five_years_value <- jtools::summ(all_terms_five_years)$model$coefficients %>% unname() %>% 
+    tibble(five_years_value = `.`)
 
+#let's combine all the coefficients - not working as of 20250612 
+#why are they different lengths???? bruh.....
+all_data_models <- tibble(coefficients, full_model_value, no_1percent_value, ten_years_value, five_years_value)
 
 #ok let's look at this by journal - want to be able to get R^2 out of the model 
 str(summ(all_terms_five_years))
