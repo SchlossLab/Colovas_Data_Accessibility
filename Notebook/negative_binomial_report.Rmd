@@ -4,6 +4,10 @@ output: pdf_document
 date : 20250610 
 ---
 
+## Project Summary 
+We are using data from the American Society of Microbiology's (ASM) 12 published journals to investigate the relationship between the number of citations (variable 'is.referenced.by.count') a published scientific article receives and if the authors have included access to their raw sequencing data (variable 'da', data availability) in the manuscript. We are trying to understand if publishing raw data helps to improve citation metrics. We have data from 2000-2024, and will also adjust for time published (variable 'age.in.months'), as older papers have had the opportunity to accumulate more citations over time. 
+
+
 ```{r include=FALSE}
 library(tidyverse)
 csv_report <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/negative_binomial_models.csv") %>%  
