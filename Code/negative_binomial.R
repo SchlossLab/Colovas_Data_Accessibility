@@ -13,7 +13,6 @@ library(jtools)
 nsd_yes_metadata <- read_csv("Data/final/nsd_yes_metadata.csv.gz")
 
 
-
 interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + da_factor * age.in.months, data = nsd_yes_metadata, link = log)
 
 three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
@@ -25,8 +24,8 @@ coefficients <-jtools::summ(three_terms_int_all)$model$coefficients %>% names() 
 full_model_value <- jtools::summ(three_terms_int_all)$model$coefficients %>% unname() %>% 
     tibble(full_model_value = `.`)
 
-
-
+full_data_model <- tibble(coefficients, full_model_value)
+head(full_data_model)
 
 #do the models make more sense if you break them up by journal? no. -------------------------------------------
 jvi <- nsd_yes_metadata %>% 
@@ -99,6 +98,10 @@ jtools::summ(all_terms_no_1percent)
 no_1percent_value <- jtools::summ(all_terms_no_1percent)$model$coefficients %>% unname() %>% 
     tibble(no_1percent_value = `.`)
 
+no_1p_coefficients <-jtools::summ(all_terms_no_1percent)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+
+no_1p_model <- tibble(no_1p_coefficients, no_1percent_value)
+head(no_1p_model)
 #this model fits exactly the same with the top 10% removed R^2 = 0.67
 # no_10percent <-nsd_yes_metadata %>%
 #     filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
@@ -123,6 +126,9 @@ jtools::summ(all_terms_ten_years)
 ten_years_value <- jtools::summ(all_terms_ten_years)$model$coefficients %>% unname() %>% 
     tibble(ten_years_value = `.`)
 
+ten_years_coefficients <-jtools::summ(all_terms_ten_years)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+
+ten_years_model <- tibble(ten_years_coefficients, ten_years_value)
 
 #how about 5 years (60 months )
 five_years <- 
@@ -137,9 +143,27 @@ jtools::summ(all_terms_five_years)
 five_years_value <- jtools::summ(all_terms_five_years)$model$coefficients %>% unname() %>% 
     tibble(five_years_value = `.`)
 
+five_years_coefficients <-jtools::summ(all_terms_five_years)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+
+five_years_model <- tibble(five_years_coefficients, five_years_value)
+
 #let's combine all the coefficients - not working as of 20250612 
 #why are they different lengths???? bruh.....
-all_data_models <- tibble(coefficients, full_model_value, no_1percent_value, ten_years_value, five_years_value)
+all_data_models <- full_join(full_data_model, no_1p_model) %>%
+  full_join(., five_years_model) %>%
+  full_join(., ten_years_model)
+
+add_rsq<-tibble(coefficients = "rsquared", 
+              full_model_value = jtools::summ(three_terms_int_all) %>% attr(., "rsq"), 
+              no_1percent_value = jtools::summ(all_terms_no_1percent) %>% attr(., "rsq"), 
+              five_years_value = jtools::summ(all_terms_five_years) %>% attr(., "rsq"), 
+              ten_years_value = jtools::summ(all_terms_ten_years) %>% attr(., "rsq"))
+
+all_data_models <- rbind(add_rsq, all_data_models)
+
+#save all data model coefficients table 
+write_csv(all_data_models, file = "Data/negative_binomial/all_data_glmnb_models.csv")
+
 
 #ok let's look at this by journal - want to be able to get R^2 out of the model 
 str(summ(all_terms_five_years))
@@ -156,11 +180,14 @@ journals <-nsd_yes_metadata %>%
   count(journal_abrev) %>% 
   filter(journal_abrev != "jmbe")
 
+
+
 journals <-journals %>% 
   mutate(all_journal_data_rsq = NA, no_1percent_rsq = NA, five_years_rsq = NA, ten_years_rsq = NA)
 
+each_journal_model <-list()
 
-
+i<-1
 for(i in 1:nrow(journals)) { 
   journal_data <- 
   nsd_yes_metadata %>% 
@@ -171,6 +198,14 @@ for(i in 1:nrow(journals)) {
   
   journals$all_journal_data_rsq[i] <- jtools::summ(journal_fit) %>% attr(., "rsq")
 
+  journal_coefficients <-jtools::summ(journal_fit)$model$coefficients %>%
+                          names() %>% 
+                          tibble(coefficients = `.`)
+  journal_value <- jtools::summ(journal_fit)$model$coefficients %>% 
+                          unname() %>% 
+                          tibble(journal_value = `.`)
+  journal_model <- tibble(journal_coefficients, journal_value)
+
   no_1percent  <-journal_data %>%
     filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
                                               na.rm = TRUE, prob = 0.99))
@@ -180,6 +215,14 @@ for(i in 1:nrow(journals)) {
   
   journals$no_1percent_rsq[i]<-jtools::summ(no_1p_fit) %>% attr(., "rsq")
 
+  no1p_coefficients <-jtools::summ(no_1p_fit)$model$coefficients %>%
+                          names() %>% 
+                          tibble(coefficients = `.`)
+  no1p_value <- jtools::summ(no_1p_fit)$model$coefficients %>% 
+                          unname() %>% 
+                          tibble(no_1p_value = `.`)
+  no1p_model <- tibble(no1p_coefficients, no1p_value)
+
   five_years <-journal_data %>% 
     filter(age.in.months <= 60)
   if(nrow(five_years) > 0 ) {
@@ -187,18 +230,40 @@ for(i in 1:nrow(journals)) {
        + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data =  five_years, link = log)
 
     journals$five_years_rsq[i]<-jtools::summ(five_years_fit) %>% attr(., "rsq")
+
+     five_years_coefficients <-jtools::summ(five_years_fit)$model$coefficients %>%
+                          names() %>% 
+                          tibble(coefficients = `.`)
+      five_years_value <- jtools::summ(five_years_fit)$model$coefficients %>% 
+                          unname() %>% 
+                          tibble(five_years_value = `.`)
+  five_years_model <- tibble(five_years_coefficients, five_years_value)
+
   } else {journals$five_years_rsq[i]<-NA}
 
-  if(nrow(ten_years) > 0 ) {
   ten_years <-journal_data %>% 
-    filter(age.in.months <= 120)
-
+      filter(age.in.months <= 120)
+  if(nrow(ten_years) > 0 ) {
+  
   ten_years_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
        + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data =  ten_years, link = log)
   
   journals$ten_years_rsq[i]<-jtools::summ(ten_years_fit) %>% attr(., "rsq")
+
+   ten_years_coefficients <-jtools::summ(ten_years_fit)$model$coefficients %>%
+                          names() %>% 
+                          tibble(coefficients = `.`)
+      ten_years_value <- jtools::summ(ten_years_fit)$model$coefficients %>% 
+                          unname() %>% 
+                          tibble(ten_years_value = `.`)
+  ten_years_model <- tibble(ten_years_coefficients, ten_years_value)
   }
   else {journals$ten_years_rsq[i] <- NA}
+
+  
+  each_journal_model[[i]] <- full_join(journal_model, no1p_model) %>%
+  #full_join(., five_years_model)  %>% 
+  full_join(., ten_years_model)
 print(i)
 }
 
