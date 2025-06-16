@@ -2,109 +2,119 @@
 title: "Negative Binomial Regression Fit Report"
 output: pdf_document
 date : 20250610 
+classoption: landscape
 ---
 
-## Project Summary 
-We are using data from the American Society of Microbiology's (ASM) 12 published journals to investigate the relationship between the number of citations (variable 'is.referenced.by.count') a published scientific article receives and if the authors have included access to their raw sequencing data (variable 'da', data availability) in the manuscript. We are trying to understand if publishing raw data helps to improve citation metrics. We have data from 2000-2024, and will also adjust for time published (variable 'age.in.months'), as older papers have had the opportunity to accumulate more citations over time. 
+## Project Summary
 
+-   We are using data from the American Society of Microbiology's (ASM)
+    12 published journals to investigate the relationship between the
+    number of citations (variable 'is.referenced.by.count') a published
+    scientific article receives and if the authors have included access
+    to their raw sequencing data (variable 'da', data availability) in
+    the manuscript.
+-   We are trying to understand if publishing raw data helps to improve
+    citation metrics. We have data from 2000-2024, and will also adjust
+    for time published (variable 'age.in.months'), as older papers have
+    had the opportunity to accumulate more citations over time.
 
 ```{r include=FALSE}
 library(tidyverse)
-library(MASS)
-library(jtools)
 
-csv_report <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/negative_binomial_models.csv") %>%  
+# library(MASS)
+# library(jtools)
+
+rsquared <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/negative_binomial_models.csv") %>%  
   rename(all_data_rsq = all_journal_data_rsq)
+
+all_journals <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/all_data_glmnb_models.csv")
+
+each_journal <-  read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/negative_binomial_byjournal.csv.gz") %>%  
+  rename(all_journal_value = journal_value)
+
 ```
 
 ```{r}
-csv_report
+
+knitr::kable(rsquared, digits = 4)
 ```
 
-## All Data Together
+## How well do the models fit (by Cragg-Uhler pseduo R-squared metric)
 
--   The first attempt at fitting the negative binomial regression model
-    to all results
--   Use model format MASS::glm.nb(is.referenced.by.count\~ da_factor +
-    log(age.in.months) + container.title + +
-    container.title\*da_factor + log(age.in.months)\*da_factor +
+-   See above table "rsquared"
+
+-   Model format for all data from all journals
+    MASS::glm.nb(is.referenced.by.count\~ da_factor +
+    log(age.in.months) + container.title + container.title\*da_factor +
+    log(age.in.months)\*da_factor +
     container.title\*log(age.in.months) +
     log(age.in.months)\*da_factor\*container.title, data =
     nsd_yes_metadata, link = log)
--   N = 47, 808 (NSD = Yes papers)
--   R\^2 value = 0.678
--   Next, removal of the top 1% of data to see if model fit changes by
-    filtering
-    -   filter(is.referenced.by.count \<
-        quantile(nsd_yes_metadata\$is.referenced.by.count, na.rm = TRUE,
-        prob = 0.99))
-    -   R\^2 value = 0.682
--   Truncate data at only data from the last 5 years
-    -   filter(age.in.months \<= 60)
-    -   R\^2 value = 0.660
--   Truncate data from the last 10 years
-    -   filter(age.in.months \<= 120)
-    -   R\^2 value = 0.680
--   **Summary :** Model fit does not change by removing the top 1% of
-    data or truncating to data from the last 5 or 10 years.
 
-## Data by Journal
-
--   Next, looking at data for each journal on its own, removal of
-    container.title variable from model and associated combination terms
-
--   Removal of journal of microbiology and biology education as it only
-    has 7 papers with nsd = yes
-
--   Use model format MASS::glm.nb(is.referenced.by.count\~ da_factor +
+-   Use model format for data from each journal
+    MASS::glm.nb(is.referenced.by.count\~ da_factor +
     log(age.in.months) + log(age.in.months)\*da_factor, data = \<each
     journal\>, link = log)
 
--   **Summary:** 4/12 journals have overall model fit comparable to the
-    full model (R\^2 \> 0.5)
+-   **Overall model fit with all data from all journals:**
 
-    -   mbio, N = 2498, R\^2 = 0.668
+    -   R\^2 value = 0.678
+    -   Removal of top 1% of data: R\^2 value = 0.682
+    -   Truncate data to last 5 years: R\^2 value = 0.660
+    -   Truncate data to last 10 years: R\^2 value = 0.680
+    -   **Summary :** Model fit by R\^2 metric does not change by
+        removing the top 1% of data or truncating to data from the last
+        5 or 10 years.
 
-    -   msphere, N = 1041, R\^2 = 0.652
+-   **Overall model fit for data from EACH journal individually:**
 
-    -   msystems, N = 1436, R\^2 = 0.717
+    -   4/12 journals have **overall model fit** with R\^2 \> 0.5
 
-    -   spectrum, N = 2957, R\^2 = 0.542
+    -   4/12 journals have fit with R\^2 \> 0.5 with **top 1% of data
+        removed**
 
--   Remove the top 1% of each journal to see how the model changes
+    -   10/11 journals have model fits \>0.5 when **truncated to the
+        last 5 years,** so they are better than their fit overall (one
+        journal has no data from this period)
 
-    -   **Summary:** Once again, only 4/12 journals have fit comparable
-        to the full model with top 1% of data removed (R\^2 \> 0.5)
+    -   8/12 journals have model fits \>0.5 when **truncated to the last
+        10 years,** so they are better than their fit overall
 
-    -   mbio, N = 2498, R\^2 = 0.668
+    -   **Summary:** Data fits negative binomial model better with only
+        more recent data considered.
 
-    -   msphere, N = 1041, R\^2 = 0.651
+```{r}
+knitr::kable(all_journals, digits = 4) 
+```
 
-    -   msystems, N = 1436, R\^2 = 0.704
+## All journal model is resistant to changes from removing top 1% of data, but less resistant to changes from truncating at 5 and 10 years.
 
-    -   spectrum, N = 2957, R\^2 = 0.542
+-   When working across the columns in the second table, we have
+    coefficients on the left, followed by their values under the
+    following conditions
 
--   Truncate data at 5 years
+    -   full_model_value = all data included in the model
+    -   no_1percent_value = top 1% of data removed
+    -   five_years_value = data truncated at 5 years in age of paper
+    -   ten_years_value = data truncated at 10 years in age of paper
+    -   **Note:** Journal of Microbiology and Biology Education(jmbe)
+        has N=7 papers with new sequence data and has been excluded for
+        these analyses, but is a part of the model, and appears as NAs
+        in the table above.
 
-    -   **Summary:** All but 2 journals (10/12) have model fits \>0.5,
-        so they are better than their fit overall when truncated to the
-        last 5 years (see table col five_years_rsq)
+-   Would graphing be helpful here to look at the ways the values change
+    over these transformations? What kind of graphing?
 
-    -   genome announcements, N = 6578, R\^2 = NA (I don't think there
-        were any papers published in this journal in this period)
+```{r}
+knitr::kable(each_journal, digits = 4)
+```
 
-    -   mra, N = 5738, R\^2 = 0.368
+## Each journal model are semi-resistant to changes from removing top 1% of data, and even less resistant to changes from truncating at 5 and 10 years.
 
--   Truncate data at 10 years
+-   See above for mutations on these columns, but these models look less
+    resistant to the transformation of removing the top 1% of data, and
+    even less resistant to changes in coefficients from truncating at 5
+    and 10 years of data.
 
-    -   **Summary:** 8/12 journals have model fits \>0.5, so they are
-        better than their fit overall when truncated to the last 10
-        years (see table col ten_years_rsq)
-
-    -   aac, N = 3237, R\^2 = 0.476
-
-    -   genome announcements, N = 6578, R\^2 = 0.032
-
-    -   jcm, N = 4374, R\^2 = 0.388
-
-    -   mra, N = 5738, R\^2 = 0.371
+-   Would graphing be helpful here to look at the ways the values change
+    over these transformations? What kind of graphing?
