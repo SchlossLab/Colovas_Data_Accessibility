@@ -77,7 +77,7 @@ ggsave(plot_2_no_points, file = "Figures/test_nopoints_2.png")
 ggsave(plot_3, file = "Figures/test_3.png")
 
 
-# 20250603 - after meeting with pat
+# 20250603 - after meeting with pat----------------------------------------------------------------
 # working on: 
 # removing the top 1% of data and looking at model fit 
 # truncating data at 5 years (60 mos) and 10 years (120 mos) and looking at model fit 
@@ -180,12 +180,11 @@ journals <-nsd_yes_metadata %>%
   count(journal_abrev) %>% 
   filter(journal_abrev != "jmbe")
 
-
-
-journals <-journals %>% 
-  mutate(all_journal_data_rsq = NA, no_1percent_rsq = NA, five_years_rsq = NA, ten_years_rsq = NA)
+# journals <-journals %>% 
+#   mutate(all_journal_data_rsq = NA, no_1percent_rsq = NA, five_years_rsq = NA, ten_years_rsq = NA)
 
 each_journal_model <-list()
+
 
 i<-1
 for(i in 1:nrow(journals)) { 
@@ -193,6 +192,7 @@ for(i in 1:nrow(journals)) {
   nsd_yes_metadata %>% 
     filter(journal_abrev == journals[[i,1]])
 
+  names(each_journal_model)[[i]] <- journals[[i,1]]
   journal_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
        + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = journal_data, link = log)
   
@@ -262,18 +262,13 @@ for(i in 1:nrow(journals)) {
 
   
   each_journal_model[[i]] <- full_join(journal_model, no1p_model) %>%
-  #full_join(., five_years_model)  %>% 
+  full_join(., five_years_model) %>% 
   full_join(., ten_years_model)
+
 print(i)
 }
 
-all_jounals<-c(journal_abrev = "all_journals", 
-              `n` = nrow(nsd_yes_metadata),
-              all_journal_data_rsq = jtools::summ(three_terms_int_all) %>% attr(., "rsq"), 
-              no_1percent_rsq = jtools::summ(all_terms_no_1percent) %>% attr(., "rsq"), 
-              five_years_rsq = jtools::summ(all_terms_five_years) %>% attr(., "rsq"), 
-              ten_years_rsq = jtools::summ(all_terms_ten_years) %>% attr(., "rsq"))
+each_journal_model %>% enframe() %>% unnest(cols = value) %>% 
+  write_csv(., "Data/negative_binomial/negative_binomial_byjournal.csv.gz")
 
-all_rsq<-rbind(journals, all_jounals)
-
-write_csv(all_rsq, "Data/final/negative_binomial_models.csv")
+# read_journal<-read_csv("Data/negative_binomial/negative_binomial_byjournal.csv.gz")
