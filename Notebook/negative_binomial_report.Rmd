@@ -37,6 +37,13 @@ each_journal <-  read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/n
 ```{r}
 
 knitr::kable(rsquared, digits = 4)
+
+rsquared %>% 
+  pivot_longer(cols = all_data_rsq:ten_years_rsq) %>%
+  ggplot(aes(y = journal_abrev, x = value)) + 
+  geom_line(na.rm = TRUE) + 
+  geom_point(aes(color = name, alpha = 0.75), na.rm = TRUE)
+  
 ```
 
 ## How well do the models fit (by Cragg-Uhler pseduo R-squared metric)
@@ -85,6 +92,11 @@ knitr::kable(rsquared, digits = 4)
 
 ```{r}
 knitr::kable(all_journals, digits = 4) 
+all_journals %>% 
+  pivot_longer(cols = full_model_value:ten_years_value) %>%
+  ggplot(aes(x = coefficients, y = value)) + 
+  geom_line(na.rm = TRUE) + 
+  geom_point(aes(color = name, alpha = 0.75), na.rm = TRUE) + theme(axis.text.x = element_blank()) 
 ```
 
 ## All journal model is resistant to changes from removing top 1% of data, but less resistant to changes from truncating at 5 and 10 years.
@@ -102,11 +114,18 @@ knitr::kable(all_journals, digits = 4)
         these analyses, but is a part of the model, and appears as NAs
         in the table above.
 
--   Would graphing be helpful here to look at the ways the values change
-    over these transformations? What kind of graphing?
+-   Is this graphic helpful? The labels are super cluttered and need some work. 
 
 ```{r}
 knitr::kable(each_journal, digits = 4)
+each_journal %>% 
+    rename(journal_abrev = name) %>% 
+  pivot_longer(cols = all_journal_value:ten_years_value) %>%
+  ggplot(aes(x = coefficients, y = value)) + 
+  geom_line(na.rm = TRUE, position = "jitter") + 
+  geom_point(aes(color = name, alpha = 0.75), na.rm = TRUE, position = "jitter") + 
+  facet_wrap(vars(journal_abrev)) +
+  theme(axis.text.x = element_text(angle = 45, hjust=1)) 
 ```
 
 ## Each journal model are semi-resistant to changes from removing top 1% of data, and even less resistant to changes from truncating at 5 and 10 years.
@@ -116,5 +135,4 @@ knitr::kable(each_journal, digits = 4)
     even less resistant to changes in coefficients from truncating at 5
     and 10 years of data.
 
--   Would graphing be helpful here to look at the ways the values change
-    over these transformations? What kind of graphing?
+-  Is this graphic helpful? I think the scale should be adjusted to better show the data. 
