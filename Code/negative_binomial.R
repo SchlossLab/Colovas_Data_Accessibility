@@ -12,9 +12,29 @@ library(jtools)
 #load metadata
 nsd_yes_metadata <- read_csv("Data/final/nsd_yes_metadata.csv.gz")
 
+#20250624 - when does the first citation appear in these data? 
+first_citation <-
+nsd_yes_metadata %>% 
+  filter(is.referenced.by.count == 1) %>% 
+  count(container.title, journal_abrev, age.in.months) %>% 
+  summarize(first_citation = min(age.in.months, na.rm = TRUE), 
+            .by = c(container.title, journal_abrev)) 
+mean(first_citation$first_citation)
+median(first_citation$first_citation)
 
+first_citation_noga <-
+first_citation %>% 
+  filter(journal_abrev != "genomea")
+first_citation_mean <- mean(first_citation_noga$first_citation)
+median(first_citation_noga$first_citation)
+
+
+#models
+
+#no journal variable
 interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + da_factor * age.in.months, data = nsd_yes_metadata, link = log)
 
+#all three interaction terms 
 three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
       + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
        log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
@@ -27,36 +47,17 @@ full_model_value <- jtools::summ(three_terms_int_all)$model$coefficients %>% unn
 full_data_model <- tibble(coefficients, full_model_value)
 head(full_data_model)
 
-#do the models make more sense if you break them up by journal? no. -------------------------------------------
-jvi <- nsd_yes_metadata %>% 
-  filter(journal_abrev == "jvi")
+#20250624 - what happens if you create a whole model with an adjustment of the months
+citation_adjustment <- 
+  nsd_yes_metadata %>% 
+  mutate(time_adj_all = (age.in.months - 5), 
+        time_adj_all_no_negs = ifelse(time_adj_all <= 0, 1, time_adj_all))
 
-iai <- nsd_yes_metadata %>% 
-  filter(journal_abrev == "iai")
+three_terms_adj <-glm.nb(is.referenced.by.count~ da_factor + log(time_adj_all_no_negs) + container.title + 
+      + container.title*da_factor + log(time_adj_all_no_negs)*da_factor + container.title*log(time_adj_all_no_negs) + 
+       log(time_adj_all_no_negs)*da_factor*container.title, data = citation_adjustment, link = log)
 
-msys <- nsd_yes_metadata %>% 
-  filter(journal_abrev == "msystems")
-
-
-jvi_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = jvi, link = log)
-jvi_interaction_2 <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + da_factor*log(age.in.months), 
-                    data = jvi, link = log)
-jtools::summ(jvi_interaction)
-
-msys_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = msys, link = log)
-msys_interaction_2 <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + da_factor*log(age.in.months), 
-                      data = msys, link = log)
-jtools::summ(msys_interaction_2)
-
-
-iai_interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months, data = iai, link = log)
-iai_interaction_2 <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + da_factor*log(age.in.months), 
-                    data = iai, link = log)
-jtools::summ(iai_interaction_2)
-
-
-#______________________________________end_by_journal___________________________________________________________________
-
+jtools::summ(three_terms_adj)
 #graphing with jtools 
 
 plot_1<-jtools::effect_plot(interaction, da_factor, plot.points = TRUE)
