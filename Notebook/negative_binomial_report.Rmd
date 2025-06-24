@@ -42,13 +42,14 @@ rsquared %>%
   pivot_longer(cols = all_data_rsq:ten_years_rsq) %>%
   ggplot(aes(y = journal_abrev, x = value)) + 
   geom_line(na.rm = TRUE) + 
-  geom_point(aes(color = name, alpha = 0.75), na.rm = TRUE)
+  geom_point(aes(color = name), alpha = 0.75, na.rm = TRUE)
   
 ```
 
 ## How well do the models fit (by Cragg-Uhler pseduo R-squared metric)
 
 -   See above table "rsquared"
+### Model Formats 
 
 -   Model format for all data from all journals
     MASS::glm.nb(is.referenced.by.count\~ da_factor +
@@ -94,9 +95,10 @@ rsquared %>%
 knitr::kable(all_journals, digits = 4) 
 all_journals %>% 
   pivot_longer(cols = full_model_value:ten_years_value) %>%
+  filter(name != "no_1percent_value") %>% 
   ggplot(aes(x = coefficients, y = value)) + 
   geom_line(na.rm = TRUE) + 
-  geom_point(aes(color = name, alpha = 0.75), na.rm = TRUE) + theme(axis.text.x = element_blank()) 
+  geom_point(aes(color = name), alpha = 0.75, na.rm = TRUE) + theme(axis.text.x = element_blank()) 
 ```
 
 ## All journal model is resistant to changes from removing top 1% of data, but less resistant to changes from truncating at 5 and 10 years.
@@ -114,17 +116,18 @@ all_journals %>%
         these analyses, but is a part of the model, and appears as NAs
         in the table above.
 
--   Is this graphic helpful? The labels are super cluttered and need some work. 
+
 
 ```{r}
 knitr::kable(each_journal, digits = 4)
 each_journal %>% 
     rename(journal_abrev = name) %>% 
   pivot_longer(cols = all_journal_value:ten_years_value) %>%
+  filter(name != "no_1p_value") %>% 
   ggplot(aes(x = coefficients, y = value)) + 
-  geom_line(na.rm = TRUE, position = "jitter") + 
-  geom_point(aes(color = name, alpha = 0.75), na.rm = TRUE, position = "jitter") + 
-  facet_wrap(vars(journal_abrev)) +
+  geom_line(na.rm = TRUE) + 
+  geom_point(aes(color = name), alpha = 0.75, na.rm = TRUE) + 
+  facet_wrap(vars(journal_abrev), scales = "free_y") +
   theme(axis.text.x = element_text(angle = 45, hjust=1)) 
 ```
 
@@ -135,4 +138,3 @@ each_journal %>%
     even less resistant to changes in coefficients from truncating at 5
     and 10 years of data.
 
--  Is this graphic helpful? I think the scale should be adjusted to better show the data. 
