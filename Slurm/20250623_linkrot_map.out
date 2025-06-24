@@ -175,3 +175,101 @@ Setting `max_tries = 2`.
 Setting `max_tries = 2`.
 Setting `max_tries = 2`.
 Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+> 
+> #why does the "link_status_retry" differ from the original link status??
+> #see line 98 in linkrot to compare original application of function get_site_status
+> # punctuation %>% count(link_status, no_punctuation_status, no_punctuation_no_follow_status, link_status_no_follow, link_status_retry) 
+> punctuation_map %>% count(link_status, no_punctuation_status, no_punctuation_no_follow_status, link_status_no_follow, link_status_retry) 
+# A tibble: 15 × 6
+   link_status no_punctuation_status no_punctuation_no_follow_status
+         <dbl>                 <dbl>                           <dbl>
+ 1         403                   403                             301
+ 2         403                   403                             403
+ 3         403                   404                             301
+ 4         404                   200                             200
+ 5         404                   200                             301
+ 6         404                   200                             301
+ 7         404                   200                             302
+ 8         404                   200                             302
+ 9         404                   200                             303
+10         404                   200                             308
+11         404                   404                             301
+12         404                   404                             302
+13         404                   404                             404
+14         429                   429                             302
+15         503                   503                             503
+# ℹ 3 more variables: link_status_no_follow <dbl>, link_status_retry <dbl>,
+#   n <int>
+> 
+> # write_csv(punctuation, file = "Data/tests/linkrot/punctuation_GL_test.csv")
+> write_csv(punctuation_map, file = "Data/tests/linkrot/punctuation_map_GL_test.csv")
+> 
+> 
+> #20260623 - make a smaller test set 
+> 
+> # test_set <- punctuation[1:15,]
+> 
+> # test_map_2 <-test_set %>%
+> #     mutate(no_punctuation_status = map_dbl(no_punctuation, get_site_status))
+> # #320 start
+> 
+> # #3:00pm start finish - easily a minute per link 
+> 
+> # test_map %>% count(no_punctuation_status)
+> 
+> # test_map_2 %>% view()
+> 
+> proc.time()
+    user   system  elapsed 
+   6.165    0.437 1291.248 
