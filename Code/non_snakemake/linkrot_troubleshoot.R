@@ -39,7 +39,8 @@ get_site_status <- function(websiteurl) {
 
 
 punctuation_map <-punctuation %>%
-    mutate(no_punctuation_status = map_dbl(no_punctuation, get_site_status))
+    mutate(no_punctuation_status = map_dbl(no_punctuation, get_site_status, 
+                                    .progress = TRUE))
 
 punctuation_map %>% count(link_status, no_punctuation_status)
 

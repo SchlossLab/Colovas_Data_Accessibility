@@ -62,7 +62,7 @@ conda activate data_acc
 #git checkout main
 
 cd $SLURM_SUBMIT_DIR
-R CMD BATCH Code/non_snakemake/linkrot_troubleshoot.R Slurm/20250623_linkrot_map.out
+R CMD BATCH Code/non_snakemake/linkrot_troubleshoot.R Slurm/20250624_linkrot_map.out
 
 
 ##  If you copied any files to /tmp, make sure you delete them here!
