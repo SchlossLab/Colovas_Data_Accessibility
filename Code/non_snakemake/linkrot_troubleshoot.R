@@ -13,8 +13,10 @@ linkrot<-read_csv("Data/final/linkrot_combined.csv.gz")
 #12045 links ending with punctuation/ and not 200 status (link OK)
 punctuation <-linkrot %>%
     filter(str_ends(link_address, "\\.")| str_ends(link_address, "\\,") | str_ends(link_address, "\\;") 
-    | str_ends(link_address, "\\:") | str_ends(link_address, "\\(") | str_ends(link_address, "\\)") | str_ends(link_address, "[:punct:]")) %>%
+    | str_ends(link_address, "\\:") | str_ends(link_address, "\\(") | str_ends(link_address, "\\)")) %>%
     filter(link_status != 200)
+
+#removing '| str_ends(link_address, "[:punct:]")' - removes about 12k from this search 
 
 #remove the final punctuation
 punctuation <-punctuation %>%
@@ -26,6 +28,7 @@ get_site_status <- function(websiteurl) {
   response <- tryCatch( {request(websiteurl) %>% 
       req_options(followlocation = TRUE) %>% # this line 'follows' links that redirect the user
       req_error(is_error = ~ FALSE) %>% 
+      req_retry(retry_on_failure = FALSE) %>% 
       req_perform()}, error = \(x){list(status_code = 404) } )
   
   numeric_response <- response$status_code
@@ -70,10 +73,10 @@ github_test
 #         request = request(link_address))
 
 punctuation_map <-punctuation %>%
-    mutate(no_punctuation_status = map(no_punctuation, get_site_status), 
-        no_punctuation_no_follow_status = map(no_punctuation, get_site_status_no_follow),
-        link_status_no_follow = map(link_address, get_site_status_no_follow),
-        link_status_retry = map(link_address, get_site_status))
+    mutate(no_punctuation_status = map_dbl(no_punctuation, get_site_status), 
+        no_punctuation_no_follow_status = map_dbl(no_punctuation, get_site_status_no_follow),
+        link_status_no_follow = map_dbl(link_address, get_site_status_no_follow),
+        link_status_retry = map_dbl(link_address, get_site_status))
 
 #why does the "link_status_retry" differ from the original link status??
 #see line 98 in linkrot to compare original application of function get_site_status
@@ -83,3 +86,17 @@ punctuation_map %>% count(link_status, no_punctuation_status, no_punctuation_no_
 # write_csv(punctuation, file = "Data/tests/linkrot/punctuation_GL_test.csv")
 write_csv(punctuation_map, file = "Data/tests/linkrot/punctuation_map_GL_test.csv")
 
+
+#20260623 - make a smaller test set 
+
+# test_set <- punctuation[1:15,]
+
+# test_map_2 <-test_set %>%
+#     mutate(no_punctuation_status = map_dbl(no_punctuation, get_site_status))
+# #320 start
+
+# #3:00pm start finish - easily a minute per link 
+
+# test_map %>% count(no_punctuation_status)
+
+# test_map_2 %>% view()

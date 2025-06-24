@@ -1,0 +1,177 @@
+
+R version 4.3.3 (2024-02-29) -- "Angel Food Cake"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-conda-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #!/usr/bin/env Rscript
+> #create df of links to check with removed punctuation at the end 
+> #
+> #
+> #
+> #library statements
+> library(tidyverse)
+── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.2     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.0.4     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+> library(httr2)
+> 
+> #read in linkrot file 
+> linkrot<-read_csv("Data/final/linkrot_combined.csv.gz") 
+Rows: 244845 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (8): html_filename, html_tag, link_address, link_text, hostname, domain,...
+dbl (1): link_status
+lgl (1): is_alive
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+> 
+> #12045 links ending with punctuation/ and not 200 status (link OK)
+> punctuation <-linkrot %>%
++     filter(str_ends(link_address, "\\.")| str_ends(link_address, "\\,") | str_ends(link_address, "\\;") 
++     | str_ends(link_address, "\\:") | str_ends(link_address, "\\(") | str_ends(link_address, "\\)")) %>%
++     filter(link_status != 200)
+> 
+> #removing '| str_ends(link_address, "[:punct:]")' - removes about 12k from this search 
+> 
+> #remove the final punctuation
+> punctuation <-punctuation %>%
++     mutate(no_punctuation = str_sub(link_address, start = 1, end = -2)) 
+> 
+> #from linkrot - original function that follows links 
+> get_site_status <- function(websiteurl) {
++   
++   response <- tryCatch( {request(websiteurl) %>% 
++       req_options(followlocation = TRUE) %>% # this line 'follows' links that redirect the user
++       req_error(is_error = ~ FALSE) %>% 
++       req_retry(retry_on_failure = FALSE) %>% 
++       req_perform()}, error = \(x){list(status_code = 404) } )
++   
++   numeric_response <- response$status_code
++   return(numeric_response)
++   
++ }
+> 
+> #want to see if results change if we don't follow links
+> get_site_status_no_follow <-function(websiteurl) {
++   
++   response <- tryCatch( {request(websiteurl) %>% 
++       req_options(followlocation = FALSE) %>%  #this line stops 'following' links that redirect the user
++       req_error(is_error = ~ FALSE) %>% 
++       req_perform()}, error = \(x){list(status_code = 404) } )
++   
++   numeric_response <- response$status_code
++   return(numeric_response)
++   
++ }
+> 
+> #test links we know work 
+> umich_test <-c(link_status = get_site_status("umich.edu"), 
++                 no_follow = get_site_status_no_follow("umich.edu"))
+Setting `max_tries = 2`.
+> umich_test
+link_status   no_follow 
+        404         404 
+> 
+> conda_test <-c(link_status = get_site_status("https://anaconda.org/search?q=httpgd"), 
++                 no_follow = get_site_status_no_follow("https://anaconda.org/search?q=httpgd"))
+Setting `max_tries = 2`.
+> conda_test
+link_status   no_follow 
+        200         200 
+> 
+> github_test <-c(link_status = get_site_status("https://github.com/tidyverse/tidyverse"), 
++                 no_follow = get_site_status_no_follow("https://github.com/tidyverse/tidyverse"))
+Setting `max_tries = 2`.
+> github_test
+link_status   no_follow 
+        200         200 
+> 
+> 
+> #is it the mutate causing problems? 
+> # or is it still iterating through the data appropriately?
+> # punctuation <-punctuation %>%
+> #     mutate(no_punctuation_status = get_site_status(no_punctuation), 
+> #         no_punctuation_no_follow_status = get_site_status_no_follow(no_punctuation),
+> #         link_status_no_follow = get_site_status_no_follow(link_address),
+> #         link_status_retry = get_site_status(link_address), 
+> #         request = request(link_address))
+> 
+> punctuation_map <-punctuation %>%
++     mutate(no_punctuation_status = map_dbl(no_punctuation, get_site_status), 
++         no_punctuation_no_follow_status = map_dbl(no_punctuation, get_site_status_no_follow),
++         link_status_no_follow = map_dbl(link_address, get_site_status_no_follow),
++         link_status_retry = map_dbl(link_address, get_site_status))
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Waiting 2s for retry backoff ■■■■■■■■■■■■■■■                 
+Waiting 2s for retry backoff ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
+Setting `max_tries = 2`.
