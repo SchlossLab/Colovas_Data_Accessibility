@@ -19,14 +19,13 @@ nsd_yes_metadata %>%
   count(container.title, journal_abrev, age.in.months) %>% 
   summarize(first_citation = min(age.in.months, na.rm = TRUE), 
             .by = c(container.title, journal_abrev)) 
-mean(first_citation$first_citation)
-median(first_citation$first_citation)
+
 
 first_citation_noga <-
 first_citation %>% 
   filter(journal_abrev != "genomea")
 first_citation_mean <- mean(first_citation_noga$first_citation)
-median(first_citation_noga$first_citation)
+
 
 
 #models
@@ -40,7 +39,6 @@ three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.mont
        log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
 
 
-jtools::summ(three_terms_int_all) %>% attr(., "rsq")
 
 coefficients <-jtools::summ(three_terms_int_all)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
 coefficients_simp <- modify(coefficients, str_replace, pattern = "age.in.months", replacement = "time")
@@ -240,7 +238,12 @@ journals <-nsd_yes_metadata %>%
 
 each_journal_model <- list()
 
-
+#20250625 - i have no idea why the names don't work anymore for this and how they worked before? 
+#did i forget to run something? 
+# did i delete something i shouldn't have? 
+#need to make this looping better
+#need to add exactly 1 year, 5 years, 10 years
+ 
 i<-1
 for(i in 1:nrow(journals)) { 
   journal_data <- 
@@ -248,6 +251,7 @@ for(i in 1:nrow(journals)) {
     filter(journal_abrev == journals[[i,1]])
 
   names(each_journal_model)[[i]] <- journals[[i,1]]
+
   journal_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
        + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = journal_data, link = log)
   
@@ -259,6 +263,7 @@ for(i in 1:nrow(journals)) {
   journal_value <- jtools::summ(journal_fit)$model$coefficients %>% 
                           unname() %>% 
                           tibble(journal_value = `.`)
+  journal_pvalue <- jtools::summ(journal_fit)$coeftable[,4]
   journal_model <- tibble(journal_coefficients, journal_value)
 
 
