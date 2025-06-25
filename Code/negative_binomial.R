@@ -123,6 +123,23 @@ ggsave(plot_3, file = "Figures/test_3.png")
 # no_1p_model <- tibble(no_1p_coefficients, no_1percent_value)
 # head(no_1p_model)
 
+# ok now let's look exactly 1 year of data (12 months)
+at_one_year <- 
+  nsd_yes_metadata %>% 
+    filter(age.in.months == 12)
+
+all_terms_at_one_year <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+       log(age.in.months)*da_factor*container.title, data = at_one_year, link = log)
+
+at_one_year_value <- jtools::summ(all_terms_at_one_year)$model$coefficients %>% unname() %>% 
+    tibble(at_one_year_value = `.`)
+
+at_one_year_coefficients <-jtools::summ(all_terms_at_one_year)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+
+at_one_year_pvalue <-jtools::summ(all_terms_at_one_year)$coeftable[,4]
+
+at_one_year_model <- tibble(at_one_year_coefficients, at_one_year_value, at_one_year_pvalue)
 
 # ok now let's look at cutting it off at 10 years (120 months)
 ten_years <- 
@@ -143,6 +160,24 @@ ten_years_pvalue <-jtools::summ(all_terms_ten_years)$coeftable[,4]
 ten_years_model <- tibble(ten_years_coefficients, ten_years_value, ten_years_pvalue)
 
 
+# ok now let's look exactly 10 years of data (120 months)
+at_ten_years <- 
+  nsd_yes_metadata %>% 
+    filter(age.in.months == 120)
+
+all_terms_at_ten_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+       log(age.in.months)*da_factor*container.title, data = at_ten_years, link = log)
+
+at_ten_years_value <- jtools::summ(all_terms_at_ten_years)$model$coefficients %>% unname() %>% 
+    tibble(at_ten_years_value = `.`)
+
+at_ten_years_coefficients <-jtools::summ(all_terms_at_ten_years)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+
+at_ten_years_pvalue <-jtools::summ(all_terms_at_ten_years)$coeftable[,4]
+
+at_ten_years_model <- tibble(at_ten_years_coefficients, at_ten_years_value, at_ten_years_pvalue)
+
 
 #how about 5 years (60 months )
 five_years <- 
@@ -162,10 +197,33 @@ five_years_pvalue <-jtools::summ(all_terms_five_years)$coeftable[,4]
 
 five_years_model <- tibble(five_years_coefficients, five_years_value, five_years_pvalue)
 
+
+# ok now let's look exactly 5 years of data (6- months)
+at_five_years <- 
+  nsd_yes_metadata %>% 
+    filter(age.in.months == 60)
+
+all_terms_at_five_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+       log(age.in.months)*da_factor*container.title, data = at_five_years, link = log)
+
+at_five_years_value <- jtools::summ(all_terms_at_five_years)$model$coefficients %>% unname() %>% 
+    tibble(at_five_years_value = `.`)
+
+at_five_years_coefficients <-jtools::summ(all_terms_at_five_years)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+
+at_five_years_pvalue <-jtools::summ(all_terms_at_five_years)$coeftable[,4]
+
+at_five_years_model <- tibble(at_five_years_coefficients, at_five_years_value, at_five_years_pvalue)
+
 #let's combine all the coefficients - not working as of 20250612 
 #why are they different lengths???? bruh.....
-all_data_models <- full_join(full_data_model, five_years_model) %>%
+all_data_models <- full_join(full_data_model, at_one_year_model) %>%
+  full_join(., at_five_years_model) %>% 
+  full_join(., five_years_model) %>% 
+  full_join(., at_ten_years_model) %>% 
   full_join(., ten_years_model)
+
 
 
 #save all data model coefficients table 
@@ -203,22 +261,6 @@ for(i in 1:nrow(journals)) {
                           tibble(journal_value = `.`)
   journal_model <- tibble(journal_coefficients, journal_value)
 
-  no_1percent  <-journal_data %>%
-    filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
-                                              na.rm = TRUE, prob = 0.99))
-  
-  no_1p_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
-       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data =  no_1percent, link = log)
-  
-  journals$no_1percent_rsq[i]<-jtools::summ(no_1p_fit) %>% attr(., "rsq")
-
-  no1p_coefficients <-jtools::summ(no_1p_fit)$model$coefficients %>%
-                          names() %>% 
-                          tibble(coefficients = `.`)
-  no1p_value <- jtools::summ(no_1p_fit)$model$coefficients %>% 
-                          unname() %>% 
-                          tibble(no_1p_value = `.`)
-  no1p_model <- tibble(no1p_coefficients, no1p_value)
 
   five_years <-journal_data %>% 
     filter(age.in.months <= 60)
