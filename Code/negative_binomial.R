@@ -39,12 +39,20 @@ three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.mont
       + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
        log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
 
+jtools::summ(three_terms_int_all) %>% 
+  saveRDS("Data/negative_binomial/all_terms.RDS")
+
 jtools::summ(three_terms_int_all) %>% attr(., "rsq")
 coefficients <-jtools::summ(three_terms_int_all)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+coefficients_simp <- modify(coefficients, str_replace, pattern = "age.in.months", replacement = "time")
+
 full_model_value <- jtools::summ(three_terms_int_all)$model$coefficients %>% unname() %>% 
     tibble(full_model_value = `.`)
 
 full_data_model <- tibble(coefficients, full_model_value)
+
+simplified_model<-tibble(coefficients_simp, full_model_value)
+
 head(full_data_model)
 
 #20250624 - what happens if you create a whole model with an adjustment of the months
@@ -56,6 +64,24 @@ citation_adjustment <-
 three_terms_adj <-glm.nb(is.referenced.by.count~ da_factor + log(time_adj_all_no_negs) + container.title + 
       + container.title*da_factor + log(time_adj_all_no_negs)*da_factor + container.title*log(time_adj_all_no_negs) + 
        log(time_adj_all_no_negs)*da_factor*container.title, data = citation_adjustment, link = log)
+
+attributes(three_terms_adj)
+
+jtools::summ(three_terms_adj) %>% 
+  saveRDS("Data/negative_binomial/all_terms_adjusted_time.RDS")
+
+
+jtools::summ(three_terms_adj)$model$coefficients %>% names() %>% tibble(coefficients = `.`) %>% 
+
+coefficients_adj <-jtools::summ(three_terms_adj)$model$coefficients %>% names() %>% tibble(coefficients = `.`) %>% 
+  modify(., str_replace, pattern = "time_adj_all_no_negs", replacement = "time")
+
+adj_model_value <- jtools::summ(three_terms_adj)$model$coefficients %>% unname() %>% 
+    tibble(adj_model_value = `.`)
+
+adj_data_model <- tibble(coefficients_adj, adj_model_value)
+
+full_join(simplified_model, adj_data_model) %>% print(n = Inf)
 
 jtools::summ(three_terms_adj)
 #graphing with jtools 
