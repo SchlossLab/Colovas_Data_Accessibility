@@ -52,6 +52,38 @@ full_data_model <- tibble(coefficients, full_model_value, full_pvalue)
 
 simplified_model<-tibble(coefficients_simp, full_model_value, full_pvalue)
 
+model_data <-nsd_yes_metadata 
+model_name<- "full_model_all_terms"
+#20250627 - making a function for large model 
+full_model_all_terms <- three_term_glmnb(nsd_yes_metadata, "full_model_all_terms")
+
+three_term_glmnb <-function(model_data, model_name) {
+
+
+  total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+        + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+        log(age.in.months)*da_factor*container.title, data = model_data, link = log)
+
+
+  coefficients <-jtools::summ(total_model)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+
+#"{missing_var}" :=
+
+  model_value <- jtools::summ(total_model)$model$coefficients %>% unname() %>% 
+      tibble("{model_name}" := `.`) %>% 
+      dplyr::select(!`.`)
+    
+
+  pvalue <-jtools::summ(total_model)$coeftable[,4]
+
+  model_table <- tibble(coefficients, model_value, pvalue)
+
+  return(model_table)
+
+}
+
+
+
 head(full_data_model)
 
 #20250624 - what happens if you create a whole model with an adjustment of the months
