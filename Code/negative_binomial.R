@@ -28,35 +28,7 @@ first_citation_mean <- mean(first_citation_noga$first_citation)
 
 
 
-#models
-
-#no journal variable
-interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + da_factor * age.in.months, data = nsd_yes_metadata, link = log)
-
-#all three interaction terms 
-three_terms_int_all <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
-       log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
-
-
-
-coefficients <-jtools::summ(three_terms_int_all)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
-coefficients_simp <- modify(coefficients, str_replace, pattern = "age.in.months", replacement = "time")
-
-full_model_value <- jtools::summ(three_terms_int_all)$model$coefficients %>% unname() %>% 
-    tibble(full_model_value = `.`)
-
-full_pvalue <-jtools::summ(three_terms_int_all)$coeftable[,4]
-
-full_data_model <- tibble(coefficients, full_model_value, full_pvalue)
-
-simplified_model<-tibble(coefficients_simp, full_model_value, full_pvalue)
-
-model_data <-nsd_yes_metadata 
-model_name<- "full_model_all_terms"
-#20250627 - making a function for large model 
-full_model_all_terms <- three_term_glmnb(nsd_yes_metadata, "full_model_all_terms")
-
+#20250627 - making a function for large model with all 3 terms 
 three_term_glmnb <-function(model_data, model_name) {
 
   total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
@@ -70,15 +42,14 @@ three_term_glmnb <-function(model_data, model_name) {
       dplyr::select(!`.`)
     
   pvalue <-jtools::summ(total_model)$coeftable[,4]
-  
-  model_table <- tibble(coefficients, model_value, pvalue)
+
+  model_table <- tibble(coefficients, model_value, "{model_name}_pvalue" := pvalue)
 
   return(model_table)
 
 }
 
-#20250627 - making a function for smaller model with 2 terms
-full_model_all_terms <- three_term_glmnb(nsd_yes_metadata, "full_model_all_terms")
+# making a function for smaller model with 2 terms
 
 #smaller model with 2 terms
 two_term_glmnb <-function(model_data, model_name) {
@@ -94,38 +65,33 @@ two_term_glmnb <-function(model_data, model_name) {
 
   pvalue <-jtools::summ(total_model)$coeftable[,4]
 
-  model_table <- tibble(coefficients, model_value, pvalue)
+  model_table <- tibble(coefficients, model_value, "{model_name}_pvalue" := pvalue)
 
   return(model_table)
 
 }
 
+#models
+
+#no journal variable
+interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + da_factor * age.in.months, 
+                      data = nsd_yes_metadata, link = log)
+
+#all three interaction terms 
+full <- three_term_glmnb(nsd_yes_metadata, "full")
 
 
-#20250624 - what happens if you create a whole model with an adjustment of the months
+#what happens if you create a whole model with an adjustment of the months
 citation_adjustment <- 
   nsd_yes_metadata %>% 
   mutate(time_adj_all = (age.in.months - 5), 
-        time_adj_all_no_negs = ifelse(time_adj_all <= 0, 1, time_adj_all))
+        time_adj_all_no_negs = ifelse(time_adj_all <= 0, 1, time_adj_all), 
+        age.in.months = time_adj_all_no_negs)
 
-three_terms_adj <-glm.nb(is.referenced.by.count~ da_factor + log(time_adj_all_no_negs) + container.title + 
-      + container.title*da_factor + log(time_adj_all_no_negs)*da_factor + container.title*log(time_adj_all_no_negs) + 
-       log(time_adj_all_no_negs)*da_factor*container.title, data = citation_adjustment, link = log)
-
+time_adj <- three_term_glmnb(citation_adjustment, "time_adj")
 
 
-
-adj_pval <-jtools::summ(three_terms_adj)$coeftable[,4]
-
-coefficients_adj <-jtools::summ(three_terms_adj)$model$coefficients %>% names() %>% tibble(coefficients = `.`) %>% 
-  modify(., str_replace, pattern = "time_adj_all_no_negs", replacement = "time")
-
-adj_model_value <- jtools::summ(three_terms_adj)$model$coefficients %>% unname() %>% 
-    tibble(adj_model_value = `.`)
-
-adj_data_model <- tibble(coefficients_adj, adj_model_value, adj_pval)
-
-full_join(simplified_model, adj_data_model) %>% print(n = Inf) %>% 
+full_join(full, time_adj) %>% 
   write_csv(., file = "Data/negative_binomial/time_adjusted_model_comparison.csv")
 
 
