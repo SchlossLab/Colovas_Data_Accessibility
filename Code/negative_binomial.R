@@ -91,8 +91,8 @@ citation_adjustment <-
 time_adj <- three_term_glmnb(citation_adjustment, "time_adj")
 
 
-full_join(full, time_adj) %>% 
-  write_csv(., file = "Data/negative_binomial/time_adjusted_model_comparison.csv")
+time_adj_comparison <- full_join(full, time_adj)
+  write_csv(time_adj_comparison, file = "Data/negative_binomial/time_adjusted_model_comparison.csv")
 
 
 #graphing with jtools 
@@ -115,127 +115,54 @@ ggsave(plot_2_no_points, file = "Figures/test_nopoints_2.png")
 ggsave(plot_3, file = "Figures/test_3.png")
 
 
-#skip removal of top 1% 20250624 
-# removing the top 1% of data and looking at model fit ---------------------------------------- 
-# no_1percent <-nsd_yes_metadata %>%
-#     filter(is.referenced.by.count < quantile(nsd_yes_metadata$is.referenced.by.count, 
-#                                               na.rm = TRUE, prob = 0.99))
 
-# #this model fits exactly the same with the top 1% removed R^2 = 0.68
-# all_terms_no_1percent <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-#       + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
-#        log(age.in.months)*da_factor*container.title, data = no_1percent, link = log)
-
-# jtools::summ(all_terms_no_1percent)
-# no_1percent_value <- jtools::summ(all_terms_no_1percent)$model$coefficients %>% unname() %>% 
-#     tibble(no_1percent_value = `.`)
-
-# no_1p_coefficients <-jtools::summ(all_terms_no_1percent)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
-
-# no_1p_model <- tibble(no_1p_coefficients, no_1percent_value)
-# head(no_1p_model)
-
-# ok now let's look exactly 1 year of data (12 months)
-at_one_year <- 
+# ok now let's look exactly 1 year of data (12 months)----------------------------------------------------
+at_one_year_data <- 
   nsd_yes_metadata %>% 
     filter(age.in.months == 12)
 
-all_terms_at_one_year <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
-       log(age.in.months)*da_factor*container.title, data = at_one_year, link = log)
+at_one_year <- three_term_glmnb(at_one_year_data, "at_one_year")
 
-at_one_year_value <- jtools::summ(all_terms_at_one_year)$model$coefficients %>% unname() %>% 
-    tibble(at_one_year_value = `.`)
-
-at_one_year_coefficients <-jtools::summ(all_terms_at_one_year)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
-
-at_one_year_pvalue <-jtools::summ(all_terms_at_one_year)$coeftable[,4]
-
-at_one_year_model <- tibble(at_one_year_coefficients, at_one_year_value, at_one_year_pvalue)
 
 # ok now let's look at cutting it off at 10 years (120 months)
-ten_years <- 
+ten_years_data <- 
   nsd_yes_metadata %>% 
     filter(age.in.months <= 120)
 
-all_terms_ten_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
-       log(age.in.months)*da_factor*container.title, data = ten_years, link = log)
-
-ten_years_value <- jtools::summ(all_terms_ten_years)$model$coefficients %>% unname() %>% 
-    tibble(ten_years_value = `.`)
-
-ten_years_coefficients <-jtools::summ(all_terms_ten_years)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
-
-ten_years_pvalue <-jtools::summ(all_terms_ten_years)$coeftable[,4]
-
-ten_years_model <- tibble(ten_years_coefficients, ten_years_value, ten_years_pvalue)
+ten_years <- three_term_glmnb(ten_years_data, "ten_years")
 
 
 # ok now let's look exactly 10 years of data (120 months)
-at_ten_years <- 
+at_ten_years_data <- 
   nsd_yes_metadata %>% 
     filter(age.in.months == 120)
 
-all_terms_at_ten_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
-       log(age.in.months)*da_factor*container.title, data = at_ten_years, link = log)
-
-at_ten_years_value <- jtools::summ(all_terms_at_ten_years)$model$coefficients %>% unname() %>% 
-    tibble(at_ten_years_value = `.`)
-
-at_ten_years_coefficients <-jtools::summ(all_terms_at_ten_years)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
-
-at_ten_years_pvalue <-jtools::summ(all_terms_at_ten_years)$coeftable[,4]
-
-at_ten_years_model <- tibble(at_ten_years_coefficients, at_ten_years_value, at_ten_years_pvalue)
+at_ten_years <- three_term_glmnb(at_ten_years_data, "at_ten_years")
 
 
 #how about 5 years (60 months )
-five_years <- 
+five_years_data <- 
   nsd_yes_metadata %>% 
     filter(age.in.months <= 60)
 
-all_terms_five_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
-       log(age.in.months)*da_factor*container.title, data = five_years, link = log)
-
-five_years_value <- jtools::summ(all_terms_five_years)$model$coefficients %>% unname() %>% 
-    tibble(five_years_value = `.`)
-
-five_years_coefficients <-jtools::summ(all_terms_five_years)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
-
-five_years_pvalue <-jtools::summ(all_terms_five_years)$coeftable[,4]
-
-five_years_model <- tibble(five_years_coefficients, five_years_value, five_years_pvalue)
+five_years <- three_term_glmnb(five_years_data, "five_years")
 
 
 # ok now let's look exactly 5 years of data (6- months)
-at_five_years <- 
+at_five_years_data <- 
   nsd_yes_metadata %>% 
     filter(age.in.months == 60)
 
-all_terms_at_five_years <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-      + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
-       log(age.in.months)*da_factor*container.title, data = at_five_years, link = log)
-
-at_five_years_value <- jtools::summ(all_terms_at_five_years)$model$coefficients %>% unname() %>% 
-    tibble(at_five_years_value = `.`)
-
-at_five_years_coefficients <-jtools::summ(all_terms_at_five_years)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
-
-at_five_years_pvalue <-jtools::summ(all_terms_at_five_years)$coeftable[,4]
-
-at_five_years_model <- tibble(at_five_years_coefficients, at_five_years_value, at_five_years_pvalue)
+at_five_years <- three_term_glmnb(at_five_years_data, "at_five_years")
 
 #let's combine all the coefficients - not working as of 20250612 
 #why are they different lengths???? bruh.....
-all_data_models <- full_join(full_data_model, at_one_year_model) %>%
-  full_join(., at_five_years_model) %>% 
-  full_join(., five_years_model) %>% 
-  full_join(., at_ten_years_model) %>% 
-  full_join(., ten_years_model)
-
+all_data_models <- full_join(full, time_adj) %>%
+  full_join(., at_one_year) %>%
+  full_join(., at_five_years) %>% 
+  full_join(., five_years) %>% 
+  full_join(., at_ten_years) %>% 
+  full_join(., ten_years)
 
 
 #save all data model coefficients table 
