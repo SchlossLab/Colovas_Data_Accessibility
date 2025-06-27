@@ -59,20 +59,38 @@ full_model_all_terms <- three_term_glmnb(nsd_yes_metadata, "full_model_all_terms
 
 three_term_glmnb <-function(model_data, model_name) {
 
-
   total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
         + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
         log(age.in.months)*da_factor*container.title, data = model_data, link = log)
 
-
   coefficients <-jtools::summ(total_model)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
-
-#"{missing_var}" :=
 
   model_value <- jtools::summ(total_model)$model$coefficients %>% unname() %>% 
       tibble("{model_name}" := `.`) %>% 
       dplyr::select(!`.`)
     
+  pvalue <-jtools::summ(total_model)$coeftable[,4]
+  
+  model_table <- tibble(coefficients, model_value, pvalue)
+
+  return(model_table)
+
+}
+
+#20250627 - making a function for smaller model with 2 terms
+full_model_all_terms <- three_term_glmnb(nsd_yes_metadata, "full_model_all_terms")
+
+#smaller model with 2 terms
+two_term_glmnb <-function(model_data, model_name) {
+
+  total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
+       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = model_data, link = log)
+
+  coefficients <-jtools::summ(total_model)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+
+  model_value <- jtools::summ(total_model)$model$coefficients %>% unname() %>% 
+      tibble("{model_name}" := `.`) %>% 
+      dplyr::select(!`.`)
 
   pvalue <-jtools::summ(total_model)$coeftable[,4]
 
@@ -83,8 +101,6 @@ three_term_glmnb <-function(model_data, model_name) {
 }
 
 
-
-head(full_data_model)
 
 #20250624 - what happens if you create a whole model with an adjustment of the months
 citation_adjustment <- 
