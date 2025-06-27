@@ -184,71 +184,72 @@ each_journal_model <- list()
 # did i delete something i shouldn't have? 
 #need to make this looping better
 #need to add exactly 1 year, 5 years, 10 years
- 
+
+# 20250627 do we care about the fit? do we want to know? 
+#for fit testing but idk that we really need this? 
+# journals$all_journal_data_rsq[i] <- jtools::summ(journal_fit) %>% attr(., "rsq")
+
 i<-1
 for(i in 1:nrow(journals)) { 
   journal_data <- 
   nsd_yes_metadata %>% 
     filter(journal_abrev == journals[[i,1]])
 
+#20250627 - i don't think the names work either? 
   names(each_journal_model)[[i]] <- journals[[i,1]]
 
-  journal_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
-       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = journal_data, link = log)
+  journal_fit <- two_term_glmnb(journal_data, journals[[i,1]])
+
+# at one year
+  at_one_year_data <- journal_data %>% 
+    filter(age.in.months == 12)
+
+   if(nrow(at_one_year_data) > 0 & nrow(count(at_one_year_data, da_factor)) > 1) {
+    at_one_year <- two_term_glmnb(at_one_year_data, paste0("at_one_year_", journals[[i,1]]))
   
-  journals$all_journal_data_rsq[i] <- jtools::summ(journal_fit) %>% attr(., "rsq")
+  } else {at_one_year <- NA}
 
-  journal_coefficients <-jtools::summ(journal_fit)$model$coefficients %>%
-                          names() %>% 
-                          tibble(coefficients = `.`)
-  journal_value <- jtools::summ(journal_fit)$model$coefficients %>% 
-                          unname() %>% 
-                          tibble(journal_value = `.`)
-  journal_pvalue <- jtools::summ(journal_fit)$coeftable[,4]
-  journal_model <- tibble(journal_coefficients, journal_value)
+# at five years
+  at_five_years_data <-journal_data %>% 
+    filter(age.in.months == 60)
 
+  if(nrow(at_five_years_data) > 0 & nrow(count(at_five_years_data, da_factor)) > 1) {
+    at_five_years <- two_term_glmnb(at_five_years_data, paste0("at_five_years_", journals[[i,1]]))
+  
+  } else {at_five_years <- NA}
 
-  five_years <-journal_data %>% 
+# 0 to five years
+  five_years_data <-journal_data %>% 
     filter(age.in.months <= 60)
-  if(nrow(five_years) > 0 ) {
-  five_years_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
-       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data =  five_years, link = log)
 
-    journals$five_years_rsq[i]<-jtools::summ(five_years_fit) %>% attr(., "rsq")
+  if(nrow(five_years_data) > 0 & nrow(count(five_years_data, da_factor)) > 1) {
+    five_years <- two_term_glmnb(five_years_data, paste0("five_years_", journals[[i,1]]))
+  
+  } else {five_years <- NA}
 
-     five_years_coefficients <-jtools::summ(five_years_fit)$model$coefficients %>%
-                          names() %>% 
-                          tibble(coefficients = `.`)
-      five_years_value <- jtools::summ(five_years_fit)$model$coefficients %>% 
-                          unname() %>% 
-                          tibble(five_years_value = `.`)
-  five_years_model <- tibble(five_years_coefficients, five_years_value)
-
-  } else {journals$five_years_rsq[i]<-NA}
-
-  ten_years <-journal_data %>% 
+#0 to 10 years 
+  ten_years_data <-journal_data %>% 
       filter(age.in.months <= 120)
-  if(nrow(ten_years) > 0 ) {
-  
-  ten_years_fit <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
-       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data =  ten_years, link = log)
-  
-  journals$ten_years_rsq[i]<-jtools::summ(ten_years_fit) %>% attr(., "rsq")
-
-   ten_years_coefficients <-jtools::summ(ten_years_fit)$model$coefficients %>%
-                          names() %>% 
-                          tibble(coefficients = `.`)
-      ten_years_value <- jtools::summ(ten_years_fit)$model$coefficients %>% 
-                          unname() %>% 
-                          tibble(ten_years_value = `.`)
-  ten_years_model <- tibble(ten_years_coefficients, ten_years_value)
+  if(nrow(ten_years_data) > 0  & nrow(count(ten_years_data, da_factor)) > 1) {
+    ten_years <- two_term_glmnb(ten_years_data, paste0("ten_years_", journals[[i,1]]))
+    
   }
-  else {journals$ten_years_rsq[i] <- NA}
+  else {ten_years_data <- NA}
 
+#at ten years
+ at_ten_years_data <-journal_data %>% 
+      filter(age.in.months == 120)
+  if(nrow(at_ten_years_data) > 0  & nrow(count(at_ten_years_data, da_factor)) > 1) {
+    at_ten_years <- two_term_glmnb(at_ten_years_data, paste0("at_ten_years_", journals[[i,1]]))
+  } else {at_ten_years <- NA}
   
-  each_journal_model[[i]] <- full_join(journal_model, no1p_model) %>%
-  full_join(., five_years_model) %>% 
-  full_join(., ten_years_model)
+  
+  #20250627 - this part doesn't work because of the NAs
+  each_journal_model[[i]] <- full_join(journal_fit, at_one_year) %>%
+  full_join(., at_five_years) %>% 
+  full_join(., five_years) %>% 
+  full_join(., at_ten_years) %>% 
+  full_join(., ten_years)
 
 print(i)
 }
