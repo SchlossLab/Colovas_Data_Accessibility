@@ -4,7 +4,6 @@
 #library statements 
 library(tidyverse)
 library(MASS)
-# library(emmeans)
 library(jtools)
 
 
@@ -20,13 +19,15 @@ nsd_yes_metadata %>%
   summarize(first_citation = min(age.in.months, na.rm = TRUE), 
             .by = c(container.title, journal_abrev)) 
 
+write_csv(first_citation, file = "Data/negative_binomial/first_citation_date.csv")
 
 first_citation_noga <-
 first_citation %>% 
   filter(journal_abrev != "genomea")
 first_citation_mean <- mean(first_citation_noga$first_citation)
 
-
+model_data <-nsd_yes_metadata
+model_name <-"full_model"
 
 #20250627 - making a function for large model with all 3 terms 
 three_term_glmnb <-function(model_data, model_name) {
@@ -44,6 +45,13 @@ three_term_glmnb <-function(model_data, model_name) {
   pvalue <-jtools::summ(total_model)$coeftable[,4]
 
   model_table <- tibble(coefficients, model_value, "{model_name}_pvalue" := pvalue)
+
+  rsquared <-tibble(coefficients = "rsquared", 
+                    "{model_name}" := (jtools::summ(total_model) %>% attr(., "rsq")), 
+                    "{model_name}_pvalue" := NA) 
+
+  model_table <-rbind(rsquared, model_table)
+
 
   return(model_table)
 
@@ -67,15 +75,18 @@ two_term_glmnb <-function(model_data, model_name) {
 
   model_table <- tibble(coefficients, model_value, "{model_name}_pvalue" := pvalue)
 
+  rsquared <-tibble(coefficients = "rsquared", 
+                    "{model_name}" := (jtools::summ(total_model) %>% attr(., "rsq")), 
+                    "{model_name}_pvalue" := NA) 
+
+  model_table <-rbind(rsquared, model_table)
+
   return(model_table)
 
 }
 
 #models
 
-#no journal variable
-interaction <-glm.nb(is.referenced.by.count~ da_factor + age.in.months + da_factor * age.in.months, 
-                      data = nsd_yes_metadata, link = log)
 
 #all three interaction terms 
 full <- three_term_glmnb(nsd_yes_metadata, "full")
