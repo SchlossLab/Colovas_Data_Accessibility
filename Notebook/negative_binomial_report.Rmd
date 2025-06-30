@@ -24,25 +24,31 @@ library(tidyverse)
 # library(MASS)
 # library(jtools)
 
-rsquared <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/negative_binomial_models.csv") %>%  
-  rename(all_data_rsq = all_journal_data_rsq)
 
-all_journals <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/all_data_glmnb_models.csv")
 
-each_journal <-  read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/negative_binomial_byjournal.csv.gz") %>%  
-  rename(all_journal_value = journal_value)
+all_journals <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/all_data_glmnb_models.csv") %>%  
+  mutate(coefficients = str_replace_all(coefficients, "da_factorYes", "da_Yes"), 
+         coefficients = str_replace_all(coefficients, "log\\(age.in.months\\)", "log(time)"), 
+         coefficients = str_remove_all(coefficients, "container.title"))
+
+journal_list <- list.files( path = "~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial", pattern = "negative_binomial_model", full.names = TRUE)
+
+
+for (j in 1:length(journal_list)) { 
+  journal <- str_split_i(journal_list[[j]], "_", 7) %>%  
+              str_split_i(., "\\.", 1)
+   assign(journal, read_csv(journal_list[[j]]))
+}
 
 ```
 
-```{r}
+```{r paged.print=TRUE}
 
-knitr::kable(rsquared, digits = 4)
+opts <- options(knitr.kable.NA = " ")
+knitr::kable(all_journals, digits = 3, col.names = gsub("_", " ", names(all_journals)), cap = "log(time) = log(age.in.months), shortened for ease of reading") 
+  
 
-rsquared %>% 
-  pivot_longer(cols = all_data_rsq:ten_years_rsq) %>%
-  ggplot(aes(y = journal_abrev, x = value)) + 
-  geom_line(na.rm = TRUE) + 
-  geom_point(aes(color = name), alpha = 0.75, na.rm = TRUE)
+
   
 ```
 
@@ -91,7 +97,7 @@ rsquared %>%
     -   **Summary:** Data fits negative binomial model better with only
         more recent data considered.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 knitr::kable(all_journals, digits = 4) 
 all_journals %>% 
   pivot_longer(cols = full_model_value:ten_years_value) %>%
@@ -118,7 +124,7 @@ all_journals %>%
 
 
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 knitr::kable(each_journal, digits = 4)
 each_journal %>% 
     rename(journal_abrev = name) %>% 
