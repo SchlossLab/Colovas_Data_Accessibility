@@ -143,6 +143,12 @@ mutate(model_pvalues = str_remove_all(model_pvalues, "_pvalue")) %>%
         has N=7 papers with new sequence data and has been excluded for
         these analyses, but is a part of the model, and appears as NAs
         in the table above.
+```{r}
+for(i in 1:length(j_table)) { 
+  keep_track <-  
+    
+  }
+```
 
 
 
