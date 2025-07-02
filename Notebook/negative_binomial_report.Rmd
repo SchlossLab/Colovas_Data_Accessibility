@@ -1,6 +1,6 @@
 ---
 title: "Negative Binomial Regression Fit Report"
-output: pdf_document
+output: html_document
 date : 20250610 
 classoption: landscape
 ---
@@ -25,11 +25,32 @@ library(tidyverse)
 # library(jtools)
 
 
+all_journals <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/all_data_glmnb_models.csv") 
 
-all_journals <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/all_data_glmnb_models.csv") %>%  
-  mutate(coefficients = str_replace_all(coefficients, "da_factorYes", "da_Yes"), 
-         coefficients = str_replace_all(coefficients, "log\\(age.in.months\\)", "log(time)"), 
-         coefficients = str_remove_all(coefficients, "container.title"))
+container.title <-  all_journals %>% 
+    filter(str_detect(coefficients, "container.title")) %>%  
+    .[1:12,] %>%  
+    mutate(container.title =
+             str_remove_all(coefficients, "container.title")) %>%  
+  select(container.title)
+
+
+j_table<- 
+    c("aem", "genomea", "iai", "jb", "jcm", "jmbe", "jvi", "mbio", "mra", "spectrum",  "msphere", "msystems")
+
+for(i in 1:length(j_table)){
+names(j_table)[i] <-  container.title[i,]
+}
+
+
+all_journals <- 
+all_journals %>%
+  mutate(pretty_name = str_replace_all(coefficients, "da_factorYes", "da_Yes"),
+         pretty_name = str_replace_all(pretty_name, "log\\(age.in.months\\)", "log(time)"),
+         pretty_name = str_remove_all(pretty_name, "container.title"), 
+         pretty_name =  str_replace_all(pretty_name, j_table)) 
+
+
 
 journal_list <- list.files( path = "~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial", pattern = "negative_binomial_model", full.names = TRUE)
 
@@ -45,16 +66,16 @@ for (j in 1:length(journal_list)) {
 ```{r paged.print=TRUE}
 
 opts <- options(knitr.kable.NA = " ")
-knitr::kable(all_journals, digits = 3, col.names = gsub("_", " ", names(all_journals)), cap = "log(time) = log(age.in.months), shortened for ease of reading") 
+knitr::kable(all_journals, digits = 3, col.names = gsub("_", " ", names(all_journals))) 
+#, cap = "log(time) = log(age.in.months), shortened for ease of reading") 
   
-
+#i want to filter all_journals to only show the significant p values
 
   
 ```
 
 ## How well do the models fit (by Cragg-Uhler pseduo R-squared metric)
 
--   See above table "rsquared"
 ### Model Formats 
 
 -   Model format for all data from all journals
@@ -97,14 +118,14 @@ knitr::kable(all_journals, digits = 3, col.names = gsub("_", " ", names(all_jour
     -   **Summary:** Data fits negative binomial model better with only
         more recent data considered.
 
-```{r eval=FALSE, include=FALSE}
-knitr::kable(all_journals, digits = 4) 
-all_journals %>% 
-  pivot_longer(cols = full_model_value:ten_years_value) %>%
-  filter(name != "no_1percent_value") %>% 
-  ggplot(aes(x = coefficients, y = value)) + 
+```{r echo=FALSE}
+
+all_journals %>%
+  pivot_longer(cols = c(full, at_one_year, at_five_years, five_years, at_ten_years, ten_years), names_to = "model", values_to = "model_value") %>%
+  pivot_longer(cols = contains("pvalue"), names_to = "model_pvalues", values_to = "pvalue") %>% view()
+  ggplot(aes(y = pretty_name, x = model_value)) + 
   geom_line(na.rm = TRUE) + 
-  geom_point(aes(color = name), alpha = 0.75, na.rm = TRUE) + theme(axis.text.x = element_blank()) 
+  geom_point(aes(color = model, shape = (pvalue <= 0.05)), alpha = 0.75, na.rm = TRUE)
 ```
 
 ## All journal model is resistant to changes from removing top 1% of data, but less resistant to changes from truncating at 5 and 10 years.
@@ -125,7 +146,7 @@ all_journals %>%
 
 
 ```{r eval=FALSE, include=FALSE}
-knitr::kable(each_journal, digits = 4)
+knitr::kable(iai, digits = 4)
 each_journal %>% 
     rename(journal_abrev = name) %>% 
   pivot_longer(cols = all_journal_value:ten_years_value) %>%
