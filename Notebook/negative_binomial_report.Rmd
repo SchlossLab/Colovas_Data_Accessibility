@@ -119,13 +119,14 @@ knitr::kable(all_journals, digits = 3, col.names = gsub("_", " ", names(all_jour
         more recent data considered.
 
 ```{r echo=FALSE}
-
 all_journals %>%
-  pivot_longer(cols = c(full, at_one_year, at_five_years, five_years, at_ten_years, ten_years), names_to = "model", values_to = "model_value") %>%
-  pivot_longer(cols = contains("pvalue"), names_to = "model_pvalues", values_to = "pvalue") %>% view()
+  pivot_longer(cols = c(full, time_adj, at_one_year, at_five_years, five_years, at_ten_years, ten_years), names_to = "model", values_to = "model_value") %>%
+  pivot_longer(cols = contains("pvalue"), names_to = "model_pvalues", values_to = "pvalue") %>% 
+mutate(model_pvalues = str_remove_all(model_pvalues, "_pvalue")) %>%  
+  filter(model == model_pvalues & pvalue <= 0.05) %>% 
   ggplot(aes(y = pretty_name, x = model_value)) + 
   geom_line(na.rm = TRUE) + 
-  geom_point(aes(color = model, shape = (pvalue <= 0.05)), alpha = 0.75, na.rm = TRUE)
+  geom_point(aes(color = model), size  = 2, alpha = 0.75, na.rm = TRUE) 
 ```
 
 ## All journal model is resistant to changes from removing top 1% of data, but less resistant to changes from truncating at 5 and 10 years.
@@ -156,6 +157,12 @@ each_journal %>%
   geom_point(aes(color = name), alpha = 0.75, na.rm = TRUE) + 
   facet_wrap(vars(journal_abrev), scales = "free_y") +
   theme(axis.text.x = element_text(angle = 45, hjust=1)) 
+
+#for each journal - 
+# add journal name as a variable (pivoting)
+# concatenate all tables
+# graph the same way and facet them by journal
+
 ```
 
 ## Each journal model are semi-resistant to changes from removing top 1% of data, and even less resistant to changes from truncating at 5 and 10 years.
