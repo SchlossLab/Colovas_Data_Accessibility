@@ -215,35 +215,35 @@ for(i in 1:nrow(journals)) {
 # #20250627 - i don't think the names work either? 
 #   names(journals)[[i]] <- journals[[i,1]]
 
-  journal_fit <- two_term_glmnb(journal_data, journals[[i,1]])
+  journal_fit <- two_term_glmnb(journal_data, "journal")
 
 # at one year
   at_one_year_data <- journal_data %>% 
     filter(age.in.months == 12)
-  at_one_year <- two_term_glmnb(at_one_year_data, paste0("at_one_year_", journals[[i,1]]))
+  at_one_year <- two_term_glmnb(at_one_year_data, "at_one_year")
  
 
 # at five years
   at_five_years_data <-journal_data %>% 
     filter(age.in.months == 60)
-  at_five_years <- two_term_glmnb(at_five_years_data, paste0("at_five_years_", journals[[i,1]]))
+  at_five_years <- two_term_glmnb(at_five_years_data, "at_five_years")
 
 
 # 0 to five years
   five_years_data <-journal_data %>% 
     filter(age.in.months <= 60)
-  five_years <- two_term_glmnb(five_years_data, paste0("five_years_", journals[[i,1]]))
+  five_years <- two_term_glmnb(five_years_data, "five_years")
 
 #0 to 10 years 
   ten_years_data <-journal_data %>% 
       filter(age.in.months <= 120)
-  ten_years <- two_term_glmnb(ten_years_data, paste0("ten_years_", journals[[i,1]]))
+  ten_years <- two_term_glmnb(ten_years_data, "ten_years")
     
 
 #at ten years
  at_ten_years_data <-journal_data %>% 
       filter(age.in.months == 120)
-  at_ten_years <- two_term_glmnb(at_ten_years_data, paste0("at_ten_years_", journals[[i,1]]))
+  at_ten_years <- two_term_glmnb(at_ten_years_data, "at_ten_years")
  
 
 #concatenate and save
@@ -253,11 +253,14 @@ for(i in 1:nrow(journals)) {
   full_join(., at_ten_years, by = join_by(coefficients)) %>% 
   full_join(., ten_years, by = join_by(coefficients))
 
-  out_file <- paste0("Data/negative_binomial/negative_binomial_models_", journals[[i,1]], ".csv.gz")
-  each_journal_model[[i]] %>%
-  write_csv(., file = out_file)
+
   print(i)
 }
 
+each_journal_model %>% tibble(names = names(each_journal_model)) %>% 
+  unnest(., cols = `.`) %>% relocate(names) %>%
+  write_csv(., file = "Data/negative_binomial/negative_binomial_models_each_journal.csv")
 
-# read_journal<-read_csv(out_file)
+
+
+
