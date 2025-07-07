@@ -68,7 +68,7 @@ three_term_glmnb <-function(model_data, model_name) {
 #smaller model with 2 terms
 two_term_glmnb <-function(model_data, model_name) {
 
-  if(nrow(model_data) > 100 & nrow(count(model_data, da_factor)) > 1) {
+  if(nrow(model_data) > 10 & nrow(count(model_data, da_factor)) > 1) {
 
   total_model <-MASS::glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
        + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = model_data, link = log)
