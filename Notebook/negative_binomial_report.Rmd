@@ -63,60 +63,70 @@ each_journal %>%
 
 ```
 
-```{r paged.print=TRUE}
+## Negative Binomial Model Formats
+
+-   Model format for all data from all journals:
+
+    -   MASS::glm.nb(is.referenced.by.count\~ da_factor +
+        log(age.in.months) + container.title +
+        container.title\*da_factor + log(age.in.months)\*da_factor +
+        container.title\*log(age.in.months) +
+        log(age.in.months)\*da_factor\*container.title, data =
+        nsd_yes_metadata, link = log)
+
+-   Use model format for data from each journal:
+
+    -   MASS::glm.nb(is.referenced.by.count\~ da_factor +
+        log(age.in.months) + log(age.in.months)\*da_factor, data =
+        \<each journal\>, link = log)
+
+    -   Data with N \> 10 to create model
+
+-   Model names
+
+    -   "full" - model created with no data removed
+
+    -   "time adj" - model adjusted for avg age of 1st citation in
+        dataset (age.in.months = 5)
+
+    -   "at one year" – model created with only age.in.months == 12
+
+    -   "at five years" – model created with only age.in.months == 60
+
+    -   "five years" – model created with only age.in.months between 0
+        and 60
+
+    -   "at ten years" – model created with only age.in.months == 120
+
+    -   "ten years" – model created with only age.in.months between 0
+        and 120
+
+    -   "journal" - model created for each journal individually, N \> 10
+        per condition
+
+```{r echo=FALSE, paged.print=TRUE}
 
 opts <- options(knitr.kable.NA = " ")
 knitr::kable(all_journals, digits = 3, col.names = gsub("_", " ", names(all_journals))) 
-#, cap = "log(time) = log(age.in.months), shortened for ease of reading") 
-  
-#i want to filter all_journals to only show the significant p values
-
   
 ```
 
-## How well do the models fit (by Cragg-Uhler pseduo R-squared metric)
+## Overall model fit with all data from all journals using by Cragg-Uhler pseduo R-squared metric
 
-### Model Formats 
+-   R\^2 value = 0.678
+-   At exactly 1 year (12 months): R\^2 value = 0.355
+-   At exactly 5 years (60 months): R\^2 value = 0.516
+-   Truncate data to last 0-5 years (0-60 months): R\^2 value = 0.660
+-   At exactly 10 years (120 months): R\^2 value = 0.223
+-   Truncate data to last 0-10 years(0-120 months): R\^2 value = 0.680
+-   **Summary :** Model fit by R\^2 metric does not change by truncating
+    to data from the last 5 or 10 years, but model fits less well at 1,
+    5, and 10 years.
 
--   Model format for all data from all journals
-    MASS::glm.nb(is.referenced.by.count\~ da_factor +
-    log(age.in.months) + container.title + container.title\*da_factor +
-    log(age.in.months)\*da_factor +
-    container.title\*log(age.in.months) +
-    log(age.in.months)\*da_factor\*container.title, data =
-    nsd_yes_metadata, link = log)
+## All journal model (all data, all journals together) is less resistant to changes from truncating at 1, 5, and 10 years.
 
--   Use model format for data from each journal
-    MASS::glm.nb(is.referenced.by.count\~ da_factor +
-    log(age.in.months) + log(age.in.months)\*da_factor, data = \<each
-    journal\>, link = log)
-
--   **Overall model fit with all data from all journals:**
-
-    -   R\^2 value = 0.678
-    -   Removal of top 1% of data: R\^2 value = 0.682
-    -   Truncate data to last 5 years: R\^2 value = 0.660
-    -   Truncate data to last 10 years: R\^2 value = 0.680
-    -   **Summary :** Model fit by R\^2 metric does not change by
-        removing the top 1% of data or truncating to data from the last
-        5 or 10 years.
-
--   **Overall model fit for data from EACH journal individually:**
-
-    -   4/12 journals have **overall model fit** with R\^2 \> 0.5
-
-    -   4/12 journals have fit with R\^2 \> 0.5 with **top 1% of data
-        removed**
-
-    -   10/11 journals have model fits \>0.5 when **truncated to the
-        last 5 years,** so they are better than their fit overall (one
-        journal has no data from this period)
-
-    -   8/12 journals have model fits \>0.5 when **truncated to the last
-        10 years,** so they are better than their fit overall
-
-    -   **Summary:** Data fits negative binomial model better with only
-        more recent data considered.
+-   See graph below of significant coefficients for each model, and the
+    changes that occur with different truncations of the data.
 
 ```{r echo=FALSE}
 all_journals %>%
@@ -134,26 +144,27 @@ mutate(model_pvalues = str_remove_all(model_pvalues, "_pvalue")) %>%
 
 ```
 
-## All journal model is resistant to changes from removing top 1% of data, but less resistant to changes from truncating at 5 and 10 years.
-
--   When working across the columns in the second table, we have
-    coefficients on the left, followed by their values under the
-    following conditions
-
-    -   full_model_value = all data included in the model
-    -   no_1percent_value = top 1% of data removed
-    -   five_years_value = data truncated at 5 years in age of paper
-    -   ten_years_value = data truncated at 10 years in age of paper
-    -   **Note:** Journal of Microbiology and Biology Education(jmbe)
-        has N=7 papers with new sequence data and has been excluded for
-        these analyses, but is a part of the model, and appears as NAs
-        in the table above.
-
-
+## Does the modeling change when each journal is considered separately?
 
 ```{r echo=FALSE}
 opts <- options(knitr.kable.NA = " ")
 knitr::kable(each_journal, digits = 3, col.names = gsub("_", " ", names(each_journal))) 
+```
+
+## Journal model fit with all data from all journals using by Cragg-Uhler pseduo R-squared metric
+
+```{r echo=FALSE}
+each_journal %>%  
+    filter(coefficients == "rsquared") %>% 
+    select(names:journal) %>%  
+  knitr::kable(., digits = 4)
+```
+
+-   **Overall model fit for data from EACH journal individually:**
+
+    -   4/12 journals have **overall model fit** with R\^2 \> 0.5
+
+```{r echo=FALSE}
 
 each_journal_plotting <- 
 each_journal %>%
@@ -166,10 +177,11 @@ each_journal_plotting %>%
   ggplot(aes(y = pretty_name, x = model_value)) + 
   geom_line(na.rm = TRUE) + 
   geom_point(aes(color = names, shape = model), size  = 2, alpha = 0.75, na.rm = TRUE)  + 
-  labs(title = "There is not a lot of significant change in model\ncoefficients when data is separated by journal or time is truncated", 
+  labs(title = "There is not a lot of significant change in model coefficients\nwhen data is separated by journal or time truncated", 
     subtitle = "Significant coefficients (p<=0.05) for\nnegative binomial modeling by journal",
     x = "Coefficient Value", 
-    y = "Coefficient Name")
+    y = "Coefficient Name") + 
+  theme(legend.box = "horizontal")
 
 
 each_journal_plotting %>% 
@@ -177,19 +189,21 @@ each_journal_plotting %>%
   geom_line(na.rm = TRUE) + 
   geom_point(aes(color = model), size  = 2, alpha = 0.75, na.rm = TRUE)  +
   facet_wrap(vars(names)) +
-  labs(title = "There is not a lot of significant change in model\ncoefficients when data is separated by journal or time is truncated", 
+  labs(title = "There is not a lot of significant change in model coefficients\nwhen data is separated by journal or time truncated", 
     subtitle = "Significant coefficients (p<=0.05) for\nnegative binomial modeling by journal",
     x = "Coefficient Value", 
-    y = "Coefficient Name")
+    y = "Coefficient Name") + 
+  theme(legend.box = "horizontal")
 
 
 
 ```
 
-## Each journal model are semi-resistant to changes from removing top 1% of data, and even less resistant to changes from truncating at 5 and 10 years.
+## What about only siginificant data?
 
--   See above for mutations on these columns, but these models look less
-    resistant to the transformation of removing the top 1% of data, and
-    even less resistant to changes in coefficients from truncating at 5
-    and 10 years of data.
+-   Data looks resistant to truncation of time within a journal, with
+    the intercept being the least resistant to changes.
+-   Genome Announcements appears to pull coefficient values to the
+    extremes.
 
+Where do we go from here?
