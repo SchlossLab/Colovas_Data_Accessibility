@@ -1,0 +1,29 @@
+---
+title: "2025079_dharma_plots"
+output: pdf_document
+date: "2025-07-09"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(MASS)
+library(DHARMa)
+```
+
+## Using DHARMa
+
+```{r}
+#load local metadata
+nsd_yes_metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
+
+#filter out NAs (important later)
+nsd_yes_metadata <- nsd_yes_metadata %>%
+  filter(., age.in.months != "NA" & da_factor != "NA" & container.title != "NA")
+
+#works faster locally
+total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+        + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+        log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
+```
+
