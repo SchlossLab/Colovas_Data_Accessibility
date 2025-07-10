@@ -24,7 +24,7 @@ total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + co
         + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
         log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
 
-simulationOutput <- simulateResiduals(fittedModel = total_model, plot = T)
+simulationOutput <- simulateResiduals(fittedModel = total_model, plot = F)
 #how do i get the plot if the plot popups are blocked by using extra memory? work locally
 
 # str(simulationOutput)

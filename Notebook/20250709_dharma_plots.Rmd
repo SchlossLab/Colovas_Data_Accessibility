@@ -10,9 +10,7 @@ library(MASS)
 library(DHARMa)
 ```
 
-## Using DHARMa
-
-```{r}
+```{r loading_data, include=FALSE}
 #load local metadata
 nsd_yes_metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
 
@@ -27,3 +25,103 @@ total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + co
 
 ```
 
+## Using DHARMa package to evaluate the fit of our negative binomial model
+
+-   Model format for all data from all journals **(N = 47353)**
+
+    -   MASS::glm.nb(is.referenced.by.count\~ da_factor +
+        log(age.in.months) + container.title +
+        container.title\*da_factor + log(age.in.months)\*da_factor +
+        container.title\*log(age.in.months) +
+        log(age.in.months)\*da_factor\*container.title, data =
+        nsd_yes_metadata, link = log)
+    -   Data nsd_yes_metadata was filtered to remove all NAs from
+        variables da_factor, age.in.months, and container.title to allow
+        for some of the below visualizations.
+    -   See below for number of papers from each journal.
+
+    ```{r container.title.n, echo=FALSE}
+    nsd_yes_metadata %>%  
+      count(container.title, sort = T) %>%  
+      knitr::kable()
+    ```
+
+## Using Predict to Graph the lines
+
+```{r}
+predict.glm(total_model, type = "terms",)
+plot_model(total_model, type = "eff", terms = c("da_factor", "age.in.months"))
+
+
+```
+
+### Plot Residuals
+
+-   Graph is very busy with all 47K observations
+
+-   see 2nd plot for 5K observations for a smaller group to examine
+    (index 25000-30000)
+
+-   Residuals look like an amorphous blob as suggested by Abner\@CSCAR
+
+```{r}
+simulationOutput <- simulateResiduals(fittedModel = total_model, plot = F)
+residuals(simulationOutput) %>% str()
+
+#there is no alpha parameter in base R plot 
+residuals(simulationOutput)  %>% 
+  plot(main = "Residuals plotted by numerical index", pch = ".")
+
+# residuals(simulationOutput)[25000:30000] %>% 
+#   plot(main = "Residuals for observation indices 25000 - 3000")
+```
+
+## Plots for Residuals - QQ and DHARMa
+
+### QQ Plot 
+
+-   KS Test = Two sample Kolmogorov-Smirnov (KS) Test
+
+    -   This function tests the overall uniformity of the simulated
+        residuals in a DHARMa object - Deviation is significant between
+        the expected residuals and the actual observed residuals.
+
+    -   "If the P value is small, conclude that the two groups were
+        sampled from populations with different distributions. " -Prism
+        help page
+
+-   Dispersion Test
+
+    -   This function performs simulation-based tests for
+        over/underdispersion
+
+    -   Over / underdispersion means that the observed data is more /
+        less dispersed than expected under the fitted model.
+
+    -   Deviation is significant between the observed data and fitted
+        model.
+
+-   Outlier Test
+
+    -   This function tests if the number of observations outside the
+        simulation envelope are larger or smaller than expected
+
+    -   Methods generate a null expectation, and then test for an excess
+        or lack of outliers. Per default, testOutliers() looks for both,
+        so if you get a significant p-value, you have to check if you
+        have to many or too few outliers.
+
+    -   See Outlier test for distribution of outliers. - Many at 1.0
+        residual.
+
+```{r}
+plotQQunif(simulationOutput)
+plotResiduals(simulationOutput)
+testOutliers(simulationOutput, type = "bootstrap")
+```
+
+## To Do Still: 
+
+-   use predict to plot the "lines" from the model??
+
+-   look at the model individually for each journal
