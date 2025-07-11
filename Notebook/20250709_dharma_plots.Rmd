@@ -1,6 +1,6 @@
 ---
 title: "2025079_dharma_plots"
-output: pdf_document
+output: html_document
 date: "2025-07-09"
 ---
 
@@ -8,6 +8,9 @@ date: "2025-07-09"
 library(tidyverse)
 library(MASS)
 library(DHARMa)
+library(sjPlot)
+library(effects)
+library(ggeffects)
 ```
 
 ```{r loading_data, include=FALSE}
@@ -16,7 +19,9 @@ nsd_yes_metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Dat
 
 #filter out NAs (important later)
 nsd_yes_metadata <- nsd_yes_metadata %>%
-  filter(., age.in.months != "NA" & da_factor != "NA" & container.title != "NA")
+  filter(., age.in.months != "NA" & da_factor != "NA" & container.title != "NA") %>% 
+  mutate(da_factor = factor(da_factor), 
+         container.title = factor(container.title))
 
 #works faster locally
 total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
@@ -42,15 +47,15 @@ total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + co
 
     ```{r container.title.n, echo=FALSE}
     nsd_yes_metadata %>%  
-      count(container.title, sort = T) %>%  
+      count(container.title, sort = T) %>% 
       knitr::kable()
     ```
 
 ## Using Predict to Graph the lines
 
 ```{r}
-predict.glm(total_model, type = "terms",)
-plot_model(total_model, type = "eff", terms = c("da_factor", "age.in.months"))
+# predict.glm(total_model, type = "terms",)
+plot_model(total_model, type = "pred", terms = c("da_factor", "age.in.months"), show.intercept = TRUE, show.p = TRUE) 
 
 
 ```
@@ -78,7 +83,7 @@ residuals(simulationOutput)  %>%
 
 ## Plots for Residuals - QQ and DHARMa
 
-### QQ Plot 
+### QQ Plot
 
 -   KS Test = Two sample Kolmogorov-Smirnov (KS) Test
 
@@ -120,8 +125,49 @@ plotResiduals(simulationOutput)
 testOutliers(simulationOutput, type = "bootstrap")
 ```
 
-## To Do Still: 
-
--   use predict to plot the "lines" from the model??
+## To Do Still:
 
 -   look at the model individually for each journal
+
+## Looking at each model by journal
+
+```{r setup_models, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#smaller model with 2 terms
+two_term_glmnb <-function(model_data, model_name) {
+
+ # if(nrow(model_data) > 10 & nrow(count(model_data, da_factor)) > 1) {
+
+  total_model <-MASS::glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
+       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = model_data, link = log)
+
+  return(total_model)
+ 
+}
+
+journals <- 
+  nsd_yes_metadata %>%  
+  count(journal_abrev) %>%  
+  filter(journal_abrev != "jmbe")
+
+for(j in 1:nrow(journals)) { 
+  journal_data <- 
+  nsd_yes_metadata %>% 
+    filter(journal_abrev == journals[[j,1]])
+  
+  model <- two_term_glmnb(nsd_yes_metadata, journals[[j,1]])
+  # assign(journal_abrev[[j,1]], model)
+  
+ plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+ plot_model
+ 
+  simulation <- simulateResiduals(fittedModel = model, plot = F)
+  
+  residuals(simulation)  %>% 
+  plot(main = paste0("Residuals plotted for journal ", journals[[j,1]]), pch = ".")
+  
+  plot(simulation, sub = paste0("Simulation plotted for journal ", journals[[j,1]]))
+  
+  
+  }
+```
