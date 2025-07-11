@@ -55,7 +55,7 @@ total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + co
 
 ```{r}
 # predict.glm(total_model, type = "terms",)
-plot_model(total_model, type = "pred", terms = c("da_factor", "age.in.months"), show.intercept = TRUE, show.p = TRUE) 
+plot_model(total_model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]")) 
 
 
 ```
@@ -122,7 +122,7 @@ residuals(simulationOutput)  %>%
 ```{r}
 plotQQunif(simulationOutput)
 plotResiduals(simulationOutput)
-testOutliers(simulationOutput, type = "bootstrap")
+DHARMa::testOutliers(simulationOutput, type = "bootstrap")
 ```
 
 ## To Do Still:
@@ -131,12 +131,9 @@ testOutliers(simulationOutput, type = "bootstrap")
 
 ## Looking at each model by journal
 
-```{r setup_models, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
 #smaller model with 2 terms
 two_term_glmnb <-function(model_data, model_name) {
-
- # if(nrow(model_data) > 10 & nrow(count(model_data, da_factor)) > 1) {
 
   total_model <-MASS::glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
        + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = model_data, link = log)
@@ -150,16 +147,18 @@ journals <-
   count(journal_abrev) %>%  
   filter(journal_abrev != "jmbe")
 
+# j <- 6
+
 for(j in 1:nrow(journals)) { 
   journal_data <- 
   nsd_yes_metadata %>% 
     filter(journal_abrev == journals[[j,1]])
   
-  model <- two_term_glmnb(nsd_yes_metadata, journals[[j,1]])
+  model <- two_term_glmnb(journal_data, journals[[j,1]])
   # assign(journal_abrev[[j,1]], model)
   
- plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
- plot_model
+ plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+ print(plot_model)
  
   simulation <- simulateResiduals(fittedModel = model, plot = F)
   
@@ -171,3 +170,4 @@ for(j in 1:nrow(journals)) {
   
   }
 ```
+
