@@ -125,10 +125,6 @@ plotResiduals(simulationOutput)
 DHARMa::testOutliers(simulationOutput, type = "bootstrap")
 ```
 
-## To Do Still:
-
--   look at the model individually for each journal
-
 ## Looking at each model by journal
 
 ```{r}
@@ -147,25 +143,14 @@ journals <-
   count(journal_abrev) %>%  
   filter(journal_abrev != "jmbe") 
 
-# j <- 1
+#j <- 5
 
 for(j in 1:nrow(journals)) { 
   journal_data <- 
   nsd_yes_metadata %>% 
     filter(journal_abrev == journals[[j,1]]) %>%  
     mutate(da_factor = factor(da))
-  
-ratio_plot <- 
-  journal_data %>% 
-    filter(age.in.months %in% c(12, 60, 84, 120, 180)) %>% 
-    group_by(age.in.months) %>% 
-    count(da_factor, .drop = FALSE) %>%  
-    mutate(da_yes_no_ratio_by_age = `n`[da_factor == "Yes"]/`n`[da_factor == "No"]) %>% 
-    ggplot(aes(x = age.in.months, y = da_yes_no_ratio_by_age)) + 
-      geom_point() + 
-     ggtitle(paste0("Ratio of da = Yes to da = No \nPlotted for journal ", journals[[j,1]]))
 
-print(ratio_plot)
 
 actual_citations <- 
  journal_data %>% 
@@ -179,25 +164,47 @@ actual_citations <-
 print(actual_citations)
 
   model <- two_term_glmnb(journal_data, journals[[j,1]])
-  # assign(journal_abrev[[j,1]], model)
+  
+#  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", 
+  # "age.in.months[12,60,84,120,180]"))
+  
+
+
   
   if(j == 3) { #genomea = 5
-  plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+  plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[84,120,144]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+  
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[84,120,144]"))
   }
   else if (j == 9) { ##Mra - 7 
     plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+    p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"))
+    
   }
   else if (j == 10 | j == 11 ) { #msphere, msystems 9 years
   plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,108]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+  
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,108]"))
   }
   else if (j == 12 ) { 
       plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+      p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]"))
   }
   else { 
      plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
-    }
-
+     p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]"))
+  }
+  
+    ratio_plot <- tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group))) %>%  
+    pivot_wider(names_from = da, values_from = predicted) %>%  
+    mutate(ratio = `2`/`1`) %>%  
+    ggplot(., aes(x = age.in.months, y = ratio)) + 
+    geom_point() + 
+     labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
+          y = "Ratio number of citations da=Yes/da=No")
+    
  print(plot_model)
+ print(ratio_plot)
  
   simulation <- simulateResiduals(fittedModel = model, plot = F)
   
@@ -216,7 +223,9 @@ print(actual_citations)
   
   }
 ```
+
 ## JB 10 years
+
 ```{r}
  j <-  5
   journal_data <- 
@@ -225,17 +234,7 @@ print(actual_citations)
     mutate(da_factor = factor(da)) %>%  
     filter(age.in.months <= 120)
   
-ratio_plot <- 
-  journal_data %>% 
-    filter(age.in.months %in% c(12, 60, 84, 120)) %>% 
-    group_by(age.in.months) %>% 
-    count(da_factor, .drop = FALSE) %>%  
-    mutate(da_yes_no_ratio_by_age = `n`[da_factor == "Yes"]/`n`[da_factor == "No"]) %>% 
-    ggplot(aes(x = age.in.months, y = da_yes_no_ratio_by_age)) + 
-      geom_point() + 
-     ggtitle(paste0("Ratio of da = Yes to da = No \nPlotted for journal ", journals[[j,1]]))
 
-print(ratio_plot)
 
 actual_citations <- 
  journal_data %>% 
@@ -254,8 +253,18 @@ print(actual_citations)
   
      plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]], " for the last 10 years"))
   
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]"))
+  
+  ratio_plot <- tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group))) %>%  
+    pivot_wider(names_from = da, values_from = predicted) %>%  
+    mutate(ratio = `2`/`1`) %>%  
+    ggplot(., aes(x = age.in.months, y = ratio)) + 
+    geom_point() + 
+     labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
+          y = "Ratio number of citations da=Yes/da=No")
 
  print(plot_model)
+ print(ratio_plot)
  
   simulation <- simulateResiduals(fittedModel = model, plot = F)
   
@@ -273,4 +282,3 @@ print(actual_citations)
   
 
 ```
-
