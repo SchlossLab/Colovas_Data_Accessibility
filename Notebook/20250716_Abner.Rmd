@@ -129,3 +129,55 @@ j <- 8 #mbio
     -   Should we perform more hypothesis testing such as a T test?
     -   Could we get a p-value to satisfy reviewers? How might we do
         that?
+
+## Plotting Residual Histogram 
+
+-   20250716 - Abner advises:
+
+    -   In your plot "Predicted counts of 'is.referenced.by.count'" it
+        is hard to see the differences between papers that share data
+        and papers that don't. I suggest that you make a line plot with
+        "age" in the horizontal axis, "predicted citations" in the
+        vertical axis, color the lines by "da_factor", and put each
+        journal in a separate box (i.e., facet by journal). This plot
+        would emphasize the differences between sharing and not sharing
+        data for each age value.
+
+    ```{r}
+    total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+            + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+            log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
+    p <- get_model_data(model = total_model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]", "container.title"))
+
+    tibble(da = factor(p$x), predicted = p$predicted, age.in.months = as.numeric(as.character(p$group)), ci_95_low = p$conf.low, ci_95_high = p$conf.high, container.title = p$facet) %>% 
+        # pivot_wider(names_from = da, values_from = predicted) %>%  
+        ggplot(., aes(x = age.in.months, y = predicted, color = da)) + 
+        geom_point()  + 
+        geom_path() + 
+        facet_wrap(vars(container.title), scales = "free_y") + 
+         labs(title = "Predicted values of \'is.refererenced.by.count\' from\ntrained negative binomial models", 
+              y = "Predicted number of citations",
+              x = "Age in Months")
+
+    plot_model(model = total_model, type = "emm", terms = c("da_factor", "age.in.months[12,60,84,120,180]", "container.title"))
+      
+    ```
+
+    -   The QQ-plot of the residuals does show a pattern that suggests
+        that your residuals have a distribution that leans to the right.
+        I suggest you check this with a histogram of the residuals. The
+        Residuals vs Predicted plot also hints at an inverted u-shape.
+        In combination, these diagnostic plots make me suspect that
+        there is a non-linear relationship between your current
+        covariates and your outcome of interest. The easiest way to
+        check is to make plots of Residuals vs Covariate for every
+        covariate that you include in the model. DHARMa shows an example
+        of these plots.
+
+```{r}
+
+plotResiduals(simulation, journal_data$da_factor)
+plotResiduals(simulation, journal_data$age.in.months)
+plotResiduals(simultation, journal_data$container.title)
+```
