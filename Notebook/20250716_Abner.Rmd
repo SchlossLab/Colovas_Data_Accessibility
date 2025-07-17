@@ -130,54 +130,88 @@ j <- 8 #mbio
     -   Could we get a p-value to satisfy reviewers? How might we do
         that?
 
-## Plotting Residual Histogram 
+## Plotting Residual Histogram
 
 -   20250716 - Abner advises:
 
-    -   In your plot "Predicted counts of 'is.referenced.by.count'" it
-        is hard to see the differences between papers that share data
+    -   AHB "In your plot "Predicted counts of 'is.referenced.by.count'"
+        it is hard to see the differences between papers that share data
         and papers that don't. I suggest that you make a line plot with
         "age" in the horizontal axis, "predicted citations" in the
         vertical axis, color the lines by "da_factor", and put each
         journal in a separate box (i.e., facet by journal). This plot
         would emphasize the differences between sharing and not sharing
-        data for each age value.
+        data for each age value."
 
-    ```{r}
+-   This plot is for the negative binomial model from all journals.
+
+    ```{r echo=FALSE}
     total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
             + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
             log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
 
     p <- get_model_data(model = total_model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]", "container.title"))
 
-    tibble(da = factor(p$x), predicted = p$predicted, age.in.months = as.numeric(as.character(p$group)), ci_95_low = p$conf.low, ci_95_high = p$conf.high, container.title = p$facet) %>% 
+    line_plot <- tibble(da = factor(p$x), predicted = p$predicted, age.in.months = as.numeric(as.character(p$group)), ci_95_low = p$conf.low, ci_95_high = p$conf.high, container.title = p$facet) %>% 
         # pivot_wider(names_from = da, values_from = predicted) %>%  
         ggplot(., aes(x = age.in.months, y = predicted, color = da)) + 
         geom_point()  + 
         geom_path() + 
+        geom_ribbon(aes(ymin = ci_95_low, ymax = ci_95_high, fill = da), alpha = 0.5) + 
         facet_wrap(vars(container.title), scales = "free_y") + 
-         labs(title = "Predicted values of \'is.refererenced.by.count\' from\ntrained negative binomial models", 
+         labs(title = "Predicted values of \'is.refererenced.by.count\' from\ntrained negative binomial models with 95% CI", 
               y = "Predicted number of citations",
               x = "Age in Months")
 
-    plot_model(model = total_model, type = "emm", terms = c("da_factor", "age.in.months[12,60,84,120,180]", "container.title"))
+    print(line_plot)
       
     ```
 
-    -   The QQ-plot of the residuals does show a pattern that suggests
-        that your residuals have a distribution that leans to the right.
-        I suggest you check this with a histogram of the residuals. The
-        Residuals vs Predicted plot also hints at an inverted u-shape.
-        In combination, these diagnostic plots make me suspect that
-        there is a non-linear relationship between your current
-        covariates and your outcome of interest. The easiest way to
-        check is to make plots of Residuals vs Covariate for every
+    -   AHB "The QQ-plot of the residuals does show a pattern that
+        suggests that your residuals have a distribution that leans to
+        the right. I suggest you check this with a histogram of the
+        residuals. The Residuals vs Predicted plot also hints at an
+        inverted u-shape. In combination, these diagnostic plots make me
+        suspect that there is a non-linear relationship between your
+        current covariates and your outcome of interest. The easiest way
+        to check is to make plots of Residuals vs Covariate for every
         covariate that you include in the model. DHARMa shows an example
-        of these plots.
+        of these plots."
 
-```{r}
+-   See below for the histogram of the residuals.
+
+-   I have also plotted the residuals for each of the covariates for
+    this model.
+
+```{r echo=FALSE}
+
+  residuals <-
+   residuals(simulation) %>%  tibble(residual = .) %>%  
+     ggplot(aes(x = residual)) + 
+     geom_histogram(linewidth = 0.25, color = "white", binwidth = 1/100) + 
+     ggtitle(paste0("Residuals Plotted for journal ", journals[[j,1]]))
+  print(residuals)
 
 plotResiduals(simulation, journal_data$da_factor)
 plotResiduals(simulation, journal_data$age.in.months)
-plotResiduals(simultation, journal_data$container.title)
+# this one is the 2 term model and has no container title variable 
+# plotResiduals(simulation, journal_data$container.title)
 ```
+
+-   AHB "I am still not sure of the specific hypothesis you want to
+    test. As I explained before, your current model does not have a
+    unique parameter to compare "data vs no data". This happens in part
+    because you still have not decided how to represent the different
+    journals into a single group of "data vs no data"".
+
+    -   We would like to model the journals separately as we think it
+        makes the differences between "data vs no data" clearer. We
+        included only one journal model previously for simplicity as
+        there are 12 journals and each journal had similar graphs
+        available.
+
+    -   The parameter we would like to compare is the number of
+        citations a paper has received. Please advise on how to continue
+        with this residual distribution.
+
+    -   We have set a meeting for Tuesday 7/22 at 2pm.
