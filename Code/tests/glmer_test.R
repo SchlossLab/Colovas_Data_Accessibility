@@ -35,7 +35,7 @@ ten_percent_glmer <- glmer.nb(formula = is.referenced.by.count ~ da_factor + age
       # terms = c("da_factor", "age.in.months[12,60,84,120,180]"))     
       
 plot(ten_percent_glmer)
-plot_model(ten_percent_glmer, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]", "container.title"), 
+plot_model(ten_percent_glmer, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"), 
            bias_correction = FALSE)
 
            

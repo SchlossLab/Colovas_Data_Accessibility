@@ -218,6 +218,13 @@ print(actual_citations)
      ggtitle(paste0("Residuals with geom_smooth line' \nPlotted for journal ", journals[[j,1]]))
   print(residuals)
   
+   residuals_hist <-
+   residuals(simulation) %>%  tibble(residual = .) %>%  
+     ggplot(aes(x = residual)) + 
+     geom_histogram(linewidth = 0.25, color = "white", binwidth = 1/100) + 
+     ggtitle(paste0("Residuals Plotted for journal ", journals[[j,1]]))
+  print(residuals_hist)
+  
   plot(simulation, sub = paste0("Simulation plotted for journal ", journals[[j,1]]))
   
   
