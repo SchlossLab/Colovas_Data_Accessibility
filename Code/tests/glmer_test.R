@@ -38,4 +38,15 @@ plot(ten_percent_glmer)
 plot_model(ten_percent_glmer, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"), 
            bias_correction = FALSE)
 
-           
+   
+#let's try the other formula 4:24 -not done at 4:49 done at 4:52
+#y ~ data_avl + age + data_avl*age + (1+data_avl|journal) +
+#(0+age|journal) + (0+data_avl*age|journal)
+
+ten_percent_glmer_2 <- glmer.nb(formula = is.referenced.by.count ~ da_factor + age.in.months + da_factor*age.in.months + 
+                                (1 + da_factor|container.title) + (0 +age.in.months|container.title)  +
+                                (0+ da_factor*age.in.months|container.title), 
+                              data = nsd_yes_10percent)
+
+plot_model(ten_percent_glmer_2, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"), 
+           bias_correction = FALSE)
