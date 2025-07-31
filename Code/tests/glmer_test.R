@@ -74,6 +74,7 @@ residuals(ten_percent_glmer)
 full_glmer <- glmer.nb(formula = is.referenced.by.count ~ da_factor + age.in.months + da_factor*age.in.months + 
                                 (1+da_factor + age.in.months + da_factor*age.in.months|container.title), 
                               data = nsd_yes_metadata)
+saveRDS(full_glmer, file = "~/Documents/Schloss/Colovas_Data_Accessibility/Data/glm/full_glmer.RDS")
 
 plot_model(full_glmer, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"), 
            bias_correction = FALSE)
@@ -85,6 +86,15 @@ residuals(full_glmer) %>%  tibble(residual = .) %>%
   ggtitle("Residuals Plotted for all data using glmer.nb") 
 ggsave("~/Documents/Schloss/Colovas_Data_Accessibility/Figures/glmer_all_residuals.png")
 
+simulation_full <- simulateResiduals(fittedModel = full_glmer, plot = F)
+residuals(simulation_full) %>%  tibble(residual = .) %>%  
+  ggplot(aes(x = residual)) + 
+  geom_histogram(linewidth = 0.2, color = "white", bins = 100) +
+  ggtitle("Residuals Plotted for all data using glmer.nb and DHARMa") 
+ggsave("~/Documents/Schloss/Colovas_Data_Accessibility/Figures/glmer_all_residuals_dharma.png")
+
+plot(simulation_full, sub = "Simulation plotted for all data using glmer.nb") %>% 
+  save.image(., file = "~/Documents/Schloss/Colovas_Data_Accessibility/Figures/glmer_all_residuals_dharma_comboplot.png")
 
 #deltamethod 
 
@@ -110,39 +120,62 @@ ten_percent_glmer_log <- glmer.nb(formula = is.referenced.by.count ~ da_factor +
                                 (1+da_factor + log(age.in.months) + da_factor*log(age.in.months)|container.title), 
                               data = nsd_yes_10percent)
 
+simulation_log <- simulateResiduals(fittedModel = ten_percent_glmer_log, plot = F)
 plot_model(ten_percent_glmer_log, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"), 
            bias_correction = FALSE)
 
-residuals(ten_percent_glmer_log) %>%  tibble(residual = .) %>%  
+
+
+residuals(simulation_log) %>%  tibble(residual = .) %>%  
   ggplot(aes(x = residual)) + 
   geom_histogram(linewidth = 0.2, color = "white", bins = 100) +
   ggtitle("Residuals Plotted for all data using 10% glmer.nb\nand log(age.in.months)") 
 ggsave("~/Documents/Schloss/Colovas_Data_Accessibility/Figures/glmer_10_log_residuals.png")
 
+plot(simulation_log, sub = "10% data, glmer.nb (mixed model) log(age.in.months)") %>% 
+  save.image(., file = "~/Documents/Schloss/Colovas_Data_Accessibility/Figures/glmer_mixed_10_log_dharma_comboplot.png")
+
+plot_model(ten_percent_glmer_log, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"), 
+           bias_correction = FALSE)
 
 ##delta method example
 d <- read.csv("https://stats.idre.ucla.edu/stat/data/hsbdemo.csv")
 d$honors <- factor(d$honors, levels=c("not enrolled", "enrolled"))
+
+m3 <- glm(honors ~ female + math + read, data=d, family=binomial)
+summary(m3)
 m4 <- glm(honors ~ read, data=d, family=binomial)
 summary(m4)
 
-x1 <- 50
-x2 <- 40
-b0 <- coef(m4)[1]
-b1 <- coef(m4)[2]
-e1 <- exp(-b0 - 50*b1)
-e2 <- exp(-b0 - 40*b1)
-p1 <- 1/(1+e1)
-p2 <- 1/(1+e2)
-dgdb0 <- -e2*p1 + (1+e2)*p1*(1-p1)
-dgdb1 <- -x2*e2*p1 + (1+e2)*x1*p1*(1-p1)
-grad <- c(dgdb0, dgdb1)
+b2 <- coef(m3)[3]
+coef(m3)
+exp(b2)
+
+grad <- exp(b2)
 grad
 
-deltamethod( ~ (1 + exp(-x1 - 40*x2))/(1 + exp(-x1 - 50*x2)), c(b0, b1), vcov(m4))
+vb2 <- vcov(m3)[3,3]
+vb2
 
-#car deltaMethod
-deltaMethod(full_glmer, g = "da_factorYes")
+vG <- grad %*% vb2 %*% grad
+sqrt(vG)
 
+deltamethod(~ exp(x1), b2, vb2)
 
+summary(full_glmer)
+nrow(coef(full_glmer)$container.title)
 
+for(j in 1:nrow(coef(full_glmer)$container.title)) { 
+  byes <- coef(full_glmer)$container.title[j,2]
+  grad <- exp(byes)
+  vbyes <- vcov(full_glmer)[2,2]
+  vG <- grad %*% vbyes %*% grad
+  print(coef(full_glmer)$container.title[j,])
+  print(sqrt(vG))
+  print(deltamethod(~ exp(x1), byes, vbyes))
+  
+}
+
+#trying a log transformation method
+#3:23
+log_odds_ci <- confint(full_glmer, "da_factorYes")

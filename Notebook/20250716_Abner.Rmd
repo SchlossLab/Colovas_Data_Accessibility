@@ -190,6 +190,7 @@ j <- 8 #mbio
      ggplot(aes(x = residual)) + 
      geom_histogram(linewidth = 0.25, color = "white", binwidth = 1/100) + 
      ggtitle(paste0("Residuals Plotted for journal ", journals[[j,1]]))
+  ggsave("~/Documents/Schloss/Colovas_Data_Accessibility/Figures/mbio_residuals.png")
   print(residuals)
 
 plotResiduals(simulation, journal_data$da_factor)

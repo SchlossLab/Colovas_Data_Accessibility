@@ -120,6 +120,7 @@ residuals(simulationOutput)  %>%
         residual.
 
 ```{r}
+plot(simulationOutput, sub = "All data glm(fixed)")
 plotQQunif(simulationOutput)
 plotResiduals(simulationOutput)
 DHARMa::testOutliers(simulationOutput, type = "bootstrap")
@@ -199,6 +200,25 @@ print(actual_citations)
     pivot_wider(names_from = da, values_from = predicted) %>%  
     mutate(ratio = `2`/`1`) %>%  
     ggplot(., aes(x = age.in.months, y = ratio)) + 
+     ratio_plot <- 
+      tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group)), low = p$conf.low, high = p$conf.high) %>%  
+    pivot_wider(names_from = da, values_from = c(predicted, low, high)) %>%  
+    mutate(high_high_ratio = `high_2`/`high_1`,
+           high_mid_ratio = `high_2`/`predicted_1`,
+           high_low_ratio = `high_2`/`low_1`,
+           high_high_ratio = `high_2`/`high_1`,
+           mid_high_ratio = `predicted_2`/`high_1`,
+           mid_mid_ratio = `predicted_2`/`predicted_1`,
+           mid_low_ratio = `predicted_2`/`low_1`, 
+           low_high_ratio = `low_2`/`high_1`, 
+           low_mid_ratio = `low_2`/`predicted_1`,
+           low_low_ratio = `low_2`/`low_1`,
+           ) %>%  
+        dplyr::select(., age.in.months, ends_with("ratio")) %>% 
+        pivot_longer(., cols = ends_with("ratio"), names_to = "ratio_name", 
+                     values_to = "ratio_value") %>% 
+    ggplot(., aes(x = age.in.months, y = ratio_value)) + 
+    geom_boxplot(aes(group = age.in.months)) +
     geom_point() + 
      labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
           y = "Ratio number of citations da=Yes/da=No")
@@ -266,6 +286,25 @@ print(actual_citations)
     pivot_wider(names_from = da, values_from = predicted) %>%  
     mutate(ratio = `2`/`1`) %>%  
     ggplot(., aes(x = age.in.months, y = ratio)) + 
+ ratio_plot <- 
+      tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group)), low = p$conf.low, high = p$conf.high) %>%  
+    pivot_wider(names_from = da, values_from = c(predicted, low, high)) %>%  
+    mutate(high_high_ratio = `high_2`/`high_1`,
+           high_mid_ratio = `high_2`/`predicted_1`,
+           high_low_ratio = `high_2`/`low_1`,
+           high_high_ratio = `high_2`/`high_1`,
+           mid_high_ratio = `predicted_2`/`high_1`,
+           mid_mid_ratio = `predicted_2`/`predicted_1`,
+           mid_low_ratio = `predicted_2`/`low_1`, 
+           low_high_ratio = `low_2`/`high_1`, 
+           low_mid_ratio = `low_2`/`predicted_1`,
+           low_low_ratio = `low_2`/`low_1`,
+           ) %>%  
+        dplyr::select(., age.in.months, ends_with("ratio")) %>% 
+        pivot_longer(., cols = ends_with("ratio"), names_to = "ratio_name", 
+                     values_to = "ratio_value") %>% 
+    ggplot(., aes(x = age.in.months, y = ratio_value)) + 
+    geom_boxplot(aes(group = age.in.months)) +
     geom_point() + 
      labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
           y = "Ratio number of citations da=Yes/da=No")
