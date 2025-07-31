@@ -132,50 +132,22 @@ residuals(simulation_log) %>%  tibble(residual = .) %>%
   ggtitle("Residuals Plotted for all data using 10% glmer.nb\nand log(age.in.months)") 
 ggsave("~/Documents/Schloss/Colovas_Data_Accessibility/Figures/glmer_10_log_residuals.png")
 
-plot(simulation_log, sub = "10% data, glmer.nb (mixed model) log(age.in.months)") %>% 
-  save.image(., file = "~/Documents/Schloss/Colovas_Data_Accessibility/Figures/glmer_mixed_10_log_dharma_comboplot.png")
+ plot(simulation_log, sub = "10% data, glmer.nb (mixed model) log(age.in.months)") #%>% 
+#   save.image(., file = "~/Documents/Schloss/Colovas_Data_Accessibility/Figures/glmer_mixed_10_log_dharma_comboplot.png")
 
 plot_model(ten_percent_glmer_log, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"), 
            bias_correction = FALSE)
 
-##delta method example
-d <- read.csv("https://stats.idre.ucla.edu/stat/data/hsbdemo.csv")
-d$honors <- factor(d$honors, levels=c("not enrolled", "enrolled"))
+## log all data
+full_glmer_log <- glmer.nb(formula = is.referenced.by.count ~ da_factor + log(age.in.months) + da_factor*log(age.in.months) + 
+                         (1+da_factor + log(age.in.months) + da_factor*log(age.in.months)|container.title), 
+                       data = nsd_yes_metadata)
+saveRDS(full_glmer_log, file = "~/Documents/Schloss/Colovas_Data_Accessibility/Data/glm/full_glmer_log.RDS")
+simulation_log_full <- simulateResiduals(fittedModel = full_glmer_log, plot = F)
+plot(simulation_log_full, sub = "all data, glmer.nb (mixed model) log(age.in.months)") 
 
-m3 <- glm(honors ~ female + math + read, data=d, family=binomial)
-summary(m3)
-m4 <- glm(honors ~ read, data=d, family=binomial)
-summary(m4)
-
-b2 <- coef(m3)[3]
-coef(m3)
-exp(b2)
-
-grad <- exp(b2)
-grad
-
-vb2 <- vcov(m3)[3,3]
-vb2
-
-vG <- grad %*% vb2 %*% grad
-sqrt(vG)
-
-deltamethod(~ exp(x1), b2, vb2)
-
-summary(full_glmer)
-nrow(coef(full_glmer)$container.title)
-
-for(j in 1:nrow(coef(full_glmer)$container.title)) { 
-  byes <- coef(full_glmer)$container.title[j,2]
-  grad <- exp(byes)
-  vbyes <- vcov(full_glmer)[2,2]
-  vG <- grad %*% vbyes %*% grad
-  print(coef(full_glmer)$container.title[j,])
-  print(sqrt(vG))
-  print(deltamethod(~ exp(x1), byes, vbyes))
-  
-}
-
-#trying a log transformation method
-#3:23
-log_odds_ci <- confint(full_glmer, "da_factorYes")
+residuals(simulation_log_full) %>%  tibble(residual = .) %>%  
+  ggplot(aes(x = residual)) + 
+  geom_histogram(linewidth = 0.2, color = "white", bins = 100) +
+  ggtitle("Residuals Plotted for all data using glmer.nb\nand log(age.in.months)") 
+ggsave("~/Documents/Schloss/Colovas_Data_Accessibility/Figures/glmer_full_log_residuals.png")
