@@ -26,7 +26,7 @@ editor: visual
     -   Data availbility status/current availability and reproducibility guidelines
     -   Why make data available?
     -   How does this contribute to data availability?
-    -
+    
 
 -   Results
     -   Table of findings x# of links from x# of papers
@@ -34,9 +34,20 @@ editor: visual
         -   What kind of errors we have for the links in each paper
         -   Average number of links/paper
         -   Does this change by journal? 
-        -    
+    -   Some graphs describing further the number of links in any given category 
+
 -   Discussion
+    -   How do we make things more accessible 
+    -   Ways to keep links from going rotten
+    -   Can you submit a new link to a journal? 
+    -   Or some kind of redirect from the orginal link if it's gone rotten
+    -   How often should you check your links to make sure they're NOT rotten
 -   Materials and Methods
 -   Supplemental Material file list (where applicable)
 -   Acknowledgelments
 -   References
+
+-   Questions to answer: 
+    -   How to set up this repo on github? Should it be separate from the DA repo? 
+    -   If it's separate, do we still show the stuff to get the dataset, or do we just make the dataset available?
+    -   Do we have questions abou thow the linkrot affects the amount of citations on a paper? If yes, than this goes with DA more closely.
