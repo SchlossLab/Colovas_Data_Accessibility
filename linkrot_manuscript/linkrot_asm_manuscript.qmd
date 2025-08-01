@@ -1,0 +1,42 @@
+---
+title: "Linkrot Paper"
+author: "Joanna Colovas"
+format: pdf
+editor: visual
+---
+
+
+-   Abstract
+-   Importance
+    -   Investigate the number of links that are still viable in published scientific papers
+    -   Why do we care? 
+        -   We want people to be able to access resources in perpetuity
+        -   Reproducible research aims 
+            -   "By providing persistent
+ links to the underlying data, methods, code, and derivative products, the paper
+ becomes more transparent." - from Pat's ORI narrative 
+    -   A lot of large datasets/code are available at links as well as code, and we want that to be accessible 
+        -   NCBI datasets
+        -   Github repositories
+
+-   Keywords
+    -   Data accessibility
+    -   Data reproducibility
+-   Introduction
+    -   Data availbility status/current availability and reproducibility guidelines
+    -   Why make data available?
+    -   How does this contribute to data availability?
+    -
+
+-   Results
+    -   Table of findings x# of links from x# of papers
+        -   Number of links that are still alive
+        -   What kind of errors we have for the links in each paper
+        -   Average number of links/paper
+        -   Does this change by journal? 
+        -    
+-   Discussion
+-   Materials and Methods
+-   Supplemental Material file list (where applicable)
+-   Acknowledgelments
+-   References
