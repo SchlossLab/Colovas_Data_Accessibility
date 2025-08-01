@@ -1,0 +1,6 @@
+---
+title: "Linkrot Paper"
+author: "Joanna Colovas"
+format: pdf
+editor: visual
+---
