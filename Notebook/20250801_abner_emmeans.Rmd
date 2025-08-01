@@ -49,5 +49,10 @@ summary(differences)
 plot(differences, ratios = TRUE)
 
 
+# # working on plotting better
+# emmip(model, ~ age.in.months | container.title, CIs = TRUE, type = "response",  at = list(age.in.months = age_values)) +
+#     geom_point(aes(x = age.in.months, y = is.referenced.by.count), data = my_data, size = 1, color = "lightblue2", aes = 0.25 )
+
+emmip(differences, ~ age.in.months | container.title, CIs = TRUE, engine = "ggplot")
 ```
 
