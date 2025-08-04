@@ -98,20 +98,32 @@ summary(model)
  model_data <- get_model_data(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]")) %>%  
    tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group)
  
-
+kableExtra::kable(model_data)
  
  ggplot(data = model_data, aes(x = age.in.months, y = predicted_citations, 
                                 color = da_factor)) + 
    geom_point() + 
-   geom_crossbar(aes(ymin = conf.low, ymax = conf.high)) + 
-   geom_path(aes(x = age.in.months, y = predicted_citations, group = da_factor)) + 
-   labs(title = "Predicted number of citations for mBio over time using two term fixed GLM", 
+   geom_crossbar(aes(ymin = conf.low,
+                    ymax = conf.high)) +
+   # geom_linerange(aes(ymin = predicted_citations - std.error, 
+   #                  ymax = predicted_citations + std.error)) + 
+   geom_path(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   labs(title = "Predicted number of citations for mBio over time using two term fixed GLM",
+        subtitle = "SE < 1 for all points and too small to be visualized",  
         x = "Age in Months", 
         y = "Predicted Number of Citations", 
         color = "Data availability with 95% CI")  
    
 
- 
+  
+tibble(da = model_data$x, predicted = model_data$predicted, age.in.months = as.numeric(as.character(model_data$group))) %>%  
+    pivot_wider(names_from = da, values_from = predicted) %>%  
+    mutate(ratio = `2`/`1`) %>%  
+    ggplot(., aes(x = age.in.months, y = ratio)) + 
+    geom_point() + 
+     labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
+          y = "Ratio number of citations da=Yes/da=No")
+    
   
  
   
