@@ -1,8 +1,27 @@
-## linkrot summary stats to report
-#
-#
-#library statements
+## Linkrot Summary Statistics
+
+```{r setup}
+#library statements 
 library(tidyverse)
 
-#load data
-linkrot <- read_csv("Data/final/linkrot_combined.csv.gz")
+#load data 
+linkrot <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/linkrot_combined.csv.gz")
+
+```
+
+## How many links does each paper have on average? 
+- Something is not right with the linkrot functions becasue a bunch of these papers have like 400+ links which is definitely taking into account their citations which is incorrect
+- need to go back to the linkrot to make sure i'm excluding the references
+- why does it work for some of them but not others???
+- is it journal based? 
+
+```{r}
+linkrot %>% 
+  count(html_filename, sort = TRUE) 
+
+# %>%  
+#   summarize(mean = mean(`n`), 
+#             median = median(`n`), 
+#             range = range(`n`))
+```
+
