@@ -1,6 +1,6 @@
 ---
 title: "20250801_abner_emmeans.Rmd"
-output: html_document
+output: pdf_document
 date: "2025-08-01"
 ---
 
@@ -49,5 +49,83 @@ summary(differences)
 plot(differences, ratios = TRUE)
 
 
+# # working on plotting better
+# emmip(model, ~ age.in.months | container.title, CIs = TRUE, type = "response",  at = list(age.in.months = age_values)) +
+#     geom_point(aes(x = age.in.months, y = is.referenced.by.count), data = my_data, size = 1, color = "lightblue2", aes = 0.25 )
+
+emmip(differences, ~ age.in.months | container.title, CIs = TRUE, engine = "ggplot")
+```
+
+## The Other Plot from Abner
+- Also, I think this result would be even clearer if you made a plot with "age" in the horizontal axis, "predicted citations" in the vertical axis, and lines colored by "da_factor".
+
+```{r}
+library(DHARMa)
+library(sjPlot)
+#smaller model with 2 terms
+two_term_glmnb <-function(model_data, model_name) {
+
+  total_model <-MASS::glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
+       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = model_data, link = log)
+
+  return(total_model)
+ 
+}
+
+journals <- 
+  nsd_yes_metadata %>%  
+  count(journal_abrev) %>%  
+  filter(journal_abrev != "jmbe") 
+
+j <- 8 #mbio
+
+
+  journal_data <- 
+  nsd_yes_metadata %>% 
+    filter(journal_abrev == journals[[j,1]]) %>%  
+    mutate(da_factor = factor(da))
+  
+
+  model <- two_term_glmnb(journal_data, journals[[j,1]])
+summary(model)
+
+
+
+  plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+
+ print(plot_model)
+ 
+ model_data <- get_model_data(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]")) %>%  
+   tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group)
+ 
+kableExtra::kable(model_data)
+ 
+ ggplot(data = model_data, aes(x = age.in.months, y = predicted_citations, 
+                                color = da_factor)) + 
+   geom_point() + 
+   geom_crossbar(aes(ymin = conf.low,
+                    ymax = conf.high)) +
+   # geom_linerange(aes(ymin = predicted_citations - std.error, 
+   #                  ymax = predicted_citations + std.error)) + 
+   geom_path(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   labs(title = "Predicted number of citations for mBio over time using two term fixed GLM",
+        subtitle = "SE < 1 for all points and too small to be visualized",  
+        x = "Age in Months", 
+        y = "Predicted Number of Citations", 
+        color = "Data availability with 95% CI")  
+   
+
+  
+tibble(da = model_data$x, predicted = model_data$predicted, age.in.months = as.numeric(as.character(model_data$group))) %>%  
+    pivot_wider(names_from = da, values_from = predicted) %>%  
+    mutate(ratio = `2`/`1`) %>%  
+    ggplot(., aes(x = age.in.months, y = ratio)) + 
+    geom_point() + 
+     labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
+          y = "Ratio number of citations da=Yes/da=No")
+    
+  
+ 
+  
 ```
 
