@@ -1,0 +1,63 @@
+paper,doi_no_underscore,nsd,da,container.title,year.published,actual_nsd,actual_da,notes
+https://journals.asm.org/doi/10.1128/aac.00029-24,10.1128/aac.00029-24,No,No,Antimicrobial Agents and Chemotherapy,2024,No,No,no da statement even in the side panel
+https://journals.asm.org/doi/10.1128/aac.00357-24,10.1128/aac.00357-24,No,No,Antimicrobial Agents and Chemotherapy,2024,No,No,no da statement even in the side panel
+https://journals.asm.org/doi/10.1128/aac.00761-24,10.1128/aac.00761-24,No,No,Antimicrobial Agents and Chemotherapy,2024,No,No,no da statement even in the side panel
+https://journals.asm.org/doi/10.1128/aac.01189-23,10.1128/aac.01189-23,No,No,Antimicrobial Agents and Chemotherapy,2024,No,No,no da statement even in the side panel
+https://journals.asm.org/doi/10.1128/aem.01931-23,10.1128/aem.01931-23,No,Yes,Applied and Environmental Microbiology,2024,No,No,"no da statement even in the side panel, proteins technically avaialble on jgi "
+https://journals.asm.org/doi/10.1128/aem.02272-23,10.1128/aem.02272-23,No,No,Applied and Environmental Microbiology,2024,No,No,"no da statement even in the side panel, qPCR"
+https://journals.asm.org/doi/10.1128/aem.01676-23,10.1128/aem.01676-23,No,No,Applied and Environmental Microbiology,2024,No,No,"no da statement even in the side panel, protein paper "
+https://journals.asm.org/doi/10.1128/aem.01224-24,10.1128/aem.01224-24,Yes,Yes,Applied and Environmental Microbiology,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/iai.00037-24,10.1128/iai.00037-24,Yes,Yes,Infection and Immunity,2024,Yes,Yes,correction paper published
+https://journals.asm.org/doi/10.1128/iai.00179-23,10.1128/iai.00179-23,No,No,Infection and Immunity,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/iai.00162-24,10.1128/iai.00162-24,No,No,Infection and Immunity,2024,No,No,conf sequencing
+https://journals.asm.org/doi/10.1128/iai.00060-24,10.1128/iai.00060-24,No,No,Infection and Immunity,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jb.00331-23,10.1128/jb.00331-23,Yes,No,Journal of Bacteriology,2024,No,No,protein
+https://journals.asm.org/doi/10.1128/jb.00454-23,10.1128/jb.00454-23,No,No,Journal of Bacteriology,2024,No,No,conf sequencing
+https://journals.asm.org/doi/10.1128/jb.00291-24,10.1128/jb.00291-24,No,No,Journal of Bacteriology,2024,No,No,protein
+https://journals.asm.org/doi/10.1128/jb.00368-23,10.1128/jb.00368-23,Yes,No,Journal of Bacteriology,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/jcm.00226-24,10.1128/jcm.00226-24,No,No,Journal of Clinical Microbiology,2024,Yes,No,NA
+https://journals.asm.org/doi/10.1128/jcm.00416-24,10.1128/jcm.00416-24,No,No,Journal of Clinical Microbiology,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jcm.00906-23,10.1128/jcm.00906-23,No,No,Journal of Clinical Microbiology,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jcm.00876-23,10.1128/jcm.00876-23,No,No,Journal of Clinical Microbiology,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jmbe.00100-24,10.1128/jmbe.00100-24,No,No,Journal of Microbiology &amp; Biology Education,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jmbe.00144-24,10.1128/jmbe.00144-24,No,No,Journal of Microbiology &amp; Biology Education,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jmbe.00011-24,10.1128/jmbe.00011-24,No,No,Journal of Microbiology &amp; Biology Education,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jmbe.00086-24,10.1128/jmbe.00086-24,No,No,Journal of Microbiology &amp; Biology Education,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jvi.01830-23,10.1128/jvi.01830-23,No,No,Journal of Virology,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jvi.01408-23,10.1128/jvi.01408-23,No,No,Journal of Virology,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jvi.00701-24,10.1128/jvi.00701-24,No,No,Journal of Virology,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/jvi.00146-24,10.1128/jvi.00146-24,No,No,Journal of Virology,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/mbio.00283-24,10.1128/mbio.00283-24,No,No,mBio,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/mbio.00342-24,10.1128/mbio.00342-24,No,No,mBio,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/mbio.02878-23,10.1128/mbio.02878-23,No,No,mBio,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/mbio.01699-24,10.1128/mbio.01699-24,Yes,No,mBio,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/mra.00106-24,10.1128/mra.00106-24,Yes,Yes,Microbiology Resource Announcements,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/mra.00209-24,10.1128/mra.00209-24,Yes,Yes,Microbiology Resource Announcements,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/mra.00511-23,10.1128/mra.00511-23,Yes,No,Microbiology Resource Announcements,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/mra.00715-23,10.1128/mra.00715-23,Yes,No,Microbiology Resource Announcements,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/msphere.00254-24,10.1128/msphere.00254-24,No,No,mSphere,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/msphere.00124-24,10.1128/msphere.00124-24,No,No,mSphere,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/msphere.00760-23,10.1128/msphere.00760-23,Yes,No,mSphere,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/msphere.00103-24,10.1128/msphere.00103-24,Yes,No,mSphere,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/msystems.00973-23,10.1128/msystems.00973-23,No,No,mSystems,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/msystems.00088-24,10.1128/msystems.00088-24,Yes,Yes,mSystems,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/msystems.01158-23,10.1128/msystems.01158-23,Yes,Yes,mSystems,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/msystems.00712-24,10.1128/msystems.00712-24,Yes,Yes,mSystems,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/spectrum.03942-23,10.1128/spectrum.03942-23,Yes,Yes,Microbiology Spectrum,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/spectrum.03482-23,10.1128/spectrum.03482-23,Yes,Yes,Microbiology Spectrum,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/spectrum.01509-24,10.1128/spectrum.01509-24,No,No,Microbiology Spectrum,2024,No,No,NA
+https://journals.asm.org/doi/10.1128/spectrum.00361-24,10.1128/spectrum.00361-24,Yes,Yes,Microbiology Spectrum,2024,Yes,Yes,NA
+https://journals.asm.org/doi/10.1128/mra.00891-23,10.1128/mra.00891-23,NA,NA,Microbiology Resource Announcements,2024,No,No,online tool
+https://journals.asm.org/doi/10.1128/jmbe.v19i2.1557,10.1128/jmbe.v19i2.1557,NA,NA,Journal of Microbiology &amp; Biology Education,2018,No,No,online tool
+https://journals.asm.org/doi/10.1128/msystems.00917-20,10.1128/msystems.00917-20,NA,NA,mSystems,2021,No,No,online tool
+https://journals.asm.org/doi/10.1128/spectrum.04645-22,10.1128/spectrum.04645-22,NA,NA,Microbiology Spectrum,2023,No,No,online tool
+https://journals.asm.org/doi/10.1128/msphere.00658-22,10.1128/msphere.00658-22,NA,NA,mSphere,2023,No,No,online tool
+https://journals.asm.org/doi/10.1128/msystems.00269-18,10.1128/msystems.00269-18,NA,NA,mSystems,2019,No,No,online tool
+https://journals.asm.org/doi/10.1128/jcm.00927-16,10.1128/jcm.00927-16,NA,NA,Journal of Clinical Microbiology,2016,No,No,diganostic tool
+https://journals.asm.org/doi/10.1128/msphere.00275-16,10.1128/msphere.00275-16,NA,NA,mSphere,2016,No,No,annotation tool
+https://journals.asm.org/doi/10.1128/aem.71.12.8228-8235.2005,10.1128/aem.71.12.8228-8235.2005,NA,NA,Applied and Environmental Microbiology,2005,No,No,phylogeny tool
+https://journals.asm.org/doi/10.1128/msystems.00016-19,10.1128/msystems.00016-19,NA,NA,mSystems,2019,No,No,computational tool 
+https://journals.asm.org/doi/10.1128/aem.02102-21,10.1128/aem.02102-21,NA,NA,Applied and Environmental Microbiology,2022,No,No,review of tools
+https://journals.asm.org/doi/10.1128/jvi.01861-14,10.1128/jvi.01861-14,NA,NA,Journal of Virology,2014,No,No,computational methods
+https://journals.asm.org/doi/10.1128/aem.02411-13,10.1128/aem.02411-13,NA,NA,Applied and Environmental Microbiology,2013,No,No,computational tool 
+https://journals.asm.org/doi/10.1128/aem.00874-22,10.1128/aem.00874-22,NA,NA,Applied and Environmental Microbiology,2022,No,No,computational tool 

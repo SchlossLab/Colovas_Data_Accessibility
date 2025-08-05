@@ -6,8 +6,8 @@
 library(tidyverse)
 library(rvest)
 library(xml2)
-library(tidytext)
-library(jsonlite)
+# library(tidytext)
+# library(jsonlite)
 library(httr2)
 
 #need to update for snakemake 
@@ -15,19 +15,28 @@ library(httr2)
 # load data from snakemake input
 # {input.rscript}  {paras.html_dir} {output}
 input <- commandArgs(trailingOnly = TRUE)
-html_dir <- input[1]
-outfile <-input[2]
+html_filename <- input[1]
+html_filename <- tibble(html_filename = html_filename)
+output_file <- input[2]
 
 
 #local testing
 # # 20241220 - load from Data/html to test 200 files 
-all_filenames <-tibble(filenames = list.files("Data/html", full.names = TRUE))
+# all_filenames <-tibble(filenames = list.files("Data/html", full.names = TRUE))
 
-filenames<- 
-  all_filenames %>% 
-  slice_tail(n = 200)
+# filenames<- 
+#   all_filenames %>% 
+#   slice_tail(n = 200)
 
-filenames <-tibble(filenames = list.files(html_dir, full.names = TRUE))
+#20250515 - using the lookup table to get files to test
+# lookup_table <- read_csv("Data/all_dois_lookup_table.csv.gz")
+# filenames<-lookup_table$html_filename[200]
+
+# filenames <-tibble(filenames = list.files(html_dir, full.names = TRUE))
+# html_filename <- tibble(html_filename = "Data/html/10.1128_jcm.01275-23.html")
+# file.exists(html_filename)
+# str(html_filename)
+
 
 
 #function to get links from pre-scraped html
@@ -37,7 +46,7 @@ new_extract_links <- function(html_filename) {
   some_html_tags<-NA
   if(file.size(html_filename) > 0 && file.exists(html_filename)) {
   #read html from snakefile 
-  webscraped_data <- read_html(html_filename)
+  webscraped_data <- read_html(html_filename[[1]])
 
   #get just doi from html_filename
   #"Data/html/10.1128_aac.00005-17.html" > 10.1128/aac.00005-17
@@ -49,7 +58,7 @@ new_extract_links <- function(html_filename) {
       #get the html tags <a> for links as characters
       as.character(html_elements(webscraped_data, css = "a")) %>%
       #tibble with each tag and what filename it came from
-      tibble(html_tag = ., html_filename = html_filename) %>%
+      tibble(html_tag = .) %>%
       #filter for links that start with http(s)
       filter(str_detect(html_tag, "http")) 
       
@@ -87,9 +96,9 @@ get_site_status <- function(websiteurl) {
 }
 
 # run function to get all links from dataset, check status, and write to file
-all_links <- filenames %>%
-  mutate(link_tibble = map(filenames, new_extract_links)) %>% 
-  unnest(link_tibble)
+all_links <- html_filename %>%
+  mutate(link_tibble = map(html_filename, new_extract_links)) %>% 
+  unnest(cols = link_tibble)
 
 
 all_links$link_status <- map_int(all_links$link_address, get_site_status)
@@ -111,7 +120,7 @@ all_links <- all_links %>%
         )
 
 
-write_csv(all_links, file = outfile)
+write_csv(all_links, file = output_file)
 
 
 

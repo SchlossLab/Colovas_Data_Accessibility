@@ -6,13 +6,13 @@
 # library statements
 library(tidyverse)
 library(rvest)
-library(tidytext)
 library(xml2)
 library(httr2)
 library(textstem) #for stemming text variables
 library(tm) #for text manipulation
 library(randomForest)
 library(tokenizers)
+source("Code/utilities.R")
 
 # snakemake input 
 #  {input.rscript} {input.infile} {output}
@@ -22,9 +22,16 @@ output_file <- input[2]
 
 
 # load static files 
-lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
-tokens_to_collapse <-read_csv("Data/ml_prep/tokens_to_collapse.csv")
+lookup_table <-read_csv("Data/papers/lookup_table.csv.gz") %>%
+    mutate(container.title = ifelse(container.title == "container.title_Journal of Microbiology and Biology Education", 
+                          "container.title_Journal of Microbiology &amp; Biology Education",
+                          "container.title_Journal of Microbiology &amp; Biology Education"))
+
+#the tokens to collapse and z tables are the same for both so we should be good there
+tokens_to_collapse <-read_csv("Data/ml_prep/groundtruth.data_availability.tokens_to_collapse.csv")
 ztable <- read_csv("Data/ml_prep/groundtruth.data_availability.zscoretable_filtered.csv")
+
+
 da_model <- 
     readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.finalModel.RDS")
 nsd_model <- 
@@ -32,68 +39,14 @@ nsd_model <-
 
 
 #local testing 
-# html_filename<-lookup_table$html_filename[5]
-# output_file <- "Data/10.1128_mra.00817-18.csv"
+# filename<-lookup_table$html_filename[470]
+# output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
 
 
-#functions
-
-#function for reading html, remove figs/tables, 
-#and concatenate abstract and body (using rvest, xml2)
-webscrape <- function(doi) {
-  
-  abstract <- read_html(doi) %>%
-    html_elements("section#abstract") %>%
-    html_elements("[role = paragraph]")
-  
-  body <- read_html(doi) %>%
-    html_elements("section#bodymatter") 
-  
-  body_notables <- body %>%
-    html_elements(css = ".table > *") %>%
-    html_children() %>%
-    xml_remove()
-  
-  body_nofigures <- body %>%
-    html_elements(css = ".figure-wrap > *") %>%
-    html_children() %>%
-    xml_remove()
-  
-  paper_html <- paste0(abstract, body, collapse = " ") 
-  
-  return(paper_html)
-  
-}
-
-# function to prep HTML using package tm
-prep_html_tm <- function(html) {
-  html <- as.character(html)
-  html <- read_html(html) %>% html_text()
-  html <- str_to_lower(html)
-  html <- stripWhitespace(html)
-  html <- removePunctuation(html)
-  html <- str_remove_all(html, "[[:digit:]]")
-  html <- str_remove_all(html, "[[^a-z ]]")
-  html <- lemmatize_strings(html)
-}
+#functions - first three removed into utilites.R
 
 
-
-# tokenize paper with snowball stopwords
-
-tokenize <- function(clean_html) {
-
-  tokens <- tokenize_ngrams(clean_html, 
-                  n_min = 1, n = 3,
-                  stopwords = stopwords::stopwords("en", source = "snowball")) 
-  token_tibble <-tibble(tokens = unlist(tokens))
-  token_tibble <- add_count(token_tibble, tokens, name = "frequency")
-  token_tibble <- unique(token_tibble)
-
-}
-
-
-#collapse correlated variables for z scoring
+# collapse correlated variables for z scoring
 collapse_correlated <- function(token_tibble) {
   for(i in 1:nrow(token_tibble)){
     for(j in 1:nrow(tokens_to_collapse)){
@@ -105,6 +58,10 @@ collapse_correlated <- function(token_tibble) {
   return(unique(token_tibble))
 }
 
+
+
+#20250310 - testing 
+# zscored <- zscore(all_tokens)
 
 zscore <-function(all_tokens) {
 
@@ -118,11 +75,14 @@ zscore <-function(all_tokens) {
   all_tokens<-all_tokens[-to_remove,]
 }
 
+
+  
   zscored <-all_tokens %>%
   mutate(zscore = (frequency - token_mean)/token_sd) %>% 
   select(c(tokens, zscore))  
 
 
+# grep("`interest importance`_1", zscored$tokens, value = TRUE)
 
   wide_tokens <- 
     pivot_wider(zscored, 
@@ -132,11 +92,12 @@ zscore <-function(all_tokens) {
                 names_repair = "minimal", 
                 values_fill = 0)
 
-  wide_tokens <-
-  wide_tokens %>% 
-      rename("paper.y" = "paper",
-          "`interest importance`_1" = "interest importance",
-          "`material method bacterial`_1" = "material method bacterial")
+
+
+  # wide_tokens <-
+  # wide_tokens %>% 
+  #     rename("`interest importance`_1" = "interest importance",
+  #         "`material method bacterial`_1" = "material method bacterial")
 
   return(wide_tokens)
 }
@@ -155,6 +116,7 @@ nsd_prediction <-
 }
 
 
+
 total_pipeline<-function(filename){
   #keeps from erroring if none of the if loops are executed
   predictions <-tibble::tibble(da = NA, nsd = NA)
@@ -167,7 +129,7 @@ total_pipeline<-function(filename){
 
     webscrape_results <- webscrape(filename)
     #keeps from erroring if none of the if loops are executed
-    predictions <-tibble::tibble(da = NA, nsd = NA)
+    # predictions <-tibble::tibble(da = NA, nsd = NA)
 
     if(webscrape_results != ""){
       clean_html <- prep_html_tm(webscrape_results)
@@ -176,20 +138,21 @@ total_pipeline<-function(filename){
 
         token_tibble <- tokenize(clean_html) 
 
-        collapsed <-collapse_correlated(token_tibble) 
+        collapsed <-collapse_correlated(token_tibble)
           
 
         #get only variables in the model
         all_tokens <- full_join(collapsed, ztable, by = "tokens") %>%
           filter(!is.na(token_mean)) %>%
           replace_na(list(frequency = 0)) 
-          
+
 
         #fill journal name 
         journal_index <-which(all_tokens$tokens %in% update_journal)
         all_tokens$frequency[journal_index] <-1
 
           zscored <- zscore(all_tokens)
+       
 
           predictions <- get_predictions(zscored)
 
@@ -204,14 +167,11 @@ total_pipeline<-function(filename){
 }
 
 
-
 #20241212 - removing looping for parallelization
 predicted_output <- total_pipeline(html_filename)
 
 write_csv(predicted_output, file = output_file)
 
-# #20241218 - screaming crying and throwing up because it has all come crashing down
-# html_filename<-lookup_table$html_filename[38900]
-# filename<-html_filename
+
 
 

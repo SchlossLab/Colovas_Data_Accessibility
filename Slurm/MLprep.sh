@@ -17,7 +17,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=8g
-#SBATCH --time=100:00:00
+#SBATCH --time=140:00:00
 
  
 
@@ -26,7 +26,7 @@
 ####    special hardware, like large memory nodes or GPUs.
 
 #SBATCH --account=pschloss99
-#SBATCH --partition=standard
+#SBATCH --partition=largemem,standard
 
 #### #### ####  These are the least frequently changing options
 
@@ -53,7 +53,7 @@
 source /etc/profile.d/http_proxy.sh
 
 #conda env
-source ~/miniforge3/etc/profile.d/conda.sh
+source ~/conda/etc/profile.d/conda.sh
 conda activate data_acc
 
 #if you need to use the ncbi edirect to run rule ncbi
@@ -63,6 +63,6 @@ conda activate data_acc
 
 cd $SLURM_SUBMIT_DIR
 #R CMD BATCH Code/MLprep.R Slurm/20240613_2_mlprep_gtnewseqdata_glmnet.out
-snakemake --profile config_files/ --rerun-incomplete
+snakemake --profile config_files/ --rerun-incomplete 
 
 ##  If you copied any files to /tmp, make sure you delete them here!

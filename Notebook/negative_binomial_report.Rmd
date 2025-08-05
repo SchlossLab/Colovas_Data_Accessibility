@@ -1,0 +1,209 @@
+---
+title: "Negative Binomial Regression Fit Report"
+output: html_document
+date : 20250610 
+classoption: landscape
+---
+
+## Project Summary
+
+-   We are using data from the American Society of Microbiology's (ASM)
+    12 published journals to investigate the relationship between the
+    number of citations (variable 'is.referenced.by.count') a published
+    scientific article receives and if the authors have included access
+    to their raw sequencing data (variable 'da', data availability) in
+    the manuscript.
+-   We are trying to understand if publishing raw data helps to improve
+    citation metrics. We have data from 2000-2024, and will also adjust
+    for time published (variable 'age.in.months'), as older papers have
+    had the opportunity to accumulate more citations over time.
+
+```{r include=FALSE}
+library(tidyverse)
+
+# library(MASS)
+# library(jtools)
+
+
+all_journals <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/all_data_glmnb_models.csv") 
+
+container.title <-  all_journals %>% 
+    filter(str_detect(coefficients, "container.title")) %>%  
+    .[1:12,] %>%  
+    mutate(container.title =
+             str_remove_all(coefficients, "container.title")) %>%  
+  select(container.title)
+
+
+j_table<- 
+    c("aem", "genomea", "iai", "jb", "jcm", "jmbe", "jvi", "mbio", "mra", "spectrum",  "msphere", "msystems")
+
+for(i in 1:length(j_table)){
+names(j_table)[i] <-  container.title[i,]
+}
+
+
+all_journals <- 
+all_journals %>%
+  mutate(pretty_name = str_replace_all(coefficients, "da_factorYes", "da_Yes"),
+         pretty_name = str_replace_all(pretty_name, "log\\(age.in.months\\)", "log(time)"),
+         pretty_name = str_remove_all(pretty_name, "container.title"), 
+         pretty_name =  str_replace_all(pretty_name, j_table)) 
+
+
+each_journal <-  read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/negative_binomial_models_each_journal.csv")
+
+each_journal <- 
+each_journal %>%
+  mutate(pretty_name = str_replace_all(coefficients, "da_factorYes", "da_Yes"),
+         pretty_name = str_replace_all(pretty_name, "log\\(age.in.months\\)", "log(time)"),
+         pretty_name = str_remove_all(pretty_name, "container.title"), 
+         pretty_name =  str_replace_all(pretty_name, j_table)) 
+
+
+```
+
+## Negative Binomial Model Formats
+
+-   Model format for all data from all journals:
+
+    -   MASS::glm.nb(is.referenced.by.count\~ da_factor +
+        log(age.in.months) + container.title +
+        container.title\*da_factor + log(age.in.months)\*da_factor +
+        container.title\*log(age.in.months) +
+        log(age.in.months)\*da_factor\*container.title, data =
+        nsd_yes_metadata, link = log)
+
+-   Use model format for data from each journal:
+
+    -   MASS::glm.nb(is.referenced.by.count\~ da_factor +
+        log(age.in.months) + log(age.in.months)\*da_factor, data =
+        \<each journal\>, link = log)
+
+    -   Data with N \> 10 to create model
+
+-   Model names
+
+    -   "full" - model created with no data removed
+
+    -   "time adj" - model adjusted for avg age of 1st citation in
+        dataset (age.in.months = 5)
+
+    -   "at one year" – model created with only age.in.months == 12
+
+    -   "at five years" – model created with only age.in.months == 60
+
+    -   "five years" – model created with only age.in.months between 0
+        and 60
+
+    -   "at ten years" – model created with only age.in.months == 120
+
+    -   "ten years" – model created with only age.in.months between 0
+        and 120
+
+    -   "journal" - model created for each journal individually, N \> 10
+        per condition
+
+```{r echo=FALSE, paged.print=TRUE}
+
+opts <- options(knitr.kable.NA = " ")
+knitr::kable(all_journals, digits = 3, col.names = gsub("_", " ", names(all_journals))) 
+  
+```
+
+## Overall model fit with all data from all journals using by Cragg-Uhler pseduo R-squared metric
+
+-   R\^2 value = 0.678
+-   At exactly 1 year (12 months): R\^2 value = 0.355
+-   At exactly 5 years (60 months): R\^2 value = 0.516
+-   Truncate data to last 0-5 years (0-60 months): R\^2 value = 0.660
+-   At exactly 10 years (120 months): R\^2 value = 0.223
+-   Truncate data to last 0-10 years(0-120 months): R\^2 value = 0.680
+-   **Summary :** Model fit by R\^2 metric does not change by truncating
+    to data from the last 5 or 10 years, but model fits less well at 1,
+    5, and 10 years.
+
+## All journal model (all data, all journals together) is less resistant to changes from truncating at 1, 5, and 10 years.
+
+-   See graph below of significant coefficients for each model, and the
+    changes that occur with different truncations of the data.
+
+```{r echo=FALSE}
+all_journals %>%
+  pivot_longer(cols = c(full, time_adj, at_one_year, at_five_years, five_years, at_ten_years, ten_years), names_to = "model", values_to = "model_value") %>%
+  pivot_longer(cols = contains("pvalue"), names_to = "model_pvalues", values_to = "pvalue") %>% 
+mutate(model_pvalues = str_remove_all(model_pvalues, "_pvalue")) %>%  
+  filter(model == model_pvalues & pvalue <= 0.05) %>% 
+  ggplot(aes(y = pretty_name, x = model_value)) + 
+  geom_line(na.rm = TRUE) + 
+  geom_point(aes(color = model), size  = 2, alpha = 0.75, na.rm = TRUE)  + 
+  labs(title = "Some significant changes in model coefficients occur\nwhen data are separated or adjusted by time", 
+    subtitle = "Significant coefficients (p<=0.05) for\nnegative binomial modeling",
+    x = "Coefficient Value", 
+    y = "Coefficient Name")
+
+```
+
+## Does the modeling change when each journal is considered separately?
+
+```{r echo=FALSE}
+opts <- options(knitr.kable.NA = " ")
+knitr::kable(each_journal, digits = 3, col.names = gsub("_", " ", names(each_journal))) 
+```
+
+## Journal model fit with all data from all journals using by Cragg-Uhler pseduo R-squared metric
+
+```{r echo=FALSE}
+each_journal %>%  
+    filter(coefficients == "rsquared") %>% 
+    select(names:journal) %>%  
+  knitr::kable(., digits = 4)
+```
+
+-   **Overall model fit for data from EACH journal individually:**
+
+    -   4/12 journals have **overall model fit** with R\^2 \> 0.5
+
+```{r echo=FALSE}
+
+each_journal_plotting <- 
+each_journal %>%
+  pivot_longer(cols = c(journal, at_one_year, at_five_years, five_years, at_ten_years, ten_years), names_to = "model", values_to = "model_value") %>%
+  pivot_longer(cols = contains("pvalue"), names_to = "model_pvalues", values_to = "pvalue") %>% 
+mutate(model_pvalues = str_remove_all(model_pvalues, "_pvalue")) %>%  
+  filter(model == model_pvalues & pvalue <= 0.05)
+
+each_journal_plotting %>% 
+  ggplot(aes(y = pretty_name, x = model_value)) + 
+  geom_line(na.rm = TRUE) + 
+  geom_point(aes(color = names, shape = model), size  = 2, alpha = 0.75, na.rm = TRUE)  + 
+  labs(title = "There is not a lot of significant change in model coefficients\nwhen data is separated by journal or time truncated", 
+    subtitle = "Significant coefficients (p<=0.05) for\nnegative binomial modeling by journal",
+    x = "Coefficient Value", 
+    y = "Coefficient Name") + 
+  theme(legend.box = "horizontal")
+
+
+each_journal_plotting %>% 
+  ggplot(aes(y = pretty_name, x = model_value)) + 
+  geom_line(na.rm = TRUE) + 
+  geom_point(aes(color = model), size  = 2, alpha = 0.75, na.rm = TRUE)  +
+  facet_wrap(vars(names)) +
+  labs(title = "There is not a lot of significant change in model coefficients\nwhen data is separated by journal or time truncated", 
+    subtitle = "Significant coefficients (p<=0.05) for\nnegative binomial modeling by journal",
+    x = "Coefficient Value", 
+    y = "Coefficient Name") + 
+  theme(legend.box = "horizontal")
+
+
+
+```
+
+## What about only siginificant data?
+
+-   Data looks resistant to truncation of time within a journal, with
+    the intercept being the least resistant to changes.
+-   Genome Announcements appears to pull coefficient values to the
+    extremes.
+
+Where do we go from here?

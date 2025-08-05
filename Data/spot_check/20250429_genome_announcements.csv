@@ -1,0 +1,284 @@
+alternative.id,container.title,created,deposited,published.print,doi,indexed,issn,issue,issued,member,page,prefix,publisher,score,source,reference.count,references.count,is.referenced.by.count,title,type,update.policy,url,volume,abstract,language,short.container.title,assertion,author,link,license,reference,update_to,subtitle,published.online,funder,year.published,doi_underscore,paper,new_seq_data,data_availability
+10.1128/genomeA.00526-13,Genome Announcements,8/2/13,3/4/22,8/29/13,10.1128/genomea.00526-13,9/12/24,2169-8287,4,8/29/13,235,NA,10.1128,American Society for Microbiology,0,Crossref,12,12,11,"Complete Genome Sequence of Campylobacter fetus subsp.
+            <i>venerealis</i>
+            Biovar Intermedius, Isolated from the Prepuce of a Bull",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00526-13,1,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:named-content content-type=""genus-species"">Campylobacter fetus</jats:named-content>
+            subsp.
+            <jats:italic>venerealis</jats:italic>
+            is the causative agent of bovine genital campylobacteriosis, a sexually transmitted disease distributed worldwide.
+            <jats:named-content content-type=""genus-species"">Campylobacter fetus</jats:named-content>
+            subsp.
+            <jats:italic>venerealis</jats:italic>
+            biovar Intermedius strains differ in their biochemical behavior and are prevalent in some countries. We report the first genome sequence for this biovar, isolated from bull prepuce.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2013,10.1128_genomea.00526-13,https://journals.asm.org/doi/10.1128/genomea.00526-13,Yes,Yes
+10.1128/genomeA.00150-12,Genome Announcements,2/19/13,3/4/22,2/28/13,10.1128/genomea.00150-12,8/19/22,2169-8287,1,2/28/13,235,NA,10.1128,American Society for Microbiology,0,Crossref,12,12,3,Draft Genome Sequence of a Clinical Strain of Yersinia enterocolitica (IP10393) of Bioserotype 4/O:3 from France,journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00150-12,1,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            We sequenced the genome of a clinical isolate of
+            <jats:named-content content-type=""genus-species"">Yersinia enterocolitica</jats:named-content>
+            (IP10393) from France. This strain belongs to bioserotype 4/O:3, which is the most common pathogenic subgroup worldwide. The draft genome has a size of 4,463,212 bp and a G+C content of 47.0%, and it is predicted to contain 4,181 coding sequences.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2013,10.1128_genomea.00150-12,https://journals.asm.org/doi/10.1128/genomea.00150-12,Yes,Yes
+10.1128/genomeA.00590-13,Genome Announcements,8/23/13,3/4/22,8/29/13,10.1128/genomea.00590-13,7/24/24,2169-8287,4,8/29/13,235,NA,10.1128,American Society for Microbiology,0,Crossref,20,20,18,"Complete Genome Sequence for Lactobacillus helveticus CNRZ 32, an Industrial Cheese Starter and Cheese Flavor Adjunct",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00590-13,1,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:named-content content-type=""genus-species"">Lactobacillus helveticus</jats:named-content>
+            is a lactic acid bacterium widely used in the manufacture of cheese and for production of bioactive peptides from milk proteins. We present the complete genome sequence for
+            <jats:named-content content-type=""genus-species"">L. helveticus</jats:named-content>
+            CNRZ 32, a strain particularly recognized for its ability to reduce bitterness and accelerate flavor development in cheese.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2013,10.1128_genomea.00590-13,https://journals.asm.org/doi/10.1128/genomea.00590-13,Yes,Yes
+10.1128/genomeA.00339-13,Genome Announcements,6/14/13,3/4/22,6/27/13,10.1128/genomea.00339-13,4/12/25,2169-8287,3,6/27/13,235,NA,10.1128,American Society for Microbiology,0,Crossref,18,18,49,"Draft Genome Sequence of
+            <i>Neofusicoccum parvum</i>
+            Isolate UCR-NP2, a Fungal Vascular Pathogen Associated with Grapevine Cankers",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00339-13,1,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:italic>Neofusicoccum parvum</jats:italic>
+            , a member of the
+            <jats:italic>Botryosphaeriaceae</jats:italic>
+            family, is a vascular pathogen that causes severe decline and dieback symptoms in grapevines worldwide. The draft genome of the grapevine isolate
+            <jats:italic>N. parvum</jats:italic>
+            UCR-NP2 provides a first glimpse into the complex set of putative virulence factors that this pathogen may use to rapidly colonize plants.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2013,10.1128_genomea.00339-13,https://journals.asm.org/doi/10.1128/genomea.00339-13,Yes,Yes
+10.1128/genomeA.00418-13,Genome Announcements,8/16/13,3/4/22,8/29/13,10.1128/genomea.00418-13,4/3/22,2169-8287,4,8/29/13,235,NA,10.1128,American Society for Microbiology,0,Crossref,8,8,0,Draft Genome Sequence of Klebsiella pneumoniae Isolate PR04,journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00418-13,1,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:named-content content-type=""genus-species"">Klebsiella pneumoniae</jats:named-content>
+            PR04 was isolated from a patient hospitalized in Malaysia. The draft genome sequence of
+            <jats:named-content content-type=""genus-species"">K. pneumoniae</jats:named-content>
+            PR04 shows differences compared to the reference sequences of
+            <jats:named-content content-type=""genus-species"">K. pneumoniae</jats:named-content>
+            strains MGH 78578 and NTUH-K2044 in terms of their genomic structures.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2013,10.1128_genomea.00418-13,https://journals.asm.org/doi/10.1128/genomea.00418-13,Yes,Yes
+10.1128/genomeA.00652-14,Genome Announcements,7/4/14,3/4/22,8/28/14,10.1128/genomea.00652-14,4/9/25,2169-8287,4,8/28/14,235,NA,10.1128,American Society for Microbiology,0,Crossref,29,29,56,"Draft Genome Sequence of the Oleaginous Yeast Yarrowia lipolytica PO1f, a Commonly Used Metabolic Engineering Host",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00652-14,2,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            The draft genome sequence of the oleaginous yeast
+            <jats:named-content content-type=""genus-species"">Yarrowia lipolytica</jats:named-content>
+            stain PO1f, a commonly used metabolic engineering host, is presented here. The approximately 20.3-Mb genome sequence of PO1f will greatly facilitate research efforts in metabolic engineering of
+            <jats:named-content content-type=""genus-species"">Yarrowia lipolytica</jats:named-content>
+            for value-added chemical production.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2014,10.1128_genomea.00652-14,https://journals.asm.org/doi/10.1128/genomea.00652-14,Yes,Yes
+10.1128/genomeA.00611-14,Genome Announcements,7/11/14,3/4/22,8/28/14,10.1128/genomea.00611-14,3/29/22,2169-8287,4,8/28/14,235,NA,10.1128,American Society for Microbiology,0,Crossref,16,16,0,First Whole-Genome Sequence of a Clinical Isolate of Multidrug-Resistant Mycobacterium bovis BCG,journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00611-14,2,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            The attenuated BCG strain of
+            <jats:named-content content-type=""genus-species"">Mycobacterium bovis</jats:named-content>
+            is widely used as a vaccine against tuberculosis. However, in rare cases, it can be pathogenic to humans. Here, we report the first draft of a whole-genome sequence of a multidrug-resistant clinical isolate of
+            <jats:named-content content-type=""genus-species"">M. bovis</jats:named-content>
+            BCG.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2014,10.1128_genomea.00611-14,https://journals.asm.org/doi/10.1128/genomea.00611-14,Yes,Yes
+10.1128/genomeA.00333-14,Genome Announcements,4/18/14,3/4/22,2014-05,10.1128/genomea.00333-14,8/7/24,2169-8287,2,2014-05,235,NA,10.1128,American Society for Microbiology,0,Crossref,8,8,32,"Complete Genome Sequence of the Treponema pallidum subsp.
+            <i>pallidum</i>
+            Sea81-4 Strain",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00333-14,2,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            Using the rabbit model of syphilis, the Sea81-4 strain of
+            <jats:named-content content-type=""genus-species"">Treponema pallidum</jats:named-content>
+            subsp.
+            <jats:italic>pallidum</jats:italic>
+            has been found to be more likely than other strains to invade the central nervous system (CNS). To identify possible explanations for this important phenotype at the genomic level, we sequenced the Sea81-4 strain genome.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2014,10.1128_genomea.00333-14,https://journals.asm.org/doi/10.1128/genomea.00333-14,Yes,Yes
+10.1128/genomeA.00845-13,Genome Announcements,1/10/14,3/4/22,2/27/14,10.1128/genomea.00845-13,9/16/23,2169-8287,1,2/27/14,235,NA,10.1128,American Society for Microbiology,0,Crossref,21,21,10,"Finished Genome of Zymomonas mobilis subsp.
+            <i>mobilis</i>
+            Strain CP4, an Applied Ethanol Producer",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00845-13,2,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:named-content content-type=""genus-species"">Zymomonas mobilis</jats:named-content>
+            subsp.
+            <jats:italic>mobilis</jats:italic>
+            is one of the most rigorous ethanol-producing organisms known to date, considered by many to be the prokaryotic alternative to yeast. The two most applied
+            <jats:named-content content-type=""genus-species"">Z. mobilis</jats:named-content>
+            subsp.
+            <jats:italic>mobilis</jats:italic>
+            strains, ZM4 and CP4, derive from Recife, Brazil, and have been isolated from sugarcane fermentations. Of these, ZM4 was the first
+            <jats:named-content content-type=""genus-species"">Z. mobilis</jats:named-content>
+            representative strain to be sequenced and analyzed. Here, we report the finishing of the genome sequence of strain CP4, which is highly similar but not identical to that of ZM4.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2014,10.1128_genomea.00845-13,https://journals.asm.org/doi/10.1128/genomea.00845-13,Yes,Yes
+10.1128/genomeA.00154-14,Genome Announcements,3/7/14,3/4/22,2014-05,10.1128/genomea.00154-14,6/16/24,2169-8287,2,2014-05,235,NA,10.1128,American Society for Microbiology,0,Crossref,7,7,6,"Whole-Genome Sequencing and Annotation of a Clinical Isolate of Mycobacterium tuberculosis from Mumbai, India",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00154-14,2,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            We report here the annotated genome sequence of a clinical isolate of
+            <jats:named-content content-type=""genus-species"">Mycobacterium tuberculosis</jats:named-content>
+            from Mumbai, India.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2014,10.1128_genomea.00154-14,https://journals.asm.org/doi/10.1128/genomea.00154-14,Yes,Yes
+10.1128/genomeA.00909-15,Genome Announcements,8/14/15,3/4/22,8/27/15,10.1128/genomea.00909-15,7/25/24,2169-8287,4,8/27/15,235,NA,10.1128,American Society for Microbiology,0,Crossref,14,14,2,"Draft Genome Sequence of Acinetobacter calcoaceticus Strain GK1, a Hydrocarbon-Degrading Plant Growth-Promoting Rhizospheric Bacterium",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00909-15,3,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            The 3.94-Mb draft genome of
+            <jats:named-content content-type=""genus-species"">Acinetobacter calcoaceticus</jats:named-content>
+            GK1, a hydrocarbonoclastic plant growth-promoting Gram-negative rhizospheric bacterium, is presented here. Isolated at the Ford Motor Company site in Genk, Belgium, from poplar trees planted on a diesel-contaminated plume, GK1 is useful for enhancing hydrocarbon phytoremediation.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2015,10.1128_genomea.00909-15,https://journals.asm.org/doi/10.1128/genomea.00909-15,Yes,Yes
+10.1128/genomeA.00232-15,Genome Announcements,4/7/15,3/4/22,4/30/15,10.1128/genomea.00232-15,7/28/24,2169-8287,2,4/30/15,235,NA,10.1128,American Society for Microbiology,0,Crossref,7,7,10,Draft Genome Sequence of Aneurinibacillus migulanus Strain Nagano,journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00232-15,3,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:named-content content-type=""genus-species"">Aneurinibacillus migulanus</jats:named-content>
+            is characterized by inhibition of growth of a range of plant-pathogenic bacteria and fungi. Here, we report the high-quality draft genome sequences of A. migulanus Nagano.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2015,10.1128_genomea.00232-15,https://journals.asm.org/doi/10.1128/genomea.00232-15,Yes,Yes
+10.1128/genomeA.01356-15,Genome Announcements,11/26/15,3/4/22,12/31/15,10.1128/genomea.01356-15,9/10/24,2169-8287,6,12/31/15,235,NA,10.1128,American Society for Microbiology,0,Crossref,6,6,21,"Draft Genome Sequence of Leptolinea tardivitalis YMTK-2, a Mesophilic Anaerobe from the
+            <i>Chloroflexi</i>
+            Class
+            <i>Anaerolineae</i>",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.01356-15,3,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            We present the draft genome sequence of
+            <jats:named-content content-type=""genus-species"">Leptolinea tardivitalis</jats:named-content>
+            YMTK-2, a member of the
+            <jats:italic>Chloroflexi</jats:italic>
+            phylum. This organism was initially characterized as a strictly anaerobic nonmotile fermenter; however, genome analysis demonstrates that it encodes for a flagella and might be capable of aerobic respiration.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2015,10.1128_genomea.01356-15,https://journals.asm.org/doi/10.1128/genomea.01356-15,Yes,Yes
+10.1128/genomeA.00904-15,Genome Announcements,9/4/15,3/4/22,10/29/15,10.1128/genomea.00904-15,8/6/24,2169-8287,5,10/29/15,235,NA,10.1128,American Society for Microbiology,0,Crossref,14,14,9,"Draft Genome Sequence of Pseudomonas putida JLR11, a Facultative Anaerobic 2,4,6-Trinitrotoluene Biotransforming Bacterium",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00904-15,3,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            We report the draft genome sequence of
+            <jats:named-content content-type=""genus-species"">Pseudomonas putida</jats:named-content>
+            JLR11, a facultative anaerobic bacterium that has been studied in detail for its capacity to use the explosive 2,4,6-trinitrotoluene (TNT) as a nitrogen source. The sequence confirms the mechanisms used by this versatile strain to reduce and assimilate nitrogen from TNT.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2015,10.1128_genomea.00904-15,https://journals.asm.org/doi/10.1128/genomea.00904-15,Yes,Yes
+10.1128/genomeA.00981-15,Genome Announcements,8/28/15,3/4/22,8/27/15,10.1128/genomea.00981-15,8/11/24,2169-8287,4,8/27/15,235,NA,10.1128,American Society for Microbiology,0,Crossref,12,12,5,"Genome Sequence of Aeribacillus pallidus Strain GS3372, an Endospore-Forming Bacterium Isolated in a Deep Geothermal Reservoir",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00981-15,3,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            The genome of strain GS3372 is the first publicly available strain of
+            <jats:named-content content-type=""genus-species"">Aeribacillus pallidus</jats:named-content>
+            . This endospore-forming thermophilic strain was isolated from a deep geothermal reservoir. The availability of this genome can contribute to the clarification of the taxonomy of the closely related
+            <jats:italic>Anoxybacillus</jats:italic>
+            ,
+            <jats:italic>Geobacillus</jats:italic>
+            , and
+            <jats:italic>Aeribacillus</jats:italic>
+            genera.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2015,10.1128_genomea.00981-15,https://journals.asm.org/doi/10.1128/genomea.00981-15,Yes,Yes
+10.1128/genomeA.00761-16,Genome Announcements,8/5/16,3/4/22,8/25/16,10.1128/genomea.00761-16,4/24/25,2169-8287,4,8/25/16,235,NA,10.1128,American Society for Microbiology,0,Crossref,18,18,7,"Draft Genome Sequence of
+            <i>Capniomyces stellatus</i>
+            , the Obligate Gut Fungal Symbiont of Stonefly",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00761-16,4,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:italic>Capniomyces stellatus</jats:italic>
+            is a host-specific endosymbiotic fungus, living in the hindgut of stoneflies (especially in
+            <jats:italic>Allocapnia</jats:italic>
+            ). Here, we present the first draft genome sequence of the fungus, as well as the
+            <jats:italic>ab initio</jats:italic>
+            gene prediction and function analyses, which will facilitate the study and comparative analyses of insect-associated fungi.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2016,10.1128_genomea.00761-16,https://journals.asm.org/doi/10.1128/genomea.00761-16,Yes,Yes
+10.1128/genomeA.00758-16,Genome Announcements,8/19/16,3/4/22,8/25/16,10.1128/genomea.00758-16,2/21/25,2169-8287,4,8/25/16,235,NA,10.1128,American Society for Microbiology,0,Crossref,9,9,1,"Draft Genome Sequence of a Multidrug-Resistant
+            <i>Klebsiella pneumoniae</i>
+            Carbapenemase-Producing
+            <i>Acinetobacter baumannii</i>
+            Sequence Type 2 Isolate from Puerto Rico",journal-article,https://doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00758-16,4,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            We report here the draft genome sequence of
+            <jats:italic>Acinetobacter baumannii</jats:italic>
+            strain M3AC14-8, sequence type 2 (ST2), carrying a chromosomally carried
+            <jats:italic>bla</jats:italic>
+            <jats:sub>KPC-2</jats:sub>
+            gene. The draft genome consists of a total length of 4.11 Mbp and a G+C content of 39.25%.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2016,10.1128_genomea.00758-16,https://journals.asm.org/doi/10.1128/genomea.00758-16,Yes,Yes
+10.1128/genomeA.00154-16,Genome Announcements,3/18/16,3/4/22,4/28/16,10.1128/genomea.00154-16,2/21/25,2169-8287,2,4/28/16,235,NA,10.1128,American Society for Microbiology,0,Crossref,27,27,2,"Draft Genome Sequence of
+            <i>Photorhabdus luminescens</i>
+            subsp.
+            <i>laumondii</i>
+            HP88, an Entomopathogenic Bacterium Isolated from Nematodes",journal-article,https://doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00154-16,4,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:italic>Photorhabdus luminescens</jats:italic>
+            subsp.
+            <jats:italic>laumondii</jats:italic>
+            HP88 is an entomopathogenic bacterium that forms a symbiotic association with
+            <jats:italic>Heterorhabditis</jats:italic>
+            nematodes. We report here a 5.27-Mbp draft genome sequence for
+            <jats:italic>P. luminescens</jats:italic>
+            subsp.
+            <jats:italic>laumondii</jats:italic>
+            HP88, with a G+C content of 42.4% and containing 4,243 candidate protein-coding genes.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2016,10.1128_genomea.00154-16,https://journals.asm.org/doi/10.1128/genomea.00154-16,Yes,Yes
+10.1128/genomeA.00511-16,Genome Announcements,6/17/16,3/4/22,6/30/16,10.1128/genomea.00511-16,2/21/25,2169-8287,3,6/30/16,235,NA,10.1128,American Society for Microbiology,0,Crossref,8,8,3,High-Quality Draft Genome Sequences of Pantoea agglomerans Isolates Exhibiting Antagonistic Interactions with Wheat Seed-Associated Fungi,journal-article,https://doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00511-16,4,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:named-content content-type=""genus-species"">Pantoea agglomerans</jats:named-content>
+            isolates 3 and 4 were retrieved from the bacterial community associated with wheat seeds. These isolates differ in their pattern of growth antagonism toward
+            <jats:italic>Alternaria</jats:italic>
+            species. A comparison of the genome sequences of these two isolates revealed a high sequence identity with previously sequenced strains of
+            <jats:italic>P. agglomerans</jats:italic>
+            .
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2016,10.1128_genomea.00511-16,https://journals.asm.org/doi/10.1128/genomea.00511-16,Yes,Yes
+10.1128/genomeA.00289-16,Genome Announcements,5/6/16,3/4/22,6/30/16,10.1128/genomea.00289-16,2/21/25,2169-8287,3,6/30/16,235,NA,10.1128,American Society for Microbiology,0,Crossref,17,17,2,"Draft Genome of Shewanella frigidimarina Ag06-30, a Marine Bacterium Isolated from Potter Peninsula, King George Island, Antarctica",journal-article,https://doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00289-16,4,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            We present the draft genome of
+            <jats:named-content content-type=""genus-species"">Shewanella frigidimarina</jats:named-content>
+            Ag06-30, a marine bacterium from King George Island, Antarctica, which encodes the carbapenemase SFP-1. The assembly contains 4,799,218 bp (G+C content 41.24%). This strain harbors several mobile genetic elements that provide insight into lateral gene transfer and bacterial plasticity and evolution.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2016,10.1128_genomea.00289-16,https://journals.asm.org/doi/10.1128/genomea.00289-16,Yes,Yes
+10.1128/genomeA.01619-16,Genome Announcements,2/10/17,3/4/22,2/9/17,10.1128/genomea.01619-16,1/10/24,2169-8287,6,2/9/17,235,NA,10.1128,American Society for Microbiology,0,Crossref,11,11,2,"Complete Genome Sequence of Bradyrhizobium japonicum J5, Isolated from a Soybean Nodule in Hokkaido, Japan",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.01619-16,5,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            Soybean bradyrhizobia form root nodules on soybean plants and symbiotically fix N
+            <jats:sub>2</jats:sub>
+            . Strain J5 is phylogenetically far from well-known representatives within the
+            <jats:named-content content-type=""genus-species"">Bradyrhizobium japonicum</jats:named-content>
+            linage. The complete genome showed the largest single chromosomal (10.1 Mb) and symbiosis island (998 kb) among complete genomes of soybean bradyrhizobia.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2017,10.1128_genomea.01619-16,https://journals.asm.org/doi/10.1128/genomea.01619-16,Yes,Yes
+10.1128/genomeA.00969-17,Genome Announcements,9/30/17,3/4/22,9/28/17,10.1128/genomea.00969-17,6/29/24,2169-8287,39,9/28/17,235,NA,10.1128,American Society for Microbiology,0,Crossref,10,10,5,"Draft Genome Sequence of Bacillus subtilis AS2, a Heavy Crude Oil-Degrading and Biosurfactant-Producing Bacterium Isolated from a Soil Sample",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00969-17,5,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            Here, we report the draft genome sequence of
+            <jats:named-content content-type=""genus-species"">Bacillus subtilis</jats:named-content>
+            AS2 that was isolated from heavy crude oil-contaminated soil samples from sludge pits of an Omani heavy-oil field.
+            <jats:named-content content-type=""genus-species"">B. subtilis</jats:named-content>
+            AS2 was able to biodegrade heavy crude oil and produce biosurfactant. In order to provide a better understanding of the biodegradation mechanism and biosynthesis of metabolites, the
+            <jats:named-content content-type=""genus-species"">B. subtilis</jats:named-content>
+            AS2 genome was sequenced and compared to those of other
+            <jats:named-content content-type=""genus-species"">B. subtilis</jats:named-content>
+            strains.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2017,10.1128_genomea.00969-17,https://journals.asm.org/doi/10.1128/genomea.00969-17,Yes,Yes
+10.1128/genomeA.01720-16,Genome Announcements,4/7/17,3/4/22,4/6/17,10.1128/genomea.01720-16,3/30/22,2169-8287,14,4/6/17,235,NA,10.1128,American Society for Microbiology,0,Crossref,17,17,1,Genome Sequence of a Spontaneous Nonhemolytic Mutant of Mannheimia haemolytica 16041065 GH,journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.01720-16,5,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            We report here the draft genome sequence of a spontaneous nonhemolytic mutant of
+            <jats:named-content content-type=""genus-species"">Mannheimia haemolytica</jats:named-content>
+            16041065 GH. This mutant arose during routine passage and was devoid of hemolytic activity on standard blood agars. This genome sequence had a total size of 2.7 Mb with an
+            <jats:italic>N</jats:italic>
+            <jats:sub>50</jats:sub>
+            of 117 kb.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2017,10.1128_genomea.01720-16,https://journals.asm.org/doi/10.1128/genomea.01720-16,Yes,Yes
+10.1128/genomeA.01502-16,Genome Announcements,2/24/17,3/4/22,2/23/17,10.1128/genomea.01502-16,3/30/22,2169-8287,8,2/23/17,235,NA,10.1128,American Society for Microbiology,0,Crossref,8,8,0,"Draft Genome Sequence of Bradyrhizobium elkanii Tn
+            <i>phoA</i>
+            33, a Producer of Polyhydroxyalkanoates",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.01502-16,5,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            The genus
+            <jats:italic>Bradyrhizobium</jats:italic>
+            comprises bacteria with the ability to form nitrogen-fixing symbioses with legumes. They are of great interest in agriculture, as well as for the production of biopolymers such as polyhydroxyalkanoates. Here, we report the draft genome assembly of
+            <jats:named-content content-type=""genus-species"">Bradyrhizobium elkanii</jats:named-content>
+            Tn
+            <jats:italic>phoA</jats:italic>
+            33 comprising 9 Mb, 1,124 contigs, and 9,418 open reading frames.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2017,10.1128_genomea.01502-16,https://journals.asm.org/doi/10.1128/genomea.01502-16,Yes,Yes
+10.1128/genomeA.01523-16,Genome Announcements,2/3/17,3/4/22,2/2/17,10.1128/genomea.01523-16,4/3/22,2169-8287,5,2/2/17,235,NA,10.1128,American Society for Microbiology,0,Crossref,4,4,0,"Deep Sequencing-Identified Kanamycin-Resistant
+            <i>Paenibacillus</i>
+            sp. Strain KS1 Isolated from Epiphyte
+            <i>Tillandsia usneoides</i>
+            (Spanish Moss) in Central Florida, USA",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.01523-16,5,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:italic>Paenibacillus</jats:italic>
+            sp. strain KS1 was isolated from an epiphyte,
+            <jats:italic>Tillandsia usneoides</jats:italic>
+            (Spanish moss), in central Florida, USA. Here, we report a draft genome sequence of this strain, which consists of a total of 398 contigs spanning 6,508,195 bp, with a G+C content of 46.5% and comprising 5,401 predicted coding sequences.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2017,10.1128_genomea.01523-16,https://journals.asm.org/doi/10.1128/genomea.01523-16,Yes,Yes
+10.1128/genomeA.00451-18,Genome Announcements,5/30/18,3/4/22,5/31/18,10.1128/genomea.00451-18,3/31/22,2169-8287,22,5/31/18,235,NA,10.1128,American Society for Microbiology,0,Crossref,11,11,2,Draft Genome Sequence of Muricauda sp. Strain K001 Isolated from a Marine Cyanobacterial Culture,journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00451-18,6,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            We report the whole-genome sequence of
+            <jats:named-content content-type=""genus-species"">Muricauda</jats:named-content>
+            sp. strain K001 isolated from a marine cyanobacterial culture. This genome sequence will improve our understanding of the influence of heterotrophic bacteria on the physiology of cyanobacteria and may contribute to the development of new natural products.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2018,10.1128_genomea.00451-18,https://journals.asm.org/doi/10.1128/genomea.00451-18,Yes,Yes
+10.1128/genomeA.01223-17,Genome Announcements,1/31/18,3/4/22,2018-02,10.1128/genomea.01223-17,4/3/22,2169-8287,5,2018-02,235,NA,10.1128,American Society for Microbiology,0,Crossref,10,10,2,"Draft Genome Sequences of 11
+            <i>Salmonella enterica</i>
+            Serovar Typhimurium Strains Isolated from Human Systemic and Nonsystemic Sites in Brazil",journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.01223-17,6,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:italic>Salmonella enterica</jats:italic>
+            serovar Typhimurium strains isolated from systemic sites outside sub-Saharan Africa have been rarely sequenced. Here, we report the draft genome sequences of
+            <jats:italic>S</jats:italic>
+            . Typhimurium sequence type 19 (ST19) (
+            <jats:italic>n</jats:italic>
+            = 9), ST1649 (
+            <jats:italic>n</jats:italic>
+            = 1), and ST313 (
+            <jats:italic>n</jats:italic>
+            = 1) strains isolated from human systemic (e.g., blood) and nonsystemic (e.g., stool and wounds) sites in Brazil.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2018,10.1128_genomea.01223-17,https://journals.asm.org/doi/10.1128/genomea.01223-17,Yes,Yes
+10.1128/genomeA.00556-18,Genome Announcements,6/20/18,3/4/22,6/21/18,10.1128/genomea.00556-18,8/27/24,2169-8287,25,6/21/18,235,NA,10.1128,American Society for Microbiology,0,Crossref,15,15,12,Draft Genome Sequence of the Patulin-Producing Fungus Paecilomyces niveus Strain CO7,journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00556-18,6,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:named-content content-type=""genus-species"">Paecilomyces niveus</jats:named-content>
+            is an extremotolerant fungus with surprising powers to survive high temperatures and infect apples and aphids. These abilities make it a formidable enemy in food and agricultural environments. In addition, it produces patulin, the most significant mycotoxin in apples.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2018,10.1128_genomea.00556-18,https://journals.asm.org/doi/10.1128/genomea.00556-18,Yes,Yes
+10.1128/genomeA.00544-18,Genome Announcements,6/20/18,3/4/22,6/21/18,10.1128/genomea.00544-18,4/3/22,2169-8287,25,6/21/18,235,NA,10.1128,American Society for Microbiology,0,Crossref,10,10,2,Complete Genome Sequence of a Deletion Mutant of Vibrio parahaemolyticus from Pacific White Shrimp (Penaeus vannamei),journal-article,http://dx.doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00544-18,6,"<jats:title>ABSTRACT</jats:title>
+          <jats:p>
+            <jats:named-content content-type=""genus-species"">Vibrio parahaemolyticus</jats:named-content>
+            carrying the toxin genes
+            <jats:italic>pirA</jats:italic>
+            and
+            <jats:italic>pirB</jats:italic>
+            causes acute hepatopancreatic necrosis disease in shrimp. A genome sequence of
+            <jats:named-content content-type=""genus-species"">V. parahaemolyticus</jats:named-content>
+            strain R13 was determined that showed deletions of the entire
+            <jats:italic>pirA</jats:italic>
+            gene and the 5ʹ end of the
+            <jats:italic>pirB</jats:italic>
+            gene and does not cause the disease in experimental challenge.
+          </jats:p>",en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2018,10.1128_genomea.00544-18,https://journals.asm.org/doi/10.1128/genomea.00544-18,Yes,Yes
+10.1128/genomeA.00243-18,Genome Announcements,3/28/18,3/4/22,3/29/18,10.1128/genomea.00243-18,12/4/24,2169-8287,13,3/29/18,235,NA,10.1128,American Society for Microbiology,0,Crossref,0,0,0,"Correction for Tiba-Casas et al., “Draft Genome Sequence of a Pathogenic Vibrio vulnificus Strain Isolated in Brazil”",journal-article,https://doi.org/10.1128/asmj-crossmark-policy-page,https://doi.org/10.1128/genomea.00243-18,6,NA,en,Genome Announc,NA,NA,NA,NA,NA,NA,NA,NA,NA,2018,10.1128_genomea.00243-18,https://journals.asm.org/doi/10.1128/genomea.00243-18,No,No

@@ -11,7 +11,7 @@ library(mikropml)
 # load files
 
 #for snakemake implementation
-# {input.rscript} {input.metadata} {input.tokens} {input.ztable} 
+#{input.rscript} {input.metadata} {input.tokens} {input.ztable}
 # {input.tokenlist} {input.containerlist} {output.rds}
 input <- commandArgs(trailingOnly = TRUE)
 metadata <- read.csv(input[1])

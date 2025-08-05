@@ -8,38 +8,34 @@ library(tidyverse)
 # load data from snakemake input
 # {input.rscript} {input.metadata_links} {output.filename}
 input <- commandArgs(trailingOnly = TRUE)
-alllinks <- input[1]
-alllinks <- read_csv(alllinks)
-metadatalinks <- input[2]
-metadatalinks <- read_csv(metadatalinks)
+linkrot <- read_csv(input[1])
+lookup_table <- read_csv(input[2])
 output <- input[3]
 
 #non-snakemake implementation
-#alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
-#metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
-#output <- "Figures/linkrot/groundtruth/links_byjournal.png"
+linkrot <- read_csv("Data/final/linkrot_combined.csv.gz")
+lookup_table <-read_csv("Data/all_dois_lookup_table.csv.gz")
+# head(lookup_table)
 
 
-journal_tally <- unique(metadatalinks) %>%
-  count(container.title)
+
+linkrot_lookup<-left_join(linkrot, lookup_table, by = "html_filename",
+          relationship = "many-to-one", multiple = "any")
+
+
+journal_tally <- linkrot_lookup %>%
+  count(journal_abrev)
   
 sum <- sum(journal_tally$n)
 
-journal_only <- select(metadatalinks, paper = paper_doi, container.title)
-
-# do percentages of live/dead links by journal 
-# 20240730 - we only care about unique links 
-distinct <- 
-    distinct(alllinks) %>% 
-    left_join(., journal_only, by = "paper", relationship = "many-to-many")
-    
-
+#20250520 - why aren't there the right number of journals using container.title vs journal_abrev???
+#why so many nas? 
 
 #group links by link_status
-unique_type_tally <- distinct %>% 
+type_tally <- journal_tally %>% 
                       group_by(container.title) %>%
                       tally()
-unique_sum <- as.numeric(sum(unique_type_tally$n))
+# sum <- as.numeric(sum(unique_type_tally$n))
 
 
 #get count data per journal

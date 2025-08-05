@@ -1,14 +1,9 @@
 import pandas as pd 
 
 training_datasets = {
-    "groundtruth" : "Data/groundtruth.csv",
-    "gt_subset_30" : "Data/gt_subset_30.csv",
+    "groundtruth" : "Data/new_groundtruth.csv"
 }
 
-# practice_datasets = { 
-#     "1935-7885_alive" : "Data/1935-7885.csv", 
-#     "1098-5530_small" : "Data/1098-5530_small.csv",
-# }
 
 new_datasets = {
     "1098-5530" : "Data/1098-5530_metadata.RDS", #jb
@@ -23,6 +18,7 @@ new_datasets = {
     "1098-5514" : "Data/1098-5514_metadata.RDS", #jv
     "1098-5522" : "Data/1098-5522_metadata.RDS", #i&i
     "1098-6596" : "Data/1098-6596_metadata.RDS", #aac
+    "2169-8287" : "Data/2169-8287_metadata.RDS" #ga
 }
 
   
@@ -40,11 +36,11 @@ method = [
 
 mtry_dict = {
     "new_seq_data" : 300, 
-    "data_availability" : 200
+    "data_availability" : 400
 }
 
 #import list of dois with their url 
-dois = pd.read_csv("Data/papers/all_papers.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
+dois = pd.read_csv("Data/all_api_dois.csv.gz", header = 0, names = ["url", "doi"], skiprows = 0)
 doi_lookup = dict(zip(dois["doi"], dois["url"]))
 
 
@@ -54,25 +50,15 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        #expand("Data/papers/{datasets}.csv", datasets = new_datasets)
-        # "Data/papers/all_papers.csv.gz"
-        # doi_lookup.keys(),
-        # expand("Data/html/{doi}.html", doi = doi_lookup.keys()),
-        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()),
-        # "Data/final/predicted_results.csv.gz" 
-        "Data/linkrot/all_links.csv.gz"
-
+        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
+        # expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
+        # "Data/final/linkrot_combined.csv.gz"
+        # "Figures/linkrot/longlasting_byhostname.png"
+        "Figures/citationrate_byjournal.png"
+      
+    
         
-rule rds_to_csv: 
-    input: 
-        rscript = "Code/rds_to_csv.R",
-        rds = "Data/metadata/{datasets}_metadata.RDS"
-    output: 
-        "Data/papers/{datasets}.csv"
-    shell: 
-        """
-        {input.rscript} {input.rds} {output}
-        """
+
 
 rule all_papers: 
     input: 
@@ -86,7 +72,7 @@ rule all_papers:
         """
         {input.rscript} {params.paper_dir} {output} 
         """
-
+        
 
 rule indiv_dois:
     output:
@@ -94,7 +80,7 @@ rule indiv_dois:
     group:
         "get_doi"
     resources:
-        mem_mb = 8
+        mem_mb = 800
     params:
         url = lambda wildcards, output: doi_lookup[wildcards.doi]
     shell:
@@ -131,141 +117,64 @@ rule combine_predictions:
         """
         {input.rscript} {params.p_dir} {output}
         """
-
-
-
-
-rule doi_linkrot: 
+#20250220 - this rule replaces webscrape, cleanHTML, tokenize
+rule train_tokens: 
     input: 
-        rscript = "Code/doi_linkrot.R",
-        csv = "Data/papers/{datasets}.csv"
-    output:
-        "Data/doi_linkrot/alive/{datasets}.csv",
-        "Data/doi_linkrot/dead/{datasets}.csv"
-    params: 
-        filepath = "Data/doi_linkrot"
-    resources: 
-        mem_mb = 20000 
-    shell: 
-        """
-        {input.rscript} {input.csv} {params.filepath} {wildcards.datasets}
-        """
-
-rule webscrape:
-    input: 
-        rscript = "Code/Webscrape.R",
-        csv = "Data/doi_linkrot/alive/{datasets}.csv"
+        rscript = "Code/train_html_tokens.R",
+        metadata = "Data/new_groundtruth.csv"
     output: 
-        "Data/webscrape/{datasets}.html.csv.gz"
+        "Data/groundtruth/groundtruth.tokens.csv.gz"
     resources: 
-        mem_mb = 40000 
-    params: 
-        datasets = new_datasets
+        mem_mb = 40000
     shell: 
         """
-        {input.rscript} {input.csv} {output}
-        """
-
-
-rule cleanHTML: 
-    input:
-        rscript = "Code/cleanHTML.R",
-        html = "Data/webscrape/{datasets}.html.csv.gz"
-    output: 
-        "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-    resources: 
-        mem_mb = 20000
-    shell: 
-        """
-        {input.rscript} {input.html} {output}
-        """
-
-
-rule tokenize: 
-    input:
-        rscript = "Code/tokenize.R",
-        html = "Data/cleanhmtl/{datasets}.cleanhtml.csv.gz"
-    output: 
-        "Data/tokens/{datasets}.tokens.csv.gz"
-    resources: 
-        mem_mb = 80000 
-    shell: 
-        """
-        {input.rscript} {input.html} {output}
-        """      
+        {input.rscript} {input.metadata} {output}
+        """   
 
 
 rule ml_prep_train:
     input:
         rscript = "Code/ml_preprocess.R",
-        tokens = "Data/tokens/{datasets}.tokens.csv.gz",
-        metadata = "Data/doi_linkrot/alive/{datasets}.csv",
+        tokens = "Data/groundtruth/groundtruth.tokens.csv.gz",
+        metadata = "Data/new_groundtruth.csv",
     output: 
-        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed.RDS",
-        ztable = "Data/ml_prep/{datasets}.{ml_variables}.zscoretable.csv", 
-        tokenlist = "Data/ml_prep/{datasets}.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/ml_prep/{datasets}.{ml_variables}.container_titles.RDS"
+        rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS",
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz",
+        tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
+        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.csv"
     shell:
         """
         {input.rscript} {input.metadata} {input.tokens} {wildcards.ml_variables} {output.rds} {output.ztable} {output.tokenlist} {output.containerlist}
         """
 
+
 rule ztable: 
     input: 
         rscript = "Code/ztable_prep.R",
-        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv", 
+        ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable.csv.gz", 
         tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
+        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.csv", 
+        model = "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS"
     output: 
-        "Data/ml_prep/{datasets}.{ml_variables}.zscoretable_filtered.csv"
-    shell: 
-        """
-        {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
-        """
-
-
-rule ml_prep_predict:
-    input:
-        rscript = "Code/ml_prep_predict.R",
-        tokens = "Data/tokens/{datasets}.tokens.csv.gz",
-        metadata = "Data/doi_linkrot/alive/{datasets}.csv",
         ztable = "Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
-        tokenlist = "Data/ml_prep/groundtruth.{ml_variables}.tokenlist.RDS", 
-        containerlist = "Data/ml_prep/groundtruth.{ml_variables}.container_titles.RDS"
-    output: 
-        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed_predict.RDS"
-    resources: 
-        mem_mb = 40000 
-    shell:
-        """
-        {input.rscript} {input.metadata} {input.tokens} {input.ztable} {input.tokenlist} {input.containerlist} {output.rds}
-        """
-
-
-rule predict: 
-    input: 
-        rscript = "Code/predict.R",
-        da = "Data/preprocessed/{datasets}.data_availability.preprocessed_predict.RDS",
-        nsd = "Data/preprocessed/{datasets}.new_seq_data.preprocessed_predict.RDS", 
-        metadata = "Data/doi_linkrot/alive/{datasets}.csv"
-    output: 
-        "Data/predicted/{datasets}.data_predicted.RDS"
+        tokens = "Data/ml_prep/groundtruth.{ml_variables}.tokens_to_collapse.csv"
     shell: 
         """
-        {input.rscript} {input.da} {input.nsd} {input.metadata} {output}
+        {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output.ztable} {output.tokens} {input.model}
         """
+
 
 rule rf: 
     input:
         rscript = "Code/trainML_rf.R",
-        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed_predict.RDS", 
-        rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
+        rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
+        rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.performance.csv", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/rf.{ml_variables}.{seeds}.hp_performance.csv"
+        "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.performance.csv", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.hp_performance.csv"
     resources: 
-        mem_mb = 20000 
+        mem_mb = 40000
     shell:
         """
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.rdir}
@@ -275,9 +184,9 @@ rule rf:
 rule merge_results_figs: 
     input: 
         rscript = "Code/combine_models.R",
-        filepath = "Data/ml_results/{datasets}/{method}/{ml_variables}"
+        filepath = "Data/ml_results/groundtruth/{method}/{ml_variables}"
     output: 
-        "Figures/ml_results/{datasets}/{method}/hp_perf.{method}.{ml_variables}.png"
+        "Figures/ml_results/groundtruth/{method}/hp_perf.{method}.{ml_variables}.png"
     resources: 
         mem_mb = 20000 
     shell: 
@@ -288,9 +197,9 @@ rule merge_results_figs:
 rule auroc: 
     input: 
         rscript = "Code/auroc_fig.R",
-        filepath = "Data/ml_results/{datasets}/{method}/{ml_variables}"
+        filepath = "Data/ml_results/groundtruth/{method}/{ml_variables}"
     output: 
-        "Figures/ml_results/{datasets}/{method}/auroc.{ml_variables}.png"
+        "Figures/ml_results/groundtruth/{method}/auroc.{ml_variables}.png"
     resources: 
         mem_mb = 20000 
     shell: 
@@ -300,15 +209,16 @@ rule auroc:
 
 rule best_mtry: 
     input:
-        rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
+        rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML_rf_bestmtry.R",
-        rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
+        rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.model.RDS", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.bestTune.csv", 
-        "Data/ml_results/{datasets}/rf/{ml_variables}/best/best.rf.{ml_variables}.{seeds}.hp_performance.csv" 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.wholeModel.RDS", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.bestTune.csv", 
+        "Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.hp_performance.csv" 
     resources: 
-        mem_mb = 20000 
+        mem_mb = 40000 
     shell:
         """
         {input.rscript} {input.rds} {wildcards.ml_variables} {input.rdir}
@@ -316,12 +226,12 @@ rule best_mtry:
 
 rule final_model: 
     input:
-        rds = "Data/preprocessed/{datasets}.{ml_variables}.preprocessed.RDS", 
+        rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML_rf_finalmodel.R",
-        rdir = "Data/ml_results/{datasets}/rf/{ml_variables}"
+        rdir = "Data/ml_results/groundtruth/rf/{ml_variables}"
     output:
-        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.finalModel.RDS",
-        "Data/ml_results/{datasets}/rf/{ml_variables}/final/final.rf.{ml_variables}.{seeds}.model.RDS"
+        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS",
+        "Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.model.RDS"
     params: 
         mtry_value = lambda wildcards : mtry_dict[wildcards.ml_variables]
     resources: 
@@ -329,6 +239,34 @@ rule final_model:
     shell:
         """
         {input.rscript} {input.rds} {wildcards.ml_variables} {params.mtry_value} {input.rdir}
+        """
+
+
+rule nsdyes_figs: 
+    input: 
+        rscript = "Code/create_nsdyes_summary_figures.R",
+        metadata = "Data/final/predictions_with_metadata.csv.gz"
+    output: 
+        "Figures/citationrate_byjournal.png", 
+        "Figures/nsdyes_da_2000_2024.png"
+    shell: 
+        """
+        {input.rscript} {input.metadata} 
+        """
+
+
+
+###---------------geting dois from multiple apis---------------------------------
+rule lookup_table: 
+    input:
+        "Data/all_api_dois.csv.gz", 
+        "Data/crossref/crossref_all_papers.csv.gz", 
+        rscript = "Code/lookup_table.R" 
+    output: 
+        "Data/all_dois_lookup_table.csv.gz"
+    shell:
+        """
+        {input.rscript}
         """
 
 rule scopus: 
@@ -346,6 +284,8 @@ rule wos:
         rscript = "Code/doi_gathering_wos_via_httr.R"
     output: 
         "Data/wos/wos_{datasets}.csv.gz"
+    group: 
+        "wos"
     shell: 
         """
         {input.rscript} {wildcards.datasets} 
@@ -360,23 +300,50 @@ rule ncbi:
         esearch -db pubmed -query "{wildcards.datasets}" | efetch -format csv > "{output}"
         """
 
+rule crossref: 
+    input: 
+        rscript = "Code/doi_gathering_crossref.R"
+    output: 
+        "Data/crossref/crossref_{datasets}.csv.gz"
+    group:
+        "crossref"
+    shell: 
+        """
+        {input.rscript} {wildcards.datasets} 
+        """
 
 #-------------------LINK-------ROT-----------------------------------------------------------
 # 20241024 - will need to double check filenames here 
 
 rule link_rot: 
     input:
-        rscript = "Code/LinkRot.R"
+        rscript = "Code/LinkRot.R", 
+        html = "Data/html/{doi}.html"
     output: 
-        "Data/linkrot/all_links.csv.gz"
-    params: 
-        html_dir = "Data/html"
+        links = "Data/linkrot/{doi}.csv"
+    # group: 
+    #     "linkrot"
     resources: 
-        mem_mb = 40000
+        mem_mb = 8000
     shell:
         """
-        {input.rscript} {params.html_dir} {output}
+        {input.rscript} {input.html} {output.links}
         """
+
+rule combine_linkrot: 
+    input: 
+        rscript = "Code/combine_linkrot.R",
+    output: 
+        "Data/final/linkrot_combined.csv.gz"
+    resources: 
+        mem_mb = 40000
+    params: 
+        rot_dir = "Data/linkrot"
+    shell: 
+        """
+        {input.rscript} {params.rot_dir} {output}
+        """
+
         
 # 20241001 - i think a lot of these have roughly identical code
 # could combine into one file and just tell it what kind of variables 
@@ -429,17 +396,16 @@ rule lr_by_type:
         """
         {input.rscript} {input.all_links} {output.unique_filename}
         """
-
+#updated 20250520 
 rule lr_by_hostname:
     input: 
         rscript = "Code/linkrot/links_byhostname.R",
-        all_links = "Data/linkrot/{datasets}/{datasets}.alllinks.csv.gz"
-        # metadata_links = "Data/linkrot/{datasets}/{datasets}.linksmetadata.csv.gz"
+        linkrot = "Data/final/linkrot_combined.csv.gz"
     output:
-        filename = "Figures/linkrot/{datasets}/longlasting_byhostname.png"
+        "Figures/linkrot/longlasting_byhostname.png"
     shell: 
         """
-        {input.rscript} {input.all_links} {output.filename}
+        {input.rscript} {input.linkrot} {output}
         """
 
 rule lr_error_hostname: 

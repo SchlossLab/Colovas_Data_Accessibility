@@ -4,28 +4,35 @@
 #
 #library statements
 library(tidyverse)
-library(tidytext)
-library(jsonlite)
+# library(tidytext)
+# library(jsonlite)
 
 # load files
 
 #for snakemake implementation
-# {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
+# {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output.ztable} {output.tokens}
 input <- commandArgs(trailingOnly = TRUE)
 ztable <- read_csv(input[1])
 token_list <- readRDS(input[2])
-container_titles <-readRDS(input[3])
-output_file <- as.character(input[4])
-str(output_file)
+container_titles <-read_csv(input[3])
+output_ztable <- as.character(input[4])
+output_tokens <- as.character(input[5])
+# str(output_file)
+model <- 
+    readRDS(as.character(input[6]))
+
 
 # # #local implementation
-# ztable_filename <- "Data/groundtruth.data_availability.zscoretable.csv"
-# token_filename <- "Data/groundtruth.data_availability.tokenlist.RDS"
+# # {input.rscript} {input.ztable} {input.tokenlist} {input.containerlist} {output}
+# ztable_filename <- "Data/ml_prep/groundtruth.data_availability.zscoretable.csv.gz"
+# token_filename <- "Data/ml_prep/groundtruth.data_availability.tokenlist.RDS"
 # ztable <- read_csv(ztable_filename)
 # token_list <- readRDS(token_filename)
 # container_titles <-
-#     readRDS("Data/groundtruth.data_availability.container_titles.RDS")
+#     read_csv("Data/ml_prep/groundtruth.data_availability.container_titles.csv")
 # output_file <- "Data/groundtruth.data_availability.zscoretable_filtered.csv"
+
+
 
 #collapse correlated variables in ztable --------------------------------------
 
@@ -50,7 +57,9 @@ token_unlist <-
 
 tokens_withdata <-
     token_unlist %>% 
-        left_join(., ztable, by = "tokens")
+        left_join(., ztable, by = "tokens") %>%
+        mutate(token_mean = ifelse(is.na(token_mean), 0, token_mean), 
+                token_sd = ifelse(is.na(token_sd), 1, token_sd)) 
 
 ztable_without_collapsed <-
     ztable %>% 
@@ -58,41 +67,44 @@ ztable_without_collapsed <-
 
 tokens_toz <- 
     tokens_withdata %>%
+        group_by(grpname) %>% 
         select(-tokens) %>% 
         rename(tokens = grpname) %>%
-        unique()  
+        summarize(token_mean = mean(token_mean),
+                token_sd = mean(token_sd)) 
 
 ztable_withgrps <-
     tokens_toz %>% 
         full_join(., ztable_without_collapsed) 
     
 
-
-#sanity checks 
-grep("grp", ztable_withgrps$tokens, value = TRUE)
 for(i in 1:length(token_list)){
     print(token_list[i] %in% ztable_withgrps$tokens)
 }
-grep("attribution international", ztable_withgrps$tokens, value = TRUE)
 
-#add container.titles to the z score table-----------------------------------
-container_titles <-
-    container_titles %>% 
-        mutate(var_name = paste0("container.title_", container.title)) 
-
-containers_toz <-
-container_titles %>% 
-    select(var_name, token_mean, token_sd) %>% 
-    rename(tokens = var_name) 
 
 ztable_full <-
-containers_toz %>% 
-    full_join(ztable_withgrps) 
-    
-#sanity check    
-grep("container", ztable_full$tokens, value = TRUE)
+container_titles %>% 
+    full_join(., ztable_withgrps) 
 
-write_csv(ztable_full, file = output_file)
-write_csv(tokens_withdata, file = "Data/ml_prep/tokens_to_collapse.csv")
+#20250423 - combine with the model so that you can truly be sure 
+# model_names<-da_model$xNames
+model_stuff<-tibble(model_names = model$xNames, in_model = "Yes")
+ztable_stuff<-mutate(ztable_full, in_ztable = "Yes")
+
+everything<-full_join(model_stuff, ztable_stuff, by = join_by(model_names == tokens)) %>% 
+    filter(., in_model == "Yes") %>% 
+    mutate(token_mean = ifelse(is.na(token_mean), 0, token_mean), 
+                token_sd = ifelse(is.na(token_sd), 1, token_sd)) %>%
+    select(model_names, token_mean, token_sd) %>%
+    rename(tokens = model_names)
+
+#sanity check 
+filter(everything, is.na(token_sd))
+which(is.na(everything), arr.ind = TRUE)
+view(everything)
+
+write_csv(everything, file = output_ztable)
+write_csv(tokens_withdata, file = output_tokens)
 
 

@@ -1,0 +1,53 @@
+---
+title: "20250801_abner_emmeans.Rmd"
+output: html_document
+date: "2025-08-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(MASS)
+library(emmeans)
+library(tidyverse)
+
+#load local metadata
+nsd_yes_metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
+
+#filter out NAs (important later)
+my_data <- nsd_yes_metadata %>%
+  filter(., age.in.months != "NA" & da_factor != "NA" & container.title != "NA") %>% 
+  mutate(da_factor = factor(da_factor), 
+         container.title = factor(container.title))
+```
+
+```{r}
+
+# First, fit your model and store it
+model <- glm.nb(
+    is.referenced.by.count ~ da_factor + log(age.in.months) + container.title +
+        container.title*da_factor + log(age.in.months)*da_factor +
+        container.title*log(age.in.months) +
+        log(age.in.months) * da_factor * container.title,
+    data = my_data,
+    link = "log"
+)
+# Define the age values you want to examine (in months)
+age_values <- c(12, 36, 60, 120)  # Adjust these as needed
+# Get emmeans on the link scale for all combinations
+emm <- emmeans(model,  ~ da_factor + age.in.months | container.title,
+        at = list(age.in.months = age_values), CIs = TRUE,
+        type = "response")
+# Get pairwise comparisons (differences) between da_factor levels
+differences <- contrast(
+    emm, by = c("age.in.months", "container.title"),
+    method = "pairwise",
+    ratios = TRUE, CIs = TRUE
+)
+# See the contrasts
+summary(differences)
+# Plot the contrasts
+plot(differences, ratios = TRUE)
+
+
+```
+

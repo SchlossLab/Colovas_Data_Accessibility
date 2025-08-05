@@ -9,66 +9,66 @@ library(tidyverse)
 # load data from snakemake input
 # {input.rscript} {input.all_links} {output.all_filename} {output.unique_filename}
 input <- commandArgs(trailingOnly = TRUE)
-alllinks <- input[1]
-alllinks <- read_csv(alllinks)
-unique_output <- input[2]
+linkrot <- read_csv(input[1])
+output <- input[2]
 
 
-#non-snakemake implementation
-#alllinks <- read_csv("Data/linkrot/groundtruth.alllinks.csv.gz")
-#metadatalinks <- read_csv("Data/linkrot/groundtruth.linksmetadata.csv.gz")
-# unique_output <- "Figures/linkrot/groundtruth/alllinks_byhostname.png"
+# local testing
+# linkrot <- read_csv("Data/final/linkrot_combined.csv.gz")
 
-# 20240730 - we only care about unique links 
+
 
 #group links by link_status
-unique_type_tally <- distinct(alllinks) %>% 
-                      group_by(hostname) %>%
-                      tally()
-unique_sum <- as.numeric(sum(unique_type_tally$n))
+tally <- linkrot %>% 
+          group_by(hostname) %>%
+          tally()
 
 
+#filter for the long lasting links
+# use ^asm = aka starts with asm 
 
-#20240730 - change to geom_point plot with percent alive/dead
-# include N on the y axis 
-
-distinct <- distinct(alllinks)
-#plot status of "more permanent hostname links" 
-long_lasting <- filter(distinct, 
-                       grepl("doi|git|figshare|datadryad|zenodo|asm", hostname)) 
-
-#get count data per hostname 
-long_lasting <-
-  long_lasting %>% 
-    mutate(short_hostname = str_split_i(hostname, "\\.", -2)) 
+long_lasting <- linkrot %>% 
+    filter(str_detect(hostname, "^doi|^git|^figshare|^datadryad|^zenodo|^asm|^bitbucket")) %>%
+    mutate(collapse_hostname = case_when(str_detect(hostname, "asm") ~ "asm", 
+                                  str_detect(hostname, "doi") ~ "doi", 
+                                  str_detect(hostname,"git") ~ "github",
+                                  str_detect(hostname,"figshare") ~ "figshare",
+                                  str_detect(hostname,"datadryad") ~ "datadryad",
+                                  str_detect(hostname, "zenodo") ~ "zenodo",
+                                  str_detect(hostname, "bitbucket") ~ "bitbucket",
+                                  TRUE ~ "other") )
+sum <- nrow(long_lasting)
     
 long_lasting <-
   long_lasting %>% 
-    mutate(.by = short_hostname, 
+    mutate(.by = collapse_hostname, 
           n_links = n(), 
           n_dead = sum(!is_alive),
           dead_fract = ((n_dead) / n_links), 
           )
+
+#20250520 - save this for pat 
+# write_csv(long_lasting, file =  "Data/final/long_lasting_links.csv")
 
 # 20240731 - technically this has every single point still and not just one per hostname...
 # doesn't actually work 
 
 long_count <-
   long_lasting %>% 
-    count(dead_fract, short_hostname) %>%
-    mutate(fancy_name = paste0(str_to_title(short_hostname), "\n(", `n`, ")"))
+    count(dead_fract, collapse_hostname) %>%
+    mutate(fancy_name = paste0(str_to_title(collapse_hostname), "\n(", `n`, ")"))
       
 
-unique_long_lasting_status <- 
+#graph the results 
   ggplot(
     data = long_count, 
     mapping = aes(x = dead_fract, 
                   y = fct_reorder(fancy_name, dead_fract))) + 
   geom_point(size = 2.5) +
-  labs( x = "Fraction of Dead Links per Website Hostname", 
+  labs( x = "Fraction of Dead Links per Website Hostname (%)", 
         y = "Website Hostname (N)",
-        title = stringr::str_glue("Percentage of Unique External User-Added Links\nby Hostname and Status for 'Long-Lasting' Hostnames (N={unique_sum})")) +
+        title = stringr::str_glue("Percentage of Dead External User-Added Links\nby Hostname and Status for\n'Long-Lasting' Hostnames (N={sum})")) +
   scale_x_continuous(labels = scales::percent) 
-unique_long_lasting_status
 
-ggsave(unique_long_lasting_status, filename = unique_output)
+#save the result
+ggsave(filename = output)

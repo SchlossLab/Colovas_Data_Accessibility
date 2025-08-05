@@ -6,9 +6,9 @@
 # library statements
 library(tidyverse)
 library(tidytext)
+# library(mikropml) 
 library(devtools)
-#library(mikropml)
-install_github("joannacolovas/mikropml", 
+install_github("joannacolovas/mikropml",
                 quiet = TRUE)
 
 
@@ -29,28 +29,8 @@ output_dir <- input[3]
 # ml_var_snake <- "data_availability"
 # output_dir <- paste0("Data/ml_results/groundtruth/rf/", ml_var_snake)
 
-## from kelly 
+
 # # 2. We can do 5-fold cross validation for a single seed to get the best mtry value.
-# results_cv <- run_ml(
-#   train_data,
-#   method = "rf",
-#   outcome_colname = "your_outcome",
-#   training_frac = 1.0,
-#   seed = best_seed,
-#   kfold = 5,
-#   cv_times = 100,
-#   calculate_performance = FALSE # don't calc performance, there's no test data
-# )
-## practice model with small dataset 
-# results_cv <- mikropml::run_ml(mikropml::otu_mini_bin,
-#                    method = "rf",  
-#                    training_frac = 1.0,
-#                    kfold = 5, 
-#                    cv_times = 100, 
-#                    seed = 102899, 
-#                    calculate_performance = FALSE)
-
-
 # run model using mikropml::run_ml
 results_cv <- mikropml::run_ml(data_processed$dat_transformed,
                    method = "rf",  
@@ -58,7 +38,7 @@ results_cv <- mikropml::run_ml(data_processed$dat_transformed,
                    training_frac = 1.0,
                    kfold = 5, 
                    cv_times = 100, 
-                   hyperparameters = list(mtry =  c(84, 100, 150, 200, 300)),
+                   hyperparameters = list(mtry = c(100, 200, 300, 400, 500, 600)),
                    seed = best_seed, 
                    calculate_performance = FALSE)
 # save besttune
@@ -71,6 +51,10 @@ write_csv(hyperparameters,paste0(output_dir, "/best/best.rf.", ml_var_snake, "."
 
 # write out model
 saveRDS(results_cv$trained_model,file = paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", best_seed, ".model.RDS"))
+
+# write out model
+saveRDS(results_cv, file = paste0(output_dir, "/best/best.rf.", ml_var_snake, ".", best_seed, ".wholeModel.RDS"))
+
 
 
 

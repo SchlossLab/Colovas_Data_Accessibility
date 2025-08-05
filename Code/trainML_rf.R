@@ -13,15 +13,6 @@ library(mikropml)
 # perf="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv"
 # dir = "Data/ml_results/{datasets}/rf"
        
-# input:
-#    rds = "Data/{datasets}.{ml_variables}.preprocessed.RDS", 
-#    rscript = "Code/trainML_rf.R",
-#    dir = "Data/ml_results/{datasets}/rf"
-# output:
-#    model="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.model.RDS", 
-#    perf="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.performance.csv", 
-#    #prediction="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.prediction.csv", 
-#    hp_performance="Data/ml_results/{datasets}/rf/rf.{seeds}.{ml_variables}.hp_performance.csv"
 
 # {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.dir}
 input <- commandArgs(trailingOnly = TRUE)
@@ -32,7 +23,7 @@ ml_var_snake <- input[3]
 output_dir <- input[4]
 
 ##local checks
-# rds <- "Data/groundtruth.data_availability.preprocessed.RDS"
+# rds <- "Data/preprocessed/groundtruth.data_availability.preprocessed.RDS"
 # data_processed <- readRDS(rds)
 # seed <- 1
 # ml_var_snake <- "data_availability"
@@ -42,7 +33,7 @@ output_dir <- input[4]
 ml_results <- run_ml(data_processed$dat_transformed,
                    method = "rf",  
                    outcome_colname = ml_var_snake,
-                   hyperparameters = list(mtry =  c(84, 100, 150, 200, 300)),
+                   hyperparameters = list(mtry = c(100, 200, 300, 400, 500, 600)),
                    find_feature_importance = TRUE,
                    seed = seed)
 

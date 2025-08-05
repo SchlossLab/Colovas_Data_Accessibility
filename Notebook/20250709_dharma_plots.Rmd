@@ -1,0 +1,339 @@
+---
+title: "2025079_dharma_plots"
+output: html_document
+date: "2025-07-09"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(MASS)
+library(DHARMa)
+library(sjPlot)
+library(effects)
+library(ggeffects)
+```
+
+```{r loading_data, include=FALSE}
+#load local metadata
+nsd_yes_metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
+
+#filter out NAs (important later)
+nsd_yes_metadata <- nsd_yes_metadata %>%
+  filter(., age.in.months != "NA" & da_factor != "NA" & container.title != "NA") %>% 
+  mutate(da_factor = factor(da_factor), 
+         container.title = factor(container.title))
+
+#works faster locally
+total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+        + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+        log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
+```
+
+## Using DHARMa package to evaluate the fit of our negative binomial model
+
+-   Model format for all data from all journals **(N = 47353)**
+
+    -   MASS::glm.nb(is.referenced.by.count\~ da_factor +
+        log(age.in.months) + container.title +
+        container.title\*da_factor + log(age.in.months)\*da_factor +
+        container.title\*log(age.in.months) +
+        log(age.in.months)\*da_factor\*container.title, data =
+        nsd_yes_metadata, link = log)
+    -   Data nsd_yes_metadata was filtered to remove all NAs from
+        variables da_factor, age.in.months, and container.title to allow
+        for some of the below visualizations.
+    -   See below for number of papers from each journal.
+
+    ```{r container.title.n, echo=FALSE}
+    nsd_yes_metadata %>%  
+      count(container.title, sort = T) %>% 
+      knitr::kable()
+    ```
+
+## Using Predict to Graph the lines
+
+```{r}
+# predict.glm(total_model, type = "terms",)
+plot_model(total_model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]")) 
+
+
+```
+
+### Plot Residuals
+
+-   Graph is very busy with all 47K observations
+
+-   see 2nd plot for 5K observations for a smaller group to examine
+    (index 25000-30000)
+
+-   Residuals look like an amorphous blob as suggested by Abner\@CSCAR
+
+```{r}
+simulationOutput <- simulateResiduals(fittedModel = total_model, plot = F)
+residuals(simulationOutput) %>% str()
+
+#there is no alpha parameter in base R plot 
+residuals(simulationOutput)  %>% 
+  plot(main = "Residuals plotted by numerical index", pch = ".")
+
+# residuals(simulationOutput)[25000:30000] %>% 
+#   plot(main = "Residuals for observation indices 25000 - 3000")
+```
+
+## Plots for Residuals - QQ and DHARMa
+
+### QQ Plot
+
+-   KS Test = Two sample Kolmogorov-Smirnov (KS) Test
+
+    -   This function tests the overall uniformity of the simulated
+        residuals in a DHARMa object - Deviation is significant between
+        the expected residuals and the actual observed residuals.
+
+    -   "If the P value is small, conclude that the two groups were
+        sampled from populations with different distributions. " -Prism
+        help page
+
+-   Dispersion Test
+
+    -   This function performs simulation-based tests for
+        over/underdispersion
+
+    -   Over / underdispersion means that the observed data is more /
+        less dispersed than expected under the fitted model.
+
+    -   Deviation is significant between the observed data and fitted
+        model.
+
+-   Outlier Test
+
+    -   This function tests if the number of observations outside the
+        simulation envelope are larger or smaller than expected
+
+    -   Methods generate a null expectation, and then test for an excess
+        or lack of outliers. Per default, testOutliers() looks for both,
+        so if you get a significant p-value, you have to check if you
+        have to many or too few outliers.
+
+    -   See Outlier test for distribution of outliers. - Many at 1.0
+        residual.
+
+```{r}
+plot(simulationOutput, sub = "All data glm(fixed)")
+plotQQunif(simulationOutput)
+plotResiduals(simulationOutput)
+DHARMa::testOutliers(simulationOutput, type = "bootstrap")
+```
+
+## Looking at each model by journal
+
+```{r}
+#smaller model with 2 terms
+two_term_glmnb <-function(model_data, model_name) {
+
+  total_model <-MASS::glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
+       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = model_data, link = log)
+
+  return(total_model)
+ 
+}
+
+journals <- 
+  nsd_yes_metadata %>%  
+  count(journal_abrev) %>%  
+  filter(journal_abrev != "jmbe") 
+
+#j <- 5
+
+for(j in 1:nrow(journals)) { 
+  journal_data <- 
+  nsd_yes_metadata %>% 
+    filter(journal_abrev == journals[[j,1]]) %>%  
+    mutate(da_factor = factor(da))
+
+
+actual_citations <- 
+ journal_data %>% 
+    filter(age.in.months %in% c(12, 60, 84, 120, 180)) %>% 
+    group_by(age.in.months, da_factor) %>%  
+   count(is.referenced.by.count, .drop = FALSE) %>% 
+   summarize(mean_citations = mean(is.referenced.by.count)) %>% 
+  ggplot(aes(x = da_factor, y = mean_citations, color = factor(age.in.months))) + 
+  geom_point() + 
+  ggtitle(paste0("Observed mean citations\nPlotted for journal ", journals[[j,1]]))
+print(actual_citations)
+
+  model <- two_term_glmnb(journal_data, journals[[j,1]])
+  
+#  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", 
+  # "age.in.months[12,60,84,120,180]"))
+  
+
+
+  
+  if(j == 3) { #genomea = 5
+  plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[84,120,144]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+  
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[84,120,144]"))
+  }
+  else if (j == 9) { ##Mra - 7 
+    plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+    p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"))
+    
+  }
+  else if (j == 10 | j == 11 ) { #msphere, msystems 9 years
+  plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,108]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+  
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,108]"))
+  }
+  else if (j == 12 ) { 
+      plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+      p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]"))
+  }
+  else { 
+     plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
+     p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]"))
+  }
+  
+    ratio_plot <- tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group))) %>%  
+    pivot_wider(names_from = da, values_from = predicted) %>%  
+    mutate(ratio = `2`/`1`) %>%  
+    ggplot(., aes(x = age.in.months, y = ratio)) + 
+    #  ratio_plot <- 
+    #   tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group)), low = p$conf.low, high = p$conf.high) %>%  
+    # pivot_wider(names_from = da, values_from = c(predicted, low, high)) %>%  
+    # mutate(high_high_ratio = `high_2`/`high_1`,
+    #        high_mid_ratio = `high_2`/`predicted_1`,
+    #        high_low_ratio = `high_2`/`low_1`,
+    #        high_high_ratio = `high_2`/`high_1`,
+    #        mid_high_ratio = `predicted_2`/`high_1`,
+    #        mid_mid_ratio = `predicted_2`/`predicted_1`,
+    #        mid_low_ratio = `predicted_2`/`low_1`, 
+    #        low_high_ratio = `low_2`/`high_1`, 
+    #        low_mid_ratio = `low_2`/`predicted_1`,
+    #        low_low_ratio = `low_2`/`low_1`,
+    #        ) %>%  
+    #     dplyr::select(., age.in.months, ends_with("ratio")) %>% 
+    #     pivot_longer(., cols = ends_with("ratio"), names_to = "ratio_name", 
+    #                  values_to = "ratio_value") %>% 
+    # ggplot(., aes(x = age.in.months, y = ratio_value)) + 
+    # geom_boxplot(aes(group = age.in.months)) +
+    geom_point() + 
+     labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
+          y = "Ratio number of citations da=Yes/da=No")
+    
+ print(plot_model)
+ print(ratio_plot)
+ 
+  simulation <- simulateResiduals(fittedModel = model, plot = F)
+  
+  # residuals(simulation)  %>% 
+  # plot(main = paste0("Residuals plotted for journal ", journals[[j,1]]), pch = ".")
+  residuals <- 
+   residuals(simulation) %>%  tibble(residual = .) %>%  
+     ggplot(aes(y = residual, x = seq_along(residual) )) + 
+     geom_point(size = 1) + 
+     geom_smooth() +
+     ggtitle(paste0("Residuals with geom_smooth line' \nPlotted for journal ", journals[[j,1]]))
+  print(residuals)
+  
+   residuals_hist <-
+   residuals(simulation) %>%  tibble(residual = .) %>%  
+     ggplot(aes(x = residual)) + 
+     geom_histogram(linewidth = 0.25, color = "white", binwidth = 1/100) + 
+     ggtitle(paste0("Residuals Plotted for journal ", journals[[j,1]]))
+  print(residuals_hist)
+  
+  plot(simulation, sub = paste0("Simulation plotted for journal ", journals[[j,1]]))
+  
+  
+  }
+```
+
+## JB 10 years
+
+```{r}
+ j <-  5
+  journal_data <- 
+  nsd_yes_metadata %>% 
+    filter(journal_abrev == journals[[j,1]]) %>%  
+    mutate(da_factor = factor(da)) %>%  
+    filter(age.in.months <= 120)
+  
+
+
+actual_citations <- 
+ journal_data %>% 
+    filter(age.in.months %in% c(12, 60, 84, 120)) %>% 
+    group_by(age.in.months, da_factor) %>%  
+   count(is.referenced.by.count, .drop = FALSE) %>% 
+   summarize(mean_citations = mean(is.referenced.by.count)) %>% 
+  ggplot(aes(x = da_factor, y = mean_citations, color = factor(age.in.months))) + 
+  geom_point() + 
+  ggtitle(paste0("Observed mean citations\nPlotted for journal ", journals[[j,1]]))
+print(actual_citations)
+
+  model <- two_term_glmnb(journal_data, journals[[j,1]])
+  # assign(journal_abrev[[j,1]], model)
+  
+  
+     plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]], " for the last 10 years"))
+  
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]"))
+  
+  ratio_plot <- tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group))) %>%  
+    pivot_wider(names_from = da, values_from = predicted) %>%  
+    mutate(ratio = `2`/`1`) %>%  
+    ggplot(., aes(x = age.in.months, y = ratio)) + 
+ # ratio_plot <- 
+ #      tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group)), low = p$conf.low, high = p$conf.high) %>%  
+ #    pivot_wider(names_from = da, values_from = c(predicted, low, high)) %>%  
+ #    mutate(high_high_ratio = `high_2`/`high_1`,
+ #           high_mid_ratio = `high_2`/`predicted_1`,
+ #           high_low_ratio = `high_2`/`low_1`,
+ #           high_high_ratio = `high_2`/`high_1`,
+ #           mid_high_ratio = `predicted_2`/`high_1`,
+ #           mid_mid_ratio = `predicted_2`/`predicted_1`,
+ #           mid_low_ratio = `predicted_2`/`low_1`, 
+ #           low_high_ratio = `low_2`/`high_1`, 
+ #           low_mid_ratio = `low_2`/`predicted_1`,
+ #           low_low_ratio = `low_2`/`low_1`,
+ #           ) %>%  
+ #        dplyr::select(., age.in.months, ends_with("ratio")) %>% 
+ #        pivot_longer(., cols = ends_with("ratio"), names_to = "ratio_name", 
+ #                     values_to = "ratio_value") %>% 
+ #    ggplot(., aes(x = age.in.months, y = ratio_value)) + 
+ #    geom_boxplot(aes(group = age.in.months)) +
+    geom_point() + 
+     labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
+          y = "Ratio number of citations da=Yes/da=No")
+
+ print(plot_model)
+ print(ratio_plot)
+ 
+  simulation <- simulateResiduals(fittedModel = model, plot = F)
+  
+  # residuals(simulation)  %>% 
+  # plot(main = paste0("Residuals plotted for journal ", journals[[j,1]]), pch = ".")
+  
+   residuals(simulation) %>%  tibble(residual = .) %>%  
+     ggplot(aes(y = residual, x = seq_along(residual) )) + 
+     geom_point(size = 1) + 
+     geom_smooth() +
+     ggtitle(paste0("Residuals with geom_smooth line' \nPlotted for journal ", journals[[j,1]], " for the last 10 years"))
+  
+  plot(simulation, sub = paste0("Simulation plotted for journal ", journals[[j,1]]))
+  
+  
+     residuals_hist <-
+   residuals(simulation) %>%  tibble(residual = .) %>%  
+     ggplot(aes(x = residual)) + 
+     geom_histogram(linewidth = 0.25, color = "white", binwidth = 1/100) + 
+     ggtitle(paste0("Residuals Plotted for journal ", journals[[j,1]]))
+  print(residuals_hist)
+  
+  plot(simulation, sub = paste0("Simulation plotted for journal ", journals[[j,1]]))
+  
+
+```

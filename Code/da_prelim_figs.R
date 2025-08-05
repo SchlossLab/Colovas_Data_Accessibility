@@ -5,69 +5,107 @@
 #
 #library statements
 library(tidyverse)
+library(MASS)
 
-#import data 
-# predicted_files <-read_csv("Data/final/predicted_results.csv.gz")
-# head(predictions)
+#load metadata
+metadata <- read_csv("Data/final/20250423/20250423_predictions_with_metadata.csv.gz")
 
-# lookup_table <-read_csv("Data/papers/lookup_table.csv.gz")
-# head(lookup_table)
-
-# joined_predictions <- full_join(predicted_files, lookup_table, by = join_by("file" == "html_filename")) 
-# head(joined_predictions)
-
-# papers_dir <- "Data/papers"
-# csv_files <- list.files(papers_dir, "*.csv", full.names = TRUE) 
-
-# keep_track<-tibble()
-# for(i in 1:12) {
-#     csv_file <- read_csv(csv_files[i])
-#     #this does it for the current journal to join with all_papers
-#     all_papers <- left_join(csv_file, joined_predictions) %>%
-#         mutate_if(is.double, as.character, .vars = "issue") %>%
-#         mutate_if(lubridate::is.Date, as.character, .vars = "created")
-#     keep_track<-bind_rows(keep_track, all_papers)
-   
-# }
-
-# write_csv(keep_track, file = "Data/final/predictions_with_metadata.csv.gz")
-
-metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz")
-
-
-#now we can start doing the fun graphing part
-
-# make column for date published (issued) 
+#get the year published out of as many of these as possible
 metadata <- metadata %>% 
-    mutate(year.published = str_sub(issued, start = 1, end = 4), 
-            years.since.published = (2024-as.numeric(year.published)), 
-             citations.per.year = (is.referenced.by.count/years.since.published), 
-             issued.date = ymd(issued, truncated = 2))
+    mutate(year.published = dplyr::case_when((is.na(pub_date) & !is.na(issued) & is.na(publishYear)) ~ str_sub(issued, start = 1, end = 4), 
+                        (!is.na(pub_date) & is.na(issued) & is.na(publishYear)) ~ as.character(pub_year), 
+                        (is.na(pub_date) & is.na(issued) & !is.na(publishYear)) ~ as.character(publishYear), 
+                        FALSE ~ NA_character_), 
+          issued.date = ymd(issued, truncated = 2) %||% ymd(pub_date, truncated = 2), 
+          is.referenced.by.count = ifelse(!is.na(is.referenced.by.count), is.referenced.by.count, `citedby-count`))
+
 metadata <- metadata %>% 
-  mutate(months.since.y2k = interval(ymd("2000-01-01"), metadata$issued.date) %/% months(1), 
-          age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1))
-
-colnames(metadata)
-
-metadata %>% count(container.title)
-
-#20250203 - how many mra papers are there from 2024? 
-metadata %>% 
-  filter(year.published == 2024 & container.title == "Microbiology Resource Announcements" & nsd == "Yes", da == "No") %>%
-  select(c(paper, doi, da, nsd, year.published)) %>%  
-  write_csv(file = "Data/spot_check/mra_2024_nsd_yes_da_no.csv")
+  mutate(age.in.months = interval(metadata$issued.date, ymd("2025-01-01")) %/% months(1))
 
 
-#modeling using time intervals
-summary(lm(is.referenced.by.count~da + nsd + months.since.y2k, data = metadata))
+#modeling using time intervals -------------------------------------------------------------------------------
+# summary(lm(is.referenced.by.count~da + nsd + months.since.y2k, data = metadata))
+
+#without 0 intercept 
+summary(lm(is.referenced.by.count~ da + nsd + age.in.months, data = metadata))
+#with 0 intercept 
 summary(lm(is.referenced.by.count~ 0 + da + nsd + age.in.months, data = metadata))
 
-#modeling with nsd yes only data
+
+
+#modeling with nsd yes only data #482 without is.referenced.by.count
 nsd_yes_metadata <- 
   metadata %>% 
     filter(nsd == "Yes")
 
+summary(lm(is.referenced.by.count~da + age.in.months, data = nsd_yes_metadata))
 summary(lm(is.referenced.by.count~0+da + age.in.months, data = nsd_yes_metadata))
+
+nsd_yes_da_factor <- 
+nsd_yes_metadata %>%
+  mutate(da_factor = factor(da))
+
+#factored da 
+# summary(lm(is.referenced.by.count~+da + age.in.months, data = nsd_yes_da_factor))
+summary(lm(is.referenced.by.count~0+da_factor + age.in.months, data = nsd_yes_da_factor))
+
+# summary(lm(is.referenced.by.count~+da + da:age.in.months, data = nsd_yes_da_factor))
+summary(lm(is.referenced.by.count~0+da_factor + da_factor:age.in.months, data = nsd_yes_da_factor))
+
+#summary(lm(is.referenced.by.count~0+da_factor + da_factor*age.in.months, data = nsd_yes_da_factor))
+
+
+# #using negative binomial regression
+# summary(glm.nb(is.referenced.by.count~0+da + age.in.months, data = nsd_yes_da_factor))
+
+# summary(glm.nb(is.referenced.by.count~0+da + da:age.in.months, data = nsd_yes_da_factor))
+#statistical models end --------------------------------------------------------------------------------------
+
+
+#is.referenced.by.count~0+da_factor + da_factor:age.in.months, data = nsd_yes_da_factor
+
+#graphing of the model data
+nsd_yes_da_factor %>%
+  ggplot(aes(x = age.in.months, 
+            y = is.referenced.by.count, 
+            color = da_factor)) + 
+  geom_point(alpha = 0.5, size = 0.2) + 
+  geom_smooth(method = "lm", formula = y ~ 0 + x, se = TRUE) + 
+  coord_cartesian(ylim = c(0, 200)) #doesn't remove the data before stats 
+
+
+ggsave(filename = "Figures/lm_by_da.jpg")
+
+#20250327 - mob 
+library(Hmisc) #new package for stats
+nsd_yes_da_factor %>%
+  ggplot(aes(x = age.in.months, 
+            y = is.referenced.by.count, 
+            color = da_factor)) + 
+  stat_summary(fun.data = "median_hilow", 
+              fun.args = list(conf.int = 0.5), 
+              linewidth = 0.1, size = 0.2) +
+  #median_hilow = median center, line = 95%CI, conf.int = 0.5 gives iqr
+  facet_wrap(~container.title, scales = "free_y") + 
+  geom_smooth(method = "lm", formula = y ~ 0 + x, se = FALSE, linewidth = 2) 
+ggsave(file = "Figures/citationrate_byjournal.png")
+
+colnames(nsd_yes_da_factor)
+
+#looking for specific papers
+#mra outlier - da no, citations >40 about 60 months old
+#2019 paper about kenyan bat coronavirus sequence
+nsd_yes_da_factor %>%
+filter(is.referenced.by.count > 40 & container.title == "Microbiology Resource Announcements" & da == "No") %>% 
+view()
+
+
+
+nsd_yes_da_factor %>%
+filter(is.referenced.by.count > 1000 & container.title == "mSystems" & da == "No") %>% 
+view()
+
+
 
 
 #number of papers over time
@@ -159,55 +197,55 @@ metadata %>%
 
 
 
-#do avg citations per year by nsd/da status
-metadata %>%  
-    filter(!is.na(nsd) & !is.na(year.published)) %>% 
-    ggplot(mapping = aes(x = nsd,
-                        y = citations.per.year)) + 
-    geom_boxplot() + 
-    ylim(0,15) + 
-    labs(x = "Does this Contain New Sequencing Data?", 
-         y = "Average Number of Times Referenced/Year", 
-         title = "Average Number of Times Referenced/Year \nby New Sequencing Data Status")
+# #do avg citations per year by nsd/da status
+# metadata %>%  
+#     filter(!is.na(nsd) & !is.na(year.published)) %>% 
+#     ggplot(mapping = aes(x = nsd,
+#                         y = citations.per.year)) + 
+#     geom_boxplot() + 
+#     ylim(0,15) + 
+#     labs(x = "Does this Contain New Sequencing Data?", 
+#          y = "Average Number of Times Referenced/Year", 
+#          title = "Average Number of Times Referenced/Year \nby New Sequencing Data Status")
 
-#da
-metadata %>%  
-    filter(!is.na(da) & !is.na(year.published)) %>% 
-    ggplot(mapping = aes(x = da,
-                        y = citations.per.year)) + 
-    geom_boxplot() + 
-    ylim(0,15)  + 
-  labs(x = "Is Data Available?", 
-       y = "Average Number of Times Referenced/Year", 
-       title = "Average Number of Times Referenced/Year \nby Data Availability Status")
+# #da
+# metadata %>%  
+#     filter(!is.na(da) & !is.na(year.published)) %>% 
+#     ggplot(mapping = aes(x = da,
+#                         y = citations.per.year)) + 
+#     geom_boxplot() + 
+#     ylim(0,15)  + 
+#   labs(x = "Is Data Available?", 
+#        y = "Average Number of Times Referenced/Year", 
+#        title = "Average Number of Times Referenced/Year \nby Data Availability Status")
 
 
 
-#over time 
-#nsd
-metadata %>%  
-    filter(!is.na(nsd) & !is.na(year.published)) %>% 
-    ggplot(mapping = aes(fill = nsd,
-                        x = year.published,
-                        y = citations.per.year)) + 
-    geom_boxplot() + 
-    ylim(0,15)  + 
-  labs(fill = "Does this Contain \nNew Sequencing Data?", 
-       x = "Year Published",
-       y = "Average Number of Times Referenced/Year", 
-       title = "Average Number of Times Referenced/Year \nby New Sequencing Data Status")
+# #over time 
+# #nsd
+# metadata %>%  
+#     filter(!is.na(nsd) & !is.na(year.published)) %>% 
+#     ggplot(mapping = aes(fill = nsd,
+#                         x = year.published,
+#                         y = citations.per.year)) + 
+#     geom_boxplot() + 
+#     ylim(0,15)  + 
+#   labs(fill = "Does this Contain \nNew Sequencing Data?", 
+#        x = "Year Published",
+#        y = "Average Number of Times Referenced/Year", 
+#        title = "Average Number of Times Referenced/Year \nby New Sequencing Data Status")
 
-#da
-metadata %>%  
-    filter(!is.na(da) & !is.na(year.published)) %>% 
-    filter(nsd == "Yes") %>% 
-    ggplot(mapping = aes(fill = da,
-                        x = year.published,
-                        y = citations.per.year)) + 
-    geom_boxplot() + 
-    ylim(0,15)   + 
-  labs(fill = "Is Data \nAvailable?", 
-       x = "Year Published",
-       y = "Average Number of Times Referenced/Year", 
-       title = "Average Number of Times Referenced/Year \nby Data Availability Status")
+# #da
+# metadata %>%  
+#     filter(!is.na(da) & !is.na(year.published)) %>% 
+#     filter(nsd == "Yes") %>% 
+#     ggplot(mapping = aes(fill = da,
+#                         x = year.published,
+#                         y = citations.per.year)) + 
+#     geom_boxplot() + 
+#     ylim(0,15)   + 
+#   labs(fill = "Is Data \nAvailable?", 
+#        x = "Year Published",
+#        y = "Average Number of Times Referenced/Year", 
+#        title = "Average Number of Times Referenced/Year \nby Data Availability Status")
 
