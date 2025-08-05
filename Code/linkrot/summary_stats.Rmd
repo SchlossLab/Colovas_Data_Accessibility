@@ -1,0 +1,8 @@
+## linkrot summary stats to report
+#
+#
+#library statements
+library(tidyverse)
+
+#load data
+linkrot <- read_csv("Data/final/linkrot_combined.csv.gz")
