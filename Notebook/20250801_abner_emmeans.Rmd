@@ -9,6 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(MASS)
 library(emmeans)
 library(tidyverse)
+library(sjPlot)
+library(cowplot)
 
 #load local metadata
 nsd_yes_metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
@@ -50,18 +52,31 @@ plot(differences, ratios = TRUE)
 
 
 # # working on plotting better
-# emmip(model, ~ age.in.months | container.title, CIs = TRUE, type = "response",  at = list(age.in.months = age_values)) +
-#     geom_point(aes(x = age.in.months, y = is.referenced.by.count), data = my_data, size = 1, color = "lightblue2", aes = 0.25 )
+ratio_data <-  tibble(emmip(differences, ~ age.in.months | container.title, CIs = TRUE, plotit = FALSE))
 
-emmip(differences, ~ age.in.months | container.title, CIs = TRUE, engine = "ggplot")
+ratio_data %>%  
+  filter(container.title != "Journal of Microbiology &amp; Biology Education") %>%  
+ggplot(ratio_data, mapping = aes(x = xvar, y = yvar)) + 
+  geom_point() + 
+  geom_linerange(aes(ymin = LCL, ymax = UCL)) + 
+  facet_wrap(vars(container.title), scales = "free_y", 
+             labeller = label_wrap_gen(width = 20))  + 
+  labs(title = "Ratio of daYes/daNo over time with 95% CI from emmip", 
+       x = "Age in Months(factor)", 
+       y = "Ratio of daYes/daNo")
+  
+
 ```
 
-## The Other Plot from Abner
-- Also, I think this result would be even clearer if you made a plot with "age" in the horizontal axis, "predicted citations" in the vertical axis, and lines colored by "da_factor".
+## Create Plot from Abner
+
+-   "Also, I think this result would be even clearer if you made a plot
+    with "age" in the horizontal axis, "predicted citations" in the
+    vertical axis, and lines colored by "da_factor"." - AHB
+-   These plots are each made with a different glm.nb model (one for
+    each journal), which is why they are not combined into a faceted plot.
 
 ```{r}
-library(DHARMa)
-library(sjPlot)
 #smaller model with 2 terms
 two_term_glmnb <-function(model_data, model_name) {
 
@@ -77,55 +92,65 @@ journals <-
   count(journal_abrev) %>%  
   filter(journal_abrev != "jmbe") 
 
-j <- 8 #mbio
+j <- 3
 
-
+for(j in 1:nrow(journals)) { 
   journal_data <- 
   nsd_yes_metadata %>% 
     filter(journal_abrev == journals[[j,1]]) %>%  
     mutate(da_factor = factor(da))
-  
+
 
   model <- two_term_glmnb(journal_data, journals[[j,1]])
-summary(model)
 
 
 
-  plot_model <- plot_model(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]")) +     ggtitle(paste0("Predicted counts of 'is.referenced.by.count' \nPlotted for journal ", journals[[j,1]]))
-
- print(plot_model)
- 
- model_data <- get_model_data(model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]")) %>%  
-   tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group)
- 
-kableExtra::kable(model_data)
- 
- ggplot(data = model_data, aes(x = age.in.months, y = predicted_citations, 
+  
+  if(j == 3) { #genomea = 5
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[84,120,144]"))
+  }
+  else if (j == 9) { ##Mra - 7 
+    p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"))
+    
+  }
+  else if (j == 10 | j == 11 ) { #msphere, msystems 9 years
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,108]"))
+  }
+  else if (j == 12 ) { 
+    p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]"))
+  }
+  else { 
+     p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]"))
+  }
+  
+ model_graph <-  
+   p %>%  
+   tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group) %>%  
+  ggplot(mapping = aes(x = age.in.months, y = predicted_citations, 
                                 color = da_factor)) + 
    geom_point() + 
-   geom_crossbar(aes(ymin = conf.low,
+   geom_linerange(aes(ymin = conf.low,
                     ymax = conf.high)) +
-   # geom_linerange(aes(ymin = predicted_citations - std.error, 
-   #                  ymax = predicted_citations + std.error)) + 
    geom_path(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
-   labs(title = "Predicted number of citations for mBio over time using two term fixed GLM",
-        subtitle = "SE < 1 for all points and too small to be visualized",  
+   labs(title = paste0("Predicted Number of citations for ", journals[[j,1]], "\nusing two term fixed GLM"),  
         x = "Age in Months", 
-        y = "Predicted Number of Citations", 
-        color = "Data availability with 95% CI")  
+        y = "Predicted Number Citations", 
+        color = "Data availability with 95% CI")
    
+ assign(paste0(journals[[j,1]], "_plot"), model_graph)
+ print(model_graph)
+  
+}
 
-  
-tibble(da = model_data$x, predicted = model_data$predicted, age.in.months = as.numeric(as.character(model_data$group))) %>%  
-    pivot_wider(names_from = da, values_from = predicted) %>%  
-    mutate(ratio = `2`/`1`) %>%  
-    ggplot(., aes(x = age.in.months, y = ratio)) + 
-    geom_point() + 
-     labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
-          y = "Ratio number of citations da=Yes/da=No")
-    
-  
- 
-  
+
+# plot_names <-  
+# journals %>%  
+#   mutate(plot_name = paste0(journal_abrev, "_plot")) %>% 
+#   select(plot_name)
+#   
+# 
+# plot_grid(plotlist = mget(paste0(journals$journal_abrev,"_plot")))
+
+
 ```
 
