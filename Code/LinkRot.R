@@ -9,6 +9,7 @@ library(xml2)
 # library(tidytext)
 # library(jsonlite)
 library(httr2)
+source("Code/utilities.R")
 
 #need to update for snakemake 
 
@@ -19,6 +20,26 @@ html_filename <- input[1]
 html_filename <- tibble(html_filename = html_filename)
 output_file <- input[2]
 
+
+#20250806 - grab webscrape function to modify for the parts of html we need
+get_html_no_bib <- function(html_filename) {
+  
+  abstract <- read_html(html_filename) %>%
+    html_elements("section#abstract") %>%
+    html_elements("[role = paragraph]")
+  
+  body <- read_html(html_filename) %>%
+    html_elements("section#bodymatter") 
+  
+  side_panel<-read_html(html_filename) %>% 
+    html_elements("#core-collateral-info")
+  
+  all_html <-paste0(abstract, body, side_panel)
+  read_html(all_html)
+
+}
+
+# get_html_no_bib(html_filename)
 
 #local testing
 # # 20241220 - load from Data/html to test 200 files 
@@ -33,8 +54,13 @@ output_file <- input[2]
 # filenames<-lookup_table$html_filename[200]
 
 # filenames <-tibble(filenames = list.files(html_dir, full.names = TRUE))
-# html_filename <- tibble(html_filename = "Data/html/10.1128_jcm.01275-23.html")
-# file.exists(html_filename)
+# papers to check 20250806 
+# html_filename <- tibble(html_filename = "Data/html/10.1128_microbiolspec.gpp3-0022-2018.html") #none-check
+# html_filename <- tibble(html_filename = "Data/html/10.1128_mbio.01923-17.html") # 4 - check
+# html_filename <- tibble(html_filename = "Data/html/10.1128_microbiolspec.bad-0006-2016") # none - check
+# html_filename <- tibble(html_filename = "Data/html/10.1128_mra.00881-22") #none - check 
+# html_filename <- tibble(html_filename = "Data/html/10.1128_microbiolspec.tbtb2-0018-2016") #file does not exist - idk why maybe link redirect
+# # file.exists(html_filename)
 # str(html_filename)
 
 
@@ -44,9 +70,9 @@ new_extract_links <- function(html_filename) {
   #initialize all_html_tags to NULL
   all_html_tags<-NA
   some_html_tags<-NA
-  if(file.size(html_filename) > 0 && file.exists(html_filename)) {
+  if(file.size(html_filename[[1]]) > 0 && file.exists(html_filename[[1]])) {
   #read html from snakefile 
-  webscraped_data <- read_html(html_filename[[1]])
+  webscraped_data <- get_html_no_bib(html_filename[[1]])
 
   #get just doi from html_filename
   #"Data/html/10.1128_aac.00005-17.html" > 10.1128/aac.00005-17
@@ -54,6 +80,7 @@ new_extract_links <- function(html_filename) {
       str_replace(., ".html", "") %>%
       str_replace(., "_", "/")
   
+
     all_html_tags <-
       #get the html tags <a> for links as characters
       as.character(html_elements(webscraped_data, css = "a")) %>%
