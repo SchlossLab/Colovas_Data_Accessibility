@@ -10,16 +10,17 @@ library(MASS)
 library(emmeans)
 library(tidyverse)
 library(sjPlot)
-library(cowplot)
+
 
 #load local metadata
 nsd_yes_metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
 
-#filter out NAs (important later)
+#filter out NAs (important later) and filter for age.in.months <=120 
 my_data <- nsd_yes_metadata %>%
   filter(., age.in.months != "NA" & da_factor != "NA" & container.title != "NA") %>% 
   mutate(da_factor = factor(da_factor), 
-         container.title = factor(container.title))
+         container.title = factor(container.title)) %>%  
+  filter(., age.in.months <= 120)
 ```
 
 ## Protocol for all data and then data by journal
@@ -62,39 +63,28 @@ differences <- contrast(
 
 # Plot the contrasts
 ratios_df <- as.data.frame(plot(differences, ratios = TRUE)$data)  %>% 
- filter(container.title != "Journal of Microbiology &amp; Biology Education")
+ filter(container.title != "Journal of Microbiology &amp; Biology Education" &
+        container.title != "Genome Announcements" & 
+        container.title != "Microbiology Resource Announcements")
 
 
 ggplot(
     data = ratios_df,
     mapping = aes(x = age.in.months, y = the.emmean)
 ) +
-   geom_hline(yintercept = 1.0) + 
+   geom_hline(yintercept = 1.0, linetype = 2) + 
     geom_line() +
     geom_ribbon(
         mapping = aes(ymin = lcl, ymax = ucl),
-        alpha = 0.4 # transparency of confidence intervals
+        alpha = 0.3 # transparency of confidence intervals
     ) +
     facet_wrap(~ container.title, nrow = 2, 
                labeller = label_wrap_gen(width = 20)) +
     labs(x = 'Age in months', y = 'Ratio of daYes/daNo') +
     coord_cartesian(ylim = c(0.25, 2.5)) + 
-    theme_bw()
+    theme_classic()
 
 
-# # working on plotting better
-# ratio_data <-  tibble(emmip(differences, ~ age.in.months | container.title, CIs = TRUE, plotit = FALSE))
-# 
-# ratio_data %>%  
-#   filter(container.title != "Journal of Microbiology &amp; Biology Education") %>%  
-# ggplot(ratio_data, mapping = aes(x = xvar, y = yvar)) + 
-#   geom_point() + 
-#   geom_linerange(aes(ymin = LCL, ymax = UCL)) + 
-#   facet_wrap(vars(container.title), scales = "free_y", 
-#              labeller = label_wrap_gen(width = 20))  + 
-#   labs(title = "Ratio of daYes/daNo over time with 95% CI from emmip", 
-#        x = "Age in Months(factor)", 
-#        y = "Ratio of daYes/daNo")
 
 
 # Marginal predictive checks ####
@@ -115,6 +105,35 @@ ggplot(data = model_sims, mapping = aes(x = outcome)) +
     facet_wrap(~ sim_number, nrow = 4) + 
     coord_cartesian(xlim = c(0,200)) +
     theme_bw()
+
+
+## make plots for each journal 
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[age_values]", "container.title")) %>%  
+   tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group, container.title = .$facet) %>%   filter(container.title != "Journal of Microbiology &amp; Biology Education" &
+        container.title != "Genome Announcements" & 
+        container.title != "Microbiology Resource Announcements")
+  
+  
+    
+  ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations, 
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(
+      mapping = aes(ymin = conf.low,
+                    ymax = conf.high, group = da_factor, fill = da_factor), 
+      alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 20), 
+             scale = "free_y") +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() 
+  
+  
+  
   
 
 ```
@@ -135,85 +154,4 @@ ggplot(data = model_sims, mapping = aes(x = outcome)) +
     each journal), which is why they are not combined into a faceted
     plot.
 
-```{r echo=FALSE}
-#smaller model with 2 terms
-two_term_glmnb <-function(model_data, model_name) {
 
-  total_model <-MASS::glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
-       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = model_data, link = log)
-
-  return(total_model)
- 
-}
-
-
-journals <- 
-  nsd_yes_metadata %>%  
-  count(journal_abrev) %>%  
-  filter(journal_abrev != "jmbe") 
-
-j <- 11
-
-for(j in 1:nrow(journals)) { 
-  journal_data <- 
-  nsd_yes_metadata %>% 
-    filter(journal_abrev == journals[[j,1]]) %>%  
-    mutate(da_factor = factor(da))
-
-
-  model <- two_term_glmnb(journal_data, journals[[j,1]])
-  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[age_values]")) %>%  
-   tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group) 
-
-  
-
-  
-model_graph <-     
-  ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations, 
-                                color = da_factor)) + 
-   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
-   geom_ribbon(
-      mapping = aes(ymin = conf.low,
-                    ymax = conf.high, group = da_factor, fill = da_factor), 
-      alpha = 0.2) +
-   labs(title = paste0("Predicted Number of citations for ", journals[[j,1]], "\nusing two term fixed GLM"),  
-        x = "Age in Months", 
-        y = "Predicted Number Citations", 
-        color = "Data availability with 95% CI")
-   
- assign(paste0(journals[[j,1]], "_plot"), model_graph)
- print(model_graph)
- 
- # Simulate outcomes based on your model and observed explanatory variables
-model_sims <- simulate(model, nsim = 5, seed = 123)
-
-# Reshape data frame for easier plotting
-model_sims <- model_sims %>%
-    mutate(observed_outcome = journal_data$is.referenced.by.count[0:nrow(model_sims)], ) %>%
-    pivot_longer(
-        cols = everything(),
-        names_to = 'sim_number',
-        values_to = 'outcome'
-    ) %>%
-    mutate(sim_number = relevel(as.factor(sim_number), ref = 'observed_outcome'))
-# Compare distributions of observed outcome to simulated outcomes
-sim_plot <- ggplot(data = model_sims, mapping = aes(x = outcome)) +
-    geom_histogram(binwidth = 2) +
-    facet_wrap(~ sim_number, nrow = 4) + 
-    coord_cartesian(xlim = c(0,200)) +
-    theme_bw() + 
-  labs(title = paste0("Marginal Predictive Check for journal ", journals[[j,1]]))
- 
-print(sim_plot)
- 
- 
- 
- 
-  
-}
-
-
-
-
-
-```
