@@ -22,7 +22,17 @@ my_data <- nsd_yes_metadata %>%
          container.title = factor(container.title))
 ```
 
-```{r}
+## Protocol for all data and then data by journal
+
+1.  Fit model and store it
+2.  Define the age values you want to examine (more continuous using
+    seq(1, 120, 4)
+3.  Get emmeans on the link scale for all combinations
+4.  Get pairwise comparisons between da factor levels (ratios)
+5.  Plot the contrasts using geom_ribbon
+6.  Create the Marginal Predictive Checks
+
+```{r echo=FALSE}
 
 # First, fit your model and store it
 model <- glm.nb(
@@ -34,7 +44,7 @@ model <- glm.nb(
     link = "log"
 )
 # Define the age values you want to examine (in months)
-age_values <- c(12, 36, 60, 120)  # Adjust these as needed
+age_values <- seq(1, 120, 4) #c(12, 36, 60, 120)  # Adjust these as needed
 # Get emmeans on the link scale for all combinations
 emm <- emmeans(model,  ~ da_factor + age.in.months | container.title,
         at = list(age.in.months = age_values), CIs = TRUE,
@@ -46,37 +56,82 @@ differences <- contrast(
     ratios = TRUE, CIs = TRUE
 )
 # See the contrasts
-summary(differences)
+# summary(differences)
 # Plot the contrasts
-plot(differences, ratios = TRUE)
+# plot(differences, ratios = TRUE)
+
+# Plot the contrasts
+ratios_df <- as.data.frame(plot(differences, ratios = TRUE)$data)  %>% 
+ filter(container.title != "Journal of Microbiology &amp; Biology Education")
+ggplot(
+    data = ratios_df,
+    mapping = aes(x = age.in.months, y = the.emmean)
+) +
+    geom_line() +
+    geom_ribbon(
+        mapping = aes(ymin = lcl, ymax = ucl),
+        alpha = 0.4 # transparency of confidence intervals
+    ) +
+    facet_wrap(~ container.title, nrow = 2, scale = "free_y", 
+               labeller = label_wrap_gen(width = 20)) +
+    labs(x = 'Age in months', y = 'Ratio of daYes/daNo') +
+    theme_bw()
 
 
 # # working on plotting better
-ratio_data <-  tibble(emmip(differences, ~ age.in.months | container.title, CIs = TRUE, plotit = FALSE))
+# ratio_data <-  tibble(emmip(differences, ~ age.in.months | container.title, CIs = TRUE, plotit = FALSE))
+# 
+# ratio_data %>%  
+#   filter(container.title != "Journal of Microbiology &amp; Biology Education") %>%  
+# ggplot(ratio_data, mapping = aes(x = xvar, y = yvar)) + 
+#   geom_point() + 
+#   geom_linerange(aes(ymin = LCL, ymax = UCL)) + 
+#   facet_wrap(vars(container.title), scales = "free_y", 
+#              labeller = label_wrap_gen(width = 20))  + 
+#   labs(title = "Ratio of daYes/daNo over time with 95% CI from emmip", 
+#        x = "Age in Months(factor)", 
+#        y = "Ratio of daYes/daNo")
 
-ratio_data %>%  
-  filter(container.title != "Journal of Microbiology &amp; Biology Education") %>%  
-ggplot(ratio_data, mapping = aes(x = xvar, y = yvar)) + 
-  geom_point() + 
-  geom_linerange(aes(ymin = LCL, ymax = UCL)) + 
-  facet_wrap(vars(container.title), scales = "free_y", 
-             labeller = label_wrap_gen(width = 20))  + 
-  labs(title = "Ratio of daYes/daNo over time with 95% CI from emmip", 
-       x = "Age in Months(factor)", 
-       y = "Ratio of daYes/daNo")
+
+# Marginal predictive checks ####
+# Simulate outcomes based on your model and observed explanatory variables
+model_sims <- simulate(model, nsim = 5, seed = 123)
+# Reshape data frame for easier plotting
+model_sims <- model_sims %>%
+    mutate(observed_outcome = my_data$is.referenced.by.count) %>%
+    pivot_longer(
+        cols = everything(),
+        names_to = 'sim_number',
+        values_to = 'outcome'
+    ) %>%
+    mutate(sim_number = relevel(as.factor(sim_number), ref = 'observed_outcome'))
+# Compare distributions of observed outcome to simulated outcomes
+ggplot(data = model_sims, mapping = aes(x = outcome)) +
+    geom_histogram(binwidth = 2) +
+    facet_wrap(~ sim_number, nrow = 4) + 
+    coord_cartesian(xlim = c(0,200)) +
+    theme_bw()
   
 
 ```
 
-## Create Plot from Abner
+## Create Newer Plots from Abner (20250813)
+
+-   " Use more different values for age in months and treat them as
+    numbers instead of factors so you can make a smoother plot. This
+    visualization would be more consistent with your model because it
+    uses age as a continuous variable. " - AHB
+
+### Previously (20250801)
 
 -   "Also, I think this result would be even clearer if you made a plot
     with "age" in the horizontal axis, "predicted citations" in the
     vertical axis, and lines colored by "da_factor"." - AHB
 -   These plots are each made with a different glm.nb model (one for
-    each journal), which is why they are not combined into a faceted plot.
+    each journal), which is why they are not combined into a faceted
+    plot.
 
-```{r}
+```{r echo=FALSE}
 #smaller model with 2 terms
 two_term_glmnb <-function(model_data, model_name) {
 
@@ -87,12 +142,13 @@ two_term_glmnb <-function(model_data, model_name) {
  
 }
 
+
 journals <- 
   nsd_yes_metadata %>%  
   count(journal_abrev) %>%  
   filter(journal_abrev != "jmbe") 
 
-j <- 3
+# j <- 4
 
 for(j in 1:nrow(journals)) { 
   journal_data <- 
@@ -102,36 +158,20 @@ for(j in 1:nrow(journals)) {
 
 
   model <- two_term_glmnb(journal_data, journals[[j,1]])
-
-
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[age_values]")) %>%  
+   tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group) 
 
   
-  if(j == 3) { #genomea = 5
-  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[84,120,144]"))
-  }
-  else if (j == 9) { ##Mra - 7 
-    p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84]"))
-    
-  }
-  else if (j == 10 | j == 11 ) { #msphere, msystems 9 years
-  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,108]"))
-  }
-  else if (j == 12 ) { 
-    p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120]"))
-  }
-  else { 
-     p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[12,60,84,120,180]"))
-  }
+
   
- model_graph <-  
-   p %>%  
-   tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group) %>%  
-  ggplot(mapping = aes(x = age.in.months, y = predicted_citations, 
+model_graph <-     
+  ggplot(data = p, mapping = aes(x = age.in.months, y = predicted_citations, 
                                 color = da_factor)) + 
-   geom_point() + 
-   geom_linerange(aes(ymin = conf.low,
-                    ymax = conf.high)) +
-   geom_path(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(
+      mapping = aes(ymin = conf.low,
+                    ymax = conf.high, group = da_factor, fill = da_factor), 
+      alpha = 0.2) +
    labs(title = paste0("Predicted Number of citations for ", journals[[j,1]], "\nusing two term fixed GLM"),  
         x = "Age in Months", 
         y = "Predicted Number Citations", 
@@ -139,18 +179,37 @@ for(j in 1:nrow(journals)) {
    
  assign(paste0(journals[[j,1]], "_plot"), model_graph)
  print(model_graph)
+ 
+ # Simulate outcomes based on your model and observed explanatory variables
+model_sims <- simulate(model, nsim = 5, seed = 123)
+
+# Reshape data frame for easier plotting
+model_sims <- model_sims %>%
+    mutate(observed_outcome = journal_data$is.referenced.by.count[0:nrow(model_sims)], ) %>%
+    pivot_longer(
+        cols = everything(),
+        names_to = 'sim_number',
+        values_to = 'outcome'
+    ) %>%
+    mutate(sim_number = relevel(as.factor(sim_number), ref = 'observed_outcome'))
+# Compare distributions of observed outcome to simulated outcomes
+sim_plot <- ggplot(data = model_sims, mapping = aes(x = outcome)) +
+    geom_histogram(binwidth = 2) +
+    facet_wrap(~ sim_number, nrow = 4) + 
+    coord_cartesian(xlim = c(0,200)) +
+    theme_bw() + 
+  labs(title = paste0("Marginal Predictive Check for journal ", journals[[j,1]]))
+ 
+print(sim_plot)
+ 
+ 
+ 
+ 
   
 }
 
 
-# plot_names <-  
-# journals %>%  
-#   mutate(plot_name = paste0(journal_abrev, "_plot")) %>% 
-#   select(plot_name)
-#   
-# 
-# plot_grid(plotlist = mget(paste0(journals$journal_abrev,"_plot")))
+
 
 
 ```
-
