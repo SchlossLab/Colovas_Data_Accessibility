@@ -44,7 +44,7 @@ model <- glm.nb(
     link = "log"
 )
 # Define the age values you want to examine (in months)
-age_values <- seq(1, 120, 4) #c(12, 36, 60, 120)  # Adjust these as needed
+age_values <- seq(5, 120, 5) #c(12, 36, 60, 120)  # Adjust these as needed
 # Get emmeans on the link scale for all combinations
 emm <- emmeans(model,  ~ da_factor + age.in.months | container.title,
         at = list(age.in.months = age_values), CIs = TRUE,
@@ -63,18 +63,22 @@ differences <- contrast(
 # Plot the contrasts
 ratios_df <- as.data.frame(plot(differences, ratios = TRUE)$data)  %>% 
  filter(container.title != "Journal of Microbiology &amp; Biology Education")
+
+
 ggplot(
     data = ratios_df,
     mapping = aes(x = age.in.months, y = the.emmean)
 ) +
+   geom_hline(yintercept = 1.0) + 
     geom_line() +
     geom_ribbon(
         mapping = aes(ymin = lcl, ymax = ucl),
         alpha = 0.4 # transparency of confidence intervals
     ) +
-    facet_wrap(~ container.title, nrow = 2, scale = "free_y", 
+    facet_wrap(~ container.title, nrow = 2, 
                labeller = label_wrap_gen(width = 20)) +
     labs(x = 'Age in months', y = 'Ratio of daYes/daNo') +
+    coord_cartesian(ylim = c(0.25, 2.5)) + 
     theme_bw()
 
 
@@ -148,7 +152,7 @@ journals <-
   count(journal_abrev) %>%  
   filter(journal_abrev != "jmbe") 
 
-# j <- 4
+j <- 11
 
 for(j in 1:nrow(journals)) { 
   journal_data <- 
@@ -165,7 +169,7 @@ for(j in 1:nrow(journals)) {
 
   
 model_graph <-     
-  ggplot(data = p, mapping = aes(x = age.in.months, y = predicted_citations, 
+  ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations, 
                                 color = da_factor)) + 
    geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
    geom_ribbon(
