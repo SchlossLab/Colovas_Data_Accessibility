@@ -26,12 +26,13 @@ my_data <- nsd_yes_metadata %>%
 ## Protocol for all data and then data by journal
 
 1.  Fit model and store it
-2.  Define the age values you want to examine (more continuous using
-    seq(1, 120, 4)
+2.  Define the age values you want to examine
+    -   more continuous using seq(1, 120, 4)
 3.  Get emmeans on the link scale for all combinations
 4.  Get pairwise comparisons between da factor levels (ratios)
 5.  Plot the contrasts using geom_ribbon
 6.  Create the Marginal Predictive Checks
+    -   These should resemble the observed outcome
 
 ```{r echo=FALSE}
 
@@ -72,7 +73,7 @@ ggplot(
     data = ratios_df,
     mapping = aes(x = age.in.months, y = the.emmean)
 ) +
-   geom_hline(yintercept = 1.0, linetype = 2) + 
+   geom_hline(yintercept = 1.0, linetype = 2, linewidth = 0.25) + 
     geom_line() +
     geom_ribbon(
         mapping = aes(ymin = lcl, ymax = ucl),
@@ -82,12 +83,13 @@ ggplot(
                labeller = label_wrap_gen(width = 20)) +
     labs(x = 'Age in months', y = 'Ratio of daYes/daNo') +
     coord_cartesian(ylim = c(0.25, 2.5)) + 
-    theme_classic()
+    theme_classic() + 
+    scale_x_continuous(breaks = seq(12, 120, 24))  
 
 
 
 
-# Marginal predictive checks ####
+# Marginal predictive checks ##
 # Simulate outcomes based on your model and observed explanatory variables
 model_sims <- simulate(model, nsim = 5, seed = 123)
 # Reshape data frame for easier plotting
@@ -115,22 +117,22 @@ ggplot(data = model_sims, mapping = aes(x = outcome)) +
   
   
     
-  ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations, 
+  ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
                                 color = da_factor)) + 
    geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
-   geom_ribbon(
-      mapping = aes(ymin = conf.low,
-                    ymax = conf.high, group = da_factor, fill = da_factor), 
-      alpha = 0.2) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
   facet_wrap(~ container.title, nrow = 2, 
-               labeller = label_wrap_gen(width = 20), 
-             scale = "free_y") +
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free_y") +
    labs(title = "Predicted Number of Citations from GLM.NB",
         x = "Age in Months", 
         y = "Predicted Number Citations", 
-        color = "Data availability\nwith 95% CI") + 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
     scale_x_discrete(breaks = seq(12, 120, 12)) + 
-    theme_classic() 
+    theme_classic() + 
+    theme(legend.position = "bottom" )
   
   
   
@@ -153,5 +155,3 @@ ggplot(data = model_sims, mapping = aes(x = outcome)) +
 -   These plots are each made with a different glm.nb model (one for
     each journal), which is why they are not combined into a faceted
     plot.
-
-
