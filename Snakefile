@@ -51,10 +51,10 @@ seeds = list(range(1, 101))
 rule targets:
     input:
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
-        # expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
+        expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
         # "Data/final/linkrot_combined.csv.gz"
         # "Figures/linkrot/longlasting_byhostname.png"
-        "Figures/citationrate_byjournal.png"
+        # "Figures/citationrate_byjournal.png"
       
     
         
@@ -321,8 +321,8 @@ rule link_rot:
         html = "Data/html/{doi}.html"
     output: 
         links = "Data/linkrot/{doi}.csv"
-    # group: 
-    #     "linkrot"
+    group: 
+        "linkrot"
     resources: 
         mem_mb = 8000
     shell:
