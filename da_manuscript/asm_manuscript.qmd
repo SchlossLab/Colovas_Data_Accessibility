@@ -81,8 +81,10 @@ editor: visual
     -   Confusion Matrices for each model
         -   Spot checking and error methodology
     -   Regression modeling
+        -   negative binomial regression equations fit the best for this type of data
         -   regression equations
         -   number of citations corrected for the month published
+        -   age in months taken log
         -   Regression modeling/confusion matrices for only papers that contain new sequence data
     
 -   Discussion
