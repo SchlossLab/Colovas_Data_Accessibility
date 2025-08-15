@@ -35,11 +35,12 @@ editor: visual
         (Policy for Data Management and Sharing (NOT-OD-21-013))
             -   How do they enforce this? 
             -   Do they even enforce this? 
-        -   FORCE11 standards
+        -   FORCE11 group &  JDCCP standards
         -   FAIR principles
-        -   JDCCP standards
         -   All of these standards are at least 5 years old
         -   None of these are really all that enforceable by any agency 
+
+    Current data availability and reproducibility guidelines have been informed by a number of policies created by funding agencies, peer-review journals, conference and special task groups, as well as community interest groups. In 2011, after the Future of Research Communication (FoRC) conference in Germany to establish FORCE11, a community interest group which seeks to encourage and promote data availability standards. In 2014 the group published the Joint Declaration of Data Citation Principles (JDDCP), a document towards the standardization of data citation and its future avaialability(@Data Citation Synthesis Group 2014). The Findable, Accessible, Interoperable, and Reuseable (FAIR) data science guiding principles were put forth in 2016 by Wilkinson et al in *Nature Scientific Data* urges readers to "improve the infrastructure supporting the reuse of scholarly data" (@Wilkinson 2016). Finally, the National Institutes of Health (NIH) began enforcing the "Policy for Data Management and Sharing" (NOT-OD-21-013) in January of 2023, requiring NIH funded studies to submit a data management and sharing plan (DMS) with their funding applications, and comply with their DMS plan after generation and publication of the funded work(@NIH2023). 
     
     -   DNA sequencing efforts are commonly uploaded to databases
          -   Comparison is really essential in this field
@@ -62,6 +63,10 @@ editor: visual
             -   Microbiology research generates large amounts of data
             -   It's common to upload them to a secondary database and not just include the data in a publication
              -   Want to evaluate how well this community is using reproducible data analysis as a metric because we think they will be early adopters of the technology
+
+With the advent of next generation sequencing, microbiology reserach has generated large amounts of sequencing data, and it is common to upload sequence data to a public repository as well as to include data in research publications. The American Society for Microbiology(ASM) is the major professional body recognized by microbiologists. They have eighteen journals, thirteen primary research journals, three review journals, and two archive journals. In addition, several journals have been folded into others or renamed over time. The ASM family of journals requires that authors  "make data fully available, without restriction, except in rare circumstances" (@ASM website open data policy). They have adapted this policy from journals *Microbial Genomics* and *PLOS*. In the ASM open data policy they describe the use of a "Data Availability Statement" which includes "data description, name(s) of the repositories, and digital object identifiers (DOIs) or accession numbers" and encourages publishing data on relevant public repositories (@ASM website open data policy). We endeavor to evaluate how well the microbiology community is using reproducible data practices as we believe that this group of researchers will be early adopters of the technologies available. 
+    
+
 
     -   Microbiology data 
         -   Why do people upload sequences?
@@ -101,8 +106,9 @@ editor: visual
 -   Materials and Methods
     -   Creation of the training set
         -   Original data set from Adena,
-            -   downloaded from crossref when? *need to find*
+            -   downloaded from crossref when? 2/10/25
                 -   did i update the metadata when i re-pulled from crossref
+                -   yes i did 
             -   how did she choose these? this is my guess
                 -   variety of the 12 journals, years represented
                 -   date published from 2000 to 2024
