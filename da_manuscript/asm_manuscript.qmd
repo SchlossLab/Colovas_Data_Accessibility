@@ -35,11 +35,12 @@ editor: visual
         (Policy for Data Management and Sharing (NOT-OD-21-013))
             -   How do they enforce this? 
             -   Do they even enforce this? 
-        -   FORCE11 standards
+        -   FORCE11 group &  JDCCP standards
         -   FAIR principles
-        -   JDCCP standards
         -   All of these standards are at least 5 years old
         -   None of these are really all that enforceable by any agency 
+
+    Current data availability and reproducibility guidelines have been informed by a number of policies created by funding agencies, peer-review journals, conference and special task groups, as well as community interest groups. In 2011, after the Future of Research Communication (FoRC) conference in Germany to establish FORCE11, a community interest group which seeks to encourage and promote data availability standards. In 2014 the group published the Joint Declaration of Data Citation Principles (JDDCP), a document towards the standardization of data citation and its future avaialability(@Data Citation Synthesis Group 2014). The Findable, Accessible, Interoperable, and Reuseable (FAIR) data science guiding principles were put forth in 2016 by Wilkinson et al in *Nature Scientific Data* urges readers to "improve the infrastructure supporting the reuse of scholarly data" (@Wilkinson 2016). Finally, the National Institutes of Health (NIH) began enforcing the "Policy for Data Management and Sharing" (NOT-OD-21-013) in January of 2023, requiring NIH funded studies to submit a data management and sharing plan (DMS) with their funding applications, and comply with their DMS plan after generation and publication of the funded work(@NIH2023). 
     
     -   DNA sequencing efforts are commonly uploaded to databases
          -   Comparison is really essential in this field
@@ -63,6 +64,10 @@ editor: visual
             -   It's common to upload them to a secondary database and not just include the data in a publication
              -   Want to evaluate how well this community is using reproducible data analysis as a metric because we think they will be early adopters of the technology
 
+With the advent of next generation sequencing, microbiology reserach has generated large amounts of sequencing data, and it is common to upload sequence data to a public repository as well as to include data in research publications. The American Society for Microbiology(ASM) is the major professional body recognized by microbiologists. They have eighteen journals, thirteen primary research journals, three review journals, and two archive journals. In addition, several journals have been folded into others or renamed over time. The ASM family of journals requires that authors  "make data fully available, without restriction, except in rare circumstances" (@ASM website open data policy). They have adapted this policy from journals *Microbial Genomics* and *PLOS*. In the ASM open data policy they describe the use of a "Data Availability Statement" which includes "data description, name(s) of the repositories, and digital object identifiers (DOIs) or accession numbers" and encourages publishing data on relevant public repositories (@ASM website open data policy). We endeavor to evaluate how well the microbiology community is using reproducible data practices as we believe that this group of researchers will be early adopters of the technologies available. 
+    
+
+
     -   Microbiology data 
         -   Why do people upload sequences?
         -   Incentives? 
@@ -81,8 +86,10 @@ editor: visual
     -   Confusion Matrices for each model
         -   Spot checking and error methodology
     -   Regression modeling
+        -   negative binomial regression equations fit the best for this type of data
         -   regression equations
         -   number of citations corrected for the month published
+        -   age in months taken log
         -   Regression modeling/confusion matrices for only papers that contain new sequence data
     
 -   Discussion
@@ -99,12 +106,13 @@ editor: visual
 -   Materials and Methods
     -   Creation of the training set
         -   Original data set from Adena,
-            -   downloaded from crossref when? *need to find*
+            -   downloaded from crossref when? 2/10/25
                 -   did i update the metadata when i re-pulled from crossref
+                -   yes i did 
             -   how did she choose these? this is my guess
                 -   variety of the 12 journals, years represented
                 -   date published from 2000 to 2024
-                -   adding of additional papers to cover gaps in representative-ness of datasets as well as the change of format in 2023
+                -   adding of additional papers to cover gaps in representative-ness of datasets as well as the change of format in 2023 (put this after the training of the model)
         -   Must have metadata from crossref
         -   Hand identifying 500 papers for da and nsd status
             -   new_seq_data(nsd) = "Is this paper about new sequencing data that has been generated?"
@@ -119,6 +127,19 @@ editor: visual
         -   Spot checking initial modeling and realizing there were errors 
             -   do we need to include this?
             -   Adding +150 *(need to check number)* from spot checking exercises to get to N = ***
+
+    Creation of the Training set
+    To train our random forest machine learning model, we first created an appropriate training data set. Using the crossref database, we first downloaded all papers from the selected ASM family of journals from the time period beginning January 1st, 2000, and ending on December 31st, 2024. The data was updated as of February 10th, 2025 with all citation counts frozen at that date. For our initial training set, we chose N = 500 papers from across each journal and time period, adding special emphasis to include papers that were part of our desired set of interest (i.e. contained published data) to ensure that our two models could adequately characterize each paper as a new sequencing paper and if it published raw sequencing data or not. After creating our initial dataset, it was necessary to identify the status of both variables by hand and determine if each paper contained "new sequencing data" (NSD), and if each one had "data available" (DA). This was completed by opening each paper in an internet browser window, and searching for a "data availability" or similar statement. See table XXX for some specific cases and how each of these cases were identified for the purpose of this study. 
+
+    Adding Additional Training Set Papers
+    After initial trainings of our random forest models, a random sampling of papers was collected for each journal to audit the efficacy of the models. To audit the efficacy of the models, we hand identified the status of both variables of interest, NSD and DA. We looked for weaknesses in the models, and updated methodology to reflect important areas of interest. For example, in 2023 the ASM journals changed their formatting to include the data availability statement of a paper in a sidebar of the webpage. We identified this by noticing that all papers from journal *Microbiology Resource Announcements* from 2023-2024 were incorrectly characterized by the model as DA = No. The sidebar of the webpage was not included in the text the model was considering, and code had to be updated to include all sidebar data for all papers. These improvements to the model created a larger and more comprehensive training set of N = 9XX. 
+     
+
+    Creation of the Training Data from Training dataset
+    To perform many of the computational steps required for these experiments, we used the python tool Snakemake (@snakeref), and the University of Michigan's high performance computing cluster (@arc ref). Using our selected papers from the training dataset, we downloaded the entirety of each paper's source HTML using the command line tool wget. This allowed us to use the source HTML multiple times for updated analyses without the need to re-query the ASM webservers numerous times. Next, we performed cleaning of the HTML using R packages rvest (@rvest ref) and xml2 (@xml2 ref) to get the desired portions of the paper from the HTML including the abstract, the body of paper, all tables and figureswith captions, as well as the side panels for all papers, but especially those containing the data availability statements in papers published after the 2023 change in webpage format (see above). Then we removed unnecessary text using R packages tm(text manipulation)(@tm ref) and textstem (@textstem ref), as well as converting all text to lowercase, and the removal of digits and non-alphabetic characters such as whitespace. To have the fewest number of unique words, we lemmatized (sort words by grouping inflected or variant forms of the same word) words to trace them back to their root words and eliminate any possible issues with word tense. After this, we created and counted our 'tokens', phrases of up to 1-3 consecutive words from the text of the paper using R package tokeinziers (@tokeinziers ref). Towards the goal of the fewest meaningful number of words, we used the 'Snowball' (@snowball ref) dictionary of 'stop words' to remove non-meaningful words such as articles 'a', 'an', and 'the'. We removed the 'space' character with an underscore in multi-word tokens for ease of procesing, and created a count table for the tokens in each paper. 
+
+    resume at unnesting 
+    
     -   Creation of the training data
         -   Webscraping the HTML for the paper using wget
         -   Cleaning and of the HTML using r packages rvest and xml2 to get the desired portions of the paper from the HTML
