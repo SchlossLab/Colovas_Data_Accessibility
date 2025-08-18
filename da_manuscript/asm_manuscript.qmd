@@ -112,7 +112,7 @@ With the advent of next generation sequencing, microbiology reserach has generat
             -   how did she choose these? this is my guess
                 -   variety of the 12 journals, years represented
                 -   date published from 2000 to 2024
-                -   adding of additional papers to cover gaps in representative-ness of datasets as well as the change of format in 2023
+                -   adding of additional papers to cover gaps in representative-ness of datasets as well as the change of format in 2023 (put this after the training of the model)
         -   Must have metadata from crossref
         -   Hand identifying 500 papers for da and nsd status
             -   new_seq_data(nsd) = "Is this paper about new sequencing data that has been generated?"
@@ -127,6 +127,15 @@ With the advent of next generation sequencing, microbiology reserach has generat
         -   Spot checking initial modeling and realizing there were errors 
             -   do we need to include this?
             -   Adding +150 *(need to check number)* from spot checking exercises to get to N = ***
+
+    Creation of the Training set
+    To train our random forest machine learning model, we first created an appropriate training data set. Using the crossref database, we first downloaded all papers from the selected ASM family of journals from the time period beginning January 1st, 2000, and ending on December 31st, 2024. The data was updated as of February 10th, 2025 with all citation counts frozen at that date. For our initial training set, we chose N = 500 papers from across each journal and time period, adding special emphasis to include papers that were part of our desired set of interest (i.e. contained published data) to ensure that our two models could adequately characterize each paper as a new sequencing paper and if it published raw sequencing data or not. After creating our initial dataset, it was necessary to identify the status of both variables by hand and determine if each paper contained "new sequencing data" (NSD), and if each one had "data available" (DA). This was completed by opening each paper in an internet browser window, and searching for a "data availability" or similar statement. See table XXX for some specific cases and how each of these cases were identified for the purpose of this study. 
+
+    Adding Additional Training Set Papers
+    After initial trainings of our random forest models, a random sampling of papers was collected for each journal to audit the efficacy of the models. To audit the efficacy of the models, we hand identified the status of both variables of interest, NSD and DA. We looked for weaknesses in the models, and updated methodology to reflect important areas of interest. For example, in 2023 the ASM journals changed their formatting to include the data availability statement of a paper in a sidebar of the webpage. We identified this by noticing that all papers from journal *Microbiology Resource Announcements* from 2023-2024 were incorrectly characterized by the model as DA = No. The sidebar of the webpage was not included in the text the model was considering, and code had to be updated to include all sidebar data for all papers. These improvements to the model created a larger and more comprehensive training set of N = 9XX. 
+     
+
+    
     -   Creation of the training data
         -   Webscraping the HTML for the paper using wget
         -   Cleaning and of the HTML using r packages rvest and xml2 to get the desired portions of the paper from the HTML
