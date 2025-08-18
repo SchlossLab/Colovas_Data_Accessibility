@@ -140,7 +140,13 @@ ggplot(data = model_sims, mapping = aes(x = outcome)) +
 
 ```
 
-## Create Newer Plots from Abner (20250813)
+## 20250818
+
+-   Do we like these figures?
+
+-   Additional changes to make?
+
+### Create Newer Plots from Abner (20250813)
 
 -   " Use more different values for age in months and treat them as
     numbers instead of factors so you can make a smoother plot. This
