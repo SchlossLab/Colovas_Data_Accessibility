@@ -1,0 +1,64 @@
+---
+title: "Summary Stats for DA Project"
+output: pdf_document
+date: "2025-08-20"
+---
+
+```{r}
+#library statements
+library(tidyverse)
+
+#import data
+data <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
+
+```
+
+## How many papers are nsd papers by journal?
+
+```{r}
+nsd_yes <- data %>% 
+  count(container.title, 
+        nsd) %>% 
+  filter(!is.na(nsd)) %>% 
+  group_by(container.title) %>% 
+  mutate(nsd, 
+            total = sum(`n`),
+            nsd_fract = `n`/total) %>% 
+  filter(nsd == "Yes") 
+  
+  knitr::kable(nsd_yes)
+  
+  ggplot(data = nsd_yes, aes(y = container.title, x = nsd_fract)) + 
+    geom_point() + 
+    scale_x_continuous(labels = scales::label_percent()) + 
+    labs(title = "Percentage of Papers with\nNew Sequence Data(NSD)", 
+         y = "Journal Name", 
+         x = "Percent NSD")
+    
+```
+
+## How many papers are nsd papers by journal?
+
+```{r}
+da_yes <- data %>% 
+  count(container.title, 
+        da) %>% 
+  filter(!is.na(da)) %>% 
+  group_by(container.title) %>% 
+  mutate(da, 
+            total = sum(`n`),
+            da_fract = `n`/total) %>% 
+  filter(da == "Yes") 
+  
+  knitr::kable(da_yes)
+  
+  ggplot(data = da_yes, aes(y = container.title, x = da_fract)) + 
+    geom_point() + 
+    scale_x_continuous(labels = scales::label_percent()) + 
+    labs(title = "Percentage of Papers with Data Available (DA)", 
+         y = "Journal Name", 
+         x = "Percent DA")
+  
+  #i think this needs to be of nsd yes papers
+    
+```
