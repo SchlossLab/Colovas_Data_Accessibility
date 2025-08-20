@@ -50,7 +50,7 @@ get_html_no_bib <- function(html_filename) {
 # html_filename <- tibble(html_filename = "Data/html/10.1128_microbiolspec.bad-0006-2016") # none - check
 # html_filename <- tibble(html_filename = "Data/html/10.1128_mra.00881-22") #none - check 
 # html_filename <- tibble(html_filename = "Data/html/10.1128_microbiolspec.tbtb2-0018-2016") #file does not exist - idk why maybe link redirect
-
+# html_filename <- tibble(html_filename = "Data/html/10.1128_mysystems.00381-21.html")
 
 
 
@@ -119,7 +119,7 @@ all_links <- tibble(html_filename = html_filename) %>%
   mutate(link_tibble = map(as.character(html_filename), new_extract_links)) %>% 
   unnest(cols = link_tibble)
 
-
+if("link_address" %in% colnames(all_links)) {
 all_links$link_status <- map_int(all_links$link_address, get_site_status)
 
 
@@ -137,6 +137,7 @@ all_links <- all_links %>%
         is_alive = link_status == 200
         )
 
+} 
 
 write_csv(all_links, file = output_file)
 
