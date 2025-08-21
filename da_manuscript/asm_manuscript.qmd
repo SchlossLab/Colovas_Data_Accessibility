@@ -36,51 +36,25 @@ editor: visual
     Scientific Data as a Public Good
     The United States Government spent over two hundred million dollars (USD) in 2024 on research expenditures (@congress.gov2024). The result of all of these investments are data, paid for in part by taxpayers. Therefore, data is a public good, and best used as a benefit to those who provided the funds for it. Once data has been generated, it can be used not only for initial analyses, but over and over again in future studies or meta analyses. Additionally, data can be used to eliminate possible solutions to a problem by the publishing of "negative data." Thinking of data as a public good, if negative data is published, it can help researchers avoid sinking time and financial resources into the investigation of non-viable hypotheses. This non-fruitful investigation is more commonly known as the "filedrawer effect." Data as a public good also is subject to the tragedy of the commons. If no one contributes to the public "commons", data that is available for public use, how can we advance our understanding of our study systems? 
 
-    Why Make Data Available?
-    A key tenent of the scientific method is the ability to replicate sceintific findings to ensure that they are not due to error. One way that scientific findings can be replicated is by re-completing the same analyses by another researcher. This is only possible if the data used to complete the original analyses is available for use. 
+    Example of Data Avalability 
+    A key tenent of the scientific method is the ability to replicate sceintific findings to ensure that they are not due to error. One way that scientific findings can be replicated is by re-completing the same analyses by another researcher. This is only possible if the data used to complete the original analyses is available for use. The availability of datasets also allows new questions to be answered with existing data or the combination of multiple datasets, such as the use of the Human Microbiome Project's (HMP) sequencing data by researchers to create over 650 scientific publications (@HMP), and the completion of metadata studies. 
 
 
-
-    -   Current data availability and reproducibility guidelines
-        -   NIH funded research must make data available as of January 2023
-        (Policy for Data Management and Sharing (NOT-OD-21-013))
-            -   How do they enforce this? 
-            -   Do they even enforce this? 
-        -   FORCE11 group &  JDCCP standards
-        -   FAIR principles
-        -   MIMARKS/MIxS
-        -   All of these standards are at least 5 years old
-        -   None of these are really all that enforceable by any agency 
-
+    Current DA Policies 
     Current data availability and reproducibility guidelines have been informed by a number of policies created by funding agencies, peer-review journals, conference and special task groups, as well as community interest groups. In 2011, after the Future of Research Communication (FoRC) conference in Germany to establish FORCE11, a community interest group which seeks to encourage and promote data availability standards. Also in 2011, the Genomic Standards Consortium (GSC) published the MIMARKS/MIxS standards in *Nature Biotechnology* to promote the publication of the "minimum information about a marker gene sequence" (MIMARKS) or  "minimum information about x sequence" (MIxS) (@Mimarks2011). These standards are checklists useable by data generators and uploaders towards inclusion of relevant data with sequence uploads in the International Nucleotide Sequence Database Collaboration (INSDC). 
     
     In 2014 the group published the Joint Declaration of Data Citation Principles (JDDCP), a document towards the standardization of data citation and its future avaialability(@Data Citation Synthesis Group 2014). The Findable, Accessible, Interoperable, and Reuseable (FAIR) data science guiding principles were put forth in 2016 by Wilkinson et al in *Nature Scientific Data* urges readers to "improve the infrastructure supporting the reuse of scholarly data" (@Wilkinson 2016). Neither the JDDCP nor the FAIR principles are enforcable by any agency. Finally, the National Institutes of Health (NIH) began enforcing the "Policy for Data Management and Sharing" (NOT-OD-21-013) in January of 2023, requiring NIH funded studies to submit a data management and sharing plan (DMS) with their funding applications, and comply with their DMS plan after generation and publication of the funded work(@NIH2023). Non-compliance with NOT-OD-21-013 is identified by funding agencies during annual Research Performance Progress Reports (RPPRs), and may impact future funding decisions (@NIH2023). 
-    
-    
-    -   DNA sequencing efforts are commonly uploaded to databases
-         -   Comparison is really essential in this field
-                    -   Phylogenetic trees are made by comparing similarity of sequences
-                    -   Especially trying to identify new sequences by fitting the into existing phylogeny
-        -   International Nucleotide Sequence Database Collaboration
-            (INDSC) databases
-            -   ROIS - NGL (Japan)
-            -   EMBL - EBI (Europe)
-            -   NLM - NCBI (USA)
-        -   This is actually more work for the data generator to make sure that their data is uploaded somewhere
 
-
-With the advent of next generation sequencing, microbiology reserach has generated large amounts of sequencing data, and it is common to upload sequence data to a public repository as well as to include data in research publications. The American Society for Microbiology(ASM) is the major professional body recognized by microbiologists. They have eighteen journals, thirteen primary research journals, three review journals, and two archive journals. In addition, several journals have been folded into others or renamed over time. The ASM family of journals requires that authors  "make data fully available, without restriction, except in rare circumstances" (@ASM website open data policy). They have adapted this policy from journals *Microbial Genomics* and *PLOS*. In the ASM open data policy they describe the use of a "Data Availability Statement" which includes "data description, name(s) of the repositories, and digital object identifiers (DOIs) or accession numbers" and encourages publishing data on relevant public repositories (@ASM website open data policy). We endeavor to evaluate how well the microbiology community is using reproducible data practices as we believe that this group of researchers will be early adopters of the technologies available. 
+    Nucleic Acid Sequencing Efforts
+    Nucleic acid sequencing efforts are commonly uploaded to databases to identify appropriate sequences for comparison. There are three major databases worldwide to support sequencing and sharing efforts. The National Library of Medicine's (NLM) National Center for Biotechnology (NCBI) in the United States, the Research Organization of Information Systems' (ROIS) National Institute of Genetics (NIG) in Japan, and the European Molecular Biology Lab's (EMBL) European Bioinformatics Institue (EBI) in Europe. These three databases are part of the International Nucleotide Sequence Database Collaboration (INSDC). These large databases make research by comparison possible. Genetic lineages of microbes are determined by creating phylogenetic trees which compare a new sequence to existing sequences. Phylogenetic trees show how closely related a new microbial genetic sequence is related to others studied before both in terms of evolution and mutation and in structure and function. An important tool for creating phylogenies is the NCBI Basic Local Alignment Search Tool (BLAST) (@altschul1990). The BLAST algorithm allows users to compare a nucleic acid or protein sequence to the NCBI database of over 1TB of data to find similar and related sequences. Without the upload of seqeuces to the NCBI database, the use and success of BLAST would not be possible, despite the effort to upload of sequences to one of the INSDC databases. 
+    
+    ASM Journals
+    With the advent of next generation sequencing, microbiology reserach has generated large amounts of sequencing data, and it is common to upload sequence data to a public repository as well as to include data in research publications. The American Society for Microbiology(ASM) is the major professional body recognized by microbiologists. They have eighteen journals, thirteen primary research journals, three review journals, and two archive journals. In addition, several journals have been folded into others or renamed over time. The ASM family of journals requires that authors  "make data fully available, without restriction, except in rare circumstances" (@ASM open data policy). They have adapted this policy from journals *Microbial Genomics* and *PLOS*. In the ASM open data policy they describe the use of a "Data Availability Statement" which includes "data description, name(s) of the repositories, and digital object identifiers (DOIs) or accession numbers" and encourages publishing data on relevant public repositories (@ASM website open data policy). Consequences of non-compliance to the ASM open data policy include contacting research article authors to inform of non-compliance, publication of an "Expression of Concern" for the author and their compliance issues, sanctions on publication in ASM journals, as well as contacting the affiliated research institution and/or funding agencies of the authors (@ASMcompliance). We endeavor to evaluate how well the microbiology community is using reproducible data practices as we believe that this group of researchers will be early adopters of the technologies available as a result of both the ASM and NIH policies towards data availability. 
     
 
+    The objective of this study is to determine the current state of data availability in twelve primary research journals from the ASM family of journals using machine learning models. 
 
-    -   Microbiology data 
-        -   Why do people upload sequences?
-        -   Incentives? 
-
-    -   Goals
-        -   Investigate metrics of making data publicly available in 12 ASM journals
-        -   Using machine learning models 
-        -   To see what kind of data availability uptake we have in sequencing fields where there's a known repository
+   
         
 -   Results
     -   Models
