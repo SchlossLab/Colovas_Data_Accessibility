@@ -121,5 +121,7 @@ editor: visual
 - Figures/Tables/stats to make/get
     - Table showing # of papers from each journal in training dataset
     - Table showing # of papers from each year in training dataset
-    - % of papers nsd yes (training)
-    - % of papers da yes (training)
+    - % of papers nsd yes total (training)
+    - % of papers da yes total (training)
+    - table of conditions to add to the methods of classification?
+    
