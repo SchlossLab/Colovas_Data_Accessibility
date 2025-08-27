@@ -96,3 +96,10 @@ write_csv(new_gt_dois, file = "Data/new_groundtruth_dois.csv.gz")
 
 #ok this is just doi_underscore and the webscrape url (paper)
 groundtruth<-read_csv("Data/new_groundtruth.csv")
+
+#20250827 
+# trying to find out who classified all these papers
+# and also seeing that new_groundtruth and
+# new_groundtruth_metadata have different numbers of papers in them??
+# so why is this happening 
+# if i have to train these models again i'll scream 
