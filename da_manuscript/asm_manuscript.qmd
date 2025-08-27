@@ -50,12 +50,13 @@ editor: visual
     ASM Journals
     We used twelve of the ASM primary research journals in this study. Of note, several journals had changes to their publication goals during the 2000-2024 time period. The *Journal of Bacteriology* was the primary place to publish new genome announcements until 2013 when ASM announced journal *Genome Announcements* as a more permanent place for this type of data. *Genome Announcements* was active from 2013 until 2018, when it was rebranded to *Microbiology Resource Announcements*, which has been active from 2018 until present. These two journals appear separately in our analyses as a result of the Crossref database. New genome annoucements have a high percentage of NSD papers, and a high percentage of DA within those papers. As a result, the *Journal of Bacteriology* has had fewer NSD papers, and fewer papers with DA since 2013. Another journal of note is *Microbiology Spectrum* and its rebrand. From 2013 until the fall of 2021, *Microbiology Spectrum* was a review journal. After this point, *Microbiology Spectrum* became a primary research journal. Review journals are less likely to publish articles with NSD, and to have DA. Several journals, including *Microbiology Spectrum*, do not span the entire time period for the study. Journals *mBio* (b.2010), *Microbiology Spectrum* (b. 2013, rebrand 2021), *mSphere* (b. 2016), *mSystems* (b. 2016), and *Genome Announcements* (2013-2018). Not all journals are equally likely to contain NSD and have sequencing DA as a result of their field of interest. Journals *Antimicrobial Agents and Chemotherapy; Infection and Immunity; *and the* Journal of Microbiology and Biology Education;* are all less likely to contain NSD and have DA than the other journals in the dataset. 
 
-    Descriptive Statistics
+    Descriptive Statistics: 
     
     Whole Dataset
     Using the Crossref database, with validation from WOS, NCBI, and Scopus databases, we downloaded 155779 unique records of papers published in ASM journals between 2000 and 2024. After webscraping there were YYYY papers downloaded with text available for the models to be applied on, as not all records had text available. See table YYYY for number of papers downloaded from each journal. Overall, XXXX% of papers had NSD, and YYYY% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. The journal with the highest rate of DA was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. This was expected as *Microbiology Resource Annoucements* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had XXXX citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. **SENTENCE ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE IN THIS DATASET**. The journals in the dataset span years 2000-2024. See table YYYYY for the distribution of papers per year in the dataset. 
 
-    Training Dataset (pretty much the same as the above paragraph, but with stats for the training dataset)
+    Training Dataset 
+    **(pretty much the same as the above paragraph, but with stats for the training dataset)**
     We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 250 papers, but was increased over time due to gaps in the dataset, and validation of the trained models (see below). Overall, XXXX% of papers had NSD, and YYYY% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. The journal with the highest rate of DA was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. This was expected as *Microbiology Resource Annoucements* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had XXXX citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. **SENTENCE ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE IN THIS DATASET**. The journals in the dataset span years 2000-2024. See table YYYYY for the distribution of papers per year in the dataset. 
 
 
@@ -64,21 +65,12 @@ editor: visual
 
 
     Regression Model using Negative Binomial Models
+    In this study we sought to investigate the effect of NSD and DA on the number of citations recieved by a given paper. We focused on NSD papers to determine the effect of having DA. This led us to the use of a negative binomial regression model to best describe our data. All regression data was NSD yes. We focused on the continuous outcome of "number of citations" with predictor variables journal (categorical), age in months (continuous), and DA status (dichotomous). Due to the number of citations being fairly bell shaped with a long right tail (very few papers at advanced age with many citations), the model that best described our data was the negative binomial regression model. This model includes a dispersion parameter to describe the spread of the data. We applied a log transformation to our age variable (age.in.months) to better describe the relationship between time and number of citations received. ???HOW DO I DESCRIBE THIS MODEL??? In general, we found that NSD papers that made DA received more citations over time than those that did not. See figure YYYY for trends in each major journal. ??HOW else do i describe the figure??
     
-    
-
-
-
 
  
  
-    -
-    -   Regression modeling
-        -   negative binomial regression equations fit the best for this type of data
-        -   regression equations
-        -   number of citations corrected for the month published
-        -   age in months taken log
-        -   Regression modeling/confusion matrices for only papers that contain new sequence data
+
     
 -   Discussion
     -   Percent of ASM papers that have new sequence data available (nsd Yes, da Yes)
