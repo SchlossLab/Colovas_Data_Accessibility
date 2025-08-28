@@ -111,21 +111,31 @@ write_csv(new_groundtruth, "Data/new_groundtruth.csv")
 
 #20250828 - update training set AGAIN
 
-new_groundtruth <-read_csv("Data/new_groundtruth.csv")
+library(tidyverse)
+
+new_groundtruth <-read_csv("Data/new_groundtruth.csv") %>% 
+        mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>% 
+        mutate_if(is.logical, as.character, .vars = vars("published.online", "page")) 
+
 to_add_3 <-read_csv("Data/spot_check/20250424_spot_check.csv")
 to_add_4 <- read_csv("Data/spot_check/20250429_genome_announcements.csv")
 to_add_5 <-read_csv("Data/spot_check/20250507_spot_check.csv")
 
 crossref<-read_csv("Data/crossref/crossref_all_papers.csv.gz") %>%
+    mutate_if(lubridate::is.Date, as.character) %>% 
     mutate(paper = paste0("https://journals.asm.org/doi/", doi)) %>% 
     mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
 
 to_add_345 <- full_join(to_add_3, to_add_4) %>%
             full_join(., to_add_5) %>% 
-            mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+            mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>% 
+            mutate_if(is.logical, as.character, .vars = vars("published.online", "page")) 
+        
 
 
-add_metadata_345 <-inner_join(to_add_345, crossref) %>% 
-    rename(new_seq_data = actual_nsd, data_availability = actual_da) %>%
+#combine new_gt with the newest spot check data
+newest_gt <- full_join(new_groundtruth, to_add_345)  %>% 
     mutate_if(lubridate::is.Date, as.character) %>% 
-    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
+
+write_csv(newest_gt, "Data/new_groundtruth.csv")

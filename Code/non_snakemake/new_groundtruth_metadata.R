@@ -112,9 +112,16 @@ library(tidyverse)
 
 new_groundtruth <- read_csv("Data/new_groundtruth.csv")
 new_groundtruth_metadata <- read_csv("Data/new_groundtruth_metadata.csv.gz")
+gt_dois <-read_csv("Data/new_groundtruth_dois.csv.gz")
+
 
 # there are 144 missing from new_groundtruth... how did this happen 
-anti_join(new_groundtruth_metadata, new_groundtruth, by = join_by("scrape_url" == "paper"))
+anti_join(new_groundtruth_metadata, new_groundtruth, by = join_by("scrape_url" == "paper")) %>% 
+view()
+
+anti_join(new_groundtruth_metadata, gt_dois, by = join_by("scrape_url" == "url"))
+
+
 
 any(duplicated(new_groundtruth_metadata$scrape_url))
 
