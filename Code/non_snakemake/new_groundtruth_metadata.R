@@ -26,6 +26,10 @@ new_metadata <-new_metadata[-dupes,]
 #save new metadata
 write_csv(new_metadata, file = "Data/new_groundtruth_metadata.csv.gz")
 
+#20250828 - save as new_groundtruth.csv too 
+
+
+
 
 #20250307 - apparently this table has more duplicates than i knew about 
 #and i am deeply annoyed that i got the same papers multiple times
