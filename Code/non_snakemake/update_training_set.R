@@ -192,13 +192,5 @@ new_groundtruth_metadata <- read_csv("Data/new_groundtruth_metadata.csv.gz")  %>
     mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
 ngtm <-colnames(new_groundtruth_metadata)
 
-gt_dois <-read_csv("Data/new_groundtruth_dois.csv.gz")
+#i don't think i need the metatdata or the gt dois file???
 
-anti_join(new_groundtruth, new_groundtruth_metadata, by = join_by("paper" == "scrape_url")) %>%
-
-
-
-new_groundtruth %>%
-    filter(is.na(new_seq_data) | is.na(data_availability))
-
-view(new_groundtruth)
