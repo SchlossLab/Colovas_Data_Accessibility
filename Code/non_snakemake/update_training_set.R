@@ -185,11 +185,13 @@ library(tidyverse)
 new_groundtruth <-read_csv("Data/new_groundtruth.csv") %>% 
     mutate_if(lubridate::is.Date, as.character) %>% 
     mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
-colnames(new_groundtruth)
+ngt <-colnames(new_groundtruth)
 
 new_groundtruth_metadata <- read_csv("Data/new_groundtruth_metadata.csv.gz")  %>% 
     mutate_if(lubridate::is.Date, as.character) %>% 
     mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
+ngtm <-colnames(new_groundtruth_metadata)
+
 gt_dois <-read_csv("Data/new_groundtruth_dois.csv.gz")
 
 anti_join(new_groundtruth, new_groundtruth_metadata, by = join_by("paper" == "scrape_url")) %>%
