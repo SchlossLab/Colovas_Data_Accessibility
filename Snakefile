@@ -50,11 +50,14 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
-        # expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
-        # "Data/final/linkrot_combined.csv.gz"
-        # "Figures/linkrot/longlasting_byhostname.png"
-        "Figures/citationrate_byjournal.png"
+        "Data/groundtruth/groundtruth.tokens.csv.gz", 
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
+        ml_variables = ml_variables, seeds = seeds)
+        # expand("Figures/ml_results/groundtruth/{method}/auroc.{ml_variables}.png", 
+        # method = "rf", ml_variables = ml_variables), 
+        # expand("Figures/ml_results/groundtruth/{method}/hp_perf.{method}.{ml_variables}.png", 
+        # method = "rf", ml_variables = ml_variables)
+
       
     
         
