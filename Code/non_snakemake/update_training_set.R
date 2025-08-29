@@ -67,6 +67,8 @@ new_groundtruth <-read_csv("Data/new_groundtruth.csv")
 colnames(new_groundtruth)
 to_add_1 <- read_csv("Data/spot_check/20250324_mra_spec_nsd_yes_da_no.csv")
 to_add_2<-read_csv("Data/spot_check/20250328_2024_no_mra_spec.csv")
+colnames_1 <-colnames(to_add_1)
+colnames_2 <-colnames(to_add_2)
 
 to_add<- full_join(to_add_1, to_add_2) %>%
 mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
@@ -109,7 +111,7 @@ new_groundtruth <-read_csv("Data/new_groundtruth.csv") %>%
 write_csv(new_groundtruth, "Data/new_groundtruth.csv")
 #this means we don't need new_groundtruth_metadata anymore
 
-#20250828 - update training set AGAIN
+#20250828 - update training set AGAIN -----------------------------------------------------------------------------------
 
 library(tidyverse)
 
@@ -118,19 +120,49 @@ new_groundtruth <-read_csv("Data/new_groundtruth.csv") %>%
         mutate_if(is.logical, as.character, .vars = vars("published.online", "page")) 
 
 to_add_3 <-read_csv("Data/spot_check/20250424_spot_check.csv")
-to_add_4 <- read_csv("Data/spot_check/20250429_genome_announcements.csv")
+to_add_4 <- read_csv("Data/spot_check/20250429_genome_announcements.csv") %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>% 
+    mutate_if(is.logical, as.character, .vars = vars("published.online", "page")) 
 to_add_5 <-read_csv("Data/spot_check/20250507_spot_check.csv")
+colnames_3 <-colnames(to_add_3)
+colnames_4 <-colnames(to_add_4)
+colnames_5 <-colnames(to_add_5)
+
 
 crossref<-read_csv("Data/crossref/crossref_all_papers.csv.gz") %>%
     mutate_if(lubridate::is.Date, as.character) %>% 
     mutate(paper = paste0("https://journals.asm.org/doi/", doi)) %>% 
     mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
 
-to_add_345 <- full_join(to_add_3, to_add_4) %>%
+metadata_3 <-inner_join(to_add_3, crossref, by = "paper") %>% 
+    rename(new_seq_data = actual_nsd, data_availability = actual_da) %>%
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+metadata_4 <-inner_join(to_add_4, crossref, ) %>%  #i cannot figure out why this one is so funky and the variable data doesn't match
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+metadata_5 <-inner_join(to_add_5, crossref, by = "paper") %>% 
+    rename(new_seq_data = actual_nsd, data_availability = actual_da) %>%
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+missing <-!(colnames(metadata_3) %in% colnames(metadata_4))
+
+colnames(metadata_4)[missing]
+
+to_add_345 <- full_join(to_add_3, to_add_4, by = "paper") %>%
             full_join(., to_add_5) %>% 
             mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>% 
             mutate_if(is.logical, as.character, .vars = vars("published.online", "page")) 
         
+
+#i still need to add the metadata somehow 
+add_metadata <-inner_join(to_add, crossref) %>% 
+    rename(new_seq_data = actual_nsd, data_availability = actual_da) %>%
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
 
 
 #combine new_gt with the newest spot check data
@@ -139,3 +171,25 @@ newest_gt <- full_join(new_groundtruth, to_add_345)  %>%
     mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
 
 write_csv(newest_gt, "Data/new_groundtruth.csv")
+
+#20250829 - making sure that the metadata and dois lists are updated
+library(tidyverse)
+
+new_groundtruth <-read_csv("Data/new_groundtruth.csv") %>% 
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
+colnames(new_groundtruth)
+
+new_groundtruth_metadata <- read_csv("Data/new_groundtruth_metadata.csv.gz")  %>% 
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
+gt_dois <-read_csv("Data/new_groundtruth_dois.csv.gz")
+
+anti_join(new_groundtruth, new_groundtruth_metadata, by = join_by("paper" == "scrape_url")) %>%
+
+
+
+new_groundtruth %>%
+    filter(is.na(new_seq_data) | is.na(data_availability))
+
+view(new_groundtruth)
