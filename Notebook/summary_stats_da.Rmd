@@ -37,10 +37,11 @@ nsd_yes <- data %>%
     
 ```
 
-## How many papers are nsd papers by journal?
+## How many papers are da yes papers out of nsd yes?
 
 ```{r}
 da_yes <- data %>% 
+  filter(nsd == "Yes") %>% 
   count(container.title, 
         da) %>% 
   filter(!is.na(da)) %>% 
@@ -55,10 +56,17 @@ da_yes <- data %>%
   ggplot(data = da_yes, aes(y = container.title, x = da_fract)) + 
     geom_point() + 
     scale_x_continuous(labels = scales::label_percent()) + 
-    labs(title = "Percentage of Papers with Data Available (DA)", 
+    labs(title = "Percentage of NSD Papers\nwith Data Available (DA)", 
          y = "Journal Name", 
          x = "Percent DA")
   
-  #i think this needs to be of nsd yes papers
+
     
 ```
+
+## To Do 
+
+-   calculate the 95% CI for all these values that would be helpful
+    using statistics
+
+    -   point estimate +/- SEM
