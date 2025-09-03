@@ -177,7 +177,8 @@ rule rf:
         "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.performance.csv", 
         "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.hp_performance.csv"
     resources: 
-        mem_mb = 40000
+        mem_mb = 40000, 
+        time = "72:00:00"
     shell:
         """
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.rdir}
