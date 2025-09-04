@@ -203,6 +203,28 @@ machine learning},
   \item
     Data reproducibility
   \end{itemize}
+\end{itemize}
+
+\begin{verbatim}
+# A tibble: 6 x 80
+  file                 da    nsd   paper.x doi   doi_no_underscore journal_abrev
+  <chr>                <chr> <chr> <chr>   <chr> <chr>             <chr>        
+1 Data/html/10.1128_a~ No    Yes   https:~ 10.1~ 10.1128/aac.0000~ aac          
+2 Data/html/10.1128_a~ No    Yes   https:~ 10.1~ 10.1128/aac.0000~ aac          
+3 Data/html/10.1128_a~ Yes   Yes   https:~ 10.1~ 10.1128/aac.0000~ aac          
+4 Data/html/10.1128_a~ Yes   Yes   https:~ 10.1~ 10.1128/aac.0000~ aac          
+5 Data/html/10.1128_a~ Yes   Yes   https:~ 10.1~ 10.1128/aac.0000~ aac          
+6 Data/html/10.1128_a~ Yes   Yes   https:~ 10.1~ 10.1128/aac.0000~ aac          
+# i 73 more variables: container.title <chr>, predicted <chr>,
+#   alternative.id <chr>, created <date>, deposited <date>,
+#   published.print <chr>, indexed <date>, issn <chr>, issue <dbl>,
+#   issued <chr>, member <dbl>, page <chr>, prefix <dbl>, publisher <chr>,
+#   score <dbl>, source <chr>, reference.count <dbl>, references.count <dbl>,
+#   is.referenced.by.count <dbl>, title <chr>, type <chr>, update.policy <chr>,
+#   url <chr>, volume <dbl>, abstract <chr>, language <chr>, ...
+\end{verbatim}
+
+\begin{itemize}
 \item
   Introduction
 
@@ -250,7 +272,7 @@ machine learning},
   Reuseable (FAIR) data science guiding principles were put forth in
   2016 by Wilkinson et al in \emph{Nature Scientific Data} urges readers
   to ``improve the infrastructure supporting the reuse of scholarly
-  data'' ((\textbf{Wilkinson?}) 2016). Neither the JDDCP nor the FAIR
+  data'' ((\textbf{Wilkinson2016?})). Neither the JDDCP nor the FAIR
   principles are enforcable by any agency. Finally, the National
   Institutes of Health (NIH) began enforcing the ``Policy for Data
   Management and Sharing'' (NOT-OD-21-013) in January of 2023, requiring
