@@ -35,8 +35,8 @@ method = [
 
 
 mtry_dict = {
-    "new_seq_data" : 300, 
-    "data_availability" : 400
+    "new_seq_data" : 200, 
+    "data_availability" : 300
 }
 
 #import list of dois with their url 
@@ -50,13 +50,17 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        "Data/groundtruth/groundtruth.tokens.csv.gz", 
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
-        ml_variables = ml_variables, seeds = seeds)
+        # "Data/groundtruth/groundtruth.tokens.csv.gz", 
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.model.RDS", 
+        # ml_variables = ml_variables, seeds = seeds)
         # expand("Figures/ml_results/groundtruth/{method}/auroc.{ml_variables}.png", 
         # method = "rf", ml_variables = ml_variables), 
         # expand("Figures/ml_results/groundtruth/{method}/hp_perf.{method}.{ml_variables}.png", 
-        # method = "rf", ml_variables = ml_variables)
+        # method = "rf", ml_variables = ml_variables). 
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
+        ml_variables = ml_variables), 
+        expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
+        ml_variables = ml_variables)
 
       
     
