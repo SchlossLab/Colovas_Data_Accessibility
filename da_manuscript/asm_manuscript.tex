@@ -205,7 +205,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Sep 5, 2025}
+\date{Sep 8, 2025}
 \begin{document}
 \maketitle
 
@@ -312,7 +312,7 @@ Progress Reports (RPPRs), and may impact future funding decisions
 
 \subsubsection{ASM Journals}\label{asm-journals}
 
-With the advent of next generation sequencing, microbiology reserach has
+With the advent of next generation sequencing, microbiology research has
 generated large amounts of sequencing data, and it is common to upload
 sequence data to a public repository as well as to include data in
 research publications. The American Society for Microbiology(ASM) is the
@@ -342,11 +342,19 @@ towards data availability.
 \subsubsection{Nucleic Acid Sequencing
 Efforts}\label{nucleic-acid-sequencing-efforts}
 
-\begin{itemize}
-\tightlist
-\item
-  ft lauderdale accord
-\end{itemize}
+Beginning in 1996 with the International Strategy Meeting on Human
+Genome Sequencing in Bermuda, researchers have prioritized the release
+of all human genome sequencing information so that it may ``maximize its
+benefit to society'' (@bermuda1996). The meeting participants agreed
+that ``primary sequence data should be rapidly released'', with
+``sequence assemblies {[}to{]} be released as soon as possible, in some
+centres, assemblies of greater than 1 kb would be released automatically
+on a daily basis'', and that ``finished annotated sequence should be
+submitted immediately to public databases'' (@bermuda1996). The
+``Bermuda Principles,'' as they became known, have been embraced by the
+large scale Human Genome Project (HGP) since 1998. In 2003, another
+meeting, held in Ft. Lauderdale, FL, re-affirmed the 1996 Bermuda
+Principles, and \textbf{FINISH SENTENCE}
 
 Nucleic acid sequencing efforts are commonly uploaded to databases to
 identify appropriate sequences for comparison. There are three major
@@ -398,8 +406,8 @@ journals using machine learning models.
 \subsubsection{General Description of the
 Experiment}\label{general-description-of-the-experiment}
 
-We set out to determine the current state of data availablility in
-twelve primary research journals from the ASM family of journals. This
+We set out to determine the current state of data availability in twelve
+primary research journals from the ASM family of journals. This
 objective was completed by first acquiring all papers published in the
 journals of interest between 2000 and 2024 using the Crossref database
 and command line tools. We then trained random forest machine learning
@@ -423,35 +431,54 @@ note, several journals had changes to their publication goals during the
 primary place to publish new genome announcements until 2013 when ASM
 announced journal \emph{Genome Announcements} as a more permanent place
 for this type of data. \emph{Genome Announcements} was active from 2013
-until 2018, when it was rebranded to \emph{Microbiology Resource
+until 2018, when it was re-branded to \emph{Microbiology Resource
 Announcements}, which has been active from 2018 until present. These two
 journals appear separately in our analyses as a result of the Crossref
-database. New genome annoucements have a high percentage of NSD papers,
+database. New genome announcements have a high percentage of NSD papers,
 and a high percentage of DA within those papers. As a result, the
 \emph{Journal of Bacteriology} has had fewer NSD papers, and fewer
 papers with DA since 2013. Another journal of note is \emph{Microbiology
-Spectrum} and its rebrand. From 2013 until the fall of 2021,
+Spectrum} and its re-brand. From 2013 until the fall of 2021,
 \emph{Microbiology Spectrum} was a review journal. After this point,
 \emph{Microbiology Spectrum} became a primary research journal. Review
 journals are less likely to publish articles with NSD, and to have DA.
 Several journals, including \emph{Microbiology Spectrum}, do not span
 the entire time period for the study. Journals \emph{mBio} (b.2010),
-\emph{Microbiology Spectrum} (b. 2013, rebrand 2021), \emph{mSphere} (b.
-2016), \emph{mSystems} (b. 2016), and \emph{Genome Announcements}
+\emph{Microbiology Spectrum} (b. 2013, re-brand 2021), \emph{mSphere}
+(b. 2016), \emph{mSystems} (b. 2016), and \emph{Genome Announcements}
 (2013-2018). Not all journals are equally likely to contain NSD and have
 sequencing DA as a result of their field of interest. Journals
 \emph{Antimicrobial Agents and Chemotherapy; Infection and Immunity;}
-and the* Journal of Microbiology and Biology Education;* are all less
-likely to contain NSD and have DA than the other journals in the
+and the \emph{Journal of Microbiology and Biology Education;} are all
+less likely to contain NSD and have DA than the other journals in the
 dataset.
 
 \subsubsection{Descriptive Statistics:}\label{descriptive-statistics}
+
+\begin{verbatim}
+# A tibble: 13 x 3
+   container.title                                     n  fract
+   <chr>                                           <int>  <dbl>
+ 1 Antimicrobial Agents and Chemotherapy              82 0.0785
+ 2 Applied and Environmental Microbiology             92 0.0880
+ 3 Genome Announcements                               30 0.0287
+ 4 Infection and Immunity                             76 0.0727
+ 5 Journal of Bacteriology                            75 0.0718
+ 6 Journal of Clinical Microbiology                   77 0.0737
+ 7 Journal of Microbiology &amp; Biology Education    60 0.0574
+ 8 Journal of Virology                                87 0.0833
+ 9 Microbiology Resource Announcements               155 0.148 
+10 Microbiology Spectrum                             111 0.106 
+11 mBio                                               63 0.0603
+12 mSphere                                            57 0.0545
+13 mSystems                                           80 0.0766
+\end{verbatim}
 
 \paragraph{Whole Dataset}\label{whole-dataset}
 
 Using the Crossref database, with validation from WOS, NCBI, and Scopus
 databases, we downloaded 155779 unique records of papers published in
-ASM journals between 2000 and 2024. After webscraping there were YYYY
+ASM journals between 2000 and 2024. After web scraping there were YYYY
 papers downloaded with text available for the models to be applied on,
 as not all records had text available. See table YYYY for number of
 papers downloaded from each journal. Overall, XXXX\% of papers had NSD,
@@ -476,20 +503,20 @@ dataset)}}{Training Dataset (pretty much the same as the above paragraph, but wi
 We created a subset of the whole dataset to train our machine learning
 models. The training dataset initially had N = 250 papers, but was
 increased over time due to gaps in the dataset, and validation of the
-trained models (see below). Overall, XXXX\% of papers had NSD, and
-YYYY\% of papers with NSD, had DA. See table YYYY for percentages of NSD
-and DA for each journal. The journal with the highest rate of NSD was
-XXXXX at XXXX\%, and the lowest was XXXX at XXXX\%. The journal with the
-highest rate of DA was XXXXX at XXXX\%, and the lowest was XXXX at
-XXXX\%. This was expected as \emph{Microbiology Resource Annoucements}
-publishes mainly new genomic sequence data and makes the data available.
-On average, papers in the dataset had XXXX citations/article. This
-number varies by journal, see table YYYY for data by journal. The
-journal with the highest rate of citations/article was XXXXX at XXXX\%,
-and the lowest was XXXX at XXXX\%. \textbf{SENTENCE ABOUT THIS BEING
-GOOD AND WHAT WE WANTED TO SEE IN THIS DATASET}. The journals in the
-dataset span years 2000-2024. See table YYYYY for the distribution of
-papers per year in the dataset.
+trained models (see below), with a total of N = 1045 Overall, XXXX\% of
+papers had NSD, and YYYY\% of papers with NSD, had DA. See table YYYY
+for percentages of NSD and DA for each journal. The journal with the
+highest rate of NSD was XXXXX at XXXX\%, and the lowest was XXXX at
+XXXX\%. The journal with the highest rate of DA was XXXXX at XXXX\%, and
+the lowest was XXXX at XXXX\%. This was expected as \emph{Microbiology
+Resource Annoucements} publishes mainly new genomic sequence data and
+makes the data available. On average, papers in the dataset had XXXX
+citations/article. This number varies by journal, see table YYYY for
+data by journal. The journal with the highest rate of citations/article
+was XXXXX at XXXX\%, and the lowest was XXXX at XXXX\%. \textbf{SENTENCE
+ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE IN THIS DATASET}. The
+journals in the dataset span years 2000-2024. See table YYYYY for the
+distribution of papers per year in the dataset.
 
 \subsubsection{Descriptive Statisitcs about the Trained
 Models}\label{descriptive-statisitcs-about-the-trained-models}
