@@ -146,17 +146,24 @@ t_per_da <- count(training_data, new_seq_data, data_availability) %>%
             .[[2, 4]]
             
 
+
+training_data_table <-
 training_data %>% 
-    # group_by(container.title) %>%
     count(container.title, new_seq_data, data_availability) %>%
-    mutate(.by = container.title, 
+     mutate(.by = container.title, 
            n_total = sum(`n`), 
-        n_fract = `n`/sum(`n`)*100, 
-          n_nsd = n(.[new_seq_data == "Yes"]), 
-          fract_nsd = n_nsd/n_total*100, 
-          n_da = (new_seq_data == "Yes" & data_availability == "Yes"), 
-          fract_da = n_da/n_nsd*100) %>%
+           n_fract = (n_total/sum(.$`n`)*100))  %>% 
+    filter(new_seq_data == "Yes")  %>%
+       mutate(.by = container.title,
+           n_nsd = sum(`n`), 
+           fract_nsd = n_nsd/n_total*100) %>%
+    filter(data_availability == "Yes") %>% # this eliminates JMBE data - need to add a zero row for jmbe
+    mutate(.by = container.title, 
+          n_da = `n`, 
+          fract_da = n_da/n_nsd) %>%
     select(container.title, n_total:fract_da)
+
+kableExtra::kable(training_data_table)
 
 ```
 
@@ -166,7 +173,7 @@ Using the Crossref database, with validation from WOS, NCBI, and Scopus database
 
 #### Training Dataset **(pretty much the same as the above paragraph, but with stats for the training dataset)**
 
-We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 250 papers, but was increased over time due to gaps in the dataset, and validation of the trained models (see below), with a total of N = `r n_training.` Overall, `r t_per_nsd`% of papers had NSD, and `r t_per_da`% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. The journal with the highest rate of DA was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. This was expected as *Microbiology Resource Annoucements* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had XXXX citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. **SENTENCE ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE IN THIS DATASET**. The journals in the dataset span years 2000-2024. See table YYYYY for the distribution of papers per year in the dataset.
+We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 250 papers, but was increased over time due to gaps in the dataset, and validation of the trained models (see below), with a total of N = `r n_training` Overall, `r t_per_nsd`% of papers had NSD, and `r t_per_da`% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. The journal with the highest rate of DA was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. This was expected as *Microbiology Resource Annoucements* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had XXXX citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. **SENTENCE ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE IN THIS DATASET**. The journals in the dataset span years 2000-2024. See table YYYYY for the distribution of papers per year in the dataset.
 
 ### Descriptive Statisitcs about the Trained Models
 
