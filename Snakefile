@@ -57,10 +57,11 @@ rule targets:
         # method = "rf", ml_variables = ml_variables), 
         # expand("Figures/ml_results/groundtruth/{method}/hp_perf.{method}.{ml_variables}.png", 
         # method = "rf", ml_variables = ml_variables). 
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
-        ml_variables = ml_variables), 
-        expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
-        ml_variables = ml_variables)
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
+        # ml_variables = ml_variables), 
+        # expand("Data/ml_results/groundtruth/rf/{ml_variables}/final/final.rf.{ml_variables}.102899.finalModel.RDS", 
+        # ml_variables = ml_variables)
+        "Data/final/best_model_stats.csv"
 
       
     
@@ -231,6 +232,20 @@ rule best_mtry:
         """
         {input.rscript} {input.rds} {wildcards.ml_variables} {input.rdir}
         """
+    
+rule combine_best_models: 
+    input: 
+        rscript = "Code/combine_best_models.R",
+        rds = expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
+        ml_variables = ml_variables)
+        
+    output: 
+        "Data/final/best_model_stats.csv"
+    shell:
+        """
+         {input.rscript} {input.rds} {output}
+        """
+
 
 rule final_model: 
     input:
