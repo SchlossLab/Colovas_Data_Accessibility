@@ -38,8 +38,8 @@ nsd_model <-
     readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.finalModel.RDS")
 
 
-#local testing 
-# filename<-lookup_table$html_filename[470]
+# #local testing 
+# html_filename<-lookup_table$html_filename[470]
 # output_file <- "Data/10.1128_jcm.38.4.1696-1697.2000.csv"
 
 
