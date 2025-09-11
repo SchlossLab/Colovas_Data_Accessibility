@@ -85,6 +85,9 @@ library(tidyverse)
 
 training_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/new_groundtruth.csv")
 
+all_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
+
+#nsd yes metadata needs to be updated at some point
 nsd_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
 
 
@@ -189,10 +192,10 @@ kableExtra::kable(whole_dataset_table)
 #ok now we need to find the percentages/data that we need 
 
 ## whole dataset stats
-
+colnames(all_data)
 #year distribution - do we want a figure for this or the table? 
-t_years <- 
-    training_data %>% 
+all_years <- 
+   all_data %>% 
     count(., year.published)
 
 kableExtra::kable(t_years)
@@ -288,7 +291,7 @@ t_j_min_median_cites <- t_avg_cites_j[[which.min(t_avg_cites_j$median_refs), 1]]
 
 #### Training Dataset **(pretty much the same as the above paragraph, but with stats for the training dataset)**
 
-\*XX  - add italics for journal names even when they're variables, do this in not visual mode
+\*XX - add italics for journal names even when they're variables, do this in not visual mode
 
 We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 500 papers, but was increased over time due to gaps in the dataset, and after subsequent validation of the trained models (see below), with a total of N = `r n_training`. See table YYYY for the distribution of papers per journal in the training dataset. The journals in the dataset also span years 2000-2024. See table YYYYY for the distribution of papers per year in the training dataset. Overall, `r t_per_nsd`% of papers had NSD, and `r t_per_da`% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was `r t_j_high_nsd` at `r t_fract_high_nsd`%, and the lowest was `r t_j_low_nsd` at `r t_fract_low_nsd`%. The journals with the highest rate of DA in NSD papers were `r t_j_high_da` at `r t_fract_high_da`%, and the lowest was `r t_j_low_da` at `r t_fract_low_da`%. On average, papers in the dataset had median `r t_total_avg_cites$median_refs` citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was `r t_j_max_median_cites` at `r t_max_median_cites`%, and the lowest was `r t_j_min_median_cites` at `r t_min_median_cites`%.
 
