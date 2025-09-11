@@ -219,7 +219,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Sep 9, 2025}
+\date{Sep 11, 2025}
 \begin{document}
 \maketitle
 
@@ -254,21 +254,23 @@ machine learning},
 
 \subsection{Introduction}\label{introduction}
 
-Data availability is a newly emerging component of the scientific
-process in the digital age. With the latest and greatest methodologies
-available across fields, increasing amounts of data are being generated
-each day, especially in the biological sciences. Availability of these
-large quantities of study data and metadata (data about data) is a
-necessary resource for appropriate use and re-use of data and protocols
-as well as the recreation of analyses. We believe that policies of data
-``available on request'' are not sufficient to be considered available
-data. One example was published in \emph{Microbiome}, that a reader in
-search of data may email the corresponding author and may get the data
-back after days, weeks, or months, or if a response is received, but
-equally possible that the author is no longer at the publishing
-institution , or has no access to the dataset of interest, or more forms
-are needed to complete the request for data ((1)). \textbf{I am still
-having trouble linking this to the next paragraph}
+Data availability (DA) is the practice of making raw experimental data
+and analyses publicly accessible, often via upload in maintained
+databases. DA is a newly emerging and yet deeply important component of
+the scientific process in the digital age. With the latest and greatest
+methodologies available across fields, increasing amounts of data are
+being generated each day, especially in the biological sciences.
+Availability of these large quantities of study data and metadata (data
+about data) is a necessary resource for appropriate use and re-use of
+data and protocols as well as the recreation of analyses. We believe
+that policies of data ``available on request'' are not sufficient to be
+considered available data. One example was published in
+\emph{Microbiome}, that a reader in search of data may email the
+corresponding author, with varying results ((1)). We believe that this
+is simply unacceptable, and set out to determine rates of published raw
+data in the biological sciences, specifically microbiology, by examining
+the American Society for Microbiology's (ASM) library of published
+primary research journals.
 
 \subsubsection{Scientific Data as a Public
 Good}\label{scientific-data-as-a-public-good}
@@ -283,35 +285,34 @@ analyses. Additionally, data can be used to eliminate possible solutions
 to a problem by the publishing of ``negative data.'' Thinking of data as
 a public good, if negative data is published, it can help researchers
 avoid sinking time and financial resources into the investigation of
-non-viable hypotheses. This non-fruitful investigation is more commonly
-known as the ``filedrawer effect.'' Data as a public good also is
-subject to the tragedy of the commons. If no one contributes to the
-public ``commons'', data that is available for public use, how can we
-advance our understanding of our study systems?
+non-viable hypotheses. This lack of publication of non-fruitful
+investigation is more commonly known as the ``file drawer effect.'' Data
+as a public good also is subject to the tragedy of the commons. If no
+one contributes to the public ``commons'', data that is available for
+public use, how can we advance our understanding of our study systems?
 
 \subsubsection{Current DA Policies}\label{current-da-policies}
 
-Current data availability and reproducibility guidelines have been
-informed by a number of policies created by funding agencies,
-peer-review journals, conference and special task groups, as well as
-community interest groups. In 2011, after the Future of Research
-Communication (FoRC) conference in Germany to establish FORCE11, a
-community interest group which seeks to encourage and promote data
-availability standards. Also in 2011, the Genomic Standards Consortium
-(GSC) published the MIMARKS/MIxS standards in \emph{Nature
-Biotechnology} to promote the publication of the ``minimum information
-about a marker gene sequence'' (MIMARKS) or ``minimum information about
-x sequence'' (MIxS) ((3)). These standards are checklists useable by
-data generators and uploaders towards inclusion of relevant data with
-sequence uploads in the International Nucleotide Sequence Database
-Collaboration (INSDC).
+Current data availability guidelines have been informed by a number of
+policies created by funding agencies, peer-review journals, conference
+and special task groups, as well as community interest groups. In 2011,
+after the Future of Research Communication (FoRC) conference in Germany
+to establish FORCE11, a community interest group which seeks to
+encourage and promote data availability standards. Also in 2011, the
+Genomic Standards Consortium (GSC) published the MIMARKS/MIxS standards
+in \emph{Nature Biotechnology} to promote the publication of the
+``minimum information about a marker gene sequence'' (MIMARKS) or
+``minimum information about x sequence'' (MIxS) ((3)). These standards
+are checklists usable by data generators and uploaders towards inclusion
+of relevant data with sequence uploads in the International Nucleotide
+Sequence Database Collaboration (INSDC).
 
 In 2014 the group published the Joint Declaration of Data Citation
 Principles (JDDCP), a document towards the standardization of data
-citation and its future avaialability((\textbf{Data?}) Citation
-Synthesis Group 2014). The Findable, Accessible, Interoperable, and
-Reuseable (FAIR) data science guiding principles were put forth in 2016
-by Wilkinson et al in \emph{Nature Scientific Data} urges readers to
+citation and its future availability((\textbf{Data?}) Citation Synthesis
+Group 2014). The Findable, Accessible, Interoperable, and Reuseable
+(FAIR) data science guiding principles were put forth in 2016 by
+Wilkinson et al in \emph{Nature Scientific Data} urges readers to
 ``improve the infrastructure supporting the reuse of scholarly data''
 ((4)). Neither the JDDCP nor the FAIR principles are enforcable by any
 agency. Finally, the National Institutes of Health (NIH) began enforcing
@@ -368,35 +369,40 @@ submitted immediately to public databases'' (@bermuda1996). The
 ``Bermuda Principles,'' as they became known, have been embraced by the
 large scale Human Genome Project (HGP) since 1998. In 2003, another
 meeting, held in Ft. Lauderdale, FL, re-affirmed the 1996 Bermuda
-Principles, and \textbf{FINISH SENTENCE}
+Principles, expanded upon them to apply more broadly towards sequencing
+data, and called for further support of these practices (@ftlauderdale).
+These foundation agreements set the stage for both the HGP and the Human
+Microbiome Project (HMP) to generate and share massive amounts of data
+over the course of their studies (@HGP/HMP source needed).
 
-Nucleic acid sequencing efforts are commonly uploaded to databases to
-identify appropriate sequences for comparison. There are three major
-databases worldwide to support sequencing and sharing efforts. The
-National Library of Medicine's (NLM) National Center for Biotechnology
-(NCBI) in the United States, the Research Organization of Information
-Systems' (ROIS) National Institute of Genetics (NIG) in Japan, and the
-European Molecular Biology Lab's (EMBL) European Bioinformatics Institue
-(EBI) in Europe. These three databases are part of the International
-Nucleotide Sequence Database Collaboration (INSDC). These large
-databases make research by comparison possible. Genetic lineages of
-microbes are determined by creating phylogenetic trees which compare a
-new sequence to existing sequences. Phylogenetic trees show how closely
-related a new microbial genetic sequence is related to others studied
-before both in terms of evolution and mutation and in structure and
-function. An important tool for creating phylogenies is the NCBI Basic
-Local Alignment Search Tool (BLAST) ((\textbf{altschul1990?})). The
-BLAST algorithm allows users to compare a nucleic acid or protein
-sequence to the NCBI database of over 1TB of data to find similar and
-related sequences. Without the upload of seqeuces to the NCBI database,
-the use and success of BLAST would not be possible, despite the effort
-to upload of sequences to one of the INSDC databases.
+Starting with projects such as the HGP and HMP, nucleic acid sequencing
+efforts have been commonly uploaded and released using public databases.
+There are three major databases worldwide to support sequencing and
+sharing efforts. The National Library of Medicine's (NLM) National
+Center for Biotechnology (NCBI) in the United States, the Research
+Organization of Information Systems' (ROIS) National Institute of
+Genetics (NIG) in Japan, and the European Molecular Biology Lab's (EMBL)
+European Bioinformatics Institue (EBI) in Europe. These three databases
+are part of the International Nucleotide Sequence Database Collaboration
+(INSDC). These large databases make research by comparison possible.
+Genetic lineages of microbes are determined by creating phylogenetic
+trees which compare a new sequence to existing sequences. Phylogenetic
+trees show how closely related a new microbial genetic sequence is
+related to others studied before both in terms of evolution and mutation
+and in structure and function. An important tool for creating
+phylogenies is the NCBI Basic Local Alignment Search Tool (BLAST)
+((\textbf{altschul1990?})). The BLAST algorithm allows users to compare
+a nucleic acid or protein sequence to the NCBI database of over 1TB of
+data to find similar and related sequences. Without the upload of
+sequences to the NCBI database, the use and success of BLAST would not
+be possible, despite the effort required on part of the researcher to
+upload of sequences to one of the INSDC databases.
 
 \subsubsection{Examples of Data
 Avalability}\label{examples-of-data-avalability}
 
-A key tenent of the scientific method is the ability to replicate
-sceintific findings to ensure that they are not due to error. One way
+A key tenet of the scientific method is the ability to replicate
+scientific findings to ensure that they are not due to error. One way
 that scientific findings can be replicated is by re-completing the same
 analyses by another researcher. This is only possible if the data used
 to complete the original analyses is available for use. The availability
@@ -404,16 +410,19 @@ of datasets also allows new questions to be answered with existing data
 or the combination of multiple datasets, such as the use of the Human
 Microbiome Project's (HMP) sequencing data by researchers to create over
 650 scientific publications ((\textbf{HMP?})), and the completion of
-metadata studies. Availablity of data contributed to the rapid sequening
-of the SARS-CoV-2 virus during the 2020 pandemic and subsequent
-expedition of vaccine development ((\textbf{needCOVIDref?})).
+metadata studies. Availablity of data contributed to the rapid
+sequencing of the SARS-CoV-2 virus during the 2020 pandemic and
+subsequent expedition of vaccine development ((\textbf{needCOVIDref?})).
 
-\textbf{Need another summary of the study and how and why in this
-paragraph}
-
-The objective of this study is to determine the current state of data
-availability in twelve primary research journals from the ASM family of
-journals using machine learning models.
+With microbiologists commonly uploading nucleic acid sequences to public
+databases, the aim of this study was to determine the current state of
+data availability in twelve primary research journals from the ASM
+family of journals. Primary research articles were classified with using
+two machine learning models to answer two questions; ``Does this paper
+contain new sequence data?'', and ``Is the data available?'' Once these
+questions were answered, we moved to analyses to answer further
+questions, ``How does making my data available impact my citation
+metrics over time?''
 
 \subsection{Results}\label{results}
 
@@ -470,13 +479,13 @@ dataset.
 \subsubsection{Descriptive Statistics:}\label{descriptive-statistics}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.4432}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0909}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1136}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0682}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1136}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0568}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1136}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.4948}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0825}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1031}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0619}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1031}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0515}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1031}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 container.title
@@ -498,69 +507,145 @@ fract\_da
 \bottomrule\noalign{}
 \endlastfoot
 Antimicrobial Agents and Chemotherapy & 82 & 7.846890 & 23 & 28.04878 &
-10 & 0.4347826 \\
+10 & 43.47826 \\
 Applied and Environmental Microbiology & 92 & 8.803828 & 38 & 41.30435 &
-28 & 0.7368421 \\
-Genome Announcements & 30 & 2.870813 & 29 & 96.66667 & 29 & 1.0000000 \\
-Infection and Immunity & 76 & 7.272727 & 16 & 21.05263 & 9 &
-0.5625000 \\
+28 & 73.68421 \\
+Genome Announcements & 30 & 2.870813 & 29 & 96.66667 & 29 & 100.00000 \\
+Infection and Immunity & 76 & 7.272727 & 16 & 21.05263 & 9 & 56.25000 \\
 Journal of Bacteriology & 75 & 7.177034 & 25 & 33.33333 & 15 &
-0.6000000 \\
+60.00000 \\
 Journal of Clinical Microbiology & 77 & 7.368421 & 23 & 29.87013 & 14 &
-0.6086957 \\
-Journal of Virology & 87 & 8.325359 & 21 & 24.13793 & 6 & 0.2857143 \\
+60.86957 \\
+Journal of Microbiology \& Biology Education & 60 & 5.741627 & 0 &
+0.00000 & 0 & NaN \\
+Journal of Virology & 87 & 8.325359 & 21 & 24.13793 & 6 & 28.57143 \\
+mBio & 63 & 6.028708 & 17 & 26.98413 & 11 & 64.70588 \\
 Microbiology Resource Announcements & 155 & 14.832536 & 146 & 94.19355 &
-145 & 0.9931507 \\
+145 & 99.31507 \\
 Microbiology Spectrum & 111 & 10.622010 & 49 & 44.14414 & 38 &
-0.7755102 \\
-mBio & 63 & 6.028708 & 17 & 26.98413 & 11 & 0.6470588 \\
-mSphere & 57 & 5.454546 & 25 & 43.85965 & 20 & 0.8000000 \\
-mSystems & 80 & 7.655502 & 45 & 56.25000 & 45 & 1.0000000 \\
+77.55102 \\
+mSphere & 57 & 5.454546 & 25 & 43.85965 & 20 & 80.00000 \\
+mSystems & 80 & 7.655502 & 45 & 56.25000 & 45 & 100.00000 \\
+\end{longtable}
+
+\begin{verbatim}
+# A tibble: 26 x 4
+   container.title                                 nsd   da        n
+   <chr>                                           <chr> <chr> <int>
+ 1 Antimicrobial Agents and Chemotherapy           Yes   No     2432
+ 2 Antimicrobial Agents and Chemotherapy           Yes   Yes     805
+ 3 Applied and Environmental Microbiology          Yes   No     5998
+ 4 Applied and Environmental Microbiology          Yes   Yes    2640
+ 5 Genome Announcements                            Yes   No      324
+ 6 Genome Announcements                            Yes   Yes    6254
+ 7 Infection and Immunity                          Yes   No     1574
+ 8 Infection and Immunity                          Yes   Yes     280
+ 9 Journal of Bacteriology                         Yes   No     3516
+10 Journal of Bacteriology                         Yes   Yes    1351
+11 Journal of Clinical Microbiology                Yes   No     3881
+12 Journal of Clinical Microbiology                Yes   Yes     493
+13 Journal of Microbiology &amp; Biology Education Yes   No        7
+14 Journal of Microbiology &amp; Biology Education Yes   Yes       0
+15 Journal of Virology                             Yes   No     3647
+16 Journal of Virology                             Yes   Yes     936
+17 mBio                                            Yes   No      998
+18 mBio                                            Yes   Yes    1500
+19 Microbiology Resource Announcements             Yes   No       30
+20 Microbiology Resource Announcements             Yes   Yes    5708
+21 Microbiology Spectrum                           Yes   No      819
+22 Microbiology Spectrum                           Yes   Yes    2138
+23 mSphere                                         Yes   No      294
+24 mSphere                                         Yes   Yes     747
+25 mSystems                                        Yes   No      183
+26 mSystems                                        Yes   Yes    1253
+\end{verbatim}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.5926}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0988}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1358}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0617}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1111}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+container.title
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_total
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_fract
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_da
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+fract\_da
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Antimicrobial Agents and Chemotherapy & 3237 & 6.7708333 & 805 &
+24.86871 \\
+Applied and Environmental Microbiology & 8638 & 18.0681058 & 2640 &
+30.56263 \\
+Genome Announcements & 6578 & 13.7592035 & 6254 & 95.07449 \\
+Infection and Immunity & 1854 & 3.8780120 & 280 & 15.10248 \\
+Journal of Bacteriology & 4867 & 10.1803046 & 1351 & 27.75837 \\
+Journal of Clinical Microbiology & 4374 & 9.1490964 & 493 & 11.27115 \\
+Journal of Microbiology \& Biology Education & 7 & 0.0146419 & 0 &
+0.00000 \\
+Journal of Virology & 4583 & 9.5862617 & 936 & 20.42330 \\
+mBio & 2498 & 5.2250669 & 1500 & 60.04804 \\
+Microbiology Resource Announcements & 5738 & 12.0021754 & 5708 &
+99.47717 \\
+Microbiology Spectrum & 2957 & 6.1851573 & 2138 & 72.30301 \\
+mSphere & 1041 & 2.1774598 & 747 & 71.75793 \\
+mSystems & 1436 & 3.0036814 & 1253 & 87.25627 \\
 \end{longtable}
 
 \paragraph{Whole Dataset}\label{whole-dataset}
 
 Using the Crossref database, with validation from WOS, NCBI, and Scopus
-databases, we downloaded 155779 unique records of papers published in
-ASM journals between 2000 and 2024. After web scraping there were YYYY
-papers downloaded with text available for the models to be applied on,
-as not all records had text available. See table YYYY for number of
-papers downloaded from each journal. Overall, XXXX\% of papers had NSD,
-and YYYY\% of papers with NSD, had DA. See table YYYY for percentages of
-NSD and DA for each journal. The journal with the highest rate of NSD
-was XXXXX at XXXX\%, and the lowest was XXXX at XXXX\%. The journal with
-the highest rate of DA was XXXXX at XXXX\%, and the lowest was XXXX at
-XXXX\%. This was expected as \emph{Microbiology Resource Annoucements}
-publishes mainly new genomic sequence data and makes the data available.
-On average, papers in the dataset had XXXX citations/article. This
-number varies by journal, see table YYYY for data by journal. The
-journal with the highest rate of citations/article was XXXXX at XXXX\%,
-and the lowest was XXXX at XXXX\%. \textbf{SENTENCE ABOUT THIS BEING
-GOOD AND WHAT WE WANTED TO SEE IN THIS DATASET}. The journals in the
-dataset span years 2000-2024. See table YYYYY for the distribution of
-papers per year in the dataset.
+databases, we downloaded 155779(XXX- find way to get this not hard coded
+in) unique records of papers published in ASM journals between 2000 and
+2024. After web scraping there were YYYY papers downloaded with text
+available for the models to be applied on, as not all records had text
+available. See table YYYY for number of papers downloaded from each
+journal. Overall, XXXX\% of papers had NSD, and YYYY\% of papers with
+NSD, had DA. See table YYYY for percentages of NSD and DA for each
+journal. The journal with the highest rate of NSD was XXXXX at XXXX\%,
+and the lowest was XXXX at XXXX\%. The journal with the highest rate of
+DA was XXXXX at XXXX\%, and the lowest was XXXX at XXXX\%. This was
+expected as \emph{Microbiology Resource Annoucements} publishes mainly
+new genomic sequence data and makes the data available. On average,
+papers in the dataset had XXXX citations/article. This number varies by
+journal, see table YYYY for data by journal. The journal with the
+highest rate of citations/article was XXXXX at XXXX\%, and the lowest
+was XXXX at XXXX\%. \textbf{SENTENCE ABOUT THIS BEING GOOD AND WHAT WE
+WANTED TO SEE IN THIS DATASET}. The journals in the dataset span years
+2000-2024. See table YYYYY for the distribution of papers per year in
+the dataset.
 
 \paragraph{\texorpdfstring{Training Dataset \textbf{(pretty much the
 same as the above paragraph, but with stats for the training
 dataset)}}{Training Dataset (pretty much the same as the above paragraph, but with stats for the training dataset)}}\label{training-dataset-pretty-much-the-same-as-the-above-paragraph-but-with-stats-for-the-training-dataset}
 
 We created a subset of the whole dataset to train our machine learning
-models. The training dataset initially had N = 250 papers, but was
-increased over time due to gaps in the dataset, and validation of the
-trained models (see below), with a total of N = 1045 Overall,
-43.7320574\% of papers had NSD, and 80.9628009\% of papers with NSD, had
-DA. See table YYYY for percentages of NSD and DA for each journal. The
-journal with the highest rate of NSD was XXXXX at XXXX\%, and the lowest
-was XXXX at XXXX\%. The journal with the highest rate of DA was XXXXX at
-XXXX\%, and the lowest was XXXX at XXXX\%. This was expected as
-\emph{Microbiology Resource Annoucements} publishes mainly new genomic
-sequence data and makes the data available. On average, papers in the
-dataset had XXXX citations/article. This number varies by journal, see
-table YYYY for data by journal. The journal with the highest rate of
-citations/article was XXXXX at XXXX\%, and the lowest was XXXX at
-XXXX\%. \textbf{SENTENCE ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE
-IN THIS DATASET}. The journals in the dataset span years 2000-2024. See
-table YYYYY for the distribution of papers per year in the dataset.
+models. The training dataset initially had N = 500 papers, but was
+increased over time due to gaps in the dataset, and after subsequent
+validation of the trained models (see below), with a total of N = 1045
+Overall, 43.7320574\% of papers had NSD, and 80.9628009\% of papers with
+NSD, had DA. See table YYYY for percentages of NSD and DA for each
+journal. The journal with the highest rate of NSD was XXXXX at XXXX\%,
+and the lowest was XXXX at XXXX\%. The journal with the highest rate of
+DA was XXXXX at XXXX\%, and the lowest was XXXX at XXXX\%. This was
+expected as \emph{Microbiology Resource Annoucements} publishes mainly
+new genomic sequence data and makes the data available. On average,
+papers in the dataset had XXXX citations/article. This number varies by
+journal, see table YYYY for data by journal. The journal with the
+highest rate of citations/article was XXXXX at XXXX\%, and the lowest
+was XXXX at XXXX\%. \textbf{SENTENCE ABOUT THIS BEING GOOD AND WHAT WE
+WANTED TO SEE IN THIS DATASET}. The journals in the dataset span years
+2000-2024. See table YYYYY for the distribution of papers per year in
+the dataset.
 
 \subsubsection{Descriptive Statisitcs about the Trained
 Models}\label{descriptive-statisitcs-about-the-trained-models}
@@ -576,18 +661,18 @@ and precision. This type of model has one hyperparameter, `mtry' or the
 number of predictors to be sampled at each decision. During iterative
 model training, a subset of papers were validated after each completed
 training and deployment of each model. Papers from each journal, and
-extras from certain journals were hand-validated aginst model
-predictions to generate confusion matrices. Confusion matricies for the
+extras from certain journals were hand-validated against model
+predictions to generate confusion matrices. Confusion matrices for the
 final version of each trained model are available in YYYY
 table(supplement?). The NSD model used an mtry value of 300 had an Area
-Under the Curve(AUC) of 0.9549XXX and an acccuracy of 0.8925XXX. The
+Under the Curve(AUC) of 0.9549XXX and an accuracy of 0.8925XXX. The
 sensitivity of the NSD model was 0.9130XXX, and the specificity of the
 model was 0.8683XXX. The DA model used an mtry value of 400 had an AUC
-of 0.9824XXX and an acccuracy of 0.9353XXX. The sensitivity of the DA
+of 0.9824XXX and an accuracy of 0.9353XXX. The sensitivity of the DA
 model was 0.9545XXX, and the specificity of the model was 0.9005XXX
 ((\textbf{Data/final/best\_model\_stats.csv?}) for internal ref). This
 shows that the models fit the data well, and can provide classifications
-on new data with an expected error rate of approxmiately 10\%. We deemed
+on new data with an expected error rate of approximately 10\%. We deemed
 this as acceptable, accounting for variability in papers and data, and
 due to the large size of the dataset to deploy the models on.
 
@@ -595,7 +680,7 @@ due to the large size of the dataset to deploy the models on.
 Models}\label{regression-model-using-negative-binomial-models}
 
 In this study we sought to investigate the effect of NSD and DA on the
-number of citations recieved by a given paper. We focused on NSD papers
+number of citations received by a given paper. We focused on NSD papers
 to determine the effect of having DA. This led us to the use of a
 negative binomial regression model to best describe our data. All
 regression data was NSD yes. We focused on the continuous outcome of
@@ -603,14 +688,16 @@ regression data was NSD yes. We focused on the continuous outcome of
 age in months (continuous), and DA status (dichotomous). Due to the
 number of citations being fairly bell shaped with a long right tail
 (very few papers at advanced age with many citations), the model that
-best described our data was the negative binomial regression model. This
-model includes a dispersion parameter to describe the spread of the
-data. We applied a log transformation to our age variable
-(age.in.months) to better describe the relationship between time and
-number of citations received. ???HOW DO I DESCRIBE THIS MODEL??? In
-general, we found that NSD papers that made DA received more citations
-over time than those that did not. See figure YYYY for trends in each
-major journal. ??HOW else do i describe the figure??
+best described our data was the negative binomial regression model. A
+negative binomial model is appropriate for data that begins at zero and
+has a long `tail' of data. This model also includes a dispersion
+parameter to describe the spread of the data. We applied a log
+transformation to our age variable (age.in.months) to better describe
+the relationship between time and number of citations received. ???HOW
+DO I DESCRIBE THE PRODUCED MODEL??? In general, we found that NSD papers
+that made DA received more citations over time than those that did not.
+See figure YYYY for trends in each major journal. ??HOW else do i
+describe the figure??
 
 \subsection{Discussion}\label{discussion}
 
