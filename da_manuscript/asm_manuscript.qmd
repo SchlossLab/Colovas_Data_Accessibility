@@ -87,8 +87,8 @@ training_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Access
 
 all_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
 
-#nsd yes metadata needs to be updated at some point
-nsd_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
+# #nsd yes metadata needs to be updated at some point
+# nsd_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
 
 
 ```
@@ -165,21 +165,27 @@ training_data %>%
           fract_da = n_da/n_nsd*100) %>%
     select(container.title, n_total:fract_da) # i think the NaN is fine for now
 
-kableExtra::kable(training_data_table)
+kableExtra::kable(whole_dataset_table)
 
 
-# this is actually incorrect data because this is filtered nsd_yes data
+#whole dataset yay!
+
 whole_dataset_table <-
-nsd_data %>% 
+all_data %>% 
     count(container.title, nsd, da) %>%
+    na.omit() %>%
     complete(., container.title, nsd, da, fill = list(`n` = 0L)) %>%
     mutate(.by = container.title, 
                n_total = sum(`n`), 
            n_fract = (n_total/sum(.$`n`)*100))  %>% 
+    filter(nsd == "Yes")  %>%
+       mutate(.by = container.title,
+           n_nsd = sum(`n`), 
+           fract_nsd = n_nsd/n_total*100) %>%
     filter(da == "Yes") %>% 
     mutate(.by = container.title, 
           n_da = `n`, 
-          fract_da = n_da/n_total*100) %>%
+          fract_da = n_da/n_nsd*100) %>%
     select(container.title, n_total:fract_da)
 
 kableExtra::kable(whole_dataset_table)
@@ -198,42 +204,42 @@ all_years <-
    all_data %>% 
     count(., year.published)
 
-kableExtra::kable(t_years)
+kableExtra::kable(all_years)
 
 #journal w/ highest and lowest rate of nsd
-t_fract_high_nsd <- max(training_data_table$fract_nsd)
-t_j_high_nsd <- training_data_table[[which.max(training_data_table$fract_nsd), 1]]
-t_fract_low_nsd <- min(training_data_table$fract_nsd)
-t_j_low_nsd <- training_data_table[[which.min(training_data_table$fract_nsd), 1]]
+all_fract_high_nsd <- max(whole_dataset_table$fract_nsd)
+all_j_high_nsd <- whole_dataset_table[[which.max(whole_dataset_table$fract_nsd), 1]]
+all_fract_low_nsd <- min(whole_dataset_table$fract_nsd)
+all_j_low_nsd <- whole_dataset_table[[which.min(whole_dataset_table$fract_nsd), 1]]
 
 #journals w/ high/low rate da - two journals have 100% DA
-t_fract_high_da <- max(training_data_table$fract_da, na.rm = TRUE)
-t_j_high_da <- training_data_table[training_data_table$fract_da == t_fract_high_da, 1] %>%
+all_fract_high_da <- max(whole_dataset_table$fract_da, na.rm = TRUE)
+all_j_high_da <- whole_dataset_table[whole_dataset_table$fract_da == all_fract_high_da, 1] %>%
                stringr::str_flatten(, collapse = " and ", na.rm = TRUE)
 
-t_fract_low_da <- min(training_data_table$fract_da, na.rm = TRUE)
-t_j_low_da <- training_data_table[[which.min(training_data_table$fract_da), 1]]
+all_fract_low_da <- min(whole_dataset_table$fract_da, na.rm = TRUE)
+all_j_low_da <- whole_dataset_table[[which.min(whole_dataset_table$fract_da), 1]]
 
 
 ## avg citations/paper
-t_total_avg_cites <- training_data %>% 
-    select(paper, container.title, is.referenced.by.count) %>% 
+all_total_avg_cites <- all_data %>% 
+    select(file, container.title, is.referenced.by.count) %>% 
     summarize(container.title = "Total",  
-              mean_refs = mean(is.referenced.by.count), 
-               median_refs = median(is.referenced.by.count))
+              mean_refs = mean(is.referenced.by.count, na.rm = TRUE), 
+               median_refs = median(is.referenced.by.count, na.rm = TRUE))
 
-t_avg_cites_j <- training_data %>% 
-    select(paper, container.title, is.referenced.by.count) %>% 
+all_avg_cites_j <- all_data %>% 
+    select(file, container.title, is.referenced.by.count) %>% 
     summarize(.by = container.title, 
-              mean_refs = mean(is.referenced.by.count), 
-               median_refs = median(is.referenced.by.count))
-t_avg_cites <- rbind(t_avg_cites_j, t_total_avg_cites)
+              mean_refs = mean(is.referenced.by.count, na.rm = TRUE), 
+               median_refs = median(is.referenced.by.count, na.rm = TRUE))
+all_avg_cites <- rbind(all_avg_cites_j, all_total_avg_cites)
 
-t_max_median_cites <- max(t_avg_cites_j$median_refs, na.rm = TRUE)
-t_j_max_median_cites <- t_avg_cites_j[[which.max(t_avg_cites_j$median_refs), 1]]
+all_max_median_cites <- max(all_avg_cites_j$median_refs, na.rm = TRUE)
+all_j_max_median_cites <- all_avg_cites_j[[which.max(all_avg_cites_j$median_refs), 1]]
 
-t_min_median_cites <- min(t_avg_cites_j$median_refs, na.rm = TRUE)
-t_j_min_median_cites <- t_avg_cites_j[[which.min(t_avg_cites_j$median_refs), 1]]
+all_min_median_cites <- min(all_avg_cites_j$median_refs, na.rm = TRUE)
+all_j_min_median_cites <- all_avg_cites_j[[which.min(all_avg_cites_j$median_refs), 1]]
 ```
 
 #### Whole Dataset
