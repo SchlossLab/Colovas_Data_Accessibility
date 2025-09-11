@@ -302,43 +302,43 @@ rule scopus:
     input: 
         rscript = "Code/doi_gathering_scopus_via_httr.R"
     output: 
-        "Data/scopus/scopus_{datasets}.csv.gz"
+        "Data/scopus/scopus_{new_datasets}.csv.gz"
     shell: 
         """
-        {input.rscript} {wildcards.datasets} 
+        {input.rscript} {wildcards.new_datasets} 
         """
 
 rule wos: 
     input: 
         rscript = "Code/doi_gathering_wos_via_httr.R"
     output: 
-        "Data/wos/wos_{datasets}.csv.gz"
+        "Data/wos/wos_{new_datasets}.csv.gz"
     group: 
         "wos"
     shell: 
         """
-        {input.rscript} {wildcards.datasets} 
+        {input.rscript} {wildcards.new_datasets} 
         """
 
 
 rule ncbi: 
     output: 
-        "Data/ncbi/ncbi_{datasets}.csv.gz"
+        "Data/ncbi/ncbi_{new_datasets}.csv.gz"
     shell: 
         """
-        esearch -db pubmed -query "{wildcards.datasets}" | efetch -format csv > "{output}"
+        esearch -db pubmed -query "{wildcards.new_datasets}" | efetch -format csv > "{output}"
         """
 
 rule crossref: 
     input: 
         rscript = "Code/doi_gathering_crossref.R"
     output: 
-        "Data/crossref/crossref_{datasets}.csv.gz"
+        "Data/crossref/crossref_{new_datasets}.csv.gz"
     group:
         "crossref"
     shell: 
         """
-        {input.rscript} {wildcards.datasets} 
+        {input.rscript} {wildcards.new_datasets} 
         """
 
 #-------------------LINK-------ROT-----------------------------------------------------------

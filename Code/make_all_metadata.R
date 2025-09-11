@@ -37,7 +37,7 @@ remove_doi_dupes<-joined_predictions[-dupes,]
 
 #load static files
 
-crossref <- read_csv("Data/crossref/crossref_all_papers.csv.gz") %>%
+crossref <- read_csv("Data/crossref/all_papers_dois.csv.gz") %>%
   mutate(doi = tolower(doi))
 ncbi <-read_csv("Data/ncbi/ncbi_all_papers.csv.gz") %>%
   mutate(doi = tolower(doi))
@@ -47,9 +47,9 @@ scopus <-read_csv("Data/scopus/all_scopus_citations.csv.gz") %>%
   mutate(`prism:doi` = tolower(`prism:doi`))
 
 #join with crossref metadata n = 146398 (1609 missing)
-metadata_crossref<-inner_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
+metadata_crossref<-inner_join(remove_doi_dupes, crossref, by = join_by(doi))
 
-missing_from_crossref<-anti_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
+missing_from_crossref<-anti_join(remove_doi_dupes, crossref, by = join_by(doi))
 
 #1036 of missing crossref with predictions found in ncbi 
 metadata_ncbi<-inner_join(missing_from_crossref, ncbi, by = join_by(doi_no_underscore == doi))
@@ -74,3 +74,4 @@ all_metadata <-full_join(metadata_crossref, metadata_ncbi) %>%
   full_join(., metadata_scopus)
 
 write_csv(all_metadata, file = output_file)
+
