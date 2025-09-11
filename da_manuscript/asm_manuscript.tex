@@ -528,38 +528,6 @@ mSphere & 57 & 5.454546 & 25 & 43.85965 & 20 & 80.00000 \\
 mSystems & 80 & 7.655502 & 45 & 56.25000 & 45 & 100.00000 \\
 \end{longtable}
 
-\begin{verbatim}
-# A tibble: 26 x 4
-   container.title                                 nsd   da        n
-   <chr>                                           <chr> <chr> <int>
- 1 Antimicrobial Agents and Chemotherapy           Yes   No     2432
- 2 Antimicrobial Agents and Chemotherapy           Yes   Yes     805
- 3 Applied and Environmental Microbiology          Yes   No     5998
- 4 Applied and Environmental Microbiology          Yes   Yes    2640
- 5 Genome Announcements                            Yes   No      324
- 6 Genome Announcements                            Yes   Yes    6254
- 7 Infection and Immunity                          Yes   No     1574
- 8 Infection and Immunity                          Yes   Yes     280
- 9 Journal of Bacteriology                         Yes   No     3516
-10 Journal of Bacteriology                         Yes   Yes    1351
-11 Journal of Clinical Microbiology                Yes   No     3881
-12 Journal of Clinical Microbiology                Yes   Yes     493
-13 Journal of Microbiology &amp; Biology Education Yes   No        7
-14 Journal of Microbiology &amp; Biology Education Yes   Yes       0
-15 Journal of Virology                             Yes   No     3647
-16 Journal of Virology                             Yes   Yes     936
-17 mBio                                            Yes   No      998
-18 mBio                                            Yes   Yes    1500
-19 Microbiology Resource Announcements             Yes   No       30
-20 Microbiology Resource Announcements             Yes   Yes    5708
-21 Microbiology Spectrum                           Yes   No      819
-22 Microbiology Spectrum                           Yes   Yes    2138
-23 mSphere                                         Yes   No      294
-24 mSphere                                         Yes   Yes     747
-25 mSystems                                        Yes   No      183
-26 mSystems                                        Yes   Yes    1253
-\end{verbatim}
-
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.5926}}
   >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0988}}
@@ -624,6 +592,41 @@ WANTED TO SEE IN THIS DATASET}. The journals in the dataset span years
 2000-2024. See table YYYYY for the distribution of papers per year in
 the dataset.
 
+\begin{longtable}[]{@{}rr@{}}
+\toprule\noalign{}
+year.published & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2000 & 30 \\
+2001 & 43 \\
+2002 & 23 \\
+2003 & 22 \\
+2004 & 21 \\
+2005 & 36 \\
+2006 & 29 \\
+2007 & 18 \\
+2008 & 12 \\
+2009 & 13 \\
+2010 & 21 \\
+2011 & 41 \\
+2012 & 24 \\
+2013 & 29 \\
+2014 & 31 \\
+2015 & 34 \\
+2016 & 38 \\
+2017 & 40 \\
+2018 & 40 \\
+2019 & 63 \\
+2020 & 65 \\
+2021 & 119 \\
+2022 & 70 \\
+2023 & 57 \\
+2024 & 116 \\
+NA & 10 \\
+\end{longtable}
+
 \paragraph{\texorpdfstring{Training Dataset \textbf{(pretty much the
 same as the above paragraph, but with stats for the training
 dataset)}}{Training Dataset (pretty much the same as the above paragraph, but with stats for the training dataset)}}\label{training-dataset-pretty-much-the-same-as-the-above-paragraph-but-with-stats-for-the-training-dataset}
@@ -631,21 +634,22 @@ dataset)}}{Training Dataset (pretty much the same as the above paragraph, but wi
 We created a subset of the whole dataset to train our machine learning
 models. The training dataset initially had N = 500 papers, but was
 increased over time due to gaps in the dataset, and after subsequent
-validation of the trained models (see below), with a total of N = 1045
-Overall, 43.7320574\% of papers had NSD, and 80.9628009\% of papers with
-NSD, had DA. See table YYYY for percentages of NSD and DA for each
-journal. The journal with the highest rate of NSD was XXXXX at XXXX\%,
-and the lowest was XXXX at XXXX\%. The journal with the highest rate of
-DA was XXXXX at XXXX\%, and the lowest was XXXX at XXXX\%. This was
-expected as \emph{Microbiology Resource Annoucements} publishes mainly
-new genomic sequence data and makes the data available. On average,
-papers in the dataset had XXXX citations/article. This number varies by
-journal, see table YYYY for data by journal. The journal with the
-highest rate of citations/article was XXXXX at XXXX\%, and the lowest
-was XXXX at XXXX\%. \textbf{SENTENCE ABOUT THIS BEING GOOD AND WHAT WE
-WANTED TO SEE IN THIS DATASET}. The journals in the dataset span years
-2000-2024. See table YYYYY for the distribution of papers per year in
-the dataset.
+validation of the trained models (see below), with a total of N = 1045.
+See table YYYY for the distribution of papers per journal in the
+training dataset. The journals in the dataset also span years 2000-2024.
+See table YYYYY for the distribution of papers per year in the training
+dataset. Overall, 43.7320574\% of papers had NSD, and 80.9628009\% of
+papers with NSD, had DA. See table YYYY for percentages of NSD and DA
+for each journal. The journal with the highest rate of NSD was Genome
+Announcements at 96.6666667\%, and the lowest was Journal of
+Microbiology \& Biology Education at 0\%. The journals with the highest
+rate of DA in NSD papers were Genome Announcements and mSystems at
+100\%, and the lowest was Journal of Virology at 28.5714286\%. On
+average, papers in the dataset had median 10 citations/article. This
+number varies by journal, see table YYYY for data by journal. The
+journal with the highest rate of citations/article was Infection and
+Immunity at 40\%, and the lowest was Microbiology Resource Announcements
+at 0\%.
 
 \subsubsection{Descriptive Statisitcs about the Trained
 Models}\label{descriptive-statisitcs-about-the-trained-models}

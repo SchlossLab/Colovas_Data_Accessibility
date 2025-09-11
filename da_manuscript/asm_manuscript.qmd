@@ -165,6 +165,7 @@ training_data %>%
 kableExtra::kable(training_data_table)
 
 
+# this is actually incorrect data because this is filtered nsd_yes data
 whole_dataset_table <-
 nsd_data %>% 
     count(container.title, nsd, da) %>%
@@ -184,11 +185,59 @@ kableExtra::kable(whole_dataset_table)
 
 ```
 
+```{r whole_dataset_stats}
+#ok now we need to find the percentages/data that we need 
+
+## whole dataset stats
+
+#year distribution - do we want a figure for this or the table? 
+t_years <- 
+    training_data %>% 
+    count(., year.published)
+
+kableExtra::kable(t_years)
+
+#journal w/ highest and lowest rate of nsd
+t_fract_high_nsd <- max(training_data_table$fract_nsd)
+t_j_high_nsd <- training_data_table[[which.max(training_data_table$fract_nsd), 1]]
+t_fract_low_nsd <- min(training_data_table$fract_nsd)
+t_j_low_nsd <- training_data_table[[which.min(training_data_table$fract_nsd), 1]]
+
+#journals w/ high/low rate da - two journals have 100% DA
+t_fract_high_da <- max(training_data_table$fract_da, na.rm = TRUE)
+t_j_high_da <- training_data_table[training_data_table$fract_da == t_fract_high_da, 1] %>%
+               stringr::str_flatten(, collapse = " and ", na.rm = TRUE)
+
+t_fract_low_da <- min(training_data_table$fract_da, na.rm = TRUE)
+t_j_low_da <- training_data_table[[which.min(training_data_table$fract_da), 1]]
+
+
+## avg citations/paper
+t_total_avg_cites <- training_data %>% 
+    select(paper, container.title, is.referenced.by.count) %>% 
+    summarize(container.title = "Total",  
+              mean_refs = mean(is.referenced.by.count), 
+               median_refs = median(is.referenced.by.count))
+
+t_avg_cites_j <- training_data %>% 
+    select(paper, container.title, is.referenced.by.count) %>% 
+    summarize(.by = container.title, 
+              mean_refs = mean(is.referenced.by.count), 
+               median_refs = median(is.referenced.by.count))
+t_avg_cites <- rbind(t_avg_cites_j, t_total_avg_cites)
+
+t_max_median_cites <- max(t_avg_cites_j$median_refs, na.rm = TRUE)
+t_j_max_median_cites <- t_avg_cites_j[[which.max(t_avg_cites_j$median_refs), 1]]
+
+t_min_median_cites <- min(t_avg_cites_j$median_refs, na.rm = TRUE)
+t_j_min_median_cites <- t_avg_cites_j[[which.min(t_avg_cites_j$median_refs), 1]]
+```
+
 #### Whole Dataset
 
 Using the Crossref database, with validation from WOS, NCBI, and Scopus databases, we downloaded 155779(XXX- find way to get this not hard coded in) unique records of papers published in ASM journals between 2000 and 2024. After web scraping there were YYYY papers downloaded with text available for the models to be applied on, as not all records had text available. See table YYYY for number of papers downloaded from each journal. Overall, XXXX% of papers had NSD, and YYYY% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. The journal with the highest rate of DA was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. This was expected as *Microbiology Resource Annoucements* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had XXXX citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. **SENTENCE ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE IN THIS DATASET**. The journals in the dataset span years 2000-2024. See table YYYYY for the distribution of papers per year in the dataset.
 
-```{r}
+```{r training_data_stats}
 #ok now we need to find the percentages/data that we need 
 
 ## Training dataset stats
@@ -239,7 +288,9 @@ t_j_min_median_cites <- t_avg_cites_j[[which.min(t_avg_cites_j$median_refs), 1]]
 
 #### Training Dataset **(pretty much the same as the above paragraph, but with stats for the training dataset)**
 
-We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 500 papers, but was increased over time due to gaps in the dataset, and after subsequent validation of the trained models (see below), with a total of N = `r n_training`. See table YYYY for the distribution of papers per journal in the training dataset. The journals in the dataset also span years 2000-2024. See table YYYYY for the distribution of papers per year in the training dataset. Overall, `r t_per_nsd`% of papers had NSD, and `r t_per_da`% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was `r t_j_high_nsd` at `t_fract_high_nsd`%, and the lowest was `t_j_low_nsd` at `t_fract_low_nsd`%. The journals with the highest rate of DA in NSD papers were `t_j_high_da` at `t_fract_high_da`%, and the lowest was `t_j_low_da` at `t_fract_low_da`%. On average, papers in the dataset had median `r t_total_avg_cites$median_refs` citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was `r t_j_max_median_cites` at `r t_max_median_cites`%, and the lowest was `r t_j_min_median_cites` at `r t_min_median_cites`%.
+\*XX  - add italics for journal names even when they're variables, do this in not visual mode
+
+We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 500 papers, but was increased over time due to gaps in the dataset, and after subsequent validation of the trained models (see below), with a total of N = `r n_training`. See table YYYY for the distribution of papers per journal in the training dataset. The journals in the dataset also span years 2000-2024. See table YYYYY for the distribution of papers per year in the training dataset. Overall, `r t_per_nsd`% of papers had NSD, and `r t_per_da`% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was `r t_j_high_nsd` at `r t_fract_high_nsd`%, and the lowest was `r t_j_low_nsd` at `r t_fract_low_nsd`%. The journals with the highest rate of DA in NSD papers were `r t_j_high_da` at `r t_fract_high_da`%, and the lowest was `r t_j_low_da` at `r t_fract_low_da`%. On average, papers in the dataset had median `r t_total_avg_cites$median_refs` citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was `r t_j_max_median_cites` at `r t_max_median_cites`%, and the lowest was `r t_j_min_median_cites` at `r t_min_median_cites`%.
 
 ### Descriptive Statisitcs about the Trained Models
 
