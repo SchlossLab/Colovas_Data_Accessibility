@@ -52,7 +52,7 @@ rule targets:
     input:
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
         # # ml_variables = ml_variables)
-        expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()), 
+        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()), 
         "Data/final/predicted_results.csv.gz"
 
         
