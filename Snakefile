@@ -53,7 +53,8 @@ rule targets:
         # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
         # # ml_variables = ml_variables)
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()), 
-        "Data/final/predicted_results.csv.gz"
+        # "Data/final/predicted_results.csv.gz"
+        "Data/final/predictions_with_metadata.csv.gz"
 
         
 
@@ -115,6 +116,21 @@ rule combine_predictions:
         """
         {input.rscript} {params.p_dir} {output}
         """
+
+rule predictions_with_metadata: 
+    input: 
+        rscript = "Code/make_all_metadata.R",
+        predicted = "Data/final/predicted_results.csv.gz", 
+        lookup_table = "Data/all_dois_lookup_table.csv.gz"
+    output: 
+        "Data/final/predictions_with_metadata.csv.gz"
+    resources: 
+        mem_mb = 40000
+    shell: 
+        """
+        {input.rscript} {input.predicted} {input.lookup_table} {output}
+        """
+
 #20250220 - this rule replaces webscrape, cleanHTML, tokenize
 rule train_tokens: 
     input: 
