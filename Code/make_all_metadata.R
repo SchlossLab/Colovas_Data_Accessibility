@@ -37,7 +37,7 @@ remove_doi_dupes<-joined_predictions[-dupes,]
 
 #load static files
 
-crossref <- read_csv("Data/crossref/all_papers_dois.csv.gz") %>%
+crossref <- read_csv("Data/crossref/crossref_all_papers.csv.gz") %>%
   mutate(doi = tolower(doi))
 ncbi <-read_csv("Data/ncbi/ncbi_all_papers.csv.gz") %>%
   mutate(doi = tolower(doi))
@@ -47,9 +47,9 @@ scopus <-read_csv("Data/scopus/all_scopus_citations.csv.gz") %>%
   mutate(`prism:doi` = tolower(`prism:doi`))
 
 #join with crossref metadata n = 146398 (1609 missing)
-metadata_crossref<-inner_join(remove_doi_dupes, crossref, by = join_by(doi))
+metadata_crossref<-inner_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
 
-missing_from_crossref<-anti_join(remove_doi_dupes, crossref, by = join_by(doi))
+missing_from_crossref<-anti_join(remove_doi_dupes, crossref, by = join_by(doi_no_underscore == doi, container.title))
 
 #1036 of missing crossref with predictions found in ncbi 
 metadata_ncbi<-inner_join(missing_from_crossref, ncbi, by = join_by(doi_no_underscore == doi))
@@ -72,6 +72,18 @@ missing_all <-anti_join(missing_cr_ncbi_wos, scopus, by = join_by(doi_no_undersc
 all_metadata <-full_join(metadata_crossref, metadata_ncbi) %>%
   full_join(., metadata_wos) %>% 
   full_join(., metadata_scopus)
+
+all_metadata <- all_metadata %>% 
+    mutate(year.published = dplyr::case_when((is.na(pub_date) & !is.na(issued) & is.na(publishYear)) ~ str_sub(issued, start = 1, end = 4), 
+                        (!is.na(pub_date) & is.na(issued) & is.na(publishYear)) ~ as.character(pub_year), 
+                        (is.na(pub_date) & is.na(issued) & !is.na(publishYear)) ~ as.character(publishYear), 
+                        FALSE ~ NA_character_), 
+          issued.date = ymd(issued, truncated = 2) %||% ymd(pub_date, truncated = 2))
+
+all_metadata <- all_metadata %>% 
+  mutate(age.in.months = interval(all_metadata$issued.date, ymd("2025-02-10")) %/% months(1))
+
+
 
 write_csv(all_metadata, file = output_file)
 
