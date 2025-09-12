@@ -135,18 +135,7 @@ We used twelve of the ASM primary research journals in this study. Of note, seve
 
 ### Descriptive Statistics:
 
-```{r training_set}
-n_training <- nrow(training_data)
-t_per_nsd <- count(training_data, new_seq_data) %>%
-            mutate(percent = `n`/sum(`n`)*100) %>%
-            .[[2, 3]]
-
-t_per_da <- count(training_data, new_seq_data, data_availability) %>%
-            filter(new_seq_data == "Yes") %>%
-            mutate(percent = `n`/sum(`n`)*100) %>%
-            .[[2, 4]]
-            
-
+```{r make_data_tables}
 
 training_data_table <-
 training_data %>% 
@@ -165,11 +154,10 @@ training_data %>%
           fract_da = n_da/n_nsd*100) %>%
     select(container.title, n_total:fract_da) # i think the NaN is fine for now
 
-kableExtra::kable(whole_dataset_table)
+kableExtra::kable(training_data_table)
 
-
+ 
 #whole dataset yay!
-
 whole_dataset_table <-
 all_data %>% 
     count(container.title, nsd, da) %>%
@@ -192,14 +180,28 @@ kableExtra::kable(whole_dataset_table)
 
 
 
+
 ```
 
 ```{r whole_dataset_stats}
-#ok now we need to find the percentages/data that we need 
+#whole dataset
+
+
 
 ## whole dataset stats
-colnames(all_data)
+n_total <- nrow(all_data)
+all_per_nsd <- count(all_data, nsd) %>%
+            mutate(percent = `n`/sum(`n`)*100) %>%
+            .[[2, 3]]
+
+all_per_da <- count(all_data, nsd, da) %>%
+            filter(nsd == "Yes") %>%
+            mutate(percent = `n`/sum(`n`)*100) %>%
+            .[[2, 4]]
+
+
 #year distribution - do we want a figure for this or the table? 
+# do we want to combine this with the training set data? 
 all_years <- 
    all_data %>% 
     count(., year.published)
@@ -244,12 +246,22 @@ all_j_min_median_cites <- all_avg_cites_j[[which.min(all_avg_cites_j$median_refs
 
 #### Whole Dataset
 
-Using the Crossref database, with validation from WOS, NCBI, and Scopus databases, we downloaded 155779(XXX- find way to get this not hard coded in) unique records of papers published in ASM journals between 2000 and 2024. After web scraping there were YYYY papers downloaded with text available for the models to be applied on, as not all records had text available. See table YYYY for number of papers downloaded from each journal. Overall, XXXX% of papers had NSD, and YYYY% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. The journal with the highest rate of DA was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. This was expected as *Microbiology Resource Annoucements* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had XXXX citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was XXXXX at XXXX%, and the lowest was XXXX at XXXX%. **SENTENCE ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE IN THIS DATASET**. The journals in the dataset span years 2000-2024. See table YYYYY for the distribution of papers per year in the dataset.
+Using the Crossref database, with validation from WOS, NCBI, and Scopus databases, we downloaded N = `r n_total` unique records of papers published in ASM journals between 2000 and 2024. After downloading the HTML content of each paper, we cleaned the HTML content and readied it to apply our machine learning models to classify each paper. Overall, `r all_per_nsd`% of papers had NSD, and `r all_per_da`% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was `r all_j_high_nsd` at `r all_fract_high_nsd`%, and the lowest was `r all_j_low_nsd` at `r all_fract_low_nsd`%. The journal with the highest rate of DA was `r all_j_high_da` at `r all_fract_high_da`%, and the lowest was `r all_j_low_da` at `r all_fract_low_da`%. This was expected as `r all_j_high_nsd` publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had a median of `r all_total_avg_cites$median_refs` citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest median rate of citations/article was `r all_j_max_median_cites` at `r all_max_median_cites`%, and the lowest was `r all_j_min_median_cites` at `r all_min_median_cites`%. The journals in the dataset span years 2000-2024. See table YYYYY for the distribution of papers per year in the dataset.
 
 ```{r training_data_stats}
 #ok now we need to find the percentages/data that we need 
 
 ## Training dataset stats
+
+n_training <- nrow(training_data)
+t_per_nsd <- count(training_data, new_seq_data) %>%
+            mutate(percent = `n`/sum(`n`)*100) %>%
+            .[[2, 3]]
+
+t_per_da <- count(training_data, new_seq_data, data_availability) %>%
+            filter(new_seq_data == "Yes") %>%
+            mutate(percent = `n`/sum(`n`)*100) %>%
+            .[[2, 4]]
 
 #year distribution - do we want a figure for this or the table? 
 t_years <- 
@@ -302,6 +314,11 @@ t_j_min_median_cites <- t_avg_cites_j[[which.min(t_avg_cites_j$median_refs), 1]]
 We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 500 papers, but was increased over time due to gaps in the dataset, and after subsequent validation of the trained models (see below), with a total of N = `r n_training`. See table YYYY for the distribution of papers per journal in the training dataset. The journals in the dataset also span years 2000-2024. See table YYYYY for the distribution of papers per year in the training dataset. Overall, `r t_per_nsd`% of papers had NSD, and `r t_per_da`% of papers with NSD, had DA. See table YYYY for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was `r t_j_high_nsd` at `r t_fract_high_nsd`%, and the lowest was `r t_j_low_nsd` at `r t_fract_low_nsd`%. The journals with the highest rate of DA in NSD papers were `r t_j_high_da` at `r t_fract_high_da`%, and the lowest was `r t_j_low_da` at `r t_fract_low_da`%. On average, papers in the dataset had median `r t_total_avg_cites$median_refs` citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was `r t_j_max_median_cites` at `r t_max_median_cites`%, and the lowest was `r t_j_min_median_cites` at `r t_min_median_cites`%.
 
 ### Descriptive Statisitcs about the Trained Models
+
+```{r trained_model_stats}
+best_models <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/best_model_stats.csv")
+
+```
 
 Two random forest models were trained to predict if published scientific papers "contained new sequence data" (NSD), and if the paper "had data available" (DA), one model for each variable. Other models such as generalized linear regression and boosted trees were explored, but were ultimately discarded in favor of the random forest model (data not shown). Random forest models were chosen to aid in this classification problem as the creation of many decision trees helps to improve accuracy and precision. This type of model has one hyperparameter, 'mtry' or the number of predictors to be sampled at each decision. During iterative model training, a subset of papers were validated after each completed training and deployment of each model. Papers from each journal, and extras from certain journals were hand-validated against model predictions to generate confusion matrices. Confusion matrices for the final version of each trained model are available in YYYY table(supplement?). The NSD model used an mtry value of 300 had an Area Under the Curve(AUC) of 0.9549XXX and an accuracy of 0.8925XXX. The sensitivity of the NSD model was 0.9130XXX, and the specificity of the model was 0.8683XXX. The DA model used an mtry value of 400 had an AUC of 0.9824XXX and an accuracy of 0.9353XXX. The sensitivity of the DA model was 0.9545XXX, and the specificity of the model was 0.9005XXX (@Data/final/best_model_stats.csv for internal ref). This shows that the models fit the data well, and can provide classifications on new data with an expected error rate of approximately 10%. We deemed this as acceptable, accounting for variability in papers and data, and due to the large size of the dataset to deploy the models on.
 

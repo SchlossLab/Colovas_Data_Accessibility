@@ -219,7 +219,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Sep 11, 2025}
+\date{Sep 12, 2025}
 \begin{document}
 \maketitle
 
@@ -529,11 +529,13 @@ mSystems & 80 & 7.655502 & 45 & 56.25000 & 45 & 100.00000 \\
 \end{longtable}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.5926}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0988}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1358}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0617}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1111}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.4898}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0816}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1122}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0612}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1122}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0510}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0918}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 container.title
@@ -541,6 +543,10 @@ container.title
 n\_total
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 n\_fract
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_nsd
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+fract\_nsd
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 n\_da
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
@@ -550,47 +556,89 @@ fract\_da
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Antimicrobial Agents and Chemotherapy & 3237 & 6.7708333 & 805 &
-24.86871 \\
-Applied and Environmental Microbiology & 8638 & 18.0681058 & 2640 &
-30.56263 \\
-Genome Announcements & 6578 & 13.7592035 & 6254 & 95.07449 \\
-Infection and Immunity & 1854 & 3.8780120 & 280 & 15.10248 \\
-Journal of Bacteriology & 4867 & 10.1803046 & 1351 & 27.75837 \\
-Journal of Clinical Microbiology & 4374 & 9.1490964 & 493 & 11.27115 \\
-Journal of Microbiology \& Biology Education & 7 & 0.0146419 & 0 &
-0.00000 \\
-Journal of Virology & 4583 & 9.5862617 & 936 & 20.42330 \\
-mBio & 2498 & 5.2250669 & 1500 & 60.04804 \\
-Microbiology Resource Announcements & 5738 & 12.0021754 & 5708 &
-99.47717 \\
-Microbiology Spectrum & 2957 & 6.1851573 & 2138 & 72.30301 \\
-mSphere & 1041 & 2.1774598 & 747 & 71.75793 \\
-mSystems & 1436 & 3.0036814 & 1253 & 87.25627 \\
+Antimicrobial Agents and Chemotherapy & 20297 & 13.1550123 & 2765 &
+13.6227029 & 897 & 32.44123 \\
+Applied and Environmental Microbiology & 21853 & 14.1634963 & 7261 &
+33.2265593 & 2546 & 35.06404 \\
+Genome Announcements & 6714 & 4.3515176 & 6628 & 98.7190944 & 6546 &
+98.76282 \\
+Infection and Immunity & 14490 & 9.3913449 & 1287 & 8.8819876 & 264 &
+20.51282 \\
+Journal of Bacteriology & 16806 & 10.8924046 & 3734 & 22.2182554 & 1412
+& 37.81468 \\
+Journal of Clinical Microbiology & 18421 & 11.9391280 & 3713 &
+20.1563433 & 499 & 13.43927 \\
+Journal of Microbiology \& Biology Education & 1305 & 0.8458044 & 4 &
+0.3065134 & 1 & 25.00000 \\
+Journal of Virology & 29761 & 19.2888762 & 3079 & 10.3457545 & 972 &
+31.56869 \\
+mBio & 7705 & 4.9938104 & 2283 & 29.6301103 & 1473 & 64.52037 \\
+Microbiology Resource Announcements & 5878 & 3.8096843 & 5744 &
+97.7203130 & 5734 & 99.82591 \\
+Microbiology Spectrum & 6119 & 3.9658827 & 2787 & 45.5466580 & 2174 &
+78.00502 \\
+mSphere & 2615 & 1.6948493 & 971 & 37.1319312 & 751 & 77.34295 \\
+mSystems & 2327 & 1.5081891 & 1430 & 61.4525140 & 1268 & 88.67133 \\
+\end{longtable}
+
+\begin{longtable}[]{@{}rr@{}}
+\toprule\noalign{}
+year.published & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2000 & 6009 \\
+2001 & 5825 \\
+2002 & 5807 \\
+2003 & 6170 \\
+2004 & 6461 \\
+2005 & 6961 \\
+2006 & 5873 \\
+2007 & 5911 \\
+2008 & 5476 \\
+2009 & 5561 \\
+2010 & 5622 \\
+2011 & 6206 \\
+2012 & 6609 \\
+2013 & 6618 \\
+2014 & 6875 \\
+2015 & 6745 \\
+2016 & 6417 \\
+2017 & 5893 \\
+2018 & 5899 \\
+2019 & 5964 \\
+2020 & 5886 \\
+2021 & 6268 \\
+2022 & 6824 \\
+2023 & 6199 \\
+2024 & 6212 \\
+NA & 429 \\
 \end{longtable}
 
 \paragraph{Whole Dataset}\label{whole-dataset}
 
 Using the Crossref database, with validation from WOS, NCBI, and Scopus
-databases, we downloaded 155779(XXX- find way to get this not hard coded
-in) unique records of papers published in ASM journals between 2000 and
-2024. After web scraping there were YYYY papers downloaded with text
-available for the models to be applied on, as not all records had text
-available. See table YYYY for number of papers downloaded from each
-journal. Overall, XXXX\% of papers had NSD, and YYYY\% of papers with
-NSD, had DA. See table YYYY for percentages of NSD and DA for each
-journal. The journal with the highest rate of NSD was XXXXX at XXXX\%,
-and the lowest was XXXX at XXXX\%. The journal with the highest rate of
-DA was XXXXX at XXXX\%, and the lowest was XXXX at XXXX\%. This was
-expected as \emph{Microbiology Resource Annoucements} publishes mainly
-new genomic sequence data and makes the data available. On average,
-papers in the dataset had XXXX citations/article. This number varies by
-journal, see table YYYY for data by journal. The journal with the
-highest rate of citations/article was XXXXX at XXXX\%, and the lowest
-was XXXX at XXXX\%. \textbf{SENTENCE ABOUT THIS BEING GOOD AND WHAT WE
-WANTED TO SEE IN THIS DATASET}. The journals in the dataset span years
-2000-2024. See table YYYYY for the distribution of papers per year in
-the dataset.
+databases, we downloaded N = 154720 unique records of papers published
+in ASM journals between 2000 and 2024. After downloading the HTML
+content of each paper, we cleaned the HTML content and readied it to
+apply our machine learning models to classify each paper. Overall,
+26.9428645\% of papers had NSD, and 58.8614883\% of papers with NSD, had
+DA. See table YYYY for percentages of NSD and DA for each journal. The
+journal with the highest rate of NSD was Genome Announcements at
+98.7190944\%, and the lowest was Journal of Microbiology \& Biology
+Education at 0.3065134\%. The journal with the highest rate of DA was
+Microbiology Resource Announcements at 99.8259053\%, and the lowest was
+Journal of Clinical Microbiology at 13.4392674\%. This was expected as
+Genome Announcements publishes mainly new genomic sequence data and
+makes the data available. On average, papers in the dataset had a median
+of 25 citations/article. This number varies by journal, see table YYYY
+for data by journal. The journal with the highest median rate of
+citations/article was Applied and Environmental Microbiology at 38\%,
+and the lowest was Microbiology Resource Announcements at 1\%.
+\textbf{SENTENCE ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE IN THIS
+DATASET}. The journals in the dataset span years 2000-2024. See table
+YYYYY for the distribution of papers per year in the dataset.
 
 \begin{longtable}[]{@{}rr@{}}
 \toprule\noalign{}
@@ -630,6 +678,9 @@ NA & 10 \\
 \paragraph{\texorpdfstring{Training Dataset \textbf{(pretty much the
 same as the above paragraph, but with stats for the training
 dataset)}}{Training Dataset (pretty much the same as the above paragraph, but with stats for the training dataset)}}\label{training-dataset-pretty-much-the-same-as-the-above-paragraph-but-with-stats-for-the-training-dataset}
+
+*XX - add italics for journal names even when they're variables, do this
+in not visual mode
 
 We created a subset of the whole dataset to train our machine learning
 models. The training dataset initially had N = 500 papers, but was
