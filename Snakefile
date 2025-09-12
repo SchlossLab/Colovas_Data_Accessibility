@@ -54,7 +54,8 @@ rule targets:
         # # ml_variables = ml_variables)
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()), 
         # "Data/final/predicted_results.csv.gz"
-        "Data/final/predictions_with_metadata.csv.gz"
+        # "Data/final/predictions_with_metadata.csv.gz", 
+        "Figures/citationrate_byjournal.png"
 
         
 
