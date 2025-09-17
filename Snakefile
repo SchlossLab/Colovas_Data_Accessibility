@@ -55,7 +55,8 @@ rule targets:
         # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()), 
         # "Data/final/predicted_results.csv.gz"
         # "Data/final/predictions_with_metadata.csv.gz", 
-        "Figures/citationrate_byjournal.png"
+        # "Figures/citationrate_byjournal.png"
+        "Data/negative_binomial/nsd_yes_glmnb_coeftable.csv"
 
         
 
@@ -291,12 +292,27 @@ rule neg_binomial:
         metadata = "Data/final/predictions_with_metadata.csv.gz"
     output: 
         coeftable = "Data/negative_binomial/nsd_yes_glmnb_coeftable.csv", 
-        model = "Data/negative_binomial/nsd_yes_glmnb_model.RDS"
+        model = "Data/negative_binomial/nsd_yes_glmnb_model.RDS", 
+        contrast_plot = "Figures/negative_binomial/emmeans_contrast_plot.png"
+    resources: 
+        mem_mb = 40000
+    shell: 
+        """
+        {input.rscript} {input.metadata} {output.coeftable} {output.model} {output.contrast_plot}
+        """
 
+rule neg_binomial_figs: 
+     input: 
+        rscript = "Code/negative_binomial_figs.R",
+        metadata = "Data/final/predictions_with_metadata.csv.gz",
+        model = "Data/negative_binomial/nsd_yes_glmnb_model.RDS"
+    output: 
+            
     shell: 
         """
         {input.rscript} {input.metadata} {output.coeftable} {output.model}
         """
+    
 
 
 
