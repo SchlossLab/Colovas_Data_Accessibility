@@ -1,54 +1,54 @@
 coefficients,full_nsd_yes,full_nsd_yes_pvalue
-rsquared,0.6913693835288334,NA
-(Intercept),-1.1006956109035484,8.01621149303898e-11
-da_factorYes,-1.6779880324954997,6.938849127174943e-11
-log(age.in.months),1.0193486993822878,1.2551743447227377e-208
-container.titleApplied and Environmental Microbiology,-0.7624745326348045,2.4069593694944766e-4
-container.titleGenome Announcements,-1.377968419445712,0.6459010035358356
-container.titleInfection and Immunity,-0.3404623176045488,0.29053685125071266
-container.titleJournal of Bacteriology,-0.9194302939406986,2.7985389614624406e-4
-container.titleJournal of Clinical Microbiology,0.4635484284575487,0.06450751564225234
-container.titleJournal of Microbiology &amp; Biology Education,3.002899777648255,0.5597298358922165
-container.titleJournal of Virology,-0.34458469874415065,0.10513671342682153
-container.titlemBio,-1.4953435541037285,1.2153581203779201e-9
-container.titleMicrobiology Resource Announcements,2.3844220697701872,0.12701589024413462
-container.titleMicrobiology Spectrum,-3.3127901389990697,5.086514474490833e-21
-container.titlemSphere,-2.088937173632123,1.1324121729317136e-6
-container.titlemSystems,-3.074163325509801,3.6738159785237885e-10
-da_factorYes:container.titleApplied and Environmental Microbiology,0.8196928758773359,0.00632043667665251
-da_factorYes:container.titleGenome Announcements,-1.0988412254486093,0.7162028057764797
-da_factorYes:container.titleInfection and Immunity,0.7931766243986885,0.09760382611348542
-da_factorYes:container.titleJournal of Bacteriology,1.8106787472451393,4.324610930480598e-6
-da_factorYes:container.titleJournal of Clinical Microbiology,0.6566667785499597,0.092302802765368
-da_factorYes:container.titleJournal of Microbiology &amp; Biology Education,-20.889284947077368,0.9989275911250411
-da_factorYes:container.titleJournal of Virology,1.3454602140471963,4.4935450699026313e-05
-da_factorYes:container.titlemBio,1.078765773638096,0.0014896242784763617
-da_factorYes:container.titleMicrobiology Resource Announcements,-4.543749583170495,0.004013787733294563
-da_factorYes:container.titleMicrobiology Spectrum,1.066387712375875,0.014434574380738164
-da_factorYes:container.titlemSphere,1.1418939325748032,0.027654354334863893
-da_factorYes:container.titlemSystems,1.668422281414062,0.00245326339717613
-da_factorYes:log(age.in.months),0.4282258690292433,1.3483664921705867e-14
-log(age.in.months):container.titleApplied and Environmental Microbiology,0.16063897253390344,7.051515182025907e-5
-log(age.in.months):container.titleGenome Announcements,-0.06721485944563065,0.9142321515195201
-log(age.in.months):container.titleInfection and Immunity,0.004541910414501711,0.9406562706347119
-log(age.in.months):container.titleJournal of Bacteriology,0.12308570364206568,0.01098294031463072
-log(age.in.months):container.titleJournal of Clinical Microbiology,-0.12401486685780584,0.010036765138893455
-log(age.in.months):container.titleJournal of Microbiology &amp; Biology Education,-1.222350770571707,0.3433589216297441
-log(age.in.months):container.titleJournal of Virology,0.06426733836468913,0.12612655986990137
-log(age.in.months):container.titlemBio,0.4489221798789321,8.452506473322705e-17
-log(age.in.months):container.titleMicrobiology Resource Announcements,-1.1017657353586725,0.010836071539413605
-log(age.in.months):container.titleMicrobiology Spectrum,0.9146267091078146,4.52044895003449e-19
-log(age.in.months):container.titlemSphere,0.5210211313881198,5.556772837385256e-7
-log(age.in.months):container.titlemSystems,0.8672976350335868,3.959462736995904e-12
-da_factorYes:log(age.in.months):container.titleApplied and Environmental Microbiology,-0.1861225182974748,0.0037171861887221407
-da_factorYes:log(age.in.months):container.titleGenome Announcements,0.1570847153559844,0.8029351442689531
-da_factorYes:log(age.in.months):container.titleInfection and Immunity,-0.20450682219646463,0.04314707662010275
-da_factorYes:log(age.in.months):container.titleJournal of Bacteriology,-0.5090739145486102,3.2915320063067314e-10
-da_factorYes:log(age.in.months):container.titleJournal of Clinical Microbiology,-0.10818999688531951,0.19501501366140395
+rsquared,0.6913693835288276,NA
+(Intercept),-1.100695610903319,8.016211493105765e-11
+da_factorYes,-1.6779880324959169,6.938849127109142e-11
+log(age.in.months),1.0193486993821546,1.2551743447907105e-208
+container.titleApplied and Environmental Microbiology,-0.7624745326352547,2.4069593694676046e-4
+container.titleGenome Announcements,-1.3779684194648985,0.6459010035312458
+container.titleInfection and Immunity,-0.3404623176051164,0.29053685124986967
+container.titleJournal of Bacteriology,-0.9194302939415935,2.798538961427842e-4
+container.titleJournal of Clinical Microbiology,0.46354842845706806,0.06450751564253468
+container.titleJournal of Microbiology &amp; Biology Education,3.00289977764741,0.5597298358922826
+container.titleJournal of Virology,-0.34458469874492864,0.10513671342602282
+container.titlemBio,-1.495343554104419,1.215358120358463e-9
+container.titleMicrobiology Resource Announcements,2.3844220697679344,0.12701589024439133
+container.titleMicrobiology Spectrum,-3.3127901389996133,5.086514474385815e-21
+container.titlemSphere,-2.0889371736322913,1.1324121729271094e-6
+container.titlemSystems,-3.0741633255107574,3.6738159784647805e-10
+da_factorYes:container.titleApplied and Environmental Microbiology,0.8196928758776167,0.00632043667662922
+da_factorYes:container.titleGenome Announcements,-1.0988412254293054,0.7162028057812205
+da_factorYes:container.titleInfection and Immunity,0.7931766243991393,0.0976038261132878
+da_factorYes:container.titleJournal of Bacteriology,1.8106787472457502,4.3246109304599115e-6
+da_factorYes:container.titleJournal of Clinical Microbiology,0.6566667785502425,0.09230280276521759
+da_factorYes:container.titleJournal of Microbiology &amp; Biology Education,-20.88928494635016,0.9989275911252509
+da_factorYes:container.titleJournal of Virology,1.3454602140474874,4.493545069888911e-5
+da_factorYes:container.titlemBio,1.0787657736383345,0.0014896242784732188
+da_factorYes:container.titleMicrobiology Resource Announcements,-4.54374958316849,0.004013787733301545
+da_factorYes:container.titleMicrobiology Spectrum,1.0663877123763545,0.014434574380688658
+da_factorYes:container.titlemSphere,1.1418939325749948,0.027654354334839933
+da_factorYes:container.titlemSystems,1.668422281415081,0.0024532633971609333
+da_factorYes:log(age.in.months),0.4282258690293172,1.3483664921620755e-14
+log(age.in.months):container.titleApplied and Environmental Microbiology,0.16063897253403414,7.051515181914313e-5
+log(age.in.months):container.titleGenome Announcements,-0.06721485944160437,0.9142321515246302
+log(age.in.months):container.titleInfection and Immunity,0.004541910414630846,0.9406562706330219
+log(age.in.months):container.titleJournal of Bacteriology,0.1230857036422563,0.010982940314517922
+log(age.in.months):container.titleJournal of Clinical Microbiology,-0.12401486685767873,0.010036765138971374
+log(age.in.months):container.titleJournal of Microbiology &amp; Biology Education,-1.2223507705715753,0.3433589216297924
+log(age.in.months):container.titleJournal of Virology,0.06426733836484043,0.12612655986900592
+log(age.in.months):container.titlemBio,0.4489221798790529,8.452506473167438e-17
+log(age.in.months):container.titleMicrobiology Resource Announcements,-1.1017657353580599,0.010836071539436337
+log(age.in.months):container.titleMicrobiology Spectrum,0.9146267091079936,4.520448949955211e-19
+log(age.in.months):container.titlemSphere,0.5210211313881844,5.55677283735699e-7
+log(age.in.months):container.titlemSystems,0.8672976350339071,3.959462736939283e-12
+da_factorYes:log(age.in.months):container.titleApplied and Environmental Microbiology,-0.1861225182975626,0.003717186188708843
+da_factorYes:log(age.in.months):container.titleGenome Announcements,0.15708471535198842,0.8029351442738467
+da_factorYes:log(age.in.months):container.titleInfection and Immunity,-0.20450682219654315,0.04314707662002087
+da_factorYes:log(age.in.months):container.titleJournal of Bacteriology,-0.5090739145486781,3.2915320062903796e-10
+da_factorYes:log(age.in.months):container.titleJournal of Clinical Microbiology,-0.10818999688538271,0.195015013661162
 da_factorYes:log(age.in.months):container.titleJournal of Microbiology &amp; Biology Education,NA,NA
-da_factorYes:log(age.in.months):container.titleJournal of Virology,-0.33888908783276006,2.110975484134557e-6
-da_factorYes:log(age.in.months):container.titlemBio,-0.21975108817341166,0.004517565333308773
-da_factorYes:log(age.in.months):container.titleMicrobiology Resource Announcements,1.168160753199704,0.007360868849199986
-da_factorYes:log(age.in.months):container.titleMicrobiology Spectrum,-0.2067180634044128,0.09527966300442378
-da_factorYes:log(age.in.months):container.titlemSphere,-0.2634501344718051,0.03685729785924236
-da_factorYes:log(age.in.months):container.titlemSystems,-0.40089062059528396,0.004028334442839431
+da_factorYes:log(age.in.months):container.titleJournal of Virology,-0.33888908783279603,2.110975484129067e-6
+da_factorYes:log(age.in.months):container.titlemBio,-0.21975108817344452,0.00451756533330302
+da_factorYes:log(age.in.months):container.titleMicrobiology Resource Announcements,1.1681607531991751,0.007360868849211648
+da_factorYes:log(age.in.months):container.titleMicrobiology Spectrum,-0.20671806340451954,0.09527966300424183
+da_factorYes:log(age.in.months):container.titlemSphere,-0.2634501344718205,0.036857297859225965
+da_factorYes:log(age.in.months):container.titlemSystems,-0.4008906205955389,0.004028334442817271

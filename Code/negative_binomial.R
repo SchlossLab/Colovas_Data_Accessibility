@@ -22,6 +22,7 @@ out_predicted_plot <- input[5]
 #load metadata (local)
 # metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz") 
 # out_contrast_plot <-"Figures/negative_binomial/emmeans_contrast_plot.png"
+# out_predicted_plot <-"Figures/negative_binomial/model_predicted_plot.png"
 
 nsd_yes_metadata <- 
   metadata %>% 
@@ -74,7 +75,7 @@ saveRDS(nsd_yes_model, file = out_model)
 # Define the age values you want to examine (in months)
 age_values <- seq(5, 120, 5) #c(12, 36, 60, 120)  # Adjust these as needed
 # Get emmeans on the link scale for all combinations
-emm <- emmeans(model,  ~ da_factor + age.in.months | container.title,
+emm <- emmeans(nsd_yes_model,  ~ da_factor + age.in.months | container.title,
         at = list(age.in.months = age_values), CIs = TRUE,
         type = "response")
 # Get pairwise comparisons (differences) between da_factor levels
@@ -94,7 +95,7 @@ ratios_df <- as.data.frame(plot(differences, ratios = TRUE)$data)  %>%
         container.title != "Genome Announcements" & 
         container.title != "Microbiology Resource Announcements")
 
-
+contrast_plot <-
 ggplot(
     data = ratios_df,
     mapping = aes(x = age.in.months, y = the.emmean)
@@ -110,8 +111,9 @@ ggplot(
     labs(x = 'Age in months', y = 'Ratio of daYes/daNo') +
     coord_cartesian(ylim = c(0.25, 2.5)) + 
     theme_classic() + 
-    scale_x_continuous(breaks = seq(12, 120, 24)) %>%
-    ggsave(out_contrast_plot)
+    scale_x_continuous(breaks = seq(12, 120, 24))
+
+    ggsave(contrast_plot, file = out_contrast_plot)
 
 
 ## predicted number of citations for each journal 
@@ -128,7 +130,8 @@ ggplot(
   
   
     
-  ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+  predicted_plot <-
+    ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
                                 color = da_factor)) + 
    geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
    geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
@@ -143,8 +146,9 @@ ggplot(
         fill = "Data availability\nwith 95% CI") + 
     scale_x_discrete(breaks = seq(12, 120, 12)) + 
     theme_classic() + 
-    theme(legend.position = "bottom" ) %>% 
-        ggsave(out_predicted_plot)
+    theme(legend.position = "bottom" ) 
+
+        ggsave(predicted_plot, file = out_predicted_plot)
   
   
   
