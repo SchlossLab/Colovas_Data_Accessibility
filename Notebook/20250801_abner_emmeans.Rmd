@@ -12,6 +12,7 @@ library(tidyverse)
 library(sjPlot)
 
 
+
 #load local metadata
 nsd_yes_metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
 
@@ -114,6 +115,7 @@ ggplot(data = model_sims, mapping = aes(x = outcome)) +
    tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group, container.title = .$facet) %>%   filter(container.title != "Journal of Microbiology &amp; Biology Education" &
         container.title != "Genome Announcements" & 
         container.title != "Microbiology Resource Announcements")
+        
   
   
     

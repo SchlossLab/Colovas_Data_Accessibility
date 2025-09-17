@@ -6,6 +6,8 @@ library(tidyverse)
 library(MASS)
 library(jtools)
 library(emmeans)
+library(sjPlot)
+
 
 #load files with snakemake
 # get file input from snakemake
@@ -14,6 +16,7 @@ metadata <- read_csv(input[1])
 out_coeftable <- input[2]
 out_model <- input[3]
 out_contrast_plot <-input[4]
+out_predicted_plot <- input[5]
 
 
 #load metadata (local)
@@ -111,3 +114,38 @@ ggplot(
     ggsave(out_contrast_plot)
 
 
+## predicted number of citations for each journal 
+# make plots for each journal 
+  p <-  get_model_data(model = nsd_yes_model, type = "pred", 
+                    terms = c("da_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet) %>%   
+          filter(container.title != "Journal of Microbiology &amp; Biology Education" &
+        container.title != "Genome Announcements" & 
+        container.title != "Microbiology Resource Announcements")
+        
+  
+  
+    
+  ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free_y") +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) %>% 
+        ggsave(out_predicted_plot)
+  
+  
+  
+  
