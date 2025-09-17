@@ -254,7 +254,7 @@ rule combine_best_models:
         """
 
 
-rule final_model: 
+rule final_ml_model: 
     input:
         rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML_rf_finalmodel.R",
@@ -282,6 +282,20 @@ rule nsdyes_figs:
     shell: 
         """
         {input.rscript} {input.metadata} 
+        """
+# ----------- statistical modeling -------------------------------------
+
+rule neg_binomial: 
+    input: 
+        rscript = "Code/negative_binomial.R",
+        metadata = "Data/final/predictions_with_metadata.csv.gz"
+    output: 
+        coeftable = "Data/negative_binomial/nsd_yes_glmnb_coeftable.csv", 
+        model = "Data/negative_binomial/nsd_yes_glmnb_model.RDS"
+
+    shell: 
+        """
+        {input.rscript} {input.metadata} {output.coeftable} {output.model}
         """
 
 
