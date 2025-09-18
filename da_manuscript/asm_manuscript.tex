@@ -219,7 +219,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Sep 12, 2025}
+\date{Sep 18, 2025}
 \begin{document}
 \maketitle
 
@@ -486,6 +486,25 @@ dataset.
   >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1031}}
   >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0515}}
   >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1031}}@{}}
+\caption{Summary Statistics of Model Training Dataset}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+container.title
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_total
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_fract
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_nsd
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+fract\_nsd
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_da
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+fract\_da
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 container.title
@@ -536,6 +555,25 @@ mSystems & 80 & 7.655502 & 45 & 56.25000 & 45 & 100.00000 \\
   >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1122}}
   >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0510}}
   >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0918}}@{}}
+\caption{Summary Statstics of All Data}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+container.title
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_total
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_fract
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_nsd
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+fract\_nsd
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_da
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+fract\_da
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 container.title
@@ -581,41 +619,6 @@ mSphere & 2615 & 1.6948493 & 971 & 37.1319312 & 751 & 77.34295 \\
 mSystems & 2327 & 1.5081891 & 1430 & 61.4525140 & 1268 & 88.67133 \\
 \end{longtable}
 
-\begin{longtable}[]{@{}rr@{}}
-\toprule\noalign{}
-year.published & n \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-2000 & 6009 \\
-2001 & 5825 \\
-2002 & 5807 \\
-2003 & 6170 \\
-2004 & 6461 \\
-2005 & 6961 \\
-2006 & 5873 \\
-2007 & 5911 \\
-2008 & 5476 \\
-2009 & 5561 \\
-2010 & 5622 \\
-2011 & 6206 \\
-2012 & 6609 \\
-2013 & 6618 \\
-2014 & 6875 \\
-2015 & 6745 \\
-2016 & 6417 \\
-2017 & 5893 \\
-2018 & 5899 \\
-2019 & 5964 \\
-2020 & 5886 \\
-2021 & 6268 \\
-2022 & 6824 \\
-2023 & 6199 \\
-2024 & 6212 \\
-NA & 429 \\
-\end{longtable}
-
 \paragraph{Whole Dataset}\label{whole-dataset}
 
 Using the Crossref database, with validation from WOS, NCBI, and Scopus
@@ -624,7 +627,7 @@ in ASM journals between 2000 and 2024. After downloading the HTML
 content of each paper, we cleaned the HTML content and readied it to
 apply our machine learning models to classify each paper. Overall,
 26.9428645\% of papers had NSD, and 58.8614883\% of papers with NSD, had
-DA. See table YYYY for percentages of NSD and DA for each journal. The
+DA. See table 1 for percentages of NSD and DA for each journal. The
 journal with the highest rate of NSD was Genome Announcements at
 98.7190944\%, and the lowest was Journal of Microbiology \& Biology
 Education at 0.3065134\%. The journal with the highest rate of DA was
@@ -635,45 +638,9 @@ makes the data available. On average, papers in the dataset had a median
 of 25 citations/article. This number varies by journal, see table YYYY
 for data by journal. The journal with the highest median rate of
 citations/article was Applied and Environmental Microbiology at 38\%,
-and the lowest was Microbiology Resource Announcements at 1\%.
-\textbf{SENTENCE ABOUT THIS BEING GOOD AND WHAT WE WANTED TO SEE IN THIS
-DATASET}. The journals in the dataset span years 2000-2024. See table
-YYYYY for the distribution of papers per year in the dataset.
-
-\begin{longtable}[]{@{}rr@{}}
-\toprule\noalign{}
-year.published & n \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-2000 & 30 \\
-2001 & 43 \\
-2002 & 23 \\
-2003 & 22 \\
-2004 & 21 \\
-2005 & 36 \\
-2006 & 29 \\
-2007 & 18 \\
-2008 & 12 \\
-2009 & 13 \\
-2010 & 21 \\
-2011 & 41 \\
-2012 & 24 \\
-2013 & 29 \\
-2014 & 31 \\
-2015 & 34 \\
-2016 & 38 \\
-2017 & 40 \\
-2018 & 40 \\
-2019 & 63 \\
-2020 & 65 \\
-2021 & 119 \\
-2022 & 70 \\
-2023 & 57 \\
-2024 & 116 \\
-NA & 10 \\
-\end{longtable}
+and the lowest was Microbiology Resource Announcements at 1\%. The
+journals in the dataset span years 2000-2024. See table YYYYY for the
+distribution of papers per year in the dataset.
 
 \paragraph{\texorpdfstring{Training Dataset \textbf{(pretty much the
 same as the above paragraph, but with stats for the training
@@ -686,24 +653,113 @@ We created a subset of the whole dataset to train our machine learning
 models. The training dataset initially had N = 500 papers, but was
 increased over time due to gaps in the dataset, and after subsequent
 validation of the trained models (see below), with a total of N = 1045.
-See table YYYY for the distribution of papers per journal in the
-training dataset. The journals in the dataset also span years 2000-2024.
-See table YYYYY for the distribution of papers per year in the training
-dataset. Overall, 43.7320574\% of papers had NSD, and 80.9628009\% of
-papers with NSD, had DA. See table YYYY for percentages of NSD and DA
-for each journal. The journal with the highest rate of NSD was Genome
-Announcements at 96.6666667\%, and the lowest was Journal of
-Microbiology \& Biology Education at 0\%. The journals with the highest
-rate of DA in NSD papers were Genome Announcements and mSystems at
-100\%, and the lowest was Journal of Virology at 28.5714286\%. On
-average, papers in the dataset had median 10 citations/article. This
-number varies by journal, see table YYYY for data by journal. The
-journal with the highest rate of citations/article was Infection and
-Immunity at 40\%, and the lowest was Microbiology Resource Announcements
-at 0\%.
+See table 2 for the distribution of papers per journal in the training
+dataset. The journals in the dataset also span years 2000-2024. See
+table 3 for the distribution of papers per year in the training dataset.
+Overall, 43.7320574\% of papers had NSD, and 80.9628009\% of papers with
+NSD, had DA. See table 2 for percentages of NSD and DA for each journal.
+The journal with the highest rate of NSD was Genome Announcements at
+96.6666667\%, and the lowest was Journal of Microbiology \& Biology
+Education at 0\%. The journals with the highest rate of DA in NSD papers
+were Genome Announcements and mSystems at 100\%, and the lowest was
+Journal of Virology at 28.5714286\%. On average, papers in the dataset
+had median 10 citations/article. This number varies by journal, see
+table YYYY for data by journal. The journal with the highest rate of
+citations/article was Infection and Immunity at 40\%, and the lowest was
+Microbiology Resource Announcements at 0\%.
+
+\subsubsection{Year Published Distribution
+Table}\label{year-published-distribution-table}
+
+\begin{longtable}[]{@{}rrr@{}}
+\caption{Distribution of Year Published for Whole and Training
+Dataset}\tabularnewline
+\toprule\noalign{}
+year.published & n\_whole\_dataset & n\_training\_dataset \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+year.published & n\_whole\_dataset & n\_training\_dataset \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2000 & 6009 & 30 \\
+2001 & 5825 & 43 \\
+2002 & 5807 & 23 \\
+2003 & 6170 & 22 \\
+2004 & 6461 & 21 \\
+2005 & 6961 & 36 \\
+2006 & 5873 & 29 \\
+2007 & 5911 & 18 \\
+2008 & 5476 & 12 \\
+2009 & 5561 & 13 \\
+2010 & 5622 & 21 \\
+2011 & 6206 & 41 \\
+2012 & 6609 & 24 \\
+2013 & 6618 & 29 \\
+2014 & 6875 & 31 \\
+2015 & 6745 & 34 \\
+2016 & 6417 & 38 \\
+2017 & 5893 & 40 \\
+2018 & 5899 & 40 \\
+2019 & 5964 & 63 \\
+2020 & 5886 & 65 \\
+2021 & 6268 & 119 \\
+2022 & 6824 & 70 \\
+2023 & 6199 & 57 \\
+2024 & 6212 & 116 \\
+NA & 429 & 10 \\
+\end{longtable}
 
 \subsubsection{Descriptive Statisitcs about the Trained
 Models}\label{descriptive-statisitcs-about-the-trained-models}
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{Trained Model Summary Statistics}\tabularnewline
+\toprule\noalign{}
+key & da\_model & nsd\_model \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+key & da\_model & nsd\_model \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+mtry & 300.0000000 & 200.0000000 \\
+logLoss & 0.1864109 & 0.2847761 \\
+AUC & 0.9878144 & 0.9645148 \\
+prAUC & 0.9468117 & 0.9465242 \\
+Accuracy & 0.9464109 & 0.9035551 \\
+Kappa & 0.8826440 & 0.8028524 \\
+F1 & 0.9585917 & 0.9160102 \\
+Sensitivity & 0.9609538 & 0.9350193 \\
+Specificity & 0.9199189 & 0.8631264 \\
+Pos\_Pred\_Value & 0.9564984 & 0.8983854 \\
+Neg\_Pred\_Value & 0.9290263 & 0.9127760 \\
+Precision & 0.9564984 & 0.8983854 \\
+Recall & 0.9609538 & 0.9350193 \\
+Detection\_Rate & 0.6203836 & 0.5257273 \\
+Balanced\_Accuracy & 0.9404364 & 0.8990728 \\
+logLossSD & 0.0152552 & 0.0205940 \\
+AUCSD & 0.0051133 & 0.0107140 \\
+prAUCSD & 0.0131174 & 0.0127266 \\
+AccuracySD & 0.0144639 & 0.0188672 \\
+KappaSD & 0.0316769 & 0.0387904 \\
+F1SD & 0.0112009 & 0.0162334 \\
+SensitivitySD & 0.0162858 & 0.0232715 \\
+SpecificitySD & 0.0293899 & 0.0363671 \\
+Pos\_Pred\_ValueSD & 0.0152433 & 0.0240272 \\
+Neg\_Pred\_ValueSD & 0.0276805 & 0.0283175 \\
+PrecisionSD & 0.0152433 & 0.0240272 \\
+RecallSD & 0.0162858 & 0.0232715 \\
+Detection\_RateSD & 0.0104779 & 0.0132581 \\
+Balanced\_AccuracySD & 0.0164811 & 0.0199135 \\
+\end{longtable}
+
+\paragraph{Figures for trained models - are these for
+supplement??}\label{figures-for-trained-models---are-these-for-supplement}
 
 Two random forest models were trained to predict if published scientific
 papers ``contained new sequence data'' (NSD), and if the paper ``had
@@ -719,17 +775,17 @@ training and deployment of each model. Papers from each journal, and
 extras from certain journals were hand-validated against model
 predictions to generate confusion matrices. Confusion matrices for the
 final version of each trained model are available in YYYY
-table(supplement?). The NSD model used an mtry value of 300 had an Area
-Under the Curve(AUC) of 0.9549XXX and an accuracy of 0.8925XXX. The
-sensitivity of the NSD model was 0.9130XXX, and the specificity of the
-model was 0.8683XXX. The DA model used an mtry value of 400 had an AUC
-of 0.9824XXX and an accuracy of 0.9353XXX. The sensitivity of the DA
-model was 0.9545XXX, and the specificity of the model was 0.9005XXX
-((\textbf{Data/final/best\_model\_stats.csv?}) for internal ref). This
+table(supplement?). The NSD model used an mtry value of 200 had an Area
+Under the Curve(AUC) of 0.9645148 and an accuracy of 0.9035551. The
+sensitivity of the NSD model was 0.9350193, and the specificity of the
+model was 0.8631264. The DA model used an mtry value of 300 had an AUC
+of 0.9878144 and an accuracy of 0.9464109. The sensitivity of the DA
+model was 0.9609538, and the specificity of the model was 0.9199189 (See
+table 4 for more information on trained machine learning models). This
 shows that the models fit the data well, and can provide classifications
-on new data with an expected error rate of approximately 10\%. We deemed
-this as acceptable, accounting for variability in papers and data, and
-due to the large size of the dataset to deploy the models on.
+on new data with an expected error rate of less than 10\%. We deemed
+this as acceptable, accounting for variability in papers and data, as
+well as the large size of the dataset on which we deployed the models.
 
 \subsubsection{Regression Model using Negative Binomial
 Models}\label{regression-model-using-negative-binomial-models}
@@ -971,14 +1027,6 @@ to determine its NSD and DA status.
 
   \begin{itemize}
   \tightlist
-  \item
-    Table showing \# of papers from each journal in training dataset
-  \item
-    Table showing \# of papers from each year in training dataset
-  \item
-    \% of papers nsd yes total (training)
-  \item
-    \% of papers da yes total (training)
   \item
     table of conditions to add to the methods of classification?
   \end{itemize}
