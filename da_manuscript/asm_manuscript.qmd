@@ -87,6 +87,8 @@ training_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Access
 
 all_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
 
+n_digits <- 4
+
 # #nsd yes metadata needs to be updated at some point
 # nsd_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
 
@@ -154,7 +156,8 @@ training_data %>%
           fract_da = n_da/n_nsd*100) %>%
     select(container.title, n_total:fract_da) # i think the NaN is fine for now
 
-kableExtra::kable(training_data_table, caption = "Summary Statistics of Model Training Dataset")
+kableExtra::kable(training_data_table, caption = "Summary Statistics of Model Training Dataset", 
+                digits = n_digits)
 
  
 #whole dataset yay!
@@ -176,7 +179,8 @@ all_data %>%
           fract_da = n_da/n_nsd*100) %>%
     select(container.title, n_total:fract_da)
 
-kableExtra::kable(whole_dataset_table, caption = "Summary Statstics of All Data")
+kableExtra::kable(whole_dataset_table, caption = "Summary Statstics of All Data", 
+                digits = n_digits)
 
 
 
@@ -272,7 +276,8 @@ t_years <-
 
 year_pub_table <-
 full_join(all_years, t_years, by = join_by(year.published)) %>%
-    kableExtra::kable(., caption = "Distribution of Year Published for Whole and Training Dataset")
+    kableExtra::kable(., caption = "Distribution of Year Published for Whole and Training Dataset", 
+                        digits = n_digits)
 
 #journal w/ highest and lowest rate of nsd
 t_fract_high_nsd <- max(training_data_table$fract_nsd)
@@ -326,31 +331,44 @@ We created a subset of the whole dataset to train our machine learning models. T
 ```{r trained_model_stats}
 best_models <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/best_model_stats.csv")
 
-kableExtra::kable(best_models, caption = "Trained Model Summary Statistics")
+kableExtra::kable(best_models, caption = "Trained Model Summary Statistics", 
+                    digits = n_digits)
 
 ```
 
-#### Figures for trained models - are these for supplement??
-
+#### Figures for trained models - having trouble inserting them
 
 Two random forest models were trained to predict if published scientific papers "contained new sequence data" (NSD), and if the paper "had data available" (DA), one model for each variable. Other models such as generalized linear regression and boosted trees were explored, but were ultimately discarded in favor of the random forest model (data not shown). Random forest models were chosen to aid in this classification problem as the creation of many decision trees helps to improve accuracy and precision. This type of model has one hyperparameter, 'mtry' or the number of predictors to be sampled at each decision. During iterative model training, a subset of papers were validated after each completed training and deployment of each model. Papers from each journal, and extras from certain journals were hand-validated against model predictions to generate confusion matrices. Confusion matrices for the final version of each trained model are available in YYYY table(supplement?). The NSD model used an mtry value of `r best_models[[1, 3]]` had an Area Under the Curve(AUC) of `r best_models[[3, 3]]` and an accuracy of `r best_models[[5, 3]]`. The sensitivity of the NSD model was `r best_models[[8,3]]`, and the specificity of the model was `r best_models[[9,3]]`. The DA model used an mtry value of `r best_models[1,2]` had an AUC of `r best_models[[3,2]]` and an accuracy of `r best_models[[5,2]]`. The sensitivity of the DA model was `r best_models[[8,2]]`, and the specificity of the model was `r best_models[[9,2]]` (See table 4 for more information on trained machine learning models). This shows that the models fit the data well, and can provide classifications on new data with an expected error rate of less than 10%. We deemed this as acceptable, accounting for variability in papers and data, as well as the large size of the dataset on which we deployed the models.
 
 ### Regression Model using Negative Binomial Models
 
-In this study we sought to investigate the effect of NSD and DA on the number of citations received by a given paper. We focused on NSD papers to determine the effect of having DA. This led us to the use of a negative binomial regression model to best describe our data. All regression data was NSD yes. We focused on the continuous outcome of "number of citations" with predictor variables journal (categorical), age in months (continuous), and DA status (dichotomous). Due to the number of citations being fairly bell shaped with a long right tail (very few papers at advanced age with many citations), the model that best described our data was the negative binomial regression model. A negative binomial model is appropriate for data that begins at zero and has a long 'tail' of data. This model also includes a dispersion parameter to describe the spread of the data. We applied a log transformation to our age variable (age.in.months) to better describe the relationship between time and number of citations received. ???HOW DO I DESCRIBE THE PRODUCED MODEL??? In general, we found that NSD papers that made DA received more citations over time than those that did not. See figure YYYY for trends in each major journal. ??HOW else do i describe the figure??
+```{r neg_binomial}
+
+neg_bin <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/negative_binomial/nsd_yes_glmnb_coeftable.csv")
+
+neg_bin_table <- 
+   kableExtra::kable(neg_bin, caption = "Coefficients for Negative Binomial Modeling", 
+    digits = n_digits) 
+
+```
+
+`r neg_bin_table`
+
+In this study we sought to investigate the effect of NSD and DA on the number of citations received by a given paper. We focused on NSD papers to determine the effect of having DA. This led us to the use of a negative binomial regression model to best describe our data. All regression data was NSD yes. We focused on the continuous outcome of "number of citations" with predictor variables journal (categorical), age in months (continuous), and DA status (dichotomous). Due to the number of citations being bell shaped with a long right tail (very few papers at advanced age with many citations), the model that best described our data was the negative binomial regression model. A negative binomial model is appropriate for data that begins at zero and has a long 'tail' of data. This model also includes a dispersion parameter to describe the spread of the data. We applied a log transformation to our age variable (age.in.months) to better describe the relationship between time and number of citations received. See table XXX6? for model coefficients. In general, we found that NSD papers that made DA received more citations over time than those that did not. See figure YYYY for trends in each major journal. ??XX insert some kind of metrics about % more citations over time? per journal? ??XX Describe figure emmeans contrast plot that i cannot get to insert in the document for the life of me??? In all journals excepting the *Journal of Bacteriology*, papers with DA have a greater number of citations at time point 60 months after publication, if not sooner via ratio plot. Over time this ratio increases further, demonstrating increased citations for papers with DA available over time.
+
+#### Figures for Negative Binomial
 
 ## Discussion
 
--   Percent of ASM papers that have new sequence data available (nsd Yes, da Yes)
-    -   trends by journal
-    -   trends by year
--   Making data available
-    -   provides more citations per paper than not doing so by *XXX* number
-    -   Allows for replication of studies
--   Why bother doing this?
-    -   What advantage does it give you as a data generator
-    -   Is it worth the work?
--   
+We investigated the impact of data availability on citation metrics in new sequencing papers by deploying machine learning models on over 150,000 papers from the ASM family of journals. Overall, making data available increases citation metrics over time.
+
+On average, more than half of papers with NSD had DA (`r all_per_da`%), showing that authors of NSD papers are more often than not, making their data publicly available. This is in line with recent NIH policy requiring that data be made available using the XXdata planXX outlined in the NIH's NOT-OD-21-013 @noauthor_not-od-21-013_nodate. Expectledly, journals *Genome Announcements* and *Microbiology Resource Announcements* had the highest rates of DA in NSD papers. These journals publish primarily new genomic sequences and are required by ASM to make data available. Journals such as the *Journal of Microbiology and Biology Education* and *Infection and Immunity* which publish fewer NSD papers, have lower rates of DA in their journals.
+
+Next, we looked further into the impact of DA on citation metrics using a negative binomial regression model. Using this model we found that over time, papers with DA receive more citations than those without up to well over 1.5x in some journals (*Journal of Clinical Microbiology* ). This effect intensifies over time, with the greatest differences in citations occuring at the 108 months since publication time point. This is great news to manuscript authors, that simply making DA can give as much as 50% increase in citations over time. We believe that this more than justifies the work of making data available. We hope that these data will help to incentivize authors to make data available.
+
+We acknowledge the limitations of our study data, focusing only on papers published in the ASM family of journals. We understand that this relationship between DA and citation metrics may not be as strong in other families of journals, but we hope with the newest NIH funding policies, these trends will continue. Another limitation is the availability of paper metadata from various databases, with crossref's metadata having the most complete metadata available for each paper. We were also not able to see specific time points, only having access to citation data for papers at time of dataset download (February 2025), and no intermediate time points for any given paper.
+
+While DA in publications has a citation advantage, we hope that is not the only reason authors choose to make their data available. The need for reproducibility in science and demand for large datasets are additional reasons. We hope that authors recognize the need to contribute to the data "commons", to further work done by others, and that even their negative results have value and power to stop others from continuing down dead ends.
 
 ## Materials and Methods
 
@@ -358,11 +376,29 @@ In this study we sought to investigate the effect of NSD and DA on the number of
 
 To train our random forest machine learning model, we first created an appropriate training data set. Using the crossref database, we first downloaded all papers from the selected ASM family of journals from the time period beginning January 1st, 2000, and ending on December 31st, 2024. The data was updated as of February 10th, 2025 with all citation counts frozen at that date. For our initial training set, we chose N = 500 papers from across each journal and time period, adding special emphasis to include papers that were part of our desired set of interest (i.e. contained published data) to ensure that our two models could adequately characterize each paper as a new sequencing paper and if it published raw sequencing data or not. After creating our initial dataset, it was necessary to identify the status of both variables by hand and determine if each paper contained "new sequencing data" (NSD), and if each one had "data available" (DA). This was completed by opening each paper in an internet browser window, and searching for a "data availability" or similar statement. See table XXX for specific cases and how each of these cases were identified for the purpose of this study.
 
+| Scenario | NSD Status | DA Status |
+|-----------------------------------------------------------------|----|----|
+| Paper is not about generating new sequencing data | No | No |
+| Paper is about generating new sequencing data but has no data available | Yes | No |
+| Paper is about generating new sequencing data and has data available | Yes | Yes |
+| Paper uses sequencing as a confirmation of experimental technique (i.e. confirmation of plasmid insertion) | No | No |
+| Paper discusses new computational or experimental tools | No | No |
+| Paper has microarray data | No | No |
+| Papers using MLST ONLY | No | No |
+| Papers using qPCR ONLY | No | No |
+| Papers about protein sequencing that have nucleotide sequencing | Yes | Yes/No depending on DA |
+| Papers using iRNA techniques | No | No |
+| Papers using pyrosequencing/454 techniques | Yes | Yes/No depending on DA |
+
+: Possible Data Scenarios
+
 ### Adding Additional Training Set Papers
 
 After initial trainings of our random forest models, a random sampling of papers was collected for each journal to audit the efficacy of the models. To audit the efficacy of the models, we hand identified the status of both variables of interest, NSD and DA. We looked for weaknesses in the models, and updated methodology to reflect important areas of interest. For example, in 2023 the ASM journals changed their formatting to include the data availability statement of a paper in a sidebar of the webpage. We identified this by noticing that all papers from journal *Microbiology Resource Announcements* from 2023-2024 were incorrectly characterized by the model as DA = No. The sidebar of the webpage was not included in the text the model was considering, and code had to be updated to include all sidebar data for all papers. These improvements to the model created a larger and more comprehensive training set of N = 9XX. These validations allowed us to create confusion matricies for each model. Confusion matricies for the final version of each trained model are available in YYYY table(supplement?).
 
-### Descriptive Statistics about the Training Set
+### Descriptive Statistics about the Training Set 
+
+*I think this is covered earlier but i will leave it for now just to make sure that i can move the sentences around if i need to*
 
 There were XXX papers in the training data set from 12 ASM journals. These papers came from journals *Applied and Envrionmental Microbiology; Antimicrobial Agents and Chemotherapy; Infection and Immunity; Journal of Clinical Biology; Journal of Virology; Journal of Bacteriology; Journal of Microbiology and Biology Education; Microbiology Resource Announcments* (formerly known as *Genome Announcements*); \* mSystems; mSphere; mBio; and Microbiology Spectrum.\* See table XXXX for the number of papers from each journal in the training dataset. The training dataset includes journal articles published between January 1st, 2000 and December 31st, 2024. See table XXXXX for the number of papers included from each year from 2000-2024. XXX% of training set data was NSD = Yes, and XXX% of training set data was DA = Yes.
 
@@ -380,11 +416,10 @@ We trained two random forest machine learning models using mikropml's "run_ml" f
 
 To fully answer our research questions, we created a larger database with N = 155779 papers curated from reference datasets Crossref, NCBI, Scopus, and the Web of Science (@crossref, @ncbi, @scopus, @wos). These papers span all twelve ASM journals of interest from the start of 2000 to the end of 2024. Once database was curated, we applied the same steps to ready papers for application of machine learning models as the model training datasets. See above for descriptions of webscraping html, cleaning html, removing unnecessary text, and creation of token count table for application in each of the machine learning models to determine the NSD and DA statuses for each paper. Once the frequency count tables were prepared for each paper, a z-score was applied using the saved data from each model appropriately, using the formula XXX((observed_token_frequency - model_token_frequency_mean)/(model_token_frequency_sd)). This z-scoring formula was applied to standardize the frequency of each token. Only tokens included in the machine learning models were retained in experimental datasets. Finally, each model was deployed on each paper to determine its NSD and DA status.
 
--   Statistical methodology
-    -   negative binomial modeling using r package MASS
-        -   fixed modeling
-        -   log transformation of age.in.months
-        -   95% CI
+### Statistical Methodology 
+
+After each random forest model was deployed on our experimental dataset, we used a negative binomial regression model using the R package MASS (\@MASSref). A negative binomial regression model allows us to investigate data where group means are different than the overall dataset mean. A log transformation of the time variable(age.in.months) was applied prior to estimating the statistical regression model to correct for the nature of time as compared to other variables in the dataset. After applying the negative binomial model, we calculated ratios of the estimated number of citations per paper over time by DA status using R package emmeans (\@emmeansref). We also used R package sjPlot to estimate the 95% CI for estimated citations over time for each journal by DA status (\@sjPlotref).
+
 -   Supplemental Material file list (where applicable)
 -   Acknowledgments
 -   References
