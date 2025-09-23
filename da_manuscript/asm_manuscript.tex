@@ -219,7 +219,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Sep 18, 2025}
+\date{Sep 23, 2025}
 \begin{document}
 \maketitle
 
@@ -756,8 +756,12 @@ Detection\_RateSD & 0.0105 & 0.0133 \\
 Balanced\_AccuracySD & 0.0165 & 0.0199 \\
 \end{longtable}
 
-\paragraph{Figures for trained models - having trouble inserting
-them}\label{figures-for-trained-models---having-trouble-inserting-them}
+\paragraph{Figures for trained models}\label{figures-for-trained-models}
+
+\pandocbounded{\includegraphics[keepaspectratio]{../Figures/ml_results/groundtruth/rf/auroc.new_seq_data.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{../Figures/ml_results/groundtruth/rf/auroc.data_availability.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{../Figures/ml_results/groundtruth/rf/hp_perf.rf.new_seq_data.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{../Figures/ml_results/groundtruth/rf/hp_perf.rf.data_availability.png}}
 
 Two random forest models were trained to predict if published scientific
 papers ``contained new sequence data'' (NSD), and if the paper ``had
@@ -924,8 +928,11 @@ point 60 months after publication, if not sooner via ratio plot. Over
 time this ratio increases further, demonstrating increased citations for
 papers with DA available over time.
 
-\paragraph{Figures for Negative
-Binomial}\label{figures-for-negative-binomial}
+\paragraph{Figures for Negative Binomial yay! come back to
+theseXX}\label{figures-for-negative-binomial-yay-come-back-to-thesexx}
+
+\pandocbounded{\includegraphics[keepaspectratio]{../Figures/negative_binomial/emmeans_contrast_plot.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{../Figures/negative_binomial/model_predicted_plot.png}}
 
 \subsection{Discussion}\label{discussion}
 
@@ -1001,9 +1008,9 @@ cases and how each of these cases were identified for the purpose of
 this study.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.8904}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.0548}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.0548}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.6389}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1806}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1806}}@{}}
 \caption{Possible Data Scenarios}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -1077,9 +1084,9 @@ Microbiology; Antimicrobial Agents and Chemotherapy; Infection and
 Immunity; Journal of Clinical Biology; Journal of Virology; Journal of
 Bacteriology; Journal of Microbiology and Biology Education;
 Microbiology Resource Announcments} (formerly known as \emph{Genome
-Announcements}); * mSystems; mSphere; mBio; and Microbiology Spectrum.*
-See table XXXX for the number of papers from each journal in the
-training dataset. The training dataset includes journal articles
+Announcements}); \emph{mSystems; mSphere; mBio; and Microbiology
+Spectrum.} See table XXXX for the number of papers from each journal in
+the training dataset. The training dataset includes journal articles
 published between January 1st, 2000 and December 31st, 2024. See table
 XXXXX for the number of papers included from each year from 2000-2024.
 XXX\% of training set data was NSD = Yes, and XXX\% of training set data
