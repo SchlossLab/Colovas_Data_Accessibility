@@ -381,7 +381,7 @@ While DA in publications has a citation advantage, we hope that is not the only 
 To train our random forest machine learning model, we first created an appropriate training data set. Using the crossref database, we first downloaded all papers from the selected ASM family of journals from the time period beginning January 1st, 2000, and ending on December 31st, 2024. The data was updated as of February 10th, 2025 with all citation counts frozen at that date. For our initial training set, we chose N = 500 papers from across each journal and time period, adding special emphasis to include papers that were part of our desired set of interest (i.e. contained published data) to ensure that our two models could adequately characterize each paper as a new sequencing paper and if it published raw sequencing data or not. After creating our initial dataset, it was necessary to identify the status of both variables by hand and determine if each paper contained "new sequencing data" (NSD), and if each one had "data available" (DA). This was completed by opening each paper in an internet browser window, and searching for a "data availability" or similar statement. See table XXX for specific cases and how each of these cases were identified for the purpose of this study.
 
 | Scenario | NSD Status | DA Status |
-|---------------------------------------|-----------------|-----------------|
+|-------------------------------------|------------------|------------------|
 | Paper is not about generating new sequencing data | No | No |
 | Paper is about generating new sequencing data but has no data available | Yes | No |
 | Paper is about generating new sequencing data and has data available | Yes | Yes |

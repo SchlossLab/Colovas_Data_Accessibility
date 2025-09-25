@@ -219,7 +219,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Sep 24, 2025}
+\date{Sep 25, 2025}
 \begin{document}
 \maketitle
 
@@ -1009,9 +1009,9 @@ cases and how each of these cases were identified for the purpose of
 this study.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.5833}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2083}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2083}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.5068}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2466}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2466}}@{}}
 \caption{Possible Data Scenarios}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -1110,24 +1110,24 @@ including the abstract, the body of paper, all tables and figures with
 captions, as well as the side panels for all papers, but especially
 those containing the data availability statements in papers published
 after the 2023 change in webpage format (see above). Then we removed
-unnecessary text using R packages tm(text manipulation)((\textbf{tm?}))
-and textstem ((21)), as well as converting all text to lowercase, and
-the removal of digits and non-alphabetic characters such as whitespace.
-To have the fewest number of unique words, we lemmatized (sort words by
+unnecessary text using R packages tm(text manipulation)((21), (22)) and
+textstem ((23)), as well as converting all text to lowercase, and the
+removal of digits and non-alphabetic characters such as whitespace. To
+have the fewest number of unique words, we lemmatized (sort words by
 grouping inflected or variant forms of the same word) words to trace
 them back to their root words and eliminate any possible issues with
 word tense. After this, we created and counted our `tokens', phrases of
 up to 1-3 consecutive words from the text of the paper using R package
 tokeinziers ((\textbf{tokeinziers?})). Towards the goal of the fewest
-meaningful number of words, we used the `Snowball' ((22)) dictionary of
+meaningful number of words, we used the `Snowball' ((24)) dictionary of
 `stop words' to remove non-meaningful words such as articles `a', `an',
 and `the'. We removed the `space' character with an underscore in
 multi-word tokens for ease of processing, and created a count table for
 the tokens in each paper.
 
 Once the tokens in each paper were counted, we transformed the data into
-a sparse matrix format useable by the R package mikropml ((23) ref),
-using R packages caret and dplyr ((24), (25), (26)). Tokens were
+a sparse matrix format useable by the R package mikropml ((25) ref),
+using R packages caret and dplyr ((26), (27), (28)). Tokens were
 filtered to those which appear in greater than one paper. This allows
 comparison between papers by the model. We removed near zero variants
 (tokens with frequency very close to zero) as well as collapsing
@@ -1162,7 +1162,7 @@ Dataset}\label{preparation-of-the-experimental-dataset}
 To fully answer our research questions, we created a larger database
 with N = 155779 papers curated from reference datasets Crossref, NCBI,
 Scopus, and the Web of Science ((\textbf{crossref?}), (\textbf{ncbi?}),
-(\textbf{scopus?}), (27)). These papers span all twelve ASM journals of
+(\textbf{scopus?}), (29)). These papers span all twelve ASM journals of
 interest from the start of 2000 to the end of 2024. Once database was
 curated, we applied the same steps to ready papers for application of
 machine learning models as the model training datasets. See above for
@@ -1189,7 +1189,7 @@ was applied prior to estimating the statistical regression model to
 correct for the nature of time as compared to other variables in the
 dataset. After applying the negative binomial model, we calculated
 ratios of the estimated number of citations per paper over time by DA
-status using R package emmeans ((28)). We also used R package sjPlot to
+status using R package emmeans ((30)). We also used R package sjPlot to
 estimate the 95\% CI for estimated citations over time for each journal
 by DA status ((\textbf{sjPlotref?})).
 
@@ -1438,20 +1438,32 @@ doi:\href{https://doi.org/10.12688/f1000research.29032.2}{10.12688/f1000research
 \CSLRightInline{\textbf{Wickham H}, \textbf{Hester J}, \textbf{Ooms J}.
 2025. \href{https://CRAN.R-project.org/package=xml2}{xml2: Parse XML}.}
 
-\bibitem[\citeproctext]{ref-textstem}
+\bibitem[\citeproctext]{ref-tm_article}
 \CSLLeftMargin{21. }%
+\CSLRightInline{\textbf{Feinerer I}, \textbf{Hornik K}, \textbf{Meyer
+D}. 2008. Text mining infrastructure in r. Journal of Statistical
+Software \textbf{25}:1--54.
+doi:\href{https://doi.org/10.18637/jss.v025.i05}{10.18637/jss.v025.i05}.}
+
+\bibitem[\citeproctext]{ref-tm_manual}
+\CSLLeftMargin{22. }%
+\CSLRightInline{\textbf{Feinerer I}, \textbf{Hornik K}. 2025.
+\href{https://CRAN.R-project.org/package=tm}{Tm: Text mining package}.}
+
+\bibitem[\citeproctext]{ref-textstem}
+\CSLLeftMargin{23. }%
 \CSLRightInline{\textbf{Rinker TW}. 2018.
 \href{http://github.com/trinker/textstem}{{textstem}: Tools for stemming
 and lemmatizing text}. Buffalo, New York.}
 
 \bibitem[\citeproctext]{ref-stopwords}
-\CSLLeftMargin{22. }%
+\CSLLeftMargin{24. }%
 \CSLRightInline{\textbf{Benoit K}, \textbf{Muhr D}, \textbf{Watanabe K}.
 2021. \href{https://CRAN.R-project.org/package=stopwords}{Stopwords:
 Multilingual stopword lists}.}
 
 \bibitem[\citeproctext]{ref-mikropml}
-\CSLLeftMargin{23. }%
+\CSLLeftMargin{25. }%
 \CSLRightInline{\textbf{Topçuoğlu BD}, \textbf{Lapp Z}, \textbf{Sovacool
 KL}, \textbf{Snitkin E}, \textbf{Wiens J}, \textbf{Schloss PD}. 2021.
 {mikropml}: User-friendly r package for supervised machine learning
@@ -1459,21 +1471,21 @@ pipelines. Journal of Open Source Software \textbf{6}:3073.
 doi:\href{https://doi.org/10.21105/joss.03073}{10.21105/joss.03073}.}
 
 \bibitem[\citeproctext]{ref-caret}
-\CSLLeftMargin{24. }%
+\CSLLeftMargin{26. }%
 \CSLRightInline{\textbf{Kuhn}, \textbf{Max}. 2008. Building predictive
 models in r using the caret package. Journal of Statistical Software
 \textbf{28}:1--26.
 doi:\href{https://doi.org/10.18637/jss.v028.i05}{10.18637/jss.v028.i05}.}
 
 \bibitem[\citeproctext]{ref-dplyr}
-\CSLLeftMargin{25. }%
+\CSLLeftMargin{27. }%
 \CSLRightInline{\textbf{Wickham H}, \textbf{François R}, \textbf{Henry
 L}, \textbf{Müller K}, \textbf{Vaughan D}. 2025.
 \href{https://dplyr.tidyverse.org}{Dplyr: A grammar of data
 manipulation}.}
 
 \bibitem[\citeproctext]{ref-tidyverse}
-\CSLLeftMargin{26. }%
+\CSLLeftMargin{28. }%
 \CSLRightInline{\textbf{Wickham H}, \textbf{Averick M}, \textbf{Bryan
 J}, \textbf{Chang W}, \textbf{McGowan LD}, \textbf{François R},
 \textbf{Grolemund G}, \textbf{Hayes A}, \textbf{Henry L}, \textbf{Hester
@@ -1486,13 +1498,13 @@ D}, \textbf{Seidel DP}, \textbf{Spinu V}, \textbf{Takahashi K},
 doi:\href{https://doi.org/10.21105/joss.01686}{10.21105/joss.01686}.}
 
 \bibitem[\citeproctext]{ref-wos}
-\CSLLeftMargin{27. }%
+\CSLLeftMargin{29. }%
 \CSLRightInline{Accessed 2025.
 \href{https://www.webofscience.com/wos/author/author-search}{Web of
 science}. Internet Database, Clarivate.}
 
 \bibitem[\citeproctext]{ref-emmeans}
-\CSLLeftMargin{28. }%
+\CSLLeftMargin{30. }%
 \CSLRightInline{\textbf{Lenth RV}. 2025.
 \href{https://CRAN.R-project.org/package=emmeans}{Emmeans: Estimated
 marginal means, aka least-squares means}.}
