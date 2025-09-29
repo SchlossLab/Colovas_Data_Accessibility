@@ -219,7 +219,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Sep 25, 2025}
+\date{Sep 29, 2025}
 \begin{document}
 \maketitle
 
@@ -624,21 +624,21 @@ databases, we downloaded N = 154720 unique records of papers published
 in ASM journals between 2000 and 2024. After downloading the HTML
 content of each paper, we cleaned the HTML content and readied it to
 apply our machine learning models to classify each paper. Overall,
-26.9428645\% of papers had NSD, and 58.8614883\% of papers with NSD, had
-DA. See table 1 for percentages of NSD and DA for each journal. The
-journal with the highest rate of NSD was Genome Announcements at
-98.7190944\%, and the lowest was Journal of Microbiology \& Biology
-Education at 0.3065134\%. The journal with the highest rate of DA was
-Microbiology Resource Announcements at 99.8259053\%, and the lowest was
-Journal of Clinical Microbiology at 13.4392674\%. This was expected as
-Genome Announcements publishes mainly new genomic sequence data and
-makes the data available. On average, papers in the dataset had a median
-of 25 citations/article. This number varies by journal, see table YYYY
-for data by journal. The journal with the highest median rate of
-citations/article was Applied and Environmental Microbiology at 38\%,
-and the lowest was Microbiology Resource Announcements at 1\%. The
-journals in the dataset span years 2000-2024. See table YYYYY for the
-distribution of papers per year in the dataset.
+26.9429\% of papers had NSD, and 58.8615\% of papers with NSD, had DA.
+See table 1 for percentages of NSD and DA for each journal. The journal
+with the highest rate of NSD was Genome Announcements at 98.7191\%, and
+the lowest was Journal of Microbiology \& Biology Education at 0.3065\%.
+The journal with the highest rate of DA was Microbiology Resource
+Announcements at 99.8259\%, and the lowest was Journal of Clinical
+Microbiology at 13.4393\%. This was expected as Genome Announcements
+publishes mainly new genomic sequence data and makes the data available.
+On average, papers in the dataset had a median of 25 citations/article.
+This number varies by journal, see table YYYY for data by journal. The
+journal with the highest median rate of citations/article was Applied
+and Environmental Microbiology at 38\%, and the lowest was Microbiology
+Resource Announcements at 1\%. The journals in the dataset span years
+2000-2024. See table YYYYY for the distribution of papers per year in
+the dataset.
 
 \paragraph{\texorpdfstring{Training Dataset \textbf{(pretty much the
 same as the above paragraph, but with stats for the training
@@ -654,15 +654,15 @@ validation of the trained models (see below), with a total of N = 1045.
 See table 2 for the distribution of papers per journal in the training
 dataset. The journals in the dataset also span years 2000-2024. See
 table 3 for the distribution of papers per year in the training dataset.
-Overall, 43.7320574\% of papers had NSD, and 80.9628009\% of papers with
-NSD, had DA. See table 2 for percentages of NSD and DA for each journal.
-The journal with the highest rate of NSD was Genome Announcements at
-96.6666667\%, and the lowest was Journal of Microbiology \& Biology
+Overall, 43.7321\% of papers had NSD, and 80.9628\% of papers with NSD,
+had DA. See table 2 for percentages of NSD and DA for each journal. The
+journal with the highest rate of NSD was Genome Announcements at
+96.6667\%, and the lowest was Journal of Microbiology \& Biology
 Education at 0\%. The journals with the highest rate of DA in NSD papers
 were Genome Announcements and mSystems at 100\%, and the lowest was
-Journal of Virology at 28.5714286\%. On average, papers in the dataset
-had median 10 citations/article. This number varies by journal, see
-table YYYY for data by journal. The journal with the highest rate of
+Journal of Virology at 28.5714\%. On average, papers in the dataset had
+median 10 citations/article. This number varies by journal, see table
+YYYY for data by journal. The journal with the highest rate of
 citations/article was Infection and Immunity at 40\%, and the lowest was
 Microbiology Resource Announcements at 0\%.
 
@@ -778,16 +778,16 @@ extras from certain journals were hand-validated against model
 predictions to generate confusion matrices. Confusion matrices for the
 final version of each trained model are available in YYYY
 table(supplement?). The NSD model used an mtry value of 200 had an Area
-Under the Curve(AUC) of 0.9645148 and an accuracy of 0.9035551. The
-sensitivity of the NSD model was 0.9350193, and the specificity of the
-model was 0.8631264. The DA model used an mtry value of 300 had an AUC
-of 0.9878144 and an accuracy of 0.9464109. The sensitivity of the DA
-model was 0.9609538, and the specificity of the model was 0.9199189 (See
-table 4 for more information on trained machine learning models). This
-shows that the models fit the data well, and can provide classifications
-on new data with an expected error rate of less than 10\%. We deemed
-this as acceptable, accounting for variability in papers and data, as
-well as the large size of the dataset on which we deployed the models.
+Under the Curve(AUC) of 0.9645 and an accuracy of 0.9036. The
+sensitivity of the NSD model was 0.935, and the specificity of the model
+was 0.8631. The DA model used an mtry value of 300 had an AUC of 0.9878
+and an accuracy of 0.9464. The sensitivity of the DA model was 0.961,
+and the specificity of the model was 0.9199 (See table 4 for more
+information on trained machine learning models). This shows that the
+models fit the data well, and can provide classifications on new data
+with an expected error rate of less than 10\%. We deemed this as
+acceptable, accounting for variability in papers and data, as well as
+the large size of the dataset on which we deployed the models.
 
 \subsubsection{Regression Model using Negative Binomial
 Models}\label{regression-model-using-negative-binomial-models}
@@ -941,7 +941,7 @@ new sequencing papers by deploying machine learning models on over
 150,000 papers from the ASM family of journals. Overall, making data
 available increases citation metrics over time.
 
-On average, more than half of papers with NSD had DA (58.8614883\%),
+On average, more than half of papers with NSD had DA (58.8615\%),
 showing that authors of NSD papers are more often than not, making their
 data publicly available. This is in line with recent NIH policy
 requiring that data be made available using the Data Management and
@@ -1009,9 +1009,9 @@ cases and how each of these cases were identified for the purpose of
 this study.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.5068}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2466}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2466}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4795}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2603}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2603}}@{}}
 \caption{Possible Data Scenarios}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
