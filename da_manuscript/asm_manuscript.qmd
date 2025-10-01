@@ -166,13 +166,15 @@ training_data %>%
 #                 digits = n_digits)
 
 #let's make a graph instead
-ggplot(training_data_table, aes(x = fract_nsd, y = container.title)) + 
-    geom_point() + 
-    labs(title = "Fraction of papers with NSD\nin Training Dataset")
+whole_fract_nsd <- 
+    ggplot(training_data_table, aes(x = fract_nsd, y = container.title)) + 
+        geom_point()  
+        #labs(title = 'Fraction of papers with NSD \n in Training Dataset')
 
-ggplot(training_data_table, aes(x = fract_da, y = container.title)) + 
-    geom_point() + 
-    labs(title = "Fraction of papers with NSD\nand DA in Training Dataset")
+whole_fract_da <- 
+    ggplot(training_data_table, aes(x = fract_da, y = container.title)) + 
+        geom_point() 
+        #labs(title = 'Fraction of papers with NSD \n and DA in Training Dataset')
 
 
  
@@ -198,13 +200,14 @@ all_data %>%
 # kableExtra::kable(whole_dataset_table, caption = "Summary Statstics of All Data", 
 #                 digits = n_digits)
 
-ggplot(whole_dataset_table, aes(x = fract_nsd, y = container.title)) + 
-    geom_point() + 
-    labs(title = "Fraction of papers with NSD\nin Whole Dataset")
-
-ggplot(whole_dataset_table, aes(x = fract_da, y = container.title)) + 
-    geom_point() + 
-    labs(title = "Fraction of papers with DA\nin Whole Dataset")
+t_fract_nsd <- 
+    ggplot(whole_dataset_table, aes(x = fract_nsd, y = container.title)) + 
+        geom_point() 
+        #labs(title = 'Fraction of papers with NSD \n in Whole Dataset')
+t_fract_da <- 
+    ggplot(whole_dataset_table, aes(x = fract_da, y = container.title)) + 
+        geom_point() 
+        #labs(title = 'Fraction of papers with DA \n in Whole Dataset')
 
 
 
@@ -273,6 +276,14 @@ all_j_min_median_cites <- all_avg_cites_j[[which.min(all_avg_cites_j$median_refs
 ```
 
 #### Whole Dataset
+
+`{r} print(whole_fract_nsd)`
+
+`{r} print(whole_fract_da)`
+
+`{r} print(t_fract_nsd)`
+
+`{r} print(t_fract_da)`
 
 Using the Crossref database of DOIs, with validation from the Web of Science, NCBI, and Scopus DOI databases, we downloaded N = `{r} n_total` unique records of papers published in ASM journals between 2000 and 2024. After downloading the HTML content of each paper, we cleaned the HTML content and readied it to apply our machine learning models to classify each paper. Overall, `{r} round(all_per_nsd, n_digits)`% of papers had NSD, and `{r} round(all_per_da, n_digits)`% of papers with NSD, had DA. See Figure 2XX for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was `{r} all_j_high_nsd` at `{r} round(all_fract_high_nsd, n_digits)`%, and the lowest was `{r} all_j_low_nsd` at `{r} round(all_fract_low_nsd, n_digits)`%. The journal with the highest rate of DA was \*`{r} all_j_high_da`\* at `{r} round(all_fract_high_da, n_digits)`%, and the lowest was \*`{r} all_j_low_da`\* at `{r} round(all_fract_low_da, n_digits)`%. This was expected as \*`{r} all_j_high_nsd`\* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had a median of `{r} round(all_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table XXXX for data by journal. The journal with the highest median rate of citations/article was \*`{r} all_j_max_median_cites`\* at `{r} round(all_max_median_cites, n_digits)`%, and the lowest was \*`{r} all_j_min_median_cites`\* at `{r} round(all_min_median_cites, n_digits)`%. The journals in the dataset span years 2000-2024. See table XXXX for the distribution of papers per year in the dataset.
 
@@ -343,16 +354,19 @@ t_years <-
     rename(., n_training_dataset = `n`)
 
 year_pub_table <-
-full_join(all_years, t_years, by = join_by(year.published)) %>%
-    kableExtra::kable(., caption = "Distribution of Year Published for Whole and Training Dataset", 
+full_join(all_years, t_years, by = join_by(year.published)) 
+
+kableExtra::kable(year_pub_table, caption = "Distribution of Year Published for Whole and Training Dataset", 
                         digits = n_digits)
 
+whole_year_pub_graph <-
 ggplot(year_pub_table, aes(x = year.published, y = n_whole_dataset)) + 
-    geom_bar()
+    geom_point() 
+   # labs(title = "Number of published papers \n per year in whole dataset")
 
 ```
 
-`r year_pub_table`
+`{r} print(whole_year_pub_graph)`
 
 ### Descriptive Statisitcs about the Trained Models
 
