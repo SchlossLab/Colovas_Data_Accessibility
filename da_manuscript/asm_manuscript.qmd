@@ -117,7 +117,7 @@ In 2014 the FORCE11 group published the Joint Declaration of Data Citation Princ
 
 With the advent of next generation sequencing, microbiology research has generated large amounts of sequencing data, and it is common to upload sequence data to a public repository as well as to include data in research publications. Because of this, we set out to determine rates of published raw data in the biological sciences, specifically microbiology, by examining the American Society for Microbiology's (ASM) library of published primary research journals. We were also interested in the relationship between DA and number of citations received by a published work.
 
-### American Society for Microbiology Journals (ASM) 
+### American Society for Microbiology Journals (ASM)
 
 The American Society for Microbiology(ASM) is the major professional body recognized by microbiologists. They have eighteen journals, thirteen primary research journals, three review journals, and two archive journals. In addition, several journals have been folded into others or renamed over time. The ASM family of journals requires that authors "make data fully available, without restriction, except in rare circumstances" (@Asm_opendata). They have adapted this policy from journals *Microbial Genomics* and *PLOS*. In the ASM open data policy they describe the use of a "Data Availability Statement" which includes "data description, name(s) of the repositories, and digital object identifiers (DOIs) or accession numbers" and encourages publishing data on relevant public repositories (@Asm_opendata). Consequences of non-compliance to the ASM open data policy include contacting research article authors to inform of non-compliance, publication of an "Expression of Concern" for the author and their compliance issues, sanctions on publication in ASM journals, as well as contacting the affiliated research institution and/or funding agencies of the authors (@asm_ethics_2025). We endeavor to evaluate how well the microbiology community is using reproducible data practices as we believe that this group of researchers will be early adopters of the technologies available as a result of both the ASM and NIH policies towards data availability.
 
@@ -162,8 +162,18 @@ training_data %>%
           fract_da = n_da/n_nsd*100) %>%
     select(container.title, n_total:fract_da) # i think the NaN is fine for now
 
-kableExtra::kable(training_data_table, caption = "Summary Statistics of Model Training Dataset", 
-                digits = n_digits)
+# kableExtra::kable(training_data_table, caption = "Summary Statistics of Model Training Dataset", 
+#                 digits = n_digits)
+
+#let's make a graph instead
+ggplot(training_data_table, aes(x = fract_nsd, y = container.title)) + 
+    geom_point() + 
+    labs(title = "Fraction of papers with NSD\nin Training Dataset")
+
+ggplot(training_data_table, aes(x = fract_da, y = container.title)) + 
+    geom_point() + 
+    labs(title = "Fraction of papers with NSD\nand DA in Training Dataset")
+
 
  
 #whole dataset yay!
@@ -185,9 +195,16 @@ all_data %>%
           fract_da = n_da/n_nsd*100) %>%
     select(container.title, n_total:fract_da)
 
-kableExtra::kable(whole_dataset_table, caption = "Summary Statstics of All Data", 
-                digits = n_digits)
+# kableExtra::kable(whole_dataset_table, caption = "Summary Statstics of All Data", 
+#                 digits = n_digits)
 
+ggplot(whole_dataset_table, aes(x = fract_nsd, y = container.title)) + 
+    geom_point() + 
+    labs(title = "Fraction of papers with NSD\nin Whole Dataset")
+
+ggplot(whole_dataset_table, aes(x = fract_da, y = container.title)) + 
+    geom_point() + 
+    labs(title = "Fraction of papers with DA\nin Whole Dataset")
 
 
 
@@ -257,7 +274,7 @@ all_j_min_median_cites <- all_avg_cites_j[[which.min(all_avg_cites_j$median_refs
 
 #### Whole Dataset
 
-Using the Crossref database, with validation from WOS, NCBI, and Scopus databases, we downloaded N = `{r} n_total` unique records of papers published in ASM journals between 2000 and 2024. After downloading the HTML content of each paper, we cleaned the HTML content and readied it to apply our machine learning models to classify each paper. Overall, `{r} round(all_per_nsd, n_digits)`% of papers had NSD, and `{r} round(all_per_da, n_digits)`% of papers with NSD, had DA. See table 1 for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was `{r} all_j_high_nsd` at `{r} round(all_fract_high_nsd, n_digits)`%, and the lowest was `{r} all_j_low_nsd` at `{r} round(all_fract_low_nsd, n_digits)`%. The journal with the highest rate of DA was `{r} all_j_high_da` at `{r} round(all_fract_high_da, n_digits)`%, and the lowest was `{r} all_j_low_da` at `{r} round(all_fract_low_da, n_digits)`%. This was expected as `{r} all_j_high_nsd` publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had a median of `{r} round(all_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest median rate of citations/article was `{r} all_j_max_median_cites` at `{r} round(all_max_median_cites, n_digits)`%, and the lowest was `{r} all_j_min_median_cites` at `{r} round(all_min_median_cites, n_digits)`%. The journals in the dataset span years 2000-2024. See table YYYYY for the distribution of papers per year in the dataset.
+Using the Crossref database of DOIs, with validation from the Web of Science, NCBI, and Scopus DOI databases, we downloaded N = `{r} n_total` unique records of papers published in ASM journals between 2000 and 2024. After downloading the HTML content of each paper, we cleaned the HTML content and readied it to apply our machine learning models to classify each paper. Overall, `{r} round(all_per_nsd, n_digits)`% of papers had NSD, and `{r} round(all_per_da, n_digits)`% of papers with NSD, had DA. See Figure 2XX for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was `{r} all_j_high_nsd` at `{r} round(all_fract_high_nsd, n_digits)`%, and the lowest was `{r} all_j_low_nsd` at `{r} round(all_fract_low_nsd, n_digits)`%. The journal with the highest rate of DA was \*`{r} all_j_high_da`\* at `{r} round(all_fract_high_da, n_digits)`%, and the lowest was \*`{r} all_j_low_da`\* at `{r} round(all_fract_low_da, n_digits)`%. This was expected as \*`{r} all_j_high_nsd`\* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had a median of `{r} round(all_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table XXXX for data by journal. The journal with the highest median rate of citations/article was \*`{r} all_j_max_median_cites`\* at `{r} round(all_max_median_cites, n_digits)`%, and the lowest was \*`{r} all_j_min_median_cites`\* at `{r} round(all_min_median_cites, n_digits)`%. The journals in the dataset span years 2000-2024. See table XXXX for the distribution of papers per year in the dataset.
 
 ```{r training_data_stats}
 #ok now we need to find the percentages/data that we need 
@@ -274,16 +291,6 @@ t_per_da <- count(training_data, new_seq_data, data_availability) %>%
             mutate(percent = `n`/sum(`n`)*100) %>%
             .[[2, 4]]
 
-#year distribution - do we want a figure for this or the table? 
-t_years <- 
-    training_data %>% 
-    count(., year.published) %>%
-    rename(., n_training_dataset = `n`)
-
-year_pub_table <-
-full_join(all_years, t_years, by = join_by(year.published)) %>%
-    kableExtra::kable(., caption = "Distribution of Year Published for Whole and Training Dataset", 
-                        digits = n_digits)
 
 #journal w/ highest and lowest rate of nsd
 t_fract_high_nsd <- max(training_data_table$fract_nsd)
@@ -322,13 +329,28 @@ t_j_min_median_cites <- t_avg_cites_j[[which.min(t_avg_cites_j$median_refs), 1]]
 
 ```
 
-#### Training Dataset **(pretty much the same as the above paragraph, but with stats for the training dataset)**
+#### Training Dataset
 
-\*XX - add italics for journal names even when they're variables, do this in not visual mode
-
-We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 500 papers, but was increased over time due to gaps in the dataset, and after subsequent validation of the trained models (see below), with a total of N = `{r} round(n_training, n_digits)`. See table 2 for the distribution of papers per journal in the training dataset. The journals in the dataset also span years 2000-2024. See table 3 for the distribution of papers per year in the training dataset. Overall, `{r} round(t_per_nsd, n_digits)`% of papers had NSD, and `{r} round(t_per_da, n_digits)`% of papers with NSD, had DA. See table 2 for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was `{r} t_j_high_nsd` at `{r} round(t_fract_high_nsd, n_digits)`%, and the lowest was `{r} t_j_low_nsd` at `{r} round(t_fract_low_nsd, n_digits)`%. The journals with the highest rate of DA in NSD papers were `{r} t_j_high_da` at `{r} round(t_fract_high_da, n_digits)`%, and the lowest was `{r} t_j_low_da` at `{r} round(t_fract_low_da, n_digits)`%. On average, papers in the dataset had median `{r} round(t_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table YYYY for data by journal. The journal with the highest rate of citations/article was `{r} t_j_max_median_cites` at `{r} round(t_max_median_cites, n_digits)`%, and the lowest was `{r} t_j_min_median_cites` at `{r} round(t_min_median_cites, n_digits)`%.
+We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 500 papers, but was increased over time due to gaps in the dataset, and after subsequent validation of the trained models (see below), a total of N = `{r} round(n_training, n_digits)`. XXSee Figure 1 for the distribution of papers per journal in the training dataset.XX The journals in the dataset also span years 2000-2024. See Figure 5XX for the distribution of papers per year in the whole and training datasets. Overall, `{r} round(t_per_nsd, n_digits)`% of papers had NSD, and `{r} round(t_per_da, n_digits)`% of papers with NSD, had DA. See Figures 3 and 4 for percentages of NSD and DA for each journal. The journal with the highest rate of NSD was \*`{r} t_j_high_nsd`\*at `{r} round(t_fract_high_nsd, n_digits)`%, and the lowest was \*`{r} t_j_low_nsd`\* at `{r} round(t_fract_low_nsd, n_digits)`%. The journals with the highest rate of DA in NSD papers were \*`{r} t_j_high_da`\* at `{r} round(t_fract_high_da, n_digits)`%, and the lowest was \*`{r} t_j_low_da`\* at `{r} round(t_fract_low_da, n_digits)`%. On average, papers in the dataset had median `{r} round(t_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table XXXX for data by journal. The journal with the highest rate of citations/article was \*`{r} t_j_max_median_cites`\* at `{r} round(t_max_median_cites, n_digits)`, and the lowest was \*`{r} t_j_min_median_cites`\*at `{r} round(t_min_median_cites, n_digits)`.
 
 ### Year Published Distribution Table
+
+```{r}
+#year distribution - do we want a figure for this or the table? 
+t_years <- 
+    training_data %>% 
+    count(., year.published) %>%
+    rename(., n_training_dataset = `n`)
+
+year_pub_table <-
+full_join(all_years, t_years, by = join_by(year.published)) %>%
+    kableExtra::kable(., caption = "Distribution of Year Published for Whole and Training Dataset", 
+                        digits = n_digits)
+
+ggplot(year_pub_table, aes(x = year.published, y = n_whole_dataset)) + 
+    geom_bar()
+
+```
 
 `r year_pub_table`
 

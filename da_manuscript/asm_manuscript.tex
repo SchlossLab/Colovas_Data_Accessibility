@@ -219,7 +219,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Sep 29, 2025}
+\date{Oct 1, 2025}
 \begin{document}
 \maketitle
 
@@ -254,105 +254,53 @@ machine learning},
 
 \subsection{Introduction}\label{introduction}
 
-Data availability (DA) is the practice of making raw experimental data
-and analyses publicly accessible, often via upload in maintained
-databases. DA is a newly emerging and yet deeply important component of
-the scientific process in the digital age. With the latest and greatest
-methodologies available across fields, increasing amounts of data are
-being generated each day, especially in the biological sciences.
-Availability of these large quantities of study data and metadata (data
-about data) is a necessary resource for appropriate use and re-use of
-data and protocols as well as the recreation of analyses. We believe
-that policies of data ``available on request'' are not sufficient to be
-considered available data. One example was published in
-\emph{Microbiome}, that a reader in search of data may email the
-corresponding author, with varying results ((1)). We believe that this
-is simply unacceptable, and set out to determine rates of published raw
-data in the biological sciences, specifically microbiology, by examining
-the American Society for Microbiology's (ASM) library of published
-primary research journals.
-
 \subsubsection{Scientific Data as a Public
 Good}\label{scientific-data-as-a-public-good}
 
 The United States Government spent over two hundred million dollars
-(USD) in 2024 on research expenditures ((2)). The result of all of these
+(USD) in 2024 on research expenditures ((1)). The result of all of these
 investments are data, paid for in part by taxpayers. Therefore, data is
-a public good, and best used as a benefit to those who provided the
-funds for it. Once data has been generated, it can be used not only for
-initial analyses, but over and over again in future studies or meta
-analyses. Additionally, data can be used to eliminate possible solutions
-to a problem by the publishing of ``negative data.'' Thinking of data as
-a public good, if negative data is published, it can help researchers
-avoid sinking time and financial resources into the investigation of
-non-viable hypotheses. This lack of publication of non-fruitful
-investigation is more commonly known as the ``file drawer effect.'' Data
-as a public good also is subject to the tragedy of the commons. If no
-one contributes to the public ``commons'', data that is available for
-public use, how can we advance our understanding of our study systems?
+a public good. Public goods, for example public libraries, are able to
+be used by anyone without barrier to entry, and without diminishing the
+use of others. Data is available to be used by others, and best used as
+for the benefit of those who provided the funds for it. Once data has
+been generated, it can be used not only for initial analyses, but over
+and over again in future studies or meta analyses. A key tenet of the
+scientific method is the ability to replicate scientific findings to
+ensure that they are not due to error. One way that scientific findings
+can be replicated is by re-completing the same analyses by another
+researcher. This is only possible if the data used to complete the
+original analyses is available for use. Additionally, data can be used
+to eliminate possible solutions to a problem by the publishing of
+negative or non-significant data. Thinking of data as a public good, if
+negative data is published, it can help researchers avoid sinking time
+and financial resources into the investigation of non-viable hypotheses.
+Unfortunately, researchers have few incentives to publish negative or
+non-significant results. This lack of publication of non-fruitful
+investigation is more commonly known as the ``file drawer effect'' ((2),
+(\textbf{rosenthal\_1979?})).
 
-\subsubsection{Current DA Policies}\label{current-da-policies}
-
-Current data availability guidelines have been informed by a number of
-policies created by funding agencies, peer-review journals, conference
-and special task groups, as well as community interest groups. In 2011,
-after the Future of Research Communication (FoRC) conference in Germany
-to establish FORCE11, a community interest group which seeks to
-encourage and promote data availability standards ((3)) . Also in 2011,
-the Genomic Standards Consortium (GSC) published the MIMARKS/MIxS
-standards in \emph{Nature Biotechnology} to promote the publication of
-the ``minimum information about a marker gene sequence'' (MIMARKS) or
-``minimum information about x sequence'' (MIxS) ((4)). These standards
-are checklists usable by data generators and uploaders towards inclusion
-of relevant data with sequence uploads in the International Nucleotide
-Sequence Database Collaboration (INSDC).
-
-In 2014 the group published the Joint Declaration of Data Citation
-Principles (JDDCP), a document towards the standardization of data
-citation and its future availability((5)). The Findable, Accessible,
-Interoperable, and Reuseable (FAIR) data science guiding principles were
-put forth in 2016 in \emph{Nature Scientific Data} urges readers to
-``improve the infrastructure supporting the reuse of scholarly data''
-((6)). Neither the JDDCP nor the FAIR principles are enforceable by any
-agency. In 2021, a \emph{Nature Medicine} publication put forth the
-``Stregthening the Organization and Reporting of Microbiome Studies''
-(STORMS) checklist to help authors identify report-worthy elements of
-their data and metadata ( (7)). Finally, the National Institutes of
-Health (NIH) began enforcing the ``Policy for Data Management and
-Sharing'' (NOT-OD-21-013) in January of 2023, requiring NIH funded
-studies to submit a data management and sharing plan (DMS) with their
-funding applications, and comply with their DMS plan after generation
-and publication of the funded work((8)). Non-compliance with
-NOT-OD-21-013 is identified by funding agencies during annual Research
-Performance Progress Reports (RPPRs), and may impact future funding
-decisions ((8)).
-
-\subsubsection{ASM Journals}\label{asm-journals}
-
-With the advent of next generation sequencing, microbiology research has
-generated large amounts of sequencing data, and it is common to upload
-sequence data to a public repository as well as to include data in
-research publications. The American Society for Microbiology(ASM) is the
-major professional body recognized by microbiologists. They have
-eighteen journals, thirteen primary research journals, three review
-journals, and two archive journals. In addition, several journals have
-been folded into others or renamed over time. The ASM family of journals
-requires that authors ``make data fully available, without restriction,
-except in rare circumstances'' ((9)). They have adapted this policy from
-journals \emph{Microbial Genomics} and \emph{PLOS}. In the ASM open data
-policy they describe the use of a ``Data Availability Statement'' which
-includes ``data description, name(s) of the repositories, and digital
-object identifiers (DOIs) or accession numbers'' and encourages
-publishing data on relevant public repositories ((9)). Consequences of
-non-compliance to the ASM open data policy include contacting research
-article authors to inform of non-compliance, publication of an
-``Expression of Concern'' for the author and their compliance issues,
-sanctions on publication in ASM journals, as well as contacting the
-affiliated research institution and/or funding agencies of the authors
-((10)). We endeavor to evaluate how well the microbiology community is
-using reproducible data practices as we believe that this group of
-researchers will be early adopters of the technologies available as a
-result of both the ASM and NIH policies towards data availability.
+Building on the file drawer effect, data availability (DA) is the
+practice of making raw experimental data, such as nucleic acid
+sequences, and analyses publicly accessible, often via upload in
+maintained databases. These databases are public ``commons'' and help
+widely benefit when they are well maintained and well used. With the
+latest and greatest methodologies available across fields, increasing
+amounts of data are being generated each day, especially in the
+biological sciences ( (3), (4)). Availability of large quantities of
+study data and metadata (data about data) is a necessary resource for
+appropriate use and re-use of data and protocols as well as the
+recreation of analyses. DA is a deeply important component of the
+scientific process in the digital age, and curation of digital records
+is a slowly emerging topic in data science( (\textbf{howe\_2008?})).
+Available data and analyses are the gold standard for recreation of
+studies and replication of their results. Not only is replication a
+worthy goal, but large datasets are often underutilized, and can
+continue to provide benefit and resources to researchers via their
+re-use towards investigating and answering further questions. The
+National Institutes of Health (NIH) has called for grant proposals for
+the creation, enhancement, and maintenance, of new and existing data
+repositories ( (5), (6)).
 
 \subsubsection{Nucleic Acid Sequencing
 Efforts}\label{nucleic-acid-sequencing-efforts}
@@ -360,59 +308,151 @@ Efforts}\label{nucleic-acid-sequencing-efforts}
 Beginning in 1996 with the International Strategy Meeting on Human
 Genome Sequencing in Bermuda, researchers have prioritized the release
 of all human genome sequencing information so that it may ``maximize its
-benefit to society'' ((11)). The meeting participants agreed that
+benefit to society'' ((7)). The meeting participants agreed that
 ``primary sequence data should be rapidly released'', with ``sequence
-assemblies {[}to{]} be released as soon as possible, in some centres,
-assemblies of greater than 1 kb would be released automatically on a
-daily basis'', and that ``finished annotated sequence should be
-submitted immediately to public databases'' ((11)). The ``Bermuda
-Principles,'' as they became known, have been embraced by the large
-scale Human Genome Project (HGP) since 1998. In 2003, another meeting,
-held in Ft. Lauderdale, FL, re-affirmed the 1996 Bermuda Principles,
-expanded upon them to apply more broadly towards sequencing data, and
-called for further support of these practices ((11)). These foundation
-agreements set the stage for both the HGP and the Human Microbiome
-Project (HMP) to generate and share massive amounts of data over the
-course of their studies ((12), (13), (14)).
+assemblies {[}to{]} be released as soon as possible, in some
+centres{[}sic{]}, assemblies of greater than 1 kb would be released
+automatically on a daily basis'', and that ``finished annotated sequence
+should be submitted immediately to public databases'' ((7)). The
+``Bermuda Principles,'' as they became known, have been embraced by the
+large scale Human Genome Project (HGP) since 1998. The HGP endeavored to
+publish the first complete human genome. In 2003, another meeting, held
+in Ft. Lauderdale, FL, re-affirmed the 1996 Bermuda Principles, expanded
+upon them to apply more broadly towards sequencing data, and called for
+further support of these practices ((7)). These foundational agreements
+set the stage for both the HGP and the Human Microbiome Project (HMP) to
+generate and share massive amounts of data over the course of their
+studies ((8), (9), (10)). The goal of the HMP was to sequence all body
+sites to determine the microbes found on and in the human body.
 
-Starting with projects such as the HGP and HMP, nucleic acid sequencing
-efforts have been commonly uploaded and released using public databases.
-There are three major databases worldwide to support sequencing and
-sharing efforts. The National Library of Medicine's (NLM) National
-Center for Biotechnology (NCBI) in the United States, the Research
-Organization of Information Systems' (ROIS) National Institute of
-Genetics (NIG) in Japan, and the European Molecular Biology Lab's (EMBL)
-European Bioinformatics Institue (EBI) in Europe. These three databases
-are part of the International Nucleotide Sequence Database Collaboration
-(INSDC). These large databases make research by comparison possible.
-Genetic lineages of microbes are determined by creating phylogenetic
-trees which compare a new sequence to existing sequences. Phylogenetic
-trees show how closely related a new microbial genetic sequence is
-related to others studied before both in terms of evolution and mutation
-and in structure and function. An important tool for creating
-phylogenies is the NCBI Basic Local Alignment Search Tool (BLAST)
-((\textbf{altschul1990?})). The BLAST algorithm allows users to compare
-a nucleic acid or protein sequence to the NCBI database of over 1TB of
-data to find similar and related sequences. Without the upload of
-sequences to the NCBI database, the use and success of BLAST would not
-be possible, despite the effort required on part of the researcher to
-upload of sequences to one of the INSDC databases.
+Starting with major projects such as the HGP and HMP, nucleic acid
+sequencing efforts have been commonly uploaded and released using public
+databases. This allows for researchers to use and re-use the data from
+the HGP and HMP. There are three major databases worldwide to support
+sequencing and sharing efforts. The National Library of Medicine's (NLM)
+National Center for Biotechnology (NCBI) in the United States, the
+Research Organization of Information Systems' (ROIS) National Institute
+of Genetics (NIG) in Japan, and the European Molecular Biology Lab's
+(EMBL) European Bioinformatics Institue (EBI) in Europe. These three
+databases are part of the International Nucleotide Sequence Database
+Collaboration (INSDC) ((11)) . These large databases make comparative
+research possible. Genetic lineages of microbes are determined by
+creating phylogenetic trees which compare a new sequence to existing
+sequences. Phylogenetic trees show how closely related a new microbial
+genetic sequence is related to others studied before both in terms of
+evolution and mutation and in structure and function. Comparative
+genetics and genomics would not be possible without strong community
+commitment to data availability.
 
-\subsubsection{Examples of Data
-Avalability}\label{examples-of-data-avalability}
+\subsubsection{Current DA Policies}\label{current-da-policies}
 
-A key tenet of the scientific method is the ability to replicate
-scientific findings to ensure that they are not due to error. One way
-that scientific findings can be replicated is by re-completing the same
-analyses by another researcher. This is only possible if the data used
-to complete the original analyses is available for use. The availability
-of datasets also allows new questions to be answered with existing data
-or the combination of multiple datasets, such as the use of the Human
-Microbiome Project's (HMP) sequencing data by researchers to create over
-650 scientific publications ((15)), and the completion of metadata
-studies. Availablity of data contributed to the rapid sequencing of the
+Current data availability guidelines have been informed by a number of
+policies created by funding agencies, peer-review journals, conference
+and special task groups, as well as community interest groups. In 2011,
+after the Future of Research Communication (FoRC) conference in Germany,
+scientists and others came together to establish FORCE11, a community
+interest group which seeks to encourage and promote data availability
+standards ((12)) . Also in 2011, the Genomic Standards Consortium (GSC)
+published a set of standards in \emph{Nature Biotechnology} to promote
+the publication of the ``minimum information about a marker gene
+sequence'' (MIMARKS) or ``minimum information about x sequence'' (MIxS)
+((13)). These standards are checklists usable by data generators and
+uploaders towards inclusion of relevant data with sequence uploads in
+the International Nucleotide Sequence Database Collaboration (INSDC).
+Some checklist items include if the data were published to an INSDC
+database and metadata about the study systems, data collected, and
+authors. An important factor is the ability to link the data to the
+results and to the data generators.
+
+In 2014 the FORCE11 group published the Joint Declaration of Data
+Citation Principles (JDDCP), a document working towards the
+standardization of data citation and its future availability((14)). Some
+of the JDDCPs include crediting the authors of the data, providing data
+with unique identifiers, and the persistence of the available data. The
+Findable, Accessible, Interoperable, and Reuseable (FAIR) data science
+guiding principles that were put forth in 2016 in \emph{Nature
+Scientific Data} urges readers to ``improve the infrastructure
+supporting the reuse of scholarly data'' ((15)). The FAIR principles are
+often cited by NIH in funding calls for strong data science
+practices((5)). In 2021, a \emph{Nature Medicine} publication put forth
+the ``Stregthening the Organization and Reporting of Microbiome
+Studies'' (STORMS) checklist to help authors identify report-worthy
+elements of their data and metadata ( (16)). Some items on the STORMS
+checklist include the sequencing method used in the study, the study
+design, and physical location of the study. Unfortunately, none of these
+DA principles or checklists are enforceable by any agency. The National
+Institutes of Health (NIH) began enforcing the ``Policy for Data
+Management and Sharing'' (NOT-OD-21-013) in January of 2023, requiring
+all NIH funded studies to submit a data management and sharing plan
+(DMS) with their funding applications, and comply with their DMS plan
+after generation and publication of the funded work((17)). A DMS plan
+includes detailed descriptions of data that will be generated in a
+study, related tools, standards, and data preservation plans.
+Non-compliance with NOT-OD-21-013 is identified by funding agencies
+during annual Research Performance Progress Reports (RPPRs), and may
+impact future funding decisions ((17)). We also believe that statements
+of data ``available on request'' are not sufficient to be considered
+available data. One example was published in \emph{Microbiome}, that a
+reader in search of data may email the corresponding author, with
+varying results ((18)).
+
+With the advent of next generation sequencing, microbiology research has
+generated large amounts of sequencing data, and it is common to upload
+sequence data to a public repository as well as to include data in
+research publications. Because of this, we set out to determine rates of
+published raw data in the biological sciences, specifically
+microbiology, by examining the American Society for Microbiology's (ASM)
+library of published primary research journals. We were also interested
+in the relationship between DA and number of citations received by a
+published work.
+
+\subsubsection{American Society for Microbiology Journals
+(ASM)}\label{american-society-for-microbiology-journals-asm}
+
+The American Society for Microbiology(ASM) is the major professional
+body recognized by microbiologists. They have eighteen journals,
+thirteen primary research journals, three review journals, and two
+archive journals. In addition, several journals have been folded into
+others or renamed over time. The ASM family of journals requires that
+authors ``make data fully available, without restriction, except in rare
+circumstances'' ((19)). They have adapted this policy from journals
+\emph{Microbial Genomics} and \emph{PLOS}. In the ASM open data policy
+they describe the use of a ``Data Availability Statement'' which
+includes ``data description, name(s) of the repositories, and digital
+object identifiers (DOIs) or accession numbers'' and encourages
+publishing data on relevant public repositories ((19)). Consequences of
+non-compliance to the ASM open data policy include contacting research
+article authors to inform of non-compliance, publication of an
+``Expression of Concern'' for the author and their compliance issues,
+sanctions on publication in ASM journals, as well as contacting the
+affiliated research institution and/or funding agencies of the authors
+((20)). We endeavor to evaluate how well the microbiology community is
+using reproducible data practices as we believe that this group of
+researchers will be early adopters of the technologies available as a
+result of both the ASM and NIH policies towards data availability.
+
+\subsubsection{Data Avalability Case
+Studies}\label{data-avalability-case-studies}
+
+The availability of datasets also allows new questions to be answered
+with existing data or the combination of multiple datasets, such as the
+use of the Human Microbiome Project's (HMP) sequencing data by
+researchers to create over 650 scientific publications ((21)), and the
+completion of metadata studies, including those efforts participated in
+by these authors ( (22), (23), (24)).
+
+An important tool for creating phylogenies is the NCBI Basic Local
+Alignment Search Tool (BLAST) ((\textbf{altschul1990?})). The BLAST
+algorithm allows users to compare a nucleic acid or protein sequence to
+the NCBI database of over 1TB of data to find similar and related
+sequences. Without the upload of sequences to the NCBI database, the use
+and success of BLAST would not be possible, despite the effort required
+on part of the researcher to upload of sequences to one of the INSDC
+databases.
+
+Availablity of data contributed to the rapid sequencing of the
 SARS-CoV-2 virus during the 2020 pandemic and subsequent expedition of
-vaccine development ((16)).
+vaccine development ((25)).
 
 With microbiologists commonly uploading nucleic acid sequences to public
 databases, the aim of this study was to determine the current state of
@@ -420,9 +460,11 @@ data availability in twelve primary research journals from the ASM
 family of journals. Primary research articles were classified with using
 two machine learning models to answer two questions; ``Does this paper
 contain new sequence data?'', and ``Is the data available?'' Once these
-questions were answered, we moved to analyses to answer further
-questions, ``How does making my data available impact my citation
-metrics over time?''
+questions were answered, we moved to statistical analyses to answer
+these and further questions, such as ``How does making my data available
+impact my citation metrics over time?'' We were interested in citation
+metrics as a concrete metric to examine how making DA benefits
+researchers and as a possible incentive towards making DA.
 
 \subsection{Results}\label{results}
 
@@ -433,189 +475,62 @@ We set out to determine the current state of data availability in twelve
 primary research journals from the ASM family of journals. This
 objective was completed by first acquiring all papers published in the
 journals of interest between 2000 and 2024 using the Crossref database
-and command line tools. We then trained random forest machine learning
-models to differentiate if each paper contained ``New Sequencing Data''
-(NSD) and then if the paper had ``Data Available'' (DA). To avoid
-overfitting the model, we trained each model multiple times, performing
-validations on a subset of data after each iteration. This allowed us to
-have a greater number of papers in the training dataset, as well as to
-have great accuracy and precision within our models. Using our trained
-models, we were able to classify over 150,000 papers from the whole
-dataset to determine if they were NSD or DA. After this, we could
-perform statistical modeling to describe the data, and generate summary
-statistics. We were especially interested in the ways in which NSD and
-DA impact citation metrics.
+and command line tools. We then trained two random forest machine
+learning models to differentiate if each paper 1), contained ``New
+Sequencing Data'' (NSD) and 2) if the paper had ``Data Available'' (DA).
+To avoid overfitting the models, we trained each model multiple times,
+performing validations on a subset of data after each iteration. This
+allowed us to have a greater number of papers in the training dataset,
+as well as to have great accuracy and precision within our models. Using
+our trained models, we were able to classify over 150,000 papers from
+the whole dataset to determine if they were NSD or contained DA. After
+this, we could perform statistical modeling to describe the data, and
+generate summary statistics. We were especially interested in the ways
+in which NSD and DA impact citation metrics.
 
-\subsubsection{ASM Journals}\label{asm-journals-1}
+\subsubsection{ASM Journals}\label{asm-journals}
 
 We used twelve of the ASM primary research journals in this study. Of
 note, several journals had changes to their publication goals during the
 2000-2024 time period. The \emph{Journal of Bacteriology} was the
-primary place to publish new genome announcements until 2013 when ASM
-announced journal \emph{Genome Announcements} as a more permanent place
+primary journal to publish new genome announcements until 2013 when ASM
+announced journal \emph{Genome Announcements} as a more permanent home
 for this type of data. \emph{Genome Announcements} was active from 2013
 until 2018, when it was re-branded to \emph{Microbiology Resource
-Announcements}, which has been active from 2018 until present . These
-two journals appear separately in our analyses as a result of the
-Crossref database. New genome announcements have a high percentage of
+Announcements}, which has been active from 2018 until present. These two
+journals appear separately in our analyses due to the organization of
+the Crossref database. Not all journals are equally likely to contain
+NSD and have sequencing DA as a result of their field of interest.
+Journals publishing new genome announcements have a high percentage of
 NSD papers, and a high percentage of DA within those papers. As a
-result, the \emph{Journal of Bacteriology} has had fewer NSD papers, and
-fewer papers with DA since 2013. Another journal of note is
-\emph{Microbiology Spectrum} and its re-brand. From 2013 until the fall
-of 2021, \emph{Microbiology Spectrum} was a review journal. After this
-point, \emph{Microbiology Spectrum} became a primary research journal
-((17)). Review journals are less likely to publish articles with NSD,
-and to have DA. Several journals, including \emph{Microbiology
-Spectrum}, do not span the entire time period for the study. Journals
-\emph{mBio} (b.2010), \emph{Microbiology Spectrum} (b. 2013, re-brand
-2021), \emph{mSphere} (b. 2016), \emph{mSystems} (b. 2016), and
-\emph{Genome Announcements} (2013-2018). Not all journals are equally
-likely to contain NSD and have sequencing DA as a result of their field
-of interest. Journals \emph{Antimicrobial Agents and Chemotherapy;
-Infection and Immunity;} and the \emph{Journal of Microbiology and
-Biology Education;} are all less likely to contain NSD and have DA than
-the other journals in the dataset.
+result, since the introduction of \emph{Genome Announcements} and
+\emph{Microbiology Resource Announcements}, the \emph{Journal of
+Bacteriology} has had fewer NSD papers, and fewer papers with DA since
+2013. Another journal of note is \emph{Microbiology Spectrum} and its
+re-brand. From 2013 until the fall of 2021, \emph{Microbiology Spectrum}
+was a review journal. After this point, \emph{Microbiology Spectrum}
+became a primary research journal ((26)). Review journals are less
+likely to publish articles with NSD, and to have DA. Several journals,
+including \emph{Microbiology Spectrum}, do not span the entire time
+period for the study. Journals \emph{mBio} (b.2010), \emph{Microbiology
+Spectrum} (b. 2013, re-brand 2021), \emph{mSphere} (b. 2016),
+\emph{mSystems} (b. 2016), and \emph{Genome Announcements} (2013-2018).
+Journals \emph{Antimicrobial Agents and Chemotherapy; Infection and
+Immunity;} and the \emph{Journal of Microbiology and Biology Education;}
+are all less likely to contain NSD and have DA than the other journals
+in the dataset. Therefore, aggregate measures of all journal activity
+together are thought to be less accurate than those depicting each
+journal separately.
 
-\subsubsection{Descriptive Statistics:}\label{descriptive-statistics}
+\subsubsection{Descriptive Statistics}\label{descriptive-statistics}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.5106}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0851}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0851}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0638}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1064}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0532}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0957}}@{}}
-\caption{Summary Statistics of Model Training Dataset}\tabularnewline
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-container.title
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_total
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_fract
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_nsd
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-fract\_nsd
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_da
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-fract\_da
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-container.title
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_total
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_fract
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_nsd
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-fract\_nsd
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_da
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-fract\_da
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Antimicrobial Agents and Chemotherapy & 82 & 7.8469 & 23 & 28.0488 & 10
-& 43.4783 \\
-Applied and Environmental Microbiology & 92 & 8.8038 & 38 & 41.3043 & 28
-& 73.6842 \\
-Genome Announcements & 30 & 2.8708 & 29 & 96.6667 & 29 & 100.0000 \\
-Infection and Immunity & 76 & 7.2727 & 16 & 21.0526 & 9 & 56.2500 \\
-Journal of Bacteriology & 75 & 7.1770 & 25 & 33.3333 & 15 & 60.0000 \\
-Journal of Clinical Microbiology & 77 & 7.3684 & 23 & 29.8701 & 14 &
-60.8696 \\
-Journal of Microbiology \& Biology Education & 60 & 5.7416 & 0 & 0.0000
-& 0 & NaN \\
-Journal of Virology & 87 & 8.3254 & 21 & 24.1379 & 6 & 28.5714 \\
-mBio & 63 & 6.0287 & 17 & 26.9841 & 11 & 64.7059 \\
-Microbiology Resource Announcements & 155 & 14.8325 & 146 & 94.1935 &
-145 & 99.3151 \\
-Microbiology Spectrum & 111 & 10.6220 & 49 & 44.1441 & 38 & 77.5510 \\
-mSphere & 57 & 5.4545 & 25 & 43.8596 & 20 & 80.0000 \\
-mSystems & 80 & 7.6555 & 45 & 56.2500 & 45 & 100.0000 \\
-\end{longtable}
+\pandocbounded{\includegraphics[keepaspectratio]{asm_manuscript_files/figure-pdf/make_data_tables-1.pdf}}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.5106}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0851}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0851}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0638}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1064}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0532}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0957}}@{}}
-\caption{Summary Statstics of All Data}\tabularnewline
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-container.title
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_total
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_fract
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_nsd
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-fract\_nsd
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_da
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-fract\_da
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-container.title
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_total
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_fract
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_nsd
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-fract\_nsd
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-n\_da
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-fract\_da
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Antimicrobial Agents and Chemotherapy & 20297 & 13.1550 & 2765 & 13.6227
-& 897 & 32.4412 \\
-Applied and Environmental Microbiology & 21853 & 14.1635 & 7261 &
-33.2266 & 2546 & 35.0640 \\
-Genome Announcements & 6714 & 4.3515 & 6628 & 98.7191 & 6546 &
-98.7628 \\
-Infection and Immunity & 14490 & 9.3913 & 1287 & 8.8820 & 264 &
-20.5128 \\
-Journal of Bacteriology & 16806 & 10.8924 & 3734 & 22.2183 & 1412 &
-37.8147 \\
-Journal of Clinical Microbiology & 18421 & 11.9391 & 3713 & 20.1563 &
-499 & 13.4393 \\
-Journal of Microbiology \& Biology Education & 1305 & 0.8458 & 4 &
-0.3065 & 1 & 25.0000 \\
-Journal of Virology & 29761 & 19.2889 & 3079 & 10.3458 & 972 &
-31.5687 \\
-mBio & 7705 & 4.9938 & 2283 & 29.6301 & 1473 & 64.5204 \\
-Microbiology Resource Announcements & 5878 & 3.8097 & 5744 & 97.7203 &
-5734 & 99.8259 \\
-Microbiology Spectrum & 6119 & 3.9659 & 2787 & 45.5467 & 2174 &
-78.0050 \\
-mSphere & 2615 & 1.6948 & 971 & 37.1319 & 751 & 77.3429 \\
-mSystems & 2327 & 1.5082 & 1430 & 61.4525 & 1268 & 88.6713 \\
-\end{longtable}
+\pandocbounded{\includegraphics[keepaspectratio]{asm_manuscript_files/figure-pdf/make_data_tables-2.pdf}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{asm_manuscript_files/figure-pdf/make_data_tables-3.pdf}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{asm_manuscript_files/figure-pdf/make_data_tables-4.pdf}}
 
 \paragraph{Whole Dataset}\label{whole-dataset}
 
@@ -945,7 +860,7 @@ On average, more than half of papers with NSD had DA (58.8615\%),
 showing that authors of NSD papers are more often than not, making their
 data publicly available. This is in line with recent NIH policy
 requiring that data be made available using the Data Management and
-Sharing Plan (DMS plan) outlined in the NIH's NOT-OD-21-013 ((8)).
+Sharing Plan (DMS plan) outlined in the NIH's NOT-OD-21-013 ((17)).
 Expectledly, journals \emph{Genome Announcements} and \emph{Microbiology
 Resource Announcements} had the highest rates of DA in NSD papers. These
 journals publish primarily new genomic sequences and are required by ASM
@@ -1009,9 +924,9 @@ cases and how each of these cases were identified for the purpose of
 this study.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4795}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2603}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2603}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4722}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2639}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2639}}@{}}
 \caption{Possible Data Scenarios}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -1098,20 +1013,20 @@ was DA = Yes.
 dataset}\label{creation-of-the-training-data-from-training-dataset}
 
 To perform the computational steps required for these experiments, we
-used the python tool Snakemake ( (18) ), and the University of
+used the python tool Snakemake ( (27) ), and the University of
 Michigan's high performance computing cluster (see acknowledgements).
 Using our selected papers from the training dataset, we downloaded the
 entirety of each paper's source HTML using the command line tool wget.
 This allowed us to use the source HTML multiple times for updated
 analyses without the need to re-query the ASM webservers numerous times.
-Next, we performed cleaning of the HTML using R packages rvest ((19))
-and xml2 ((20)) to get the desired portions of the paper from the HTML
+Next, we performed cleaning of the HTML using R packages rvest ((28))
+and xml2 ((29)) to get the desired portions of the paper from the HTML
 including the abstract, the body of paper, all tables and figures with
 captions, as well as the side panels for all papers, but especially
 those containing the data availability statements in papers published
 after the 2023 change in webpage format (see above). Then we removed
-unnecessary text using R packages tm(text manipulation)((21), (22)) and
-textstem ((23)), as well as converting all text to lowercase, and the
+unnecessary text using R packages tm(text manipulation)((30), (31)) and
+textstem ((32)), as well as converting all text to lowercase, and the
 removal of digits and non-alphabetic characters such as whitespace. To
 have the fewest number of unique words, we lemmatized (sort words by
 grouping inflected or variant forms of the same word) words to trace
@@ -1119,15 +1034,15 @@ them back to their root words and eliminate any possible issues with
 word tense. After this, we created and counted our `tokens', phrases of
 up to 1-3 consecutive words from the text of the paper using R package
 tokeinziers ((\textbf{tokeinziers?})). Towards the goal of the fewest
-meaningful number of words, we used the `Snowball' ((24)) dictionary of
+meaningful number of words, we used the `Snowball' ((33)) dictionary of
 `stop words' to remove non-meaningful words such as articles `a', `an',
 and `the'. We removed the `space' character with an underscore in
 multi-word tokens for ease of processing, and created a count table for
 the tokens in each paper.
 
 Once the tokens in each paper were counted, we transformed the data into
-a sparse matrix format useable by the R package mikropml ((25) ref),
-using R packages caret and dplyr ((26), (27), (28)). Tokens were
+a sparse matrix format useable by the R package mikropml ((34) ref),
+using R packages caret and dplyr ((35), (36), (37)). Tokens were
 filtered to those which appear in greater than one paper. This allows
 comparison between papers by the model. We removed near zero variants
 (tokens with frequency very close to zero) as well as collapsing
@@ -1162,7 +1077,7 @@ Dataset}\label{preparation-of-the-experimental-dataset}
 To fully answer our research questions, we created a larger database
 with N = 155779 papers curated from reference datasets Crossref, NCBI,
 Scopus, and the Web of Science ((\textbf{crossref?}), (\textbf{ncbi?}),
-(\textbf{scopus?}), (29)). These papers span all twelve ASM journals of
+(\textbf{scopus?}), (38)). These papers span all twelve ASM journals of
 interest from the start of 2000 to the end of 2024. Once database was
 curated, we applied the same steps to ready papers for application of
 machine learning models as the model training datasets. See above for
@@ -1189,7 +1104,7 @@ was applied prior to estimating the statistical regression model to
 correct for the nature of time as compared to other variables in the
 dataset. After applying the negative binomial model, we calculated
 ratios of the estimated number of citations per paper over time by DA
-status using R package emmeans ((30)). We also used R package sjPlot to
+status using R package emmeans ((39)). We also used R package sjPlot to
 estimate the 95\% CI for estimated citations over time for each journal
 by DA status ((\textbf{sjPlotref?})).
 
@@ -1223,26 +1138,91 @@ by DA status ((\textbf{sjPlotref?})).
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{0}{1}
-\bibitem[\citeproctext]{ref-langille_available_2018}
-\CSLLeftMargin{1. }%
-\CSLRightInline{\textbf{Langille MGI}, \textbf{Ravel J}, \textbf{Fricke
-WF}. 2018. {``{Available} upon request''}: Not good enough for
-microbiome data! Microbiome \textbf{6}:8.
-doi:\href{https://doi.org/10.1186/s40168-017-0394-z}{10.1186/s40168-017-0394-z}.}
-
 \bibitem[\citeproctext]{ref-congress2024}
-\CSLLeftMargin{2. }%
+\CSLLeftMargin{1. }%
 \CSLRightInline{\href{https://www.congress.gov/crs-product/R47564}{Federal
 {Research} and {Development} ({R}\&{D}) {Funding}: {FY2024}}.
 legislation.}
 
-\bibitem[\citeproctext]{ref-force11}
+\bibitem[\citeproctext]{ref-moniz_filedrawer_2025}
+\CSLLeftMargin{2. }%
+\CSLRightInline{\textbf{Moniz P}, \textbf{Druckman JN}, \textbf{Freese
+J}. 2025. The file drawer problem in social science survey experiments.
+Proceedings of the National Academy of Sciences
+\textbf{122}:e2426937122.
+doi:\href{https://doi.org/10.1073/pnas.2426937122}{10.1073/pnas.2426937122}.}
+
+\bibitem[\citeproctext]{ref-li_bigdata_2014}
 \CSLLeftMargin{3. }%
+\CSLRightInline{\textbf{Li Y}, \textbf{Chen L}. 2014. Big Biological
+Data: Challenges and Opportunities. Genomics, Proteomics \&
+Bioinformatics \textbf{12}:187--189.
+doi:\href{https://doi.org/10.1016/j.gpb.2014.10.001}{10.1016/j.gpb.2014.10.001}.}
+
+\bibitem[\citeproctext]{ref-pal_bigdata_2020}
+\CSLLeftMargin{4. }%
+\CSLRightInline{\textbf{Pal S}, \textbf{Mondal S}, \textbf{Das G},
+\textbf{Khatua S}, \textbf{Ghosh Z}. 2020. Big data in biology: The hope
+and present-day challenges in it. Gene Reports \textbf{21}:100869.
+doi:\href{https://doi.org/10.1016/j.genrep.2020.100869}{10.1016/j.genrep.2020.100869}.}
+
+\bibitem[\citeproctext]{ref-not_data_reuse}
+\CSLLeftMargin{5. }%
+\CSLRightInline{\href{https://grants.nih.gov/grants/guide/notice-files/NOT-OD-24-096.html}{Expired
+NOT-OD-24-096: Notice of special interest (NOSI): Promoting data reuse
+for health research}.}
+
+\bibitem[\citeproctext]{ref-par-23-2}
+\CSLLeftMargin{6. }%
+\CSLRightInline{\href{https://grants.nih.gov/grants/guide/pa-files/PAR-23-236.html}{PAR-23-236:
+Early-stage biomedical data repositories and knowledgebases (R24
+clinical trial not allowed)}.}
+
+\bibitem[\citeproctext]{ref-maxsonjones2018}
+\CSLLeftMargin{7. }%
+\CSLRightInline{\textbf{Maxson Jones K}, \textbf{Ankeny RA},
+\textbf{Cook-Deegan R}. 2018. The Bermuda Triangle: The Pragmatics,
+Policies, and Principles for Data Sharing in the History of the Human
+Genome Project. Journal of the History of Biology \textbf{51}:693--805.
+doi:\href{https://doi.org/10.1007/s10739-018-9538-7}{10.1007/s10739-018-9538-7}.}
+
+\bibitem[\citeproctext]{ref-proctor_integrative_2019}
+\CSLLeftMargin{8. }%
+\CSLRightInline{\textbf{Proctor LM}, \textbf{Creasy HH},
+\textbf{Fettweis JM}, \textbf{Lloyd-Price J}, \textbf{Mahurkar A},
+\textbf{Zhou W}, \textbf{Buck GA}, \textbf{Snyder MP}, \textbf{Strauss
+JF}, \textbf{Weinstock GM}, \textbf{White O}, \textbf{Huttenhower C},
+\textbf{The Integrative HMP (iHMP) Research Network Consortium}. 2019.
+The {Integrative} {Human} {Microbiome} {Project}. Nature
+\textbf{569}:641--648.
+doi:\href{https://doi.org/10.1038/s41586-019-1238-8}{10.1038/s41586-019-1238-8}.}
+
+\bibitem[\citeproctext]{ref-gevers_bioinformatics_2012}
+\CSLLeftMargin{9. }%
+\CSLRightInline{\textbf{Gevers D}, \textbf{Pop M}, \textbf{Schloss PD},
+\textbf{Huttenhower C}. 2012. Bioinformatics for the {Human}
+{Microbiome} {Project}. PLOS Computational Biology \textbf{8}:e1002779.
+doi:\href{https://doi.org/10.1371/journal.pcbi.1002779}{10.1371/journal.pcbi.1002779}.}
+
+\bibitem[\citeproctext]{ref-group_evaluation_2012}
+\CSLLeftMargin{10. }%
+\CSLRightInline{\textbf{Group JCHMPDGW}. 2012. Evaluation of {16S}
+{rDNA}-{Based} {Community} {Profiling} for {Human} {Microbiome}
+{Research}. PLOS ONE \textbf{7}:e39315.
+doi:\href{https://doi.org/10.1371/journal.pone.0039315}{10.1371/journal.pone.0039315}.}
+
+\bibitem[\citeproctext]{ref-indsc}
+\CSLLeftMargin{11. }%
+\CSLRightInline{\href{https://www.insdc.org/}{International nucleotide
+sequence database collaboration}.}
+
+\bibitem[\citeproctext]{ref-force11}
+\CSLLeftMargin{12. }%
 \CSLRightInline{\href{https://force11.org/info/about-force11/}{About
 {FORCE11} -- {FORCE11}}.}
 
 \bibitem[\citeproctext]{ref-yilmaz_minimum_2011}
-\CSLLeftMargin{4. }%
+\CSLLeftMargin{13. }%
 \CSLRightInline{\textbf{Yilmaz P}, \textbf{Field D}, \textbf{Knight R},
 \textbf{Cole JR}, \textbf{Amaral-Zettler L}, \textbf{Gilbert JA},
 \textbf{Karsch-Mizrachi I}, \textbf{Johnston A}, \textbf{Cochrane G},
@@ -1279,7 +1259,7 @@ Nature Biotechnology \textbf{29}:415--420.
 doi:\href{https://doi.org/10.1038/nbt.1823}{10.1038/nbt.1823}.}
 
 \bibitem[\citeproctext]{ref-altman_2015}
-\CSLLeftMargin{5. }%
+\CSLLeftMargin{14. }%
 \CSLRightInline{\textbf{Altman Director of Research and Head/Scientist,
 Micah}, \textbf{Borgman Professor and Presidential Chair, Christine},
 \textbf{Crosas Director of Data Science M}, \textbf{Matone Co-Director
@@ -1289,7 +1269,7 @@ Bulletin of the Association for Information Science and Technology
 doi:\href{https://doi.org/10.1002/bult.2015.1720410313}{10.1002/bult.2015.1720410313}.}
 
 \bibitem[\citeproctext]{ref-wilkinson_fair_2016}
-\CSLLeftMargin{6. }%
+\CSLLeftMargin{15. }%
 \CSLRightInline{\textbf{Wilkinson MD}, \textbf{Dumontier M},
 \textbf{Aalbersberg IjJ}, \textbf{Appleton G}, \textbf{Axton M},
 \textbf{Baak A}, \textbf{Blomberg N}, \textbf{Boiten J-W}, \textbf{Silva
@@ -1312,7 +1292,7 @@ Data \textbf{3}:160018.
 doi:\href{https://doi.org/10.1038/sdata.2016.18}{10.1038/sdata.2016.18}.}
 
 \bibitem[\citeproctext]{ref-mirzayi_reporting_2021}
-\CSLLeftMargin{7. }%
+\CSLLeftMargin{16. }%
 \CSLRightInline{\textbf{Mirzayi C}, \textbf{Renson A}, \textbf{Zohra F},
 \textbf{Elsafoury S}, \textbf{Geistlinger L}, \textbf{Kasselman LJ},
 \textbf{Eckenrode K}, \textbf{Wijgert J van de}, \textbf{Loughman A},
@@ -1351,74 +1331,149 @@ research: The {STORMS} checklist. Nature Medicine
 doi:\href{https://doi.org/10.1038/s41591-021-01552-x}{10.1038/s41591-021-01552-x}.}
 
 \bibitem[\citeproctext]{ref-NIH_not-od-21-013_dms}
-\CSLLeftMargin{8. }%
+\CSLLeftMargin{17. }%
 \CSLRightInline{\href{https://grants.nih.gov/grants/guide/notice-files/NOT-OD-21-013.html}{{NOT}-{OD}-21-013:
 {Final} {NIH} {Policy} for {Data} {Management} and {Sharing}}.}
 
+\bibitem[\citeproctext]{ref-langille_available_2018}
+\CSLLeftMargin{18. }%
+\CSLRightInline{\textbf{Langille MGI}, \textbf{Ravel J}, \textbf{Fricke
+WF}. 2018. {``{Available} upon request''}: Not good enough for
+microbiome data! Microbiome \textbf{6}:8.
+doi:\href{https://doi.org/10.1186/s40168-017-0394-z}{10.1186/s40168-017-0394-z}.}
+
 \bibitem[\citeproctext]{ref-Asm_opendata}
-\CSLLeftMargin{9. }%
+\CSLLeftMargin{19. }%
 \CSLRightInline{\href{https://journals.asm.org/open-data-policy}{Open
 {Data} {Policy}}. ASM Journals.}
 
 \bibitem[\citeproctext]{ref-asm_ethics_2025}
-\CSLLeftMargin{10. }%
+\CSLLeftMargin{20. }%
 \CSLRightInline{\href{https://journals.asm.org/publishing-ethics-procedures}{Publishing
 {Ethics} {Policies} and {Procedures}}. ASM Journals.}
 
-\bibitem[\citeproctext]{ref-maxsonjones2018}
-\CSLLeftMargin{11. }%
-\CSLRightInline{\textbf{Maxson Jones K}, \textbf{Ankeny RA},
-\textbf{Cook-Deegan R}. 2018. The Bermuda Triangle: The Pragmatics,
-Policies, and Principles for Data Sharing in the History of the Human
-Genome Project. Journal of the History of Biology \textbf{51}:693--805.
-doi:\href{https://doi.org/10.1007/s10739-018-9538-7}{10.1007/s10739-018-9538-7}.}
-
-\bibitem[\citeproctext]{ref-proctor_integrative_2019}
-\CSLLeftMargin{12. }%
-\CSLRightInline{\textbf{Proctor LM}, \textbf{Creasy HH},
-\textbf{Fettweis JM}, \textbf{Lloyd-Price J}, \textbf{Mahurkar A},
-\textbf{Zhou W}, \textbf{Buck GA}, \textbf{Snyder MP}, \textbf{Strauss
-JF}, \textbf{Weinstock GM}, \textbf{White O}, \textbf{Huttenhower C},
-\textbf{The Integrative HMP (iHMP) Research Network Consortium}. 2019.
-The {Integrative} {Human} {Microbiome} {Project}. Nature
-\textbf{569}:641--648.
-doi:\href{https://doi.org/10.1038/s41586-019-1238-8}{10.1038/s41586-019-1238-8}.}
-
-\bibitem[\citeproctext]{ref-gevers_bioinformatics_2012}
-\CSLLeftMargin{13. }%
-\CSLRightInline{\textbf{Gevers D}, \textbf{Pop M}, \textbf{Schloss PD},
-\textbf{Huttenhower C}. 2012. Bioinformatics for the {Human}
-{Microbiome} {Project}. PLOS Computational Biology \textbf{8}:e1002779.
-doi:\href{https://doi.org/10.1371/journal.pcbi.1002779}{10.1371/journal.pcbi.1002779}.}
-
-\bibitem[\citeproctext]{ref-group_evaluation_2012}
-\CSLLeftMargin{14. }%
-\CSLRightInline{\textbf{Group JCHMPDGW}. 2012. Evaluation of {16S}
-{rDNA}-{Based} {Community} {Profiling} for {Human} {Microbiome}
-{Research}. PLOS ONE \textbf{7}:e39315.
-doi:\href{https://doi.org/10.1371/journal.pone.0039315}{10.1371/journal.pone.0039315}.}
-
 \bibitem[\citeproctext]{ref-HMP_2025}
-\CSLLeftMargin{15. }%
+\CSLLeftMargin{21. }%
 \CSLRightInline{\href{https://commonfund.nih.gov/hmp}{Human {Microbiome}
 {Project} ({HMP}) {\textbar} {NIH} {Common} {Fund}}.}
 
+\bibitem[\citeproctext]{ref-ding_dynamics_2014}
+\CSLLeftMargin{22. }%
+\CSLRightInline{\textbf{Ding T}, \textbf{Schloss PD}. 2014. Dynamics and
+associations of microbial community types across the human body. Nature
+\textbf{509}:357--360.
+doi:\href{https://doi.org/10.1038/nature13178}{10.1038/nature13178}.}
+
+\bibitem[\citeproctext]{ref-abubucker_metabolic_2012}
+\CSLLeftMargin{23. }%
+\CSLRightInline{\textbf{Abubucker S}, \textbf{Segata N}, \textbf{Goll
+J}, \textbf{Schubert AM}, \textbf{Izard J}, \textbf{Cantarel BL},
+\textbf{Rodriguez-Mueller B}, \textbf{Zucker J}, \textbf{Thiagarajan M},
+\textbf{Henrissat B}, \textbf{White O}, \textbf{Kelley ST},
+\textbf{Methé B}, \textbf{Schloss PD}, \textbf{Gevers D},
+\textbf{Mitreva M}, \textbf{Huttenhower C}. 2012. Metabolic
+{Reconstruction} for {Metagenomic} {Data} and {Its} {Application} to the
+{Human} {Microbiome}. PLOS Computational Biology \textbf{8}:e1002358.
+doi:\href{https://doi.org/10.1371/journal.pcbi.1002358}{10.1371/journal.pcbi.1002358}.}
+
+\bibitem[\citeproctext]{ref-huttenhower_structure_2012}
+\CSLLeftMargin{24. }%
+\CSLRightInline{\textbf{Huttenhower C}, \textbf{Gevers D},
+\textbf{Knight R}, \textbf{Abubucker S}, \textbf{Badger JH},
+\textbf{Chinwalla AT}, \textbf{Creasy HH}, \textbf{Earl AM},
+\textbf{FitzGerald MG}, \textbf{Fulton RS}, \textbf{Giglio MG},
+\textbf{Hallsworth-Pepin K}, \textbf{Lobos EA}, \textbf{Madupu R},
+\textbf{Magrini V}, \textbf{Martin JC}, \textbf{Mitreva M},
+\textbf{Muzny DM}, \textbf{Sodergren EJ}, \textbf{Versalovic J},
+\textbf{Wollam AM}, \textbf{Worley KC}, \textbf{Wortman JR},
+\textbf{Young SK}, \textbf{Zeng Q}, \textbf{Aagaard KM}, \textbf{Abolude
+OO}, \textbf{Allen-Vercoe E}, \textbf{Alm EJ}, \textbf{Alvarado L},
+\textbf{Andersen GL}, \textbf{Anderson S}, \textbf{Appelbaum E},
+\textbf{Arachchi HM}, \textbf{Armitage G}, \textbf{Arze CA},
+\textbf{Ayvaz T}, \textbf{Baker CC}, \textbf{Begg L}, \textbf{Belachew
+T}, \textbf{Bhonagiri V}, \textbf{Bihan M}, \textbf{Blaser MJ},
+\textbf{Bloom T}, \textbf{Bonazzi V}, \textbf{Paul Brooks J},
+\textbf{Buck GA}, \textbf{Buhay CJ}, \textbf{Busam DA}, \textbf{Campbell
+JL}, \textbf{Canon SR}, \textbf{Cantarel BL}, \textbf{Chain PSG},
+\textbf{Chen I-MA}, \textbf{Chen L}, \textbf{Chhibba S}, \textbf{Chu K},
+\textbf{Ciulla DM}, \textbf{Clemente JC}, \textbf{Clifton SW},
+\textbf{Conlan S}, \textbf{Crabtree J}, \textbf{Cutting MA},
+\textbf{Davidovics NJ}, \textbf{Davis CC}, \textbf{DeSantis TZ},
+\textbf{Deal C}, \textbf{Delehaunty KD}, \textbf{Dewhirst FE},
+\textbf{Deych E}, \textbf{Ding Y}, \textbf{Dooling DJ}, \textbf{Dugan
+SP}, \textbf{Michael Dunne W}, \textbf{Scott Durkin A}, \textbf{Edgar
+RC}, \textbf{Erlich RL}, \textbf{Farmer CN}, \textbf{Farrell RM},
+\textbf{Faust K}, \textbf{Feldgarden M}, \textbf{Felix VM},
+\textbf{Fisher S}, \textbf{Fodor AA}, \textbf{Forney LJ}, \textbf{Foster
+L}, \textbf{Di Francesco V}, \textbf{Friedman J}, \textbf{Friedrich DC},
+\textbf{Fronick CC}, \textbf{Fulton LL}, \textbf{Gao H}, \textbf{Garcia
+N}, \textbf{Giannoukos G}, \textbf{Giblin C}, \textbf{Giovanni MY},
+\textbf{Goldberg JM}, \textbf{Goll J}, \textbf{Gonzalez A},
+\textbf{Griggs A}, \textbf{Gujja S}, \textbf{Kinder Haake S},
+\textbf{Haas BJ}, \textbf{Hamilton HA}, \textbf{Harris EL},
+\textbf{Hepburn TA}, \textbf{Herter B}, \textbf{Hoffmann DE},
+\textbf{Holder ME}, \textbf{Howarth C}, \textbf{Huang KH}, \textbf{Huse
+SM}, \textbf{Izard J}, \textbf{Jansson JK}, \textbf{Jiang H},
+\textbf{Jordan C}, \textbf{Joshi V}, \textbf{Katancik JA},
+\textbf{Keitel WA}, \textbf{Kelley ST}, \textbf{Kells C}, \textbf{King
+NB}, \textbf{Knights D}, \textbf{Kong HH}, \textbf{Koren O},
+\textbf{Koren S}, \textbf{Kota KC}, \textbf{Kovar CL}, \textbf{Kyrpides
+NC}, \textbf{La Rosa PS}, \textbf{Lee SL}, \textbf{Lemon KP},
+\textbf{Lennon N}, \textbf{Lewis CM}, \textbf{Lewis L}, \textbf{Ley RE},
+\textbf{Li K}, \textbf{Liolios K}, \textbf{Liu B}, \textbf{Liu Y},
+\textbf{Lo C-C}, \textbf{Lozupone CA}, \textbf{Dwayne Lunsford R},
+\textbf{Madden T}, \textbf{Mahurkar AA}, \textbf{Mannon PJ},
+\textbf{Mardis ER}, \textbf{Markowitz VM}, \textbf{Mavromatis K},
+\textbf{McCorrison JM}, \textbf{McDonald D}, \textbf{McEwen J},
+\textbf{McGuire AL}, \textbf{McInnes P}, \textbf{Mehta T},
+\textbf{Mihindukulasuriya KA}, \textbf{Miller JR}, \textbf{Minx PJ},
+\textbf{Newsham I}, \textbf{Nusbaum C}, \textbf{O'Laughlin M},
+\textbf{Orvis J}, \textbf{Pagani I}, \textbf{Palaniappan K},
+\textbf{Patel SM}, \textbf{Pearson M}, \textbf{Peterson J},
+\textbf{Podar M}, \textbf{Pohl C}, \textbf{Pollard KS}, \textbf{Pop M},
+\textbf{Priest ME}, \textbf{Proctor LM}, \textbf{Qin X}, \textbf{Raes
+J}, \textbf{Ravel J}, \textbf{Reid JG}, \textbf{Rho M}, \textbf{Rhodes
+R}, \textbf{Riehle KP}, \textbf{Rivera MC}, \textbf{Rodriguez-Mueller
+B}, \textbf{Rogers Y-H}, \textbf{Ross MC}, \textbf{Russ C},
+\textbf{Sanka RK}, \textbf{Sankar P}, \textbf{Fah Sathirapongsasuti J},
+\textbf{Schloss JA}, \textbf{Schloss PD}, \textbf{Schmidt TM},
+\textbf{Scholz M}, \textbf{Schriml L}, \textbf{Schubert AM},
+\textbf{Segata N}, \textbf{Segre JA}, \textbf{Shannon WD}, \textbf{Sharp
+RR}, \textbf{Sharpton TJ}, \textbf{Shenoy N}, \textbf{Sheth NU},
+\textbf{Simone GA}, \textbf{Singh I}, \textbf{Smillie CS}, \textbf{Sobel
+JD}, \textbf{Sommer DD}, \textbf{Spicer P}, \textbf{Sutton GG},
+\textbf{Sykes SM}, \textbf{Tabbaa DG}, \textbf{Thiagarajan M},
+\textbf{Tomlinson CM}, \textbf{Torralba M}, \textbf{Treangen TJ},
+\textbf{Truty RM}, \textbf{Vishnivetskaya TA}, \textbf{Walker J},
+\textbf{Wang L}, \textbf{Wang Z}, \textbf{Ward DV}, \textbf{Warren W},
+\textbf{Watson MA}, \textbf{Wellington C}, \textbf{Wetterstrand KA},
+\textbf{White JR}, \textbf{Wilczek-Boney K}, \textbf{Wu Y},
+\textbf{Wylie KM}, \textbf{Wylie T}, \textbf{Yandava C}, \textbf{Ye L},
+\textbf{Ye Y}, \textbf{Yooseph S}, \textbf{Youmans BP}, \textbf{Zhang
+L}, \textbf{Zhou Y}, \textbf{Zhu Y}, \textbf{Zoloth L}, \textbf{Zucker
+JD}, \textbf{Birren BW}, \textbf{Gibbs RA}, \textbf{Highlander SK},
+\textbf{Methé BA}, \textbf{Nelson KE}, \textbf{Petrosino JF},
+\textbf{Weinstock GM}, \textbf{Wilson RK}, \textbf{White O}, \textbf{The
+Human Microbiome Project Consortium}. 2012. Structure, function and
+diversity of the healthy human microbiome. Nature \textbf{486}:207--214.
+doi:\href{https://doi.org/10.1038/nature11234}{10.1038/nature11234}.}
+
 \bibitem[\citeproctext]{ref-maxmen_2021}
-\CSLLeftMargin{16. }%
+\CSLLeftMargin{25. }%
 \CSLRightInline{\textbf{Maxmen A}. 2021. One million coronavirus
 sequences: popular genome site hits mega milestone. Nature
 \textbf{593}:21--21.
 doi:\href{https://doi.org/10.1038/d41586-021-01069-w}{10.1038/d41586-021-01069-w}.}
 
 \bibitem[\citeproctext]{ref-asm_relaunch_2021}
-\CSLLeftMargin{17. }%
+\CSLLeftMargin{26. }%
 \CSLRightInline{\textbf{Cuomo CA}. 2021. The {Relaunch} of
 {Microbiology} {Spectrum}. Microbiology Spectrum
 \textbf{9}:10.1128/spectrum.00396--21.
 doi:\href{https://doi.org/10.1128/spectrum.00396-21}{10.1128/spectrum.00396-21}.}
 
 \bibitem[\citeproctext]{ref-muxf6lder_snakemake}
-\CSLLeftMargin{18. }%
+\CSLLeftMargin{27. }%
 \CSLRightInline{\textbf{Mölder F}, \textbf{Jablonski KP},
 \textbf{Letcher B}, \textbf{Hall MB}, \textbf{Tomkins-Tinch CH},
 \textbf{Sochat V}, \textbf{Forster J}, \textbf{Lee S}, \textbf{Twardziok
@@ -1428,42 +1483,42 @@ data analysis with Snakemake.
 doi:\href{https://doi.org/10.12688/f1000research.29032.2}{10.12688/f1000research.29032.2}.}
 
 \bibitem[\citeproctext]{ref-rvest}
-\CSLLeftMargin{19. }%
+\CSLLeftMargin{28. }%
 \CSLRightInline{\textbf{Wickham H}. 2025.
 \href{https://CRAN.R-project.org/package=rvest}{Rvest: Easily harvest
 (scrape) web pages}.}
 
 \bibitem[\citeproctext]{ref-xml2}
-\CSLLeftMargin{20. }%
+\CSLLeftMargin{29. }%
 \CSLRightInline{\textbf{Wickham H}, \textbf{Hester J}, \textbf{Ooms J}.
 2025. \href{https://CRAN.R-project.org/package=xml2}{xml2: Parse XML}.}
 
 \bibitem[\citeproctext]{ref-tm_article}
-\CSLLeftMargin{21. }%
+\CSLLeftMargin{30. }%
 \CSLRightInline{\textbf{Feinerer I}, \textbf{Hornik K}, \textbf{Meyer
 D}. 2008. Text mining infrastructure in r. Journal of Statistical
 Software \textbf{25}:1--54.
 doi:\href{https://doi.org/10.18637/jss.v025.i05}{10.18637/jss.v025.i05}.}
 
 \bibitem[\citeproctext]{ref-tm_manual}
-\CSLLeftMargin{22. }%
+\CSLLeftMargin{31. }%
 \CSLRightInline{\textbf{Feinerer I}, \textbf{Hornik K}. 2025.
 \href{https://CRAN.R-project.org/package=tm}{Tm: Text mining package}.}
 
 \bibitem[\citeproctext]{ref-textstem}
-\CSLLeftMargin{23. }%
+\CSLLeftMargin{32. }%
 \CSLRightInline{\textbf{Rinker TW}. 2018.
 \href{http://github.com/trinker/textstem}{{textstem}: Tools for stemming
 and lemmatizing text}. Buffalo, New York.}
 
 \bibitem[\citeproctext]{ref-stopwords}
-\CSLLeftMargin{24. }%
+\CSLLeftMargin{33. }%
 \CSLRightInline{\textbf{Benoit K}, \textbf{Muhr D}, \textbf{Watanabe K}.
 2021. \href{https://CRAN.R-project.org/package=stopwords}{Stopwords:
 Multilingual stopword lists}.}
 
 \bibitem[\citeproctext]{ref-mikropml}
-\CSLLeftMargin{25. }%
+\CSLLeftMargin{34. }%
 \CSLRightInline{\textbf{Topçuoğlu BD}, \textbf{Lapp Z}, \textbf{Sovacool
 KL}, \textbf{Snitkin E}, \textbf{Wiens J}, \textbf{Schloss PD}. 2021.
 {mikropml}: User-friendly r package for supervised machine learning
@@ -1471,21 +1526,21 @@ pipelines. Journal of Open Source Software \textbf{6}:3073.
 doi:\href{https://doi.org/10.21105/joss.03073}{10.21105/joss.03073}.}
 
 \bibitem[\citeproctext]{ref-caret}
-\CSLLeftMargin{26. }%
+\CSLLeftMargin{35. }%
 \CSLRightInline{\textbf{Kuhn}, \textbf{Max}. 2008. Building predictive
 models in r using the caret package. Journal of Statistical Software
 \textbf{28}:1--26.
 doi:\href{https://doi.org/10.18637/jss.v028.i05}{10.18637/jss.v028.i05}.}
 
 \bibitem[\citeproctext]{ref-dplyr}
-\CSLLeftMargin{27. }%
+\CSLLeftMargin{36. }%
 \CSLRightInline{\textbf{Wickham H}, \textbf{François R}, \textbf{Henry
 L}, \textbf{Müller K}, \textbf{Vaughan D}. 2025.
 \href{https://dplyr.tidyverse.org}{Dplyr: A grammar of data
 manipulation}.}
 
 \bibitem[\citeproctext]{ref-tidyverse}
-\CSLLeftMargin{28. }%
+\CSLLeftMargin{37. }%
 \CSLRightInline{\textbf{Wickham H}, \textbf{Averick M}, \textbf{Bryan
 J}, \textbf{Chang W}, \textbf{McGowan LD}, \textbf{François R},
 \textbf{Grolemund G}, \textbf{Hayes A}, \textbf{Henry L}, \textbf{Hester
@@ -1498,13 +1553,13 @@ D}, \textbf{Seidel DP}, \textbf{Spinu V}, \textbf{Takahashi K},
 doi:\href{https://doi.org/10.21105/joss.01686}{10.21105/joss.01686}.}
 
 \bibitem[\citeproctext]{ref-wos}
-\CSLLeftMargin{29. }%
+\CSLLeftMargin{38. }%
 \CSLRightInline{Accessed 2025.
 \href{https://www.webofscience.com/wos/author/author-search}{Web of
 science}. Internet Database, Clarivate.}
 
 \bibitem[\citeproctext]{ref-emmeans}
-\CSLLeftMargin{30. }%
+\CSLLeftMargin{39. }%
 \CSLRightInline{\textbf{Lenth RV}. 2025.
 \href{https://CRAN.R-project.org/package=emmeans}{Emmeans: Estimated
 marginal means, aka least-squares means}.}
