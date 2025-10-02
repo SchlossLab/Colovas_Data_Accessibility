@@ -219,7 +219,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Oct 1, 2025}
+\date{Oct 2, 2025}
 \begin{document}
 \maketitle
 
@@ -620,24 +620,31 @@ fract\_da = c(32.4412296564195, 35.0640407657348, 98.7628243814122,
 
 Using the Crossref database of DOIs, with validation from the Web of
 Science, NCBI, and Scopus DOI databases, we downloaded N = 154720 unique
-records of papers published in ASM journals between 2000 and 2024. After
-downloading the HTML content of each paper, we cleaned the HTML content
-and readied it to apply our machine learning models to classify each
-paper. Overall, 26.9429\% of papers had NSD, and 58.8615\% of papers
-with NSD, had DA. See Figure 2XX for percentages of NSD and DA for each
-journal. The journal with the highest rate of NSD was Genome
-Announcements at 98.7191\%, and the lowest was Journal of Microbiology
-\& Biology Education at 0.3065\%. The journal with the highest rate of
-DA was *Microbiology Resource Announcements* at 99.8259\%, and the
-lowest was *Journal of Clinical Microbiology* at 13.4393\%. This was
-expected as *Genome Announcements* publishes mainly new genomic sequence
-data and makes the data available. On average, papers in the dataset had
-a median of 25 citations/article. This number varies by journal, see
-table XXXX for data by journal. The journal with the highest median rate
-of citations/article was *Applied and Environmental Microbiology* at
-38\%, and the lowest was *Microbiology Resource Announcements* at 1\%.
-The journals in the dataset span years 2000-2024. See table XXXX for the
-distribution of papers per year in the dataset.
+records of papers published in ASM journals between January 1st, 2000
+and December 31st, 2024. These papers came from journals \emph{Applied
+and Envrionmental Microbiology; Antimicrobial Agents and Chemotherapy;
+Infection and Immunity; Journal of Clinical Biology; Journal of
+Virology; Journal of Bacteriology; Journal of Microbiology and Biology
+Education; Microbiology Resource Announcments} (formerly known as
+\emph{Genome Announcements}); \emph{mSystems; mSphere; mBio; and
+Microbiology Spectrum.} After downloading the HTML content of each
+paper, we cleaned the HTML content and readied it to apply our machine
+learning models to classify each paper. Overall, 26.9429\% of papers had
+NSD, and 58.8615\% of papers with NSD, had DA. See Figure 2XX for
+percentages of NSD and DA for each journal. The journal with the highest
+rate of NSD was Genome Announcements at 98.7191\%, and the lowest was
+Journal of Microbiology \& Biology Education at 0.3065\%. The journal
+with the highest rate of DA was *Microbiology Resource Announcements* at
+99.8259\%, and the lowest was *Journal of Clinical Microbiology* at
+13.4393\%. This was expected as *Genome Announcements* publishes mainly
+new genomic sequence data and makes the data available. On average,
+papers in the dataset had a median of 25 citations/article. This number
+varies by journal, see table XXXX for data by journal. The journal with
+the highest median rate of citations/article was *Applied and
+Environmental Microbiology* at 38\%, and the lowest was *Microbiology
+Resource Announcements* at 1\%. The journals in the dataset span years
+2000-2024. See table XXXX for the distribution of papers per year in the
+dataset.
 
 \paragraph{Training Dataset}\label{training-dataset}
 
@@ -769,173 +776,73 @@ Balanced\_AccuracySD & 0.0165 & 0.0199 \\
 \pandocbounded{\includegraphics[keepaspectratio]{../Figures/ml_results/groundtruth/rf/hp_perf.rf.new_seq_data.png}}
 \pandocbounded{\includegraphics[keepaspectratio]{../Figures/ml_results/groundtruth/rf/hp_perf.rf.data_availability.png}}
 
-Two random forest models were trained to predict if published scientific
-papers ``contained new sequence data'' (NSD), and if the paper ``had
-data available'' (DA), one model for each variable. Other models such as
-generalized linear regression and boosted trees were explored, but were
-ultimately discarded in favor of the random forest model (data not
-shown). Random forest models were chosen to aid in this classification
-problem as the creation of many decision trees helps to improve accuracy
-and precision. This type of model has one hyperparameter, `mtry' or the
-number of predictors to be sampled at each decision. During iterative
-model training, a subset of papers were validated after each completed
-training and deployment of each model. Papers from each journal, and
-extras from certain journals were hand-validated against model
-predictions to generate confusion matrices. Confusion matrices for the
-final version of each trained model are available in YYYY
-table(supplement?). The NSD model used an mtry value of 200 had an Area
-Under the Curve(AUC) of 0.9645 and an accuracy of 0.9036. The
-sensitivity of the NSD model was 0.935, and the specificity of the model
-was 0.8631. The DA model used an mtry value of 300 had an AUC of 0.9878
-and an accuracy of 0.9464. The sensitivity of the DA model was 0.961,
-and the specificity of the model was 0.9199 (See table 4 for more
-information on trained machine learning models). This shows that the
-models fit the data well, and can provide classifications on new data
-with an expected error rate of less than 10\%. We deemed this as
+Two random forest (rf) models were trained to predict if published
+scientific papers ``contained new sequence data'' (NSD), and if the
+paper ``had data available'' (DA), one model for each variable. Other
+models such as generalized linear regression (GLM) and boosted trees
+(XGBoost) were explored, but were ultimately discarded in favor of the
+random forest model (data not shown). Random forest models were chosen
+to aid in this classification problem as the creation of many decision
+trees helps to improve accuracy and precision. This type of model has
+one hyperparameter, `mtry' or the number of predictors to be sampled at
+each decision. During iterative model training, a subset of papers were
+validated after each completed training and deployment of each model.
+Papers from each journal, and extras from certain journals were
+hand-validated against model predictions to generate confusion matrices.
+Confusion matrices for the final version of each trained model are
+available in YYYY table(supplement?). To evaluate the fit of the model,
+we used the Area Under the Receiver Operator Curve (AUROC) which
+indicates how well the model classifies the data. An AUROC of 0.5 is a
+random 50/50 guess, and an AURCO of 1.0 indicates that the model always
+classifies a new item correctly. The NSD model used an mtry value of 200
+had an Area Under the Curve(AUC) of 0.9645 and an accuracy of 0.9036.
+The sensitivity of the NSD model was 0.935, and the specificity of the
+model was 0.8631. The DA model used an mtry value of 300 had an AUC of
+0.9878 and an accuracy of 0.9464. The sensitivity of the DA model was
+0.961, and the specificity of the model was 0.9199 (See Table 4XX for
+more information on trained machine learning models). This shows that
+the models fit the data well, and can provide classifications on new
+data with an expected error rate of less than 10\%. We deemed this as
 acceptable, accounting for variability in papers and data, as well as
 the large size of the dataset on which we deployed the models.
 
 \subsubsection{Regression Model using Negative Binomial
 Models}\label{regression-model-using-negative-binomial-models}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.7422}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1016}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1562}}@{}}
-\caption{Coefficients for Negative Binomial Modeling}\tabularnewline
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-coefficients
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-full\_nsd\_yes
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-full\_nsd\_yes\_pvalue
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-coefficients
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-full\_nsd\_yes
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-full\_nsd\_yes\_pvalue
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-rsquared & 0.6914 & NA \\
-(Intercept) & -1.1007 & 0.0000 \\
-da\_factorYes & -1.6780 & 0.0000 \\
-log(age.in.months) & 1.0193 & 0.0000 \\
-container.titleApplied and Environmental Microbiology & -0.7625 &
-0.0002 \\
-container.titleGenome Announcements & -1.3780 & 0.6459 \\
-container.titleInfection and Immunity & -0.3405 & 0.2905 \\
-container.titleJournal of Bacteriology & -0.9194 & 0.0003 \\
-container.titleJournal of Clinical Microbiology & 0.4635 & 0.0645 \\
-container.titleJournal of Microbiology \& Biology Education & 3.0029 &
-0.5597 \\
-container.titleJournal of Virology & -0.3446 & 0.1051 \\
-container.titlemBio & -1.4953 & 0.0000 \\
-container.titleMicrobiology Resource Announcements & 2.3844 & 0.1270 \\
-container.titleMicrobiology Spectrum & -3.3128 & 0.0000 \\
-container.titlemSphere & -2.0889 & 0.0000 \\
-container.titlemSystems & -3.0742 & 0.0000 \\
-da\_factorYes:container.titleApplied and Environmental Microbiology &
-0.8197 & 0.0063 \\
-da\_factorYes:container.titleGenome Announcements & -1.0988 & 0.7162 \\
-da\_factorYes:container.titleInfection and Immunity & 0.7932 & 0.0976 \\
-da\_factorYes:container.titleJournal of Bacteriology & 1.8107 &
-0.0000 \\
-da\_factorYes:container.titleJournal of Clinical Microbiology & 0.6567 &
-0.0923 \\
-da\_factorYes:container.titleJournal of Microbiology \& Biology
-Education & -20.8893 & 0.9989 \\
-da\_factorYes:container.titleJournal of Virology & 1.3455 & 0.0000 \\
-da\_factorYes:container.titlemBio & 1.0788 & 0.0015 \\
-da\_factorYes:container.titleMicrobiology Resource Announcements &
--4.5437 & 0.0040 \\
-da\_factorYes:container.titleMicrobiology Spectrum & 1.0664 & 0.0144 \\
-da\_factorYes:container.titlemSphere & 1.1419 & 0.0277 \\
-da\_factorYes:container.titlemSystems & 1.6684 & 0.0025 \\
-da\_factorYes:log(age.in.months) & 0.4282 & 0.0000 \\
-log(age.in.months):container.titleApplied and Environmental Microbiology
-& 0.1606 & 0.0001 \\
-log(age.in.months):container.titleGenome Announcements & -0.0672 &
-0.9142 \\
-log(age.in.months):container.titleInfection and Immunity & 0.0045 &
-0.9407 \\
-log(age.in.months):container.titleJournal of Bacteriology & 0.1231 &
-0.0110 \\
-log(age.in.months):container.titleJournal of Clinical Microbiology &
--0.1240 & 0.0100 \\
-log(age.in.months):container.titleJournal of Microbiology \& Biology
-Education & -1.2224 & 0.3434 \\
-log(age.in.months):container.titleJournal of Virology & 0.0643 &
-0.1261 \\
-log(age.in.months):container.titlemBio & 0.4489 & 0.0000 \\
-log(age.in.months):container.titleMicrobiology Resource Announcements &
--1.1018 & 0.0108 \\
-log(age.in.months):container.titleMicrobiology Spectrum & 0.9146 &
-0.0000 \\
-log(age.in.months):container.titlemSphere & 0.5210 & 0.0000 \\
-log(age.in.months):container.titlemSystems & 0.8673 & 0.0000 \\
-da\_factorYes:log(age.in.months):container.titleApplied and
-Environmental Microbiology & -0.1861 & 0.0037 \\
-da\_factorYes:log(age.in.months):container.titleGenome Announcements &
-0.1571 & 0.8029 \\
-da\_factorYes:log(age.in.months):container.titleInfection and Immunity &
--0.2045 & 0.0431 \\
-da\_factorYes:log(age.in.months):container.titleJournal of Bacteriology
-& -0.5091 & 0.0000 \\
-da\_factorYes:log(age.in.months):container.titleJournal of Clinical
-Microbiology & -0.1082 & 0.1950 \\
-da\_factorYes:log(age.in.months):container.titleJournal of Microbiology
-\& Biology Education & NA & NA \\
-da\_factorYes:log(age.in.months):container.titleJournal of Virology &
--0.3389 & 0.0000 \\
-da\_factorYes:log(age.in.months):container.titlemBio & -0.2198 &
-0.0045 \\
-da\_factorYes:log(age.in.months):container.titleMicrobiology Resource
-Announcements & 1.1682 & 0.0074 \\
-da\_factorYes:log(age.in.months):container.titleMicrobiology Spectrum &
--0.2067 & 0.0953 \\
-da\_factorYes:log(age.in.months):container.titlemSphere & -0.2635 &
-0.0369 \\
-da\_factorYes:log(age.in.months):container.titlemSystems & -0.4009 &
-0.0040 \\
-\end{longtable}
-
 In this study we sought to investigate the effect of NSD and DA on the
 number of citations received by a given paper. We focused on NSD papers
 to determine the effect of having DA. This led us to the use of a
 negative binomial regression model to best describe our data. All
-regression data was NSD yes. We focused on the continuous outcome of
-``number of citations'' with predictor variables journal (categorical),
-age in months (continuous), and DA status (dichotomous). Due to the
-number of citations being bell shaped with a long right tail (very few
-papers at advanced age with many citations), the model that best
-described our data was the negative binomial regression model. A
+regression data had NSD (NSD == ``Yes''). We focused on the continuous
+outcome of ``number of citations'' with predictor variables journal
+(categorical), age in months (continuous), and DA status (dichotomous).
+Due to the number of citations being bell shaped with a long right tail
+(very few papers at advanced age with many citations), the model that
+best described our data was a negative binomial regression model. A
 negative binomial model is appropriate for data that begins at zero and
-has a long `tail' of data. This model also includes a dispersion
-parameter to describe the spread of the data. We applied a log
-transformation to our age variable (age.in.months) to better describe
-the relationship between time and number of citations received. See
-table XXX6? for model coefficients. In general, we found that NSD papers
-that made DA received more citations over time than those that did not.
-See figure YYYY for trends in each major journal. ??XX insert some kind
-of metrics about \% more citations over time? per journal? ??XX Describe
-figure emmeans contrast plot that i cannot get to insert in the document
-for the life of me??? In all journals excepting the \emph{Journal of
-Bacteriology}, papers with DA have a greater number of citations at time
-point 60 months after publication, if not sooner via ratio plot. Over
-time this ratio increases further, demonstrating increased citations for
-papers with DA available over time.
+has a long `tail' of data, as well as has differing means per group.
+This model also includes a dispersion parameter, \(\theta\) to describe
+the spread of the data. We applied a log transformation to our age
+variable (age.in.months) to better describe the relationship between
+time and number of citations received. See supplemental table XXX6 for
+model coefficients. In general, we found that NSD papers that made DA
+received more citations over time than those that did not. See figure
+XXXX for trends in each major journal. ??XX In Figure 7XX, we have
+calculated the ratio of number of citations for papers of similar age
+containing data vs those that do not
+\((Citations[DA=Yes])/(Citations[DA=No])\). Over time, papers with DA
+receive more citations than those without up to well over 1.5x in some
+journals (\emph{Journal of Clinical Microbiology}). In all journals
+excepting the \emph{Journal of Bacteriology}, papers with DA have a
+greater number of citations at time point 60 months after publication,
+if not sooner via ratio plot. Over time this ratio increases further,
+demonstrating increased citations for papers with DA available over
+time. Figure 8XX shows that the gap between predicted number of
+citations for papers with DA vs those without widens over time, even
+beyond the width of the 95\% confidence interval.
 
-\paragraph{Figures for Negative Binomial yay! come back to
-theseXX}\label{figures-for-negative-binomial-yay-come-back-to-thesexx}
+\paragraph{Figures for Negative
+Binomial}\label{figures-for-negative-binomial}
 
 \pandocbounded{\includegraphics[keepaspectratio]{../Figures/negative_binomial/emmeans_contrast_plot.png}}
 \pandocbounded{\includegraphics[keepaspectratio]{../Figures/negative_binomial/model_predicted_plot.png}}
@@ -945,74 +852,93 @@ theseXX}\label{figures-for-negative-binomial-yay-come-back-to-thesexx}
 We investigated the impact of data availability on citation metrics in
 new sequencing papers by deploying machine learning models on over
 150,000 papers from the ASM family of journals. Overall, making data
-available increases citation metrics over time.
+available increases citation metrics over time, an added benefit to
+authors for the effort of making their data available.
 
 On average, more than half of papers with NSD had DA (58.8615\%),
 showing that authors of NSD papers are more often than not, making their
 data publicly available. This is in line with recent NIH policy
 requiring that data be made available using the Data Management and
-Sharing Plan (DMS plan) outlined in the NIH's NOT-OD-21-013 ((17)).
+Sharing Plan (DMS plan) outlined in the NIH's NOT-OD-21-013 ((17)). This
+NIH policy went into effect in 2023. XXDo we want percent for 2024?XX
 Expectledly, journals \emph{Genome Announcements} and \emph{Microbiology
 Resource Announcements} had the highest rates of DA in NSD papers. These
 journals publish primarily new genomic sequences and are required by ASM
 to make data available. Journals such as the \emph{Journal of
 Microbiology and Biology Education} and \emph{Infection and Immunity}
-which publish fewer NSD papers, have lower rates of DA in their
-journals.
+which publish fewer NSD papers due to their specific subject matters,
+have lower rates of NSD and therefore DA in their journals.
 
 Next, we looked further into the impact of DA on citation metrics using
 a negative binomial regression model. Using this model we found that
 over time, papers with DA receive more citations than those without up
-to well over 1.5x in some journals (\emph{Journal of Clinical
-Microbiology} ). This effect intensifies over time, with the greatest
-differences in citations occurring at the 108 months since publication
-time point. This is great news to manuscript authors, that simply making
-DA can give as much as 50\% increase in citations over time. We believe
-that this more than justifies the work of making data available. We hope
-that these data will help to incentivize authors to make data available.
+to well over 1.5x the amount of citations in some journals (Fig XXXX.
+\emph{Journal of Clinical Microbiology}). This effect intensifies over
+time, with the greatest differences in citations occurring at the 108
+months since publication time point. This is great news to manuscript
+authors, that simply making their DA can provide as much as 50\%
+increase in citations over time. We believe that this more than
+justifies the work of making data available. We hope that these data
+will help to incentivize authors to make data available.
 
-We acknowledge the limitations of our study data, focusing only on
-papers published in the ASM family of journals. We understand that this
-relationship between DA and citation metrics may not be as strong in
-other families of journals, but we hope with the newest NIH funding
-policies, these trends will continue. Another limitation is the
-availability of paper metadata from various databases, with crossref's
-metadata having the most complete metadata available for each paper. We
-were also not able to see specific time points, only having access to
-citation data for papers at time of dataset download (February 2025),
-and no intermediate time points for any given paper.
+We acknowledge the limitations of our study data, that by focusing only
+on papers published in the ASM family of journals, our results will not
+be as generalizable. We understand that this relationship between DA and
+citation metrics may not be as strong in other families of journals, but
+we hope with the newest NIH funding policies, these trends will continue
+to improve DA. Another limitation is the availability of paper metadata
+from various databases, with Crossref having the most complete metadata
+available for each paper. We were also not able to track citation
+metrics for individual papers over time. Our database sources only had
+available citation metrics at the time of dataset download (February
+2025), with no intermediate time points for any given paper. This leaves
+us unable to understand trends over time due to popularity or
+obsolescence of technique or results.
 
-While DA in publications has a citation advantage, we hope that is not
-the only reason authors choose to make their data available. The need
-for reproducibility in science and demand for large datasets are
-additional reasons. We hope that authors recognize the need to
-contribute to the data ``commons'', to further work done by others, and
-that even their negative results have value and power to stop others
-from continuing down dead ends.
+While making DA in publications has a citation advantage, we hope that
+is not the only reason authors choose to make their data available. The
+need for reproducibility in science and demand for large datasets are
+additional reasons, as well as the NIH funding requirement. We hope that
+authors recognize the need to contribute to the data ``commons'', to
+further work done by others, and that even their negative results have
+value and power to stop others from continuing down dead ends.
 
 \subsection{Materials and Methods}\label{materials-and-methods}
+
+\subsubsection{Preparation of the Larger Experimental
+Dataset}\label{preparation-of-the-larger-experimental-dataset}
+
+To fully answer our research questions, we created a larger dataset with
+N = 155779 papers curated from reference databases Crossref, NCBI,
+Scopus, and the Web of Science ((\textbf{crossref?}), (\textbf{ncbi?}),
+(\textbf{scopus?}), (27)). These papers span all twelve ASM journals of
+interest from January 1st, 2000 to December 31st, 2024. The ASM Journals
+of interest were \emph{Applied and Envrionmental Microbiology;
+Antimicrobial Agents and Chemotherapy; Infection and Immunity; Journal
+of Clinical Biology; Journal of Virology; Journal of Bacteriology;
+Journal of Microbiology and Biology Education; Microbiology Resource
+Announcments} (formerly known as \emph{Genome Announcements});
+\emph{mSystems; mSphere; mBio; and Microbiology Spectrum.} The data was
+updated as of February 10th, 2025 with all citation counts frozen at
+that date.
 
 \subsubsection{Creation of the Training
 set}\label{creation-of-the-training-set}
 
 To train our random forest machine learning model, we first created an
-appropriate training data set. Using the crossref database, we first
-downloaded all papers from the selected ASM family of journals from the
-time period beginning January 1st, 2000, and ending on December 31st,
-2024. The data was updated as of February 10th, 2025 with all citation
-counts frozen at that date. For our initial training set, we chose N =
-500 papers from across each journal and time period, adding special
-emphasis to include papers that were part of our desired set of interest
-(i.e.~contained published data) to ensure that our two models could
-adequately characterize each paper as a new sequencing paper and if it
-published raw sequencing data or not. After creating our initial
-dataset, it was necessary to identify the status of both variables by
-hand and determine if each paper contained ``new sequencing data''
-(NSD), and if each one had ``data available'' (DA). This was completed
-by opening each paper in an internet browser window, and searching for a
-``data availability'' or similar statement. See table XXX for specific
-cases and how each of these cases were identified for the purpose of
-this study.
+appropriate training data set. For our initial training set, we chose an
+initial set of papers from across each journal and the time period of
+interest, adding special emphasis to include papers that were part of
+our desired set of interest (i.e.~contained published data) to ensure
+that our two models could adequately characterize each paper as a new
+sequencing paper and if it published raw sequencing data or not. After
+creating our initial dataset, it was necessary to identify the status of
+both variables by hand and determine if each paper contained ``new
+sequencing data'' (NSD), and if each one had ``data available'' (DA).
+This was completed by opening each paper in an internet browser window,
+and searching for a ``data availability'' or similar statement. See
+Table 1XXX for specific cases and how each of these cases were
+identified for the purpose of this study.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4722}}
@@ -1062,8 +988,8 @@ DA \\
 \subsubsection{Adding Additional Training Set
 Papers}\label{adding-additional-training-set-papers}
 
-After initial trainings of our random forest models, a random sampling
-of papers was collected for each journal to audit the efficacy of the
+After initial training of our random forest models, a random sampling of
+papers was collected for each journal to audit the efficacy of the
 models. To audit the efficacy of the models, we hand identified the
 status of both variables of interest, NSD and DA. We looked for
 weaknesses in the models, and updated methodology to reflect important
@@ -1076,74 +1002,53 @@ the webpage was not included in the text the model was considering, and
 code had to be updated to include all sidebar data for all papers. These
 improvements to the model created a larger and more comprehensive
 training set of N = 1045. These validations allowed us to create
-confusion matricies for each model. Confusion matricies for the final
-version of each trained model are available in YYYY
-table(XXsupplement?).
-
-\subsubsection{Descriptive Statistics about the Training
-Set}\label{descriptive-statistics-about-the-training-set}
-
-\emph{I think this is covered earlier but i will leave it for now just
-to make sure that i can move the sentences around if i need to}
-
-There were XXX papers in the training data set from 12 ASM journals.
-These papers came from journals \emph{Applied and Envrionmental
-Microbiology; Antimicrobial Agents and Chemotherapy; Infection and
-Immunity; Journal of Clinical Biology; Journal of Virology; Journal of
-Bacteriology; Journal of Microbiology and Biology Education;
-Microbiology Resource Announcments} (formerly known as \emph{Genome
-Announcements}); \emph{mSystems; mSphere; mBio; and Microbiology
-Spectrum.} See table XXXX for the number of papers from each journal in
-the training dataset. The training dataset includes journal articles
-published between January 1st, 2000 and December 31st, 2024. See table
-XXXXX for the number of papers included from each year from 2000-2024.
-XXX\% of training set data was NSD = Yes, and XXX\% of training set data
-was DA = Yes.
+confusion matrices for each model. Confusion matrices for the final
+version of each trained model are available in XXX table(XXsupplement?).
 
 \subsubsection{Creation of the Training Data from Training
 dataset}\label{creation-of-the-training-data-from-training-dataset}
 
 To perform the computational steps required for these experiments, we
-used the python tool Snakemake ( (27) ), and the University of
+used the python tool Snakemake ( (28) ), and the University of
 Michigan's high performance computing cluster (see acknowledgements).
 Using our selected papers from the training dataset, we downloaded the
 entirety of each paper's source HTML using the command line tool wget.
 This allowed us to use the source HTML multiple times for updated
 analyses without the need to re-query the ASM webservers numerous times.
-Next, we performed cleaning of the HTML using R packages rvest ((28))
-and xml2 ((29)) to get the desired portions of the paper from the HTML
-including the abstract, the body of paper, all tables and figures with
-captions, as well as the side panels for all papers, but especially
-those containing the data availability statements in papers published
-after the 2023 change in webpage format (see above). Then we removed
-unnecessary text using R packages tm(text manipulation)((30), (31)) and
-textstem ((32)), as well as converting all text to lowercase, and the
-removal of digits and non-alphabetic characters such as whitespace. To
-have the fewest number of unique words, we lemmatized (sort words by
-grouping inflected or variant forms of the same word) words to trace
-them back to their root words and eliminate any possible issues with
-word tense. After this, we created and counted our `tokens', phrases of
-up to 1-3 consecutive words from the text of the paper using R package
-tokeinziers ((\textbf{tokeinziers?})). Towards the goal of the fewest
-meaningful number of words, we used the `Snowball' ((33)) dictionary of
-`stop words' to remove non-meaningful words such as articles `a', `an',
-and `the'. We removed the `space' character with an underscore in
-multi-word tokens for ease of processing, and created a count table for
-the tokens in each paper.
+Next, we performed cleaning of the HTML using R packages rvest ((29)),
+textstem( (30)), and xml2 ((31)) to get the desired portions of the
+paper from the HTML including the abstract, the body of paper, all
+tables and figures with captions, as well as the side panels for all
+papers, but especially those containing the data availability statements
+in papers published after the 2023 change in webpage format (see above).
+Then we removed unnecessary text using R packages tm(text
+manipulation)((32), (33)) and textstem ((30)), as well as converting all
+text to lowercase, and the removal of digits and non-alphabetic
+characters such as whitespace. To have the fewest number of unique
+words, we lemmatized (sort words by grouping inflected or variant forms
+of the same word) words to trace them back to their root words and
+eliminate any possible issues with word tense. After this, we created
+and counted our `tokens', phrases of up to 1-3 consecutive words from
+the text of the paper using R package tokeinziers ((34)). Towards the
+goal of the fewest meaningful number of words, we used the `Snowball'
+((35)) dictionary of `stop words' to remove non-meaningful words such as
+articles `a', `an', and `the'. We removed the `space' character with an
+underscore in multi-word tokens for ease of processing, and created a
+count table for the tokens in each paper.
 
 Once the tokens in each paper were counted, we transformed the data into
-a sparse matrix format useable by the R package mikropml ((34) ref),
-using R packages caret and dplyr ((35), (36), (37)). Tokens were
-filtered to those which appear in greater than one paper. This allows
-comparison between papers by the model. We removed near zero variants
-(tokens with frequency very close to zero) as well as collapsing
-perfectly correlated tokens (tokens that always appear together) using R
-packages caret and mikropml to reduce model complexity. The data was
-then simplified to keep only the following variables; tokens, frequency,
-journal information, and hand identified NSD and DA variables. This
-simiplified sparse matrix data had the mean and standard deviation
-calculcated and saved for the frequency of each token to later apply a
-z-scoring method to future data to be predicted by the model.
+a sparse matrix format useable by the R package mikropml ((36)), using R
+packages caret and dplyr ((37), (38), (39)). Tokens were filtered to
+those which appear in greater than one paper. This allows comparison
+between papers by the model. We removed near zero variants (tokens with
+frequency very close to zero) as well as collapsing perfectly correlated
+tokens (tokens that always appear together) using R packages caret and
+mikropml to reduce model complexity. The data was then simplified to
+keep only the following variables; tokens, frequency, journal
+information, and hand identified NSD and DA variables. This simiplified
+sparse matrix data had the mean and standard deviation calculcated and
+saved for the frequency of each token to later apply a z-scoring method
+to future data to be predicted by the model.
 
 \subsubsection{Training of the DA and NSD
 Models}\label{training-of-the-da-and-nsd-models}
@@ -1152,34 +1057,28 @@ We trained two random forest machine learning models using mikropml's
 ``run\_ml'' function, one to determine if a paper contained new sequence
 data (NSD), and another to determine if the paper had data availabile
 (DA). The mikropml ``run\_ml'' function uses methodology described by
-*Topcuoglu et al.*((\textbf{topcuoglu2020?})) to split data for model
-training. Random forest models have one hyperparameter to tune, the mtry
-value. We began with mtry values of 100, 200, 300, 400, 500, and 600, to
-find peak hyperparameter performance given \emph{N tokens}. We trained
-the models multiple times in accordance with existing methodologies,
-first to find the optimal Area Under the Receiver-Operator Curve (AUROC)
-value for each model with N=100 seeds. Then to find the best mtry
-performance for each model, with N=1 seed. Finally, with N=1 seed to
-train each final model for use on experimental data.
+*Topcuoglu et al.*((40)) to split data for model training. Random forest
+models have one hyperparameter to tune, the mtry value. We began with
+mtry values of 100, 200, 300, 400, 500, and 600, to find peak
+hyperparameter performance given \emph{N tokens}. We trained the models
+multiple times in accordance with existing methodologies, first to find
+the optimal Area Under the Receiver-Operator Curve (AUROC) value for
+each model with N=100 seeds. Then to find the best mtry performance for
+each model, with N=1 seed. Finally, with N=1 seed to train each final
+model for use on experimental data.
 
-\subsubsection{Preparation of the Experimental
-Dataset}\label{preparation-of-the-experimental-dataset}
+\subsubsection{Deploying the RF Models}\label{deploying-the-rf-models}
 
-To fully answer our research questions, we created a larger database
-with N = 155779 papers curated from reference datasets Crossref, NCBI,
-Scopus, and the Web of Science ((\textbf{crossref?}), (\textbf{ncbi?}),
-(\textbf{scopus?}), (38)). These papers span all twelve ASM journals of
-interest from the start of 2000 to the end of 2024. Once database was
-curated, we applied the same steps to ready papers for application of
-machine learning models as the model training datasets. See above for
-descriptions of webscraping html, cleaning html, removing unnecessary
-text, and creation of token count table for application in each of the
-machine learning models to determine the NSD and DA statuses for each
-paper. Once the frequency count tables were prepared for each paper, a
-z-score was applied using the saved data from each model appropriately,
-using the formula XXX((observed\_token\_frequency -
-model\_token\_frequency\_mean)/(model\_token\_frequency\_sd)). This
-z-scoring formula was applied to standardize the frequency of each
+Once our RF models were ready we applied the same steps to ready papers
+for application of machine learning models as the model training
+dataset. See above for descriptions of webscraping HTML, cleaning HTML,
+removing unnecessary text, and creation of token count table for
+application in each of the machine learning models to determine the NSD
+and DA statuses for each paper. Once the frequency count tables were
+prepared for each paper, a z-score was applied using the saved data from
+each model appropriately, using the formula XX
+\(((Observed token frequency - Model token frequency \mu)/(model token frequency sd))\).
+This z-scoring formula was applied to standardize the frequency of each
 token. Only tokens included in the machine learning models were retained
 in experimental datasets. Finally, each model was deployed on each paper
 to determine its NSD and DA status.
@@ -1195,7 +1094,7 @@ was applied prior to estimating the statistical regression model to
 correct for the nature of time as compared to other variables in the
 dataset. After applying the negative binomial model, we calculated
 ratios of the estimated number of citations per paper over time by DA
-status using R package emmeans ((39)). We also used R package sjPlot to
+status using R package emmeans ((41)). We also used R package sjPlot to
 estimate the 95\% CI for estimated citations over time for each journal
 by DA status ((\textbf{sjPlotref?})).
 
@@ -1563,8 +1462,14 @@ doi:\href{https://doi.org/10.1038/d41586-021-01069-w}{10.1038/d41586-021-01069-w
 \textbf{9}:10.1128/spectrum.00396--21.
 doi:\href{https://doi.org/10.1128/spectrum.00396-21}{10.1128/spectrum.00396-21}.}
 
-\bibitem[\citeproctext]{ref-muxf6lder_snakemake}
+\bibitem[\citeproctext]{ref-wos}
 \CSLLeftMargin{27. }%
+\CSLRightInline{Accessed 2025.
+\href{https://www.webofscience.com/wos/author/author-search}{Web of
+science}. Internet Database, Clarivate.}
+
+\bibitem[\citeproctext]{ref-muxf6lder_snakemake}
+\CSLLeftMargin{28. }%
 \CSLRightInline{\textbf{Mölder F}, \textbf{Jablonski KP},
 \textbf{Letcher B}, \textbf{Hall MB}, \textbf{Tomkins-Tinch CH},
 \textbf{Sochat V}, \textbf{Forster J}, \textbf{Lee S}, \textbf{Twardziok
@@ -1574,42 +1479,50 @@ data analysis with Snakemake.
 doi:\href{https://doi.org/10.12688/f1000research.29032.2}{10.12688/f1000research.29032.2}.}
 
 \bibitem[\citeproctext]{ref-rvest}
-\CSLLeftMargin{28. }%
+\CSLLeftMargin{29. }%
 \CSLRightInline{\textbf{Wickham H}. 2025.
 \href{https://CRAN.R-project.org/package=rvest}{Rvest: Easily harvest
 (scrape) web pages}.}
 
+\bibitem[\citeproctext]{ref-textstem}
+\CSLLeftMargin{30. }%
+\CSLRightInline{\textbf{Rinker TW}. 2018.
+\href{http://github.com/trinker/textstem}{{textstem}: Tools for stemming
+and lemmatizing text}. Buffalo, New York.}
+
 \bibitem[\citeproctext]{ref-xml2}
-\CSLLeftMargin{29. }%
+\CSLLeftMargin{31. }%
 \CSLRightInline{\textbf{Wickham H}, \textbf{Hester J}, \textbf{Ooms J}.
 2025. \href{https://CRAN.R-project.org/package=xml2}{xml2: Parse XML}.}
 
 \bibitem[\citeproctext]{ref-tm_article}
-\CSLLeftMargin{30. }%
+\CSLLeftMargin{32. }%
 \CSLRightInline{\textbf{Feinerer I}, \textbf{Hornik K}, \textbf{Meyer
 D}. 2008. Text mining infrastructure in r. Journal of Statistical
 Software \textbf{25}:1--54.
 doi:\href{https://doi.org/10.18637/jss.v025.i05}{10.18637/jss.v025.i05}.}
 
 \bibitem[\citeproctext]{ref-tm_manual}
-\CSLLeftMargin{31. }%
+\CSLLeftMargin{33. }%
 \CSLRightInline{\textbf{Feinerer I}, \textbf{Hornik K}. 2025.
 \href{https://CRAN.R-project.org/package=tm}{Tm: Text mining package}.}
 
-\bibitem[\citeproctext]{ref-textstem}
-\CSLLeftMargin{32. }%
-\CSLRightInline{\textbf{Rinker TW}. 2018.
-\href{http://github.com/trinker/textstem}{{textstem}: Tools for stemming
-and lemmatizing text}. Buffalo, New York.}
+\bibitem[\citeproctext]{ref-tokenizers}
+\CSLLeftMargin{34. }%
+\CSLRightInline{\textbf{Mullen LA}, \textbf{Benoit K}, \textbf{Keyes O},
+\textbf{Selivanov D}, \textbf{Arnold J}. 2018. Fast, consistent
+tokenization of natural language text. Journal of Open Source Software
+\textbf{3}:655.
+doi:\href{https://doi.org/10.21105/joss.00655}{10.21105/joss.00655}.}
 
 \bibitem[\citeproctext]{ref-stopwords}
-\CSLLeftMargin{33. }%
+\CSLLeftMargin{35. }%
 \CSLRightInline{\textbf{Benoit K}, \textbf{Muhr D}, \textbf{Watanabe K}.
 2021. \href{https://CRAN.R-project.org/package=stopwords}{Stopwords:
 Multilingual stopword lists}.}
 
 \bibitem[\citeproctext]{ref-mikropml}
-\CSLLeftMargin{34. }%
+\CSLLeftMargin{36. }%
 \CSLRightInline{\textbf{Topçuoğlu BD}, \textbf{Lapp Z}, \textbf{Sovacool
 KL}, \textbf{Snitkin E}, \textbf{Wiens J}, \textbf{Schloss PD}. 2021.
 {mikropml}: User-friendly r package for supervised machine learning
@@ -1617,21 +1530,21 @@ pipelines. Journal of Open Source Software \textbf{6}:3073.
 doi:\href{https://doi.org/10.21105/joss.03073}{10.21105/joss.03073}.}
 
 \bibitem[\citeproctext]{ref-caret}
-\CSLLeftMargin{35. }%
+\CSLLeftMargin{37. }%
 \CSLRightInline{\textbf{Kuhn}, \textbf{Max}. 2008. Building predictive
 models in r using the caret package. Journal of Statistical Software
 \textbf{28}:1--26.
 doi:\href{https://doi.org/10.18637/jss.v028.i05}{10.18637/jss.v028.i05}.}
 
 \bibitem[\citeproctext]{ref-dplyr}
-\CSLLeftMargin{36. }%
+\CSLLeftMargin{38. }%
 \CSLRightInline{\textbf{Wickham H}, \textbf{François R}, \textbf{Henry
 L}, \textbf{Müller K}, \textbf{Vaughan D}. 2025.
 \href{https://dplyr.tidyverse.org}{Dplyr: A grammar of data
 manipulation}.}
 
 \bibitem[\citeproctext]{ref-tidyverse}
-\CSLLeftMargin{37. }%
+\CSLLeftMargin{39. }%
 \CSLRightInline{\textbf{Wickham H}, \textbf{Averick M}, \textbf{Bryan
 J}, \textbf{Chang W}, \textbf{McGowan LD}, \textbf{François R},
 \textbf{Grolemund G}, \textbf{Hayes A}, \textbf{Henry L}, \textbf{Hester
@@ -1643,14 +1556,16 @@ D}, \textbf{Seidel DP}, \textbf{Spinu V}, \textbf{Takahashi K},
 \textbf{4}:1686.
 doi:\href{https://doi.org/10.21105/joss.01686}{10.21105/joss.01686}.}
 
-\bibitem[\citeproctext]{ref-wos}
-\CSLLeftMargin{38. }%
-\CSLRightInline{Accessed 2025.
-\href{https://www.webofscience.com/wos/author/author-search}{Web of
-science}. Internet Database, Clarivate.}
+\bibitem[\citeproctext]{ref-topcuoglu_mikropml_2021}
+\CSLLeftMargin{40. }%
+\CSLRightInline{\textbf{Topçuoğlu BD}, \textbf{Lapp Z}, \textbf{Sovacool
+KL}, \textbf{Snitkin E}, \textbf{Wiens J}, \textbf{Schloss PD}. 2021.
+Mikropml: {User}-{Friendly} {R} {Package} for {Supervised} {Machine}
+{Learning} {Pipelines}. Journal of Open Source Software \textbf{6}:3073.
+doi:\href{https://doi.org/10.21105/joss.03073}{10.21105/joss.03073}.}
 
 \bibitem[\citeproctext]{ref-emmeans}
-\CSLLeftMargin{39. }%
+\CSLLeftMargin{41. }%
 \CSLRightInline{\textbf{Lenth RV}. 2025.
 \href{https://CRAN.R-project.org/package=emmeans}{Emmeans: Estimated
 marginal means, aka least-squares means}.}
