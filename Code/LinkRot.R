@@ -6,8 +6,6 @@
 library(tidyverse)
 library(rvest)
 library(xml2)
-# library(tidytext)
-# library(jsonlite)
 library(httr2)
 
 
@@ -40,12 +38,11 @@ get_html_no_bib <- function(html_filename) {
 #local testing 
 # get_html_no_bib(html_filename)
 
-#20250515 - using the lookup table to get files to test
 
-# html_filename <- "Data/html/10.1128_aem.00197-21.html"
-
-# papers to check 20250806 
-# html_filename <- tibble(html_filename = "Data/html/10.1128_microbiolspec.gpp3-0022-2018.html") #none-check
+# test papers to check 20251003
+# html_filename <- "Data/html/10.1128_microbiolspec.tbtb2-0018-2016" - file doesn't exist = check 
+#"Data/html/10.1128_aem.00197-21.html" - 2 check 
+# "Data/html/10.1128_microbiolspec.gpp3-0022-2018.html" #none-check
 # html_filename <- tibble(html_filename = "Data/html/10.1128_mbio.01923-17.html") # 4 - check
 # html_filename <- tibble(html_filename = "Data/html/10.1128_microbiolspec.bad-0006-2016") # none - check
 # html_filename <- tibble(html_filename = "Data/html/10.1128_mra.00881-22") #none - check 
@@ -59,13 +56,15 @@ new_extract_links <- function(html_filename) {
   #initialize all_html_tags to NULL
   all_html_tags<-NA
   some_html_tags<-NA
-  if(file.size(html_filename[[1]]) > 0 && file.exists(html_filename[[1]])) {
+
+  #if(file.size(html_filename[[1]]) > 0 && file.exists(html_filename[[1]])) {
+
   #read html from snakefile 
   webscraped_data <- get_html_no_bib(as.character(html_filename[[1]]))
 
   #get just doi from html_filename
   #"Data/html/10.1128_aac.00005-17.html" > 10.1128/aac.00005-17
-  doi<-str_split_i(html_filename, pattern = "/", 3) %>% 
+  doi<-str_split_i(html_filename, pattern = "/", 3) %>%
       str_replace(., ".html", "") %>%
       str_replace(., "_", "/")
   
@@ -91,7 +90,8 @@ new_extract_links <- function(html_filename) {
       filter(str_detect(link_address, ".gz", negate = TRUE)) %>%
       unique()
   
-    }
+    #}
+
   
   #returns all links
   return(some_html_tags)
@@ -101,7 +101,6 @@ new_extract_links <- function(html_filename) {
 #function for retrieving the HTML status of a website using httr2 instead of crul 
 
 get_site_status <- function(websiteurl) {
-  
   response <- tryCatch( {request(websiteurl) %>% 
       req_options(followlocation = TRUE) %>%
       req_error(is_error = ~ FALSE) %>% 
@@ -114,32 +113,45 @@ get_site_status <- function(websiteurl) {
 
 # run function to get all links from dataset, check status, and write to file
 
+if(file.size(html_filename[[1]]) > 0 && file.exists(html_filename[[1]])) {
 
-all_links <- tibble(html_filename = html_filename) %>%
-  mutate(link_tibble = map(as.character(html_filename), new_extract_links)) %>% 
-  unnest(cols = link_tibble)
-
-if("link_address" %in% colnames(all_links)) {
-all_links$link_status <- map_int(all_links$link_address, get_site_status)
+  all_links <- tibble(html_filename = html_filename) %>%
+    mutate(link_tibble = map(as.character(html_filename), new_extract_links)) %>% 
+    unnest(cols = link_tibble)
 
 
-#want to count number of links that have .com, .org, .gov, .edu, etc
-all_links <- all_links %>% 
-  mutate(hostname = map_chr(link_address, \(x)url_parse(x)$hostname), 
-         hostname = str_replace(hostname, "^www.", ""),
-         domain = str_replace(hostname, ".*\\.(.*)", "\\1"), 
-         website_type = case_when(str_detect(hostname, "\\.com") ~ "com", 
-                                  str_detect(hostname,"\\.edu") ~ "edu",
-                                  str_detect(hostname,"\\.gov") ~ "gov",
-                                  str_detect(hostname,"\\.org") ~ "org",
-                                  TRUE ~ "other"), 
-        binary_status = ifelse(link_status == 200, "Alive", "Dead"), 
-        is_alive = link_status == 200
-        )
+  all_links$link_status <- map_int(all_links$link_address, get_site_status)
 
-} 
+
+  #want to count number of links that have .com, .org, .gov, .edu, etc
+  all_links <- all_links %>% 
+    mutate(hostname = map_chr(link_address, \(x)url_parse(x)$hostname), 
+          hostname = str_replace(hostname, "^www.", ""),
+          domain = str_replace(hostname, ".*\\.(.*)", "\\1"), 
+          website_type = case_when(str_detect(hostname, "\\.com") ~ "com", 
+                                    str_detect(hostname,"\\.edu") ~ "edu",
+                                    str_detect(hostname,"\\.gov") ~ "gov",
+                                    str_detect(hostname,"\\.org") ~ "org",
+                                    TRUE ~ "other"), 
+          binary_status = ifelse(link_status == 200, "Alive", "Dead"), 
+          is_alive = link_status == 200
+          )
+
+} else { 
+  all_links <- 
+      tibble(.rows = 0, 
+      html_filename = NA, html_tag = NA,
+      link_address = NA, link_text = NA, 
+      link_status = NA, hostname = NA, domain = NA, 
+      website_type = NA, binary_status = NA, is_alive = NA,
+       )
+  }
+
 
 write_csv(all_links, file = output_file)
+
+#local testing
+# write_csv(all_links, file = "Data/test_linkrot.csv")
 
 
 
