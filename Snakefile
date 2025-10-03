@@ -324,10 +324,10 @@ rule link_rot:
     group: 
         "linkrot"
     resources: 
-        mem_mb = 12
+        mem_mb = 10
     shell:
         """
-        {input.rscript} {input.html} {output.links}
+        {input.rscript} "{input.html}" "{output.links}"
         """
 
 rule combine_linkrot: 
