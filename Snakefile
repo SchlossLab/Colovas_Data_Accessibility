@@ -324,7 +324,7 @@ rule link_rot:
     group: 
         "linkrot"
     resources: 
-        mem_mb = 10
+        mem_mb = 20
     shell:
         """
         {input.rscript} "{input.html}" "{output.links}"
