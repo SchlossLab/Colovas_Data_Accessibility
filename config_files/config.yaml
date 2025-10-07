@@ -3,7 +3,7 @@ cluster:
     mkdir -p log/hpc/jobs/{rule}/ && 
     sbatch --job-name={rule}
         --account=pschloss99
-        --partition=standard,largemem
+        --partition=largemem,standard 
         --mail-user=jocolova@med.umich.edu
         --nodes=1
         -c1
@@ -33,4 +33,4 @@ group-components:
   - get_html=1000
   - crossref=6
   - wos = 12
-  - linkrot = 100
+  - linkrot=5

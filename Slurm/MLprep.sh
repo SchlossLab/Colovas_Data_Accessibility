@@ -13,10 +13,10 @@
 ####    an the amount of time a job requires.  May include processor
 ####    type, too.
 
-#SBATCH --nodes=1
+#SBATCH --nodes=1 #update to 2
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=8g
+#SBATCH --mem-per-cpu=16g #update from 8g to 16 to get jobs started
 #SBATCH --time=140:00:00
 
  
