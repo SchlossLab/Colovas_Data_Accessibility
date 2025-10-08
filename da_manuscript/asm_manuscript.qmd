@@ -135,7 +135,7 @@ With microbiologists commonly uploading nucleic acid sequences to public databas
 
 ### General Description of the Experiment
 
-We set out to determine the current state of data availability in twelve primary research journals from the ASM family of journals. This objective was completed by first acquiring all papers published in the journals of interest between 2000 and 2024 using the Crossref database and command line tools. We then trained two random forest machine learning models to differentiate if each paper 1), contained "New Sequencing Data" (NSD) and 2) if the paper had "Data Available" (DA). To avoid overfitting the models, we trained each model multiple times, performing validations on a subset of data after each iteration. This allowed us to have a greater number of papers in the training dataset, as well as to have great accuracy and precision within our models. Using our trained models, we were able to classify over 150,000 papers from the whole dataset to determine if they were NSD or contained DA. After this, we could perform statistical modeling to describe the data, and generate summary statistics. We were especially interested in the ways in which NSD and DA impact citation metrics.
+We set out to determine the current state of data availability in twelve primary research journals from the ASM family of journals. This objective was completed by first acquiring all papers published in the journals of interest between 2000 and 2024 using the Crossref database and command line tools. We were interested in finding out how many papers in this set had "New Sqeuencing Data", and within those papers, how many had "Data Availabile." These two questions can be answered using a quick search of the paper, but due to the large volume of papers in this collection(150,000+), we used machine learning models to predict our two variables of interest. We trained two random forest machine learning models to differentiate if each paper 1), contained "New Sequencing Data" (NSD) and 2) if the paper had "Data Available" (DA). To avoid overfitting the models, we trained each model multiple times, performing validations on a subset of data after each iteration. This allowed us to have a greater number of papers in the training dataset by adding these iteratively validated papers, as well as to have great accuracy and precision within our models. Using our trained models, we were able to classify the over 150,000 papers from the whole dataset to determine if they were NSD or contained DA. After this, we could perform statistical modeling to describe the data, and generate summary statistics. We were especially interested in the ways in which NSD and DA impact citation metrics. This is valuable information towards encouraging researchers to make their DA, by showing if there is incentive for including raw (sequencing) data in a publication.
 
 ### ASM Journals
 
@@ -197,7 +197,7 @@ all_data %>%
           fract_da = n_da/n_nsd*100) %>%
     select(container.title, n_total:fract_da)
 
-# kableExtra::kable(whole_dataset_table, caption = "Summary Statstics of All Data", 
+# kableExtra::kable(whole_dataset_table, caption = "Summary Statistics of All Data", 
 #                 digits = n_digits)
 
 # t_fract_nsd <- 
