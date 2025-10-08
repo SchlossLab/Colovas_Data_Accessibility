@@ -48,6 +48,7 @@ get_html_no_bib <- function(html_filename) {
 # html_filename <- tibble(html_filename = "Data/html/10.1128_mra.00881-22") #none - check 
 # html_filename <- tibble(html_filename = "Data/html/10.1128_microbiolspec.tbtb2-0018-2016") #file does not exist - idk why maybe link redirect
 # html_filename <- tibble(html_filename = "Data/html/10.1128_mysystems.00381-21.html")
+html_filename <- "Data/html/10.1128_jvi.00063-19.html" 
 
 
 
@@ -125,7 +126,7 @@ if(file.size(html_filename[[1]]) > 0 && file.exists(html_filename[[1]])) {
 
   #want to count number of links that have .com, .org, .gov, .edu, etc
   all_links <- all_links %>% 
-    mutate(hostname = map_chr(link_address, \(x)url_parse(x)$hostname), 
+    mutate(hostname = ifelse(str_detect(link_address, "^e"), NA, map_chr(link_address, \(x)url_parse(x)$hostname)), 
           hostname = str_replace(hostname, "^www.", ""),
           domain = str_replace(hostname, ".*\\.(.*)", "\\1"), 
           website_type = case_when(str_detect(hostname, "\\.com") ~ "com", 
