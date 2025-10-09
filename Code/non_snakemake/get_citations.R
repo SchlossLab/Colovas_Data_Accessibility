@@ -16,4 +16,6 @@ citation("tokenizers")
 citation("emmeans")
 citation("xml2")
 citation("stopwords")
+citation("MASS")
+citation("sjPlot")
 
