@@ -50,16 +50,8 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
-        expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
-        # "Data/linkrot/10.1128_mbio.03036-23.csv", 
-        # "Data/linkrot/10.1128_microbiolspec.gpp3-0022-2018.csv", 
-        # "Data/linkrot/10.1128_mbio.01923-17.csv", 
-        # "Data/linkrot/10.1128_microbiolspec.bad-0006-2016.csv", 
-        # "Data/linkrot/10.1128_mra.00881-22.csv", 
-        # "Data/linkrot/10.1128_microbiolspec.tbtb2-0018-2016.csv", 
-        # "Data/linkrot/10.1128_mysystems.00381-21.csv"
-        # "Data/final/linkrot_combined.csv.gz"
+        # expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
+        "Data/final/linkrot_combined.csv.gz"
         # "Figures/linkrot/longlasting_byhostname.png"
         # "Figures/citationrate_byjournal.png"
       
@@ -331,7 +323,7 @@ rule link_rot:
     group: 
         "linkrot"
     resources: 
-        mem_mb = 4000
+        mem_mb = 200
     shell:
         """
         {input.rscript} "{input.html}" "{output.links}"
