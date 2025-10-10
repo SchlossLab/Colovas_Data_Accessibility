@@ -12,6 +12,7 @@ editor: visual
     -   Why do we care? 
         -   We want people to be able to access resources in perpetuity
         -   Reproducible research aims 
+        -   Access to datasets
             -   "By providing persistent
  links to the underlying data, methods, code, and derivative products, the paper
  becomes more transparent." - from Pat's ORI narrative 
@@ -35,6 +36,7 @@ editor: visual
         -   Average number of links/paper
         -   Does this change by journal? 
     -   Some graphs describing further the number of links in any given category 
+    
 
 -   Discussion
     -   How do we make things more accessible 
