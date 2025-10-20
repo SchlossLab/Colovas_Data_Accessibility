@@ -21,6 +21,7 @@ out_predicted_plot <- input[5]
 
 #load metadata (local)
 # metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz") 
+# metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
 # out_contrast_plot <-"Figures/negative_binomial/emmeans_contrast_plot.png"
 # out_predicted_plot <-"Figures/negative_binomial/model_predicted_plot.png"
 
@@ -35,6 +36,7 @@ nsd_yes_metadata <-
 nsd_yes_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
         + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
         log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
 
 
 #20250627 - making a function for large model with all 3 terms 

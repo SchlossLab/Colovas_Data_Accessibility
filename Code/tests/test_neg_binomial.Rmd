@@ -1,0 +1,123 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+#20251020 - figuring out why that figure looks crazy
+
+```{r include=FALSE}
+#library statements 
+library(tidyverse)
+library(MASS)
+library(jtools)
+library(emmeans)
+library(sjPlot)
+
+#load metadata
+metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
+
+```
+
+## Looking at the predicted number of citations figure for Spectrum
+
+```{r}
+
+#setup dataset and model
+nsd_yes_metadata <- 
+  metadata %>% 
+  filter(nsd == "Yes") %>%
+  filter(., age.in.months != "NA" & da != "NA" & container.title != "NA") %>% 
+  mutate(da_factor = factor(da), 
+         container.title = factor(container.title))
+
+
+nsd_yes_model <-
+  glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+  + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+  log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
+
+```
+
+What are the average citations for spectrum compared to other journals?
+
+What about for papers with data at \>= 100 months?
+
+```{r}
+
+#ok let's look at avg citations for spectrum compared to other journals
+
+nsd_yes_metadata  %>%  
+summarize(mean_citations = mean(is.referenced.by.count),
+median_citations = median(is.referenced.by.count), .by =
+container.title)
+
+#is it like something weird in papers with ages over 100 months
+nsd_yes_metadata %>%
+  filter(age.in.months >= 100) %>%
+  summarize(mean_citations_100 = mean(is.referenced.by.count), 
+            median_citations_100 = median(is.referenced.by.count), 
+            .by = container.title)
+
+
+
+```
+
+What kind of spectrum data was included in this dataset?
+
+-   data is included for spectrum for 2021-2024
+
+-   and there's nothing older than 41 months
+
+```{r}
+#there's only data from 2021-2024 
+nsd_yes_metadata %>%
+  filter(journal_abrev == "spectrum") %>%
+  count(year.published)
+
+#ok there's nothing older than 41 months 
+nsd_yes_metadata %>%
+  filter(journal_abrev == "spectrum") %>%
+  count(age.in.months) %>%tail()
+
+```
+
+Is there a weird maximum in the spectrum data that's messing with
+something?
+
+-   no the max number of citations is 99
+
+```{r}
+
+#what's the max in spectrum data 
+nsd_yes_metadata %>%
+  filter(journal_abrev == "spectrum") %>%
+  .$is.referenced.by.count %>% 
+  max()
+
+```
+
+Based on this- it has to do with the model itself
+
+Getting predicted data out of the model
+
+```{r}
+
+# getting data from the model using get_model_data()
+
+age_values <- seq(5, 120, 5)
+  p <-  get_model_data(model = nsd_yes_model, type = "pred", 
+                    terms = c("da_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet) %>%   
+          filter(container.title != "Journal of Microbiology &amp; Biology Education" &
+        container.title != "Genome Announcements" & 
+        container.title != "Microbiology Resource Announcements")
+  
+  p %>%  
+    filter(facet == "Microbiology Spectrum") %>%  
+    dplyr::select(container.title, da_factor, age.in.months, std.error, conf.low, conf.high) %>%  
+    print(n = Inf)
+
+```
