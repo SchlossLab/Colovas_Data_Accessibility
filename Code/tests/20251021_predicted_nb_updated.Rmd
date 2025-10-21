@@ -1,0 +1,189 @@
+---
+title: "20251021_predicted_nb_updated"
+output: pdf_document
+date: "2025-10-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#library statements 
+library(tidyverse)
+library(MASS)
+library(jtools)
+library(emmeans)
+library(sjPlot)
+
+#load metadata
+metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
+
+```
+
+```{r}
+#setup dataset and model
+nsd_yes_metadata <- 
+  metadata %>% 
+  filter(nsd == "Yes") %>%
+  filter(., age.in.months != "NA" & da != "NA" & container.title != "NA") %>% 
+  mutate(da_factor = factor(da), 
+         container.title = factor(container.title))
+
+
+nsd_yes_model <-
+  glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+  + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+  log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
+```
+## Validation of fit 
+- How many citations did a paper published in 2021 receive in each journal? 
+
+```{r cites_2021}
+
+nsd_yes_metadata %>%  
+  filter(year.published == 2021) %>% 
+  summarize(mean_cites_2021 = mean(is.referenced.by.count), 
+            median_cites_2021 = median(is.referenced.by.count), 
+            .by = container.title)
+
+
+```
+## Using the existing model 
+- Remove JMBE, MRA, GA from modeling 
+- Train on papers <= 10 years old (age.in.months <= 120)
+- Re-create figure with and without a common axis
+- Previously N = 41,271, now N = 13,911
+
+```{r re_model}
+
+#filter to remove jmbe, mra, ga and for age.in.months <= 120 
+ten_metadata <-
+  nsd_yes_metadata %>%  
+  filter(journal_abrev != "jmbe" & journal_abrev != "mra" & journal_abrev != "genomea" & age.in.months <= 120) 
+
+
+#sanity check 
+ten_metadata %>%  
+  count(journal_abrev) 
+
+ten_metadata %>% 
+  count(age.in.months) %>% 
+  tail()
+
+
+#retrain model 
+ten_model <-
+  glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+  + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+  log(age.in.months)*da_factor*container.title, data = ten_metadata, link = log)
+
+#get data out of model 
+
+age_values <- seq(5, 120, 5)
+  p_10 <-  get_model_data(model = ten_model, type = "pred", 
+                    terms = c("da_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet) 
+
+
+#re-create figure with free axes
+  
+predicted_plot <-
+    ggplot(data = p_10, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free_y") +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA", 
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+
+predicted_plot_fixed <-
+    ggplot(data = p_10, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18)) +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA, 
+        fixed axes", 
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+predicted_plot
+predicted_plot_fixed
+
+```
+
+
+## For each journal separately, overlay citations by paper on model output for DA yes and DA no 
+
+```{r}
+
+#lol i just add the data in each geom 
+journals <- ten_metadata %>%  
+  count(container.title) %>% 
+  mutate(container.title = as.character(container.title)) %>%  
+  dplyr::select(container.title)
+  
+j<- 6
+
+for(j in journals) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]])
+  
+  #make plot 
+  
+  ggplot() +
+    # mapping = aes(x = age.in.months, y = predicted_citations,
+    #                             color = da_factor)) +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+    geom_point(data = j_metadata, aes(x = age.in.months, 
+                                      y = is.referenced.by.count, color = da_factor)) + 
+   # labs(title = paste0("Predicted Number of Citations from GLM.NB for ", journals$container.title[[j]]), 
+   #      subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA", 
+   #      x = "Age in Months", 
+   #      y = "Predicted Number Citations", 
+   #      color = "Data availability\nwith 95% CI", 
+   #      fill = "Data availability\nwith 95% CI") + 
+    # scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+  
+}
+
+
+
+
+
+
+
+
+
+```
+
