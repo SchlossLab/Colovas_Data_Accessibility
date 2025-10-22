@@ -165,8 +165,8 @@ for(j in 1:nrow(journals)) {
    geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
                              group = da_factor, fill = da_factor), alpha = 0.3) +
     geom_point(data = j_metadata, aes(x = age.in.months, 
-                                      y = is.referenced.by.count, color = da_factor), 
-               size = 0.6) + 
+                                      y = is.referenced.by.count, color = da_factor),  
+                                      position = position_jitter(width =0.5), size = 0.6) + 
    labs(title = paste0("Model vs True Number of Citations from GLM.NB for\n", journals$container.title[[j]]),
         subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA",
         x = "Age in Months",
