@@ -145,45 +145,116 @@ journals <- ten_metadata %>%
   
 j<- 6
 
-for(j in journals) { 
+for(j in 1:nrow(journals)) { 
   #filter metadata for that journal 
   j_metadata <- ten_metadata %>%  
       filter(container.title == journals$container.title[[j]])
   
   #filter p_10 
   model_data <- p_10 %>%  
-    filter(container.title == journals$container.title[[j]])
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
   
   #make plot 
-  
+  plot <- 
   ggplot() +
     # mapping = aes(x = age.in.months, y = predicted_citations,
     #                             color = da_factor)) +
-   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
    geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
-                             group = da_factor, fill = da_factor), alpha = 0.2) +
+                             group = da_factor, fill = da_factor), alpha = 0.3) +
     geom_point(data = j_metadata, aes(x = age.in.months, 
-                                      y = is.referenced.by.count, color = da_factor)) + 
-   # labs(title = paste0("Predicted Number of Citations from GLM.NB for ", journals$container.title[[j]]), 
-   #      subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA", 
-   #      x = "Age in Months", 
-   #      y = "Predicted Number Citations", 
-   #      color = "Data availability\nwith 95% CI", 
-   #      fill = "Data availability\nwith 95% CI") + 
-    # scale_x_discrete(breaks = seq(12, 120, 12)) + 
+                                      y = is.referenced.by.count, color = da_factor), 
+               size = 0.6) + 
+   labs(title = paste0("Model vs True Number of Citations from GLM.NB for\n", journals$container.title[[j]]),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+   # scale_x_discrete(breaks = seq(12, 120, 12)) +
     theme_classic() + 
     theme(legend.position = "bottom" ) 
 
-  
+print(plot) 
 }
 
 
 
 
+```
+
+## Create a new model for sequence data vs no new sequence data
+
+```{r}
+#setup dataset and model
+
+#filter dataset for no nas, filter out jmbe, mra, ga, age in months <= 120
+nsd_model_metadata <- 
+  metadata %>% 
+  filter(., age.in.months != "NA" & nsd != "NA" & container.title != "NA") %>% 
+  filter(journal_abrev != "jmbe" & journal_abrev != "mra" & journal_abrev != "genomea" & age.in.months <= 120) %>% 
+  mutate(nsd_factor = factor(nsd), 
+         container.title = factor(container.title))
 
 
+nsd_model <-
+  glm.nb(is.referenced.by.count~ nsd_factor + log(age.in.months) + container.title + 
+  + container.title*nsd_factor + log(age.in.months)*nsd_factor + container.title*log(age.in.months) + 
+  log(age.in.months)*nsd_factor*container.title, data = nsd_model_metadata, link = log)
 
 
+# make plots for each journal 
+
+  p_nsd <-  get_model_data(model = nsd_model, type = "pred", 
+                    terms = c("nsd_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(nsd_factor = ifelse(.$x == 1, "Contains New Seq Data", "No New Seq Data"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet) 
+        
+  
+  
+    
+  predicted_plot_nsd <-
+    ggplot(data = p_nsd, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = nsd_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = nsd_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = nsd_factor, fill = nsd_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free_y") +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "NSD Model", 
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "New Seq Data\nwith 95% CI", 
+        fill = "New Seq Data\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+  
+  
+  predicted_plot_nsd <-
+    ggplot(data = p_nsd, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = nsd_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = nsd_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = nsd_factor, fill = nsd_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+              ) +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "NSD Model",
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "New Seq Data\nwith 95% CI", 
+        fill = "New Seq Data\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+predicted_plot_nsd
 
 ```
 
