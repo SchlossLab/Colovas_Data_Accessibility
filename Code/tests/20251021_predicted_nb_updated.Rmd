@@ -342,7 +342,7 @@ for(j in 1:nrow(journals)) {
       summarize(yearly_median = median(is.referenced.by.count),
                 yearly_25 = quantile(is.referenced.by.count, probs = 0.25),
                 yearly_75 = quantile(is.referenced.by.count, probs = 0.75),
-                age.in.months = (2024-year.published)*12, 
+                age.in.months = (2025-year.published)*12, 
              .by = c("da_factor", "year.published"))
     
   
