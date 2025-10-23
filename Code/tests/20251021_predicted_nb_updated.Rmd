@@ -257,4 +257,128 @@ nsd_model <-
 predicted_plot_nsd
 
 ```
+## Grab top 6 papers in spectrum for Pat (manually)
+```{r}
+
+#get spectrum data
+
+#i did this by hand - filtered and then viewed and sorted by citations
+
+ # j_metadata <-
+  ten_metadata %>%  
+      filter(container.title == "Microbiology Spectrum") 
+# %>% 
+#   view()
+      
+```
+
+## Trying binned data by month to evaluate model fit
+
+```{r}
+
+
+#let's try this for one month and then for the rest of them 
+
+# j<- 6
+
+for(j in 1:nrow(journals)) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+  
+  j_monthly <-
+    j_metadata %>%  
+      summarize(monthly_median = median(is.referenced.by.count), 
+             .by = c("da_factor", "age.in.months"))
+    
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
+  
+  #make plot 
+  plot <- 
+  ggplot() +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.3) +
+    geom_point(data = j_monthly, aes(x = age.in.months, 
+                                      y = monthly_median, color = da_factor),  
+                                      position = position_jitter(width =0.5), size = 0.6) + 
+   labs(title = paste0("Model vs True Median Number of Citations from GLM.NB for\n", journals$container.title[[j]], " binned by month and da status median"),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+   # scale_x_discrete(breaks = seq(12, 120, 12)) +
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+print(plot) 
+}
+
+
+
+
+```
+## Bin the data by the month and whether the data are available. Then calculate the median and the 25th and 75th quantile. Plot the median as a line plot and the 25th and 75th percentiles as the boundary as a ribbon. Might do it by the year if the viz looks too clunky because there aren't enough points to get a smooth curve.
+
+```{r warning=FALSE}
+
+#let's try this for one month and then for the rest of them 
+
+j<- 6
+
+for(j in 1:nrow(journals)) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+  
+  j_yearly <-
+    j_metadata %>%  
+      summarize(yearly_median = median(is.referenced.by.count),
+                yearly_25 = quantile(is.referenced.by.count, probs = 0.25),
+                yearly_75 = quantile(is.referenced.by.count, probs = 0.75),
+                age.in.months = (2024-year.published)*12, 
+             .by = c("da_factor", "year.published"))
+    
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
+  
+  #make plot 
+  plot <- 
+  ggplot() +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.3) +
+    geom_line(data = j_yearly, aes(x = age.in.months, 
+                                   y = yearly_median, 
+                                   color = da_factor, 
+                                   ), size = 1.0) + 
+    geom_ribbon(data = j_yearly, mapping = aes(x = age.in.months, y = yearly_median,
+                                               ymin = yearly_25, ymax = yearly_75,
+                             group = da_factor, fill = da_factor), alpha = 0.1) + 
+    
+   labs(title = paste0("Model vs True Median Number of Citations from GLM.NB for\n", journals$container.title[[j]], " binned by year,\nda status median, 25% & 75%"),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA\nLighter values = median and quartile data",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+    theme_classic() + 
+    theme(legend.position = "bottom") 
+
+print(plot) 
+}
+
+
+
+```
 
