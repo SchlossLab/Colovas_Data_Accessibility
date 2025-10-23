@@ -381,4 +381,104 @@ print(plot)
 
 
 ```
+## Using geom_smooth to fit a smoothed curve through the monthly data after taking the median on the data
+
+```{r}
+
+#let's try this for one month and then for the rest of them 
+
+# j<- 6
+
+for(j in 1:nrow(journals)) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+  
+  j_monthly <-
+    j_metadata %>%  
+      summarize(monthly_median = median(is.referenced.by.count), 
+             .by = c("da_factor", "age.in.months"))
+    
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
+  
+  #make plot 
+  plot <- 
+  ggplot() +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.3) +
+    geom_point(data = j_monthly, aes(x = age.in.months, 
+                                      y = monthly_median, color = da_factor),  
+                                      position = position_jitter(width =0.5), size = 0.6) +
+    geom_smooth(data = j_monthly, aes(x = age.in.months, 
+                                      y = monthly_median, color = da_factor), size = 0.5)+
+   labs(title = paste0("Model vs True Median Number of Citations from GLM.NB for\n", journals$container.title[[j]], " binned by month and da status median"),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA\ngrey geom_smooth through the median",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+   # scale_x_discrete(breaks = seq(12, 120, 12)) +
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+print(plot) 
+}
+
+
+
+
+```
+## Using geom_smooth to fit a smoothed curve through the monthly data without taking the median on the data
+
+```{r}
+
+
+#let's try this for one month and then for the rest of them 
+
+j<- 6
+
+for(j in 1:nrow(journals)) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+    
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
+  
+  #make plot 
+  plot <- 
+  ggplot() +
+    geom_point(data = j_metadata, aes(x = age.in.months, 
+                                      y = is.referenced.by.count, color = da_factor),  
+                                      position = position_jitter(width =0.5), size = 0.6) +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.5) +
+    
+    geom_smooth(data = j_metadata, aes(x = age.in.months, 
+                                      y = is.referenced.by.count, color = da_factor), size = 0.5, alpha = 0.4)+
+   labs(title = paste0("Model vs True Median Number of Citations from GLM.NB for\n", journals$container.title[[j]], " binned by month and da status"),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA\ngrey geom_smooth through the data",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+   # scale_x_discrete(breaks = seq(12, 120, 12)) +
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+print(plot) 
+}
+
+```
 
