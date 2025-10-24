@@ -34,8 +34,11 @@ nsd_yes_model <-
   log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
 
 ```
-## Validation of fit 
-- How many citations did a paper published in 2021 receive in each journal? 
+
+## Validation of fit
+
+-   How many citations did a paper published in 2021 receive in each
+    journal?
 
 ```{r cites_2021}
 
@@ -47,11 +50,13 @@ nsd_yes_metadata %>%
 
 
 ```
-## Using the existing model 
-- Remove JMBE, MRA, GA from modeling 
-- Train on papers <= 10 years old (age.in.months <= 120)
-- Re-create figure with and without a common axis
-- Previously N = 41,271, now N = 13,911
+
+## Using the existing model
+
+-   Remove JMBE, MRA, GA from modeling
+-   Train on papers \<= 10 years old (age.in.months \<= 120)
+-   Re-create figure with and without a common axis
+-   Previously N = 41,271, now N = 13,911
 
 ```{r re_model}
 
@@ -132,8 +137,7 @@ predicted_plot_fixed
 
 ```
 
-
-## For each journal separately, overlay citations by paper on model output for DA yes and DA no 
+## For each journal separately, overlay citations by paper on model output for DA yes and DA no
 
 ```{r}
 
@@ -143,7 +147,7 @@ journals <- ten_metadata %>%
   mutate(container.title = as.character(container.title)) %>%  
   dplyr::select(container.title)
   
-j<- 6
+# j<- 6
 
 for(j in 1:nrow(journals)) { 
   #filter metadata for that journal 
@@ -257,7 +261,9 @@ nsd_model <-
 predicted_plot_nsd
 
 ```
+
 ## Grab top 6 papers in spectrum for Pat (manually)
+
 ```{r}
 
 #get spectrum data
@@ -324,6 +330,7 @@ print(plot)
 
 
 ```
+
 ## Bin the data by the month and whether the data are available. Then calculate the median and the 25th and 75th quantile. Plot the median as a line plot and the 25th and 75th percentiles as the boundary as a ribbon. Might do it by the year if the viz looks too clunky because there aren't enough points to get a smooth curve.
 
 ```{r warning=FALSE}
@@ -381,6 +388,7 @@ print(plot)
 
 
 ```
+
 ## Using geom_smooth to fit a smoothed curve through the monthly data after taking the median on the data
 
 ```{r}
@@ -434,7 +442,8 @@ print(plot)
 
 
 ```
-## Using geom_smooth to fit a smoothed curve through the monthly data without taking the median on the data
+
+## Using geom_smooth to fit a smoothed curve through the monthly data without taking the median on the dat
 
 ```{r}
 
@@ -482,3 +491,55 @@ print(plot)
 
 ```
 
+## Updating the NB prediction for Microbiology Spectrum to only show predictions for 4 years
+
+-   I used free_x and free_y axes so that Spectrum more closely
+    resembled the graphs for the others, but let me know if you want
+    them fixed instead.
+
+```{r}
+
+#get data from model
+age_values <- seq(5, 120, 5)
+  p_10 <-  get_model_data(model = ten_model, type = "pred", 
+                    terms = c("da_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet)  %>%  
+     mutate(age.in.months = as.numeric(as.character(age.in.months)))
+
+#filter data from model to spectrum for 4 years (age.in.months <= 48)
+ spec_remove <-  
+   p_10 %>%  
+    mutate(age.in.months = as.numeric(as.character(age.in.months))) %>%  
+    filter(container.title == "Microbiology Spectrum" & age.in.months >= 48)
+ 
+ p_10_spec_trunc <- anti_join(p_10, spec_remove)
+
+#re-create figure with free axes
+  
+predicted_plot_spec <-
+    ggplot(data =  p_10_spec_trunc , 
+           mapping = aes(x = as.numeric(age.in.months), 
+                         y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free" ) +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA,\nSpectrum data <=48 months", 
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    # scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+predicted_plot_spec
+
+
+```
