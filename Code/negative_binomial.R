@@ -25,14 +25,18 @@ out_predicted_plot <- input[5]
 # out_contrast_plot <-"Figures/negative_binomial/emmeans_contrast_plot.png"
 # out_predicted_plot <-"Figures/negative_binomial/model_predicted_plot.png"
 
+#filter metadata 
+#nsd == yes, no NAs, get rid of mra, jmbe, ga, want age.in.months <=120
 nsd_yes_metadata <- 
   metadata %>% 
   filter(nsd == "Yes") %>%
   filter(., age.in.months != "NA" & da != "NA" & container.title != "NA") %>% 
+  filter(., journal_abrev != "jmbe" & journal_abrev != "mra" & journal_abrev != "genomea" & age.in.months <= 120) %>%
   mutate(da_factor = factor(da), 
          container.title = factor(container.title))
 
 
+#create nb model
 nsd_yes_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
         + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
         log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
@@ -93,13 +97,26 @@ differences <- contrast(
 
 # Plot the contrasts
 ratios_df <- as.data.frame(plot(differences, ratios = TRUE)$data)  %>% 
- filter(container.title != "Journal of Microbiology &amp; Biology Education" &
-        container.title != "Genome Announcements" & 
-        container.title != "Microbiology Resource Announcements")
+mutate(age.in.months = as.numeric(as.character(age.in.months)))
+
+#truncate for msys, msph, spec
+m_remove <-  
+ratios_df %>%  
+  filter((container.title == "mSystems" | container.title == "mSphere") & age.in.months >= 108) 
+
+spec_remove <- 
+ratios_df %>% 
+    filter((container.title == "Microbiology Spectrum" & age.in.months >= 48))
+
+to_remove <- 
+  full_join(m_remove, spec_remove)
+
+ratios_df_trunc <- 
+  anti_join(ratios_df, to_remove)
 
 contrast_plot <-
 ggplot(
-    data = ratios_df,
+    data = ratios_df_trunc,
     mapping = aes(x = age.in.months, y = the.emmean)
 ) +
    geom_hline(yintercept = 1.0, linetype = 2, linewidth = 0.25) + 
@@ -125,15 +142,27 @@ ggplot(
                     colors = "bw") %>%  
       tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, 
           age.in.months = .$group, container.title = .$facet) %>%   
-          filter(container.title != "Journal of Microbiology &amp; Biology Education" &
-        container.title != "Genome Announcements" & 
-        container.title != "Microbiology Resource Announcements")
+          mutate(age.in.months = as.numeric(as.character(age.in.months)))
+
         
+ spec_remove <-  
+   p %>%  
+    mutate(age.in.months = as.numeric(as.character(age.in.months))) %>%  
+    filter(container.title == "Microbiology Spectrum" & age.in.months >= 48)
+ 
+ #filter data from model to msystems and msphere to 9 years (age.in.months <=108)
+m_remove <- 
+ p %>%  
+    mutate(age.in.months = as.numeric(as.character(age.in.months))) %>%  
+    filter((container.title == "mSystems" | container.title == "mSphere") & age.in.months >= 108)
   
+to_remove <- full_join(spec_remove, m_remove)
+   
+p_trunc <- anti_join(p, to_remove)
   
     
-  predicted_plot <-
-    ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+predicted_plot <-
+    ggplot(data = p_trunc, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
                                 color = da_factor)) + 
    geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
    geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
@@ -150,7 +179,7 @@ ggplot(
     theme_classic() + 
     theme(legend.position = "bottom" ) 
 
-        ggsave(predicted_plot, file = out_predicted_plot)
+ggsave(predicted_plot, file = out_predicted_plot)
   
   
   
