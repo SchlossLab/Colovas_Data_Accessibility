@@ -133,14 +133,6 @@ Availablity of data contributed to the rapid sequencing of the SARS-CoV-2 virus 
 
 ## Results
 
-### General Description of the Experiment
-
-With microbiologists commonly uploading nucleic acid sequences to public databases, the aim of this study was to determine the current state of data availability in twelve primary research journals from the ASM journal program. We began by acquiring all papers published in the journals of interest between 2000 and 2024 using the Crossref database. We calculated descriptive statistics, and and then primary research articles were classified with using two machine learning models to answer two questions; "Does this paper contain new sequence data?", and "Are the data available?" Using our trained models, we were able to classify the over 150,000 papers from the whole dataset to determine if they were new sequencing data or contained available data. We were especially interested in the ways in which new sequencing data and data availability impact citation metrics. We performed statistical modeling to describe the data and generate summary statistics. This was valuable information towards encouraging researchers to make their data available, by showing if there was incentive for including raw (sequencing) data in a publication.
-
-## Descriptive Statistics
-
-2 training set graphs followed by 2 whole dataset graphs
-
 ```{r make_data_tables}
 
 training_data_table <-
@@ -164,12 +156,12 @@ training_data %>%
 #                 digits = n_digits)
 
 #let's make a graph instead
-# whole_fract_nsd <- 
+whole_fract_nsd <- 
     ggplot(training_data_table, aes(x = fract_nsd, y = container.title)) + 
         geom_point()  
         #labs(title = 'Fraction of papers with new sequencing data \n in Training Dataset')
 
-# whole_fract_da <- 
+whole_fract_da <- 
     ggplot(training_data_table, aes(x = fract_da, y = container.title)) + 
         geom_point() 
         #labs(title = 'Fraction of papers with new sequencing data \n and data availability in Training Dataset')
@@ -198,16 +190,16 @@ all_data %>%
 # kableExtra::kable(whole_dataset_table, caption = "Summary Statistics of All Data", 
 #                 digits = n_digits)
 
-# t_fract_nsd <- 
+t_fract_nsd <- 
     ggplot(whole_dataset_table, aes(x = fract_nsd, y = container.title)) + 
         geom_point() 
         #labs(title = 'Fraction of papers with new sequencing data \n in Whole Dataset')
-# t_fract_da <- 
+t_fract_da <- 
     ggplot(whole_dataset_table, aes(x = fract_da, y = container.title)) + 
         geom_point() 
         #labs(title = 'Fraction of papers with data availability \n in Whole Dataset')
 
-
+t_total <- nrow(training_data)
 
 ```
 
@@ -235,7 +227,8 @@ all_years <-
     count(., year.published) %>%
     rename(., n_whole_dataset = `n`)
 
-
+#find n for each journals 
+all_data 
 
 #journal w/ highest and lowest rate of nsd
 all_fract_high_nsd <- max(whole_dataset_table$fract_nsd)
@@ -273,9 +266,23 @@ all_min_median_cites <- min(all_avg_cites_j$median_refs, na.rm = TRUE)
 all_j_min_median_cites <- all_avg_cites_j[[which.min(all_avg_cites_j$median_refs), 1]]
 ```
 
-#### Whole Dataset
+```{r}
+# get N for each journal 
+n_journal <- 
+    all_data %>% 
+        count(container.title)
+n_journal[[3,2]] + n_journal[[9,2]] 
+```
 
-Using the Crossref database of DOIs, with validation from the Web of Science, NCBI, and Scopus DOI databases, we downloaded N = `{r} n_total` unique records of papers published in ASM journals between January 1st, 2000 and December 31st, 2024. These papers came from *Applied and Envrionmental Microbiology; Antimicrobial Agents and Chemotherapy; Infection and Immunity; Journal of Clinical Biology; Journal of Virology; Journal of Bacteriology; Journal of Microbiology and Biology Education; Microbiology Resource Announcments* (formerly known as *Genome Announcements*); *mSystems; mSphere; mBio; and Microbiology Spectrum.* After downloading the HTML content of each paper, we cleaned the HTML content and readied it to apply our machine learning models to classify each paper. Overall, `{r} round(all_per_nsd, n_digits)`% of papers had new sequencing data, and `{r} round(all_per_da, n_digits)`% of papers with new sequencing data, had data availability. See Figure 2XX for percentages of new sequencing data and data availability for each journal. The journal with the highest rate of new sequencing data was `{r} all_j_high_nsd` at `{r} round(all_fract_high_nsd, n_digits)`%, and the lowest was `{r} all_j_low_nsd` at `{r} round(all_fract_low_nsd, n_digits)`%. The journal with the highest rate of data availability was \*`{r} all_j_high_da`\* at `{r} round(all_fract_high_da, n_digits)`%, and the lowest was \*`{r} all_j_low_da`\* at `{r} round(all_fract_low_da, n_digits)`%. This was expected as \*`{r} all_j_high_nsd`\* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had a median of `{r} round(all_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table XXXX for data by journal. The journal with the highest median rate of citations/article was \*`{r} all_j_max_median_cites`\* at `{r} round(all_max_median_cites, n_digits)`%, and the lowest was \*`{r} all_j_min_median_cites`\* at `{r} round(all_min_median_cites, n_digits)`%. The journals in the dataset span years 2000-2024. See table XXXX for the distribution of papers per year in the dataset.
+#### Descriptive Statistics
+
+Using the Crossref database of DOIs, with validation from the Web of Science, NCBI, and Scopus DOI databases, we downloaded `{r} n_total` unique records of papers published in ASM journals. All papers were published between 2000 and 2024. These papers came from *Applied and Envrionmental Microbiology (N = `{r} n_journal[[1,2]]`), Antimicrobial Agents and Chemotherapy (N = `{r} n_journal[[2,2]]`), Infection and Immunity (N = `{r} n_journal[[4,2]]`), Journal of Bacteriology (N = `{r} n_journal[[5,2]]`), Journal of Clinical Microbiology (N = `{r} n_journal[[6,2]]`), Journal of Microbiology and Biology Education (N = `{r} n_journal[[7,2]]`), Journal of Virology (N = `{r} n_journal[[8,2]]`), Microbiology Resource Announcments* (formerly known as *Genome Announcements `{r}`* `n_journal[[3,2]] + n_journal[[9,2]]`), *Microbiology Spectrum* *(N = `{r} n_journal[[10,2]]`),* *mBio (N = `{r} n_journal[[11,2]]`), mSphere(N = `{r} n_journal[[12,2]]`), and mSystems (N = `{r} n_journal[[13,2]]`).*
+
+#### Training Dataset
+
+As `{r} n_total` is a large number of papers to investigate by hand, we created a subset of the whole dataset to train two machine learning models. This dataset was meant to be representative of the larger dataset and initially contained 500 papers. During iterative model training, a subset of papers were hand validated after each completed cycle. These subsets were created using dplyr's slice_n() to obtain papers from each journal. Additional hand selected papers were validated to ensure robust model training. Validated papers were added to the training set for future model training to provide a total of `{r} t_total` papers.
+
+After downloading the HTML content of each paper, we cleaned the HTML content and readied it to apply our machine learning models to classify each paper. Overall, `{r} round(all_per_nsd, n_digits)`% of papers had new sequencing data, and `{r} round(all_per_da, n_digits)`% of papers with new sequencing data, had data availability. See Figure 2XX for percentages of new sequencing data and data availability for each journal. The journal with the highest rate of new sequencing data was `{r} all_j_high_nsd` at `{r} round(all_fract_high_nsd, n_digits)`%, and the lowest was `{r} all_j_low_nsd` at `{r} round(all_fract_low_nsd, n_digits)`%. The journal with the highest rate of data availability was \*`{r} all_j_high_da`\* at `{r} round(all_fract_high_da, n_digits)`%, and the lowest was \*`{r} all_j_low_da`\* at `{r} round(all_fract_low_da, n_digits)`%. This was expected as \*`{r} all_j_high_nsd`\* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had a median of `{r} round(all_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table XXXX for data by journal. The journal with the highest median rate of citations/article was \*`{r} all_j_max_median_cites`\* at `{r} round(all_max_median_cites, n_digits)`%, and the lowest was \*`{r} all_j_min_median_cites`\* at `{r} round(all_min_median_cites, n_digits)`%. The journals in the dataset span years 2000-2024. See table XXXX for the distribution of papers per year in the dataset.
 
 ```{r training_data_stats}
 #ok now we need to find the percentages/data that we need 
@@ -349,10 +356,12 @@ full_join(all_years, t_years, by = join_by(year.published))
 kableExtra::kable(year_pub_table, caption = "Distribution of Year Published for Whole and Training Dataset", 
                         digits = n_digits)
 
-# whole_year_pub_graph <-
+whole_year_pub_graph <-
 ggplot(year_pub_table, aes(x = year.published, y = n_whole_dataset)) + 
     geom_point() 
    # labs(title = "Number of published papers \n per year in whole dataset")
+
+
 
 ```
 
