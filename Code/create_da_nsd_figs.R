@@ -73,3 +73,38 @@ whole_dataset_table<- left_join(whole_dataset_table, journal_table, by = "journa
         y = "ASM Journal" 
         ) + 
       scale_x_continuous(labels = scales::percent)
+
+
+# ok now to do this by time 
+
+time_dataset_table <-
+metadata %>% 
+    mutate(journal_abrev = ifelse(journal_abrev == "genomea", "mra", journal_abrev)) %>%
+    count(journal_abrev, nsd, da, year.published) %>%
+    na.omit() %>%
+    complete(., journal_abrev, nsd, da, year.published, fill = list(`n` = 0L)) %>%
+    mutate(.by = c(year.published, journal_abrev),
+               n_total = sum(`n`), 
+           n_fract = (n_total/sum(.$`n`)))  %>% 
+    filter(nsd == "Yes")  %>%
+       mutate(.by = journal_abrev,
+           n_nsd = sum(`n`), 
+           fract_nsd = n_nsd/n_total) %>%
+    filter(da == "Yes") %>% 
+    mutate(.by = journal_abrev, 
+          n_da = `n`, 
+          fract_da = n_da/n_nsd)
+
+
+#these fractions aren't quite right and i need to come back to this tomorrow 
+
+ggplot(time_dataset_table, aes(y = fract_nsd, x = year.published)) + 
+        geom_point()  + 
+        facet_wrap(vars(journal_abrev))
+    #     labs(title = "New sequencing data by ASM journal",
+    #     x = "Percentage of papers with new sequencing data", 
+    #     y = "ASM Journal"
+    #     ) + 
+    #   scale_x_continuous(labels = scales::percent)  
+
+# head(time_dataset_table)
