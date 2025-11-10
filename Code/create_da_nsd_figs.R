@@ -16,6 +16,8 @@ metadata %>%
     mutate(container.title = ifelse(str_detect(container.title, "&amp;"), 
             "Journal of Microbiology and Biology Education", container.title))
 
+
+
 #summarize data
 #whole dataset yay!
 whole_dataset_table <-
@@ -26,15 +28,15 @@ metadata %>%
     complete(., journal_abrev, nsd, da, fill = list(`n` = 0L)) %>%
     mutate(.by = journal_abrev, 
                n_total = sum(`n`), 
-           n_fract = (n_total/sum(.$`n`)*100))  %>% 
+           n_fract = (n_total/sum(.$`n`)))  %>% 
     filter(nsd == "Yes")  %>%
        mutate(.by = journal_abrev,
            n_nsd = sum(`n`), 
-           fract_nsd = n_nsd/n_total*100) %>%
+           fract_nsd = n_nsd/n_total) %>%
     filter(da == "Yes") %>% 
     mutate(.by = journal_abrev, 
           n_da = `n`, 
-          fract_da = n_da/n_nsd*100) %>%
+          fract_da = n_da/n_nsd) %>%
     select(journal_abrev, n_total:fract_da)
 
 
@@ -49,12 +51,25 @@ all_per_da <- count(metadata, nsd, da) %>%
             mutate(percent = `n`/sum(`n`)*100) %>%
             .[[2, 4]]
 
+
+whole_dataset_table<- left_join(whole_dataset_table, journal_table, by = "journal_abrev")
+
 # graphs 
+
 # whole_fract_nsd <- 
-    ggplot(whole_dataset_table, aes(x = fract_nsd, y = journal_abrev)) + 
+    ggplot(whole_dataset_table, aes(x = fract_nsd, y = container.title)) + 
         geom_point()  +
-        labs(title = "Fraction of papers with new sequencing data")
+        labs(title = "New sequencing data by ASM journal",
+        x = "Percentage of papers with new sequencing data", 
+        y = "ASM Journal"
+        ) + 
+      scale_x_continuous(labels = scales::percent)  
 
 # whole_fract_da <- 
     ggplot(whole_dataset_table, aes(x = fract_da, y = container.title)) + 
-        geom_point() 
+        geom_point() + 
+         labs(title = "New seqeuncing data papers with\ndata availability by ASM journal",
+        x = "Percentage of new sequencing papers with data available", 
+        y = "ASM Journal" 
+        ) + 
+      scale_x_continuous(labels = scales::percent)
