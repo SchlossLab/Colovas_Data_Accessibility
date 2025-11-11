@@ -87,7 +87,7 @@ training_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Access
 
 all_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
 
-n_digits <- 4
+n_digits <- 2
 
 # #nsd yes metadata needs to be updated at some point
 # nsd_data <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
@@ -155,16 +155,6 @@ training_data %>%
 # kableExtra::kable(training_data_table, caption = "Summary Statistics of Model Training Dataset", 
 #                 digits = n_digits)
 
-#let's make a graph instead
-whole_fract_nsd <- 
-    ggplot(training_data_table, aes(x = fract_nsd, y = container.title)) + 
-        geom_point()  
-        #labs(title = 'Fraction of papers with new sequencing data \n in Training Dataset')
-
-whole_fract_da <- 
-    ggplot(training_data_table, aes(x = fract_da, y = container.title)) + 
-        geom_point() 
-        #labs(title = 'Fraction of papers with new sequencing data \n and data availability in Training Dataset')
 
 
  
@@ -190,14 +180,6 @@ all_data %>%
 # kableExtra::kable(whole_dataset_table, caption = "Summary Statistics of All Data", 
 #                 digits = n_digits)
 
-t_fract_nsd <- 
-    ggplot(whole_dataset_table, aes(x = fract_nsd, y = container.title)) + 
-        geom_point() 
-        #labs(title = 'Fraction of papers with new sequencing data \n in Whole Dataset')
-t_fract_da <- 
-    ggplot(whole_dataset_table, aes(x = fract_da, y = container.title)) + 
-        geom_point() 
-        #labs(title = 'Fraction of papers with data availability \n in Whole Dataset')
 
 t_total <- nrow(training_data)
 
@@ -227,8 +209,6 @@ all_years <-
     count(., year.published) %>%
     rename(., n_whole_dataset = `n`)
 
-#find n for each journals 
-all_data 
 
 #journal w/ highest and lowest rate of nsd
 all_fract_high_nsd <- max(whole_dataset_table$fract_nsd)
@@ -271,16 +251,21 @@ all_j_min_median_cites <- all_avg_cites_j[[which.min(all_avg_cites_j$median_refs
 n_journal <- 
     all_data %>% 
         count(container.title)
-n_journal[[3,2]] + n_journal[[9,2]] 
+
 ```
 
 #### Descriptive Statistics
 
-Using the Crossref database of DOIs, with validation from the Web of Science, NCBI, and Scopus DOI databases, we downloaded `{r} n_total` unique records of papers published in ASM journals. All papers were published between 2000 and 2024. These papers came from *Applied and Envrionmental Microbiology (N = `{r} n_journal[[1,2]]`), Antimicrobial Agents and Chemotherapy (N = `{r} n_journal[[2,2]]`), Infection and Immunity (N = `{r} n_journal[[4,2]]`), Journal of Bacteriology (N = `{r} n_journal[[5,2]]`), Journal of Clinical Microbiology (N = `{r} n_journal[[6,2]]`), Journal of Microbiology and Biology Education (N = `{r} n_journal[[7,2]]`), Journal of Virology (N = `{r} n_journal[[8,2]]`), Microbiology Resource Announcments* (formerly known as *Genome Announcements `{r}`* `n_journal[[3,2]] + n_journal[[9,2]]`), *Microbiology Spectrum* *(N = `{r} n_journal[[10,2]]`),* *mBio (N = `{r} n_journal[[11,2]]`), mSphere(N = `{r} n_journal[[12,2]]`), and mSystems (N = `{r} n_journal[[13,2]]`).*
+Using the Crossref database of DOIs, with validation from the Web of Science, NCBI, and Scopus DOI databases, we downloaded `{r} n_total` unique records of papers published in ASM journals. All papers were published between 2000 and 2024. These papers came from *Applied and Envrionmental Microbiology (N = `{r} n_journal[[1,2]]`), Antimicrobial Agents and Chemotherapy (N = `{r} n_journal[[2,2]]`), Infection and Immunity (N = `{r} n_journal[[4,2]]`), Journal of Bacteriology (N = `{r} n_journal[[5,2]]`), Journal of Clinical Microbiology (N = `{r} n_journal[[6,2]]`), Journal of Microbiology and Biology Education (N = `{r} n_journal[[7,2]]`), Journal of Virology (N = `{r} n_journal[[8,2]]`), Microbiology Resource Announcments* (formerly known as *Genome Announcements `{r}`* `n_journal[[3,2]] + n_journal[[9,2]` ), *Microbiology Spectrum* *(N = `{r} n_journal[[10,2]]`),* *mBio (N = `{r} n_journal[[11,2]]`), mSphere(N = `{r} n_journal[[12,2]]`), and mSystems (N = `{r} n_journal[[13,2]]`).*
 
 #### Training Dataset
 
-As `{r} n_total` is a large number of papers to investigate by hand, we created a subset of the whole dataset to train two machine learning models. This dataset was representative of the larger dataset in age of paper and journal of origin and initially contained 500 papers. During iterative model training, a subset of papers were hand validated after each completed cycle. These subsets were created using dplyr's slice_n() to obtain papers from each journal. Additional hand selected papers were validated to ensure robust model training. Validated papers were added to the training set as we identified gaps in the dataset. This provided a total of `{r} t_total` papers.
+As this was a large number of papers to investigate by hand, we created a subset of data to train two machine learning models. This dataset was representative of the larger dataset in age of paper and journal of origin and initially contained 500 papers. During iterative model training, a subset of papers were hand validated after each completed cycle. These subsets were created using dplyr's slice_n() to obtain papers from each journal. Additional hand selected papers were validated to ensure robust model training. Validated papers were added to the training set as we identified gaps in the dataset. This provided a total of `{r} t_total` papers.
+
+```{r trained_model_stats}
+best_models <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/best_model_stats.csv")
+
+```
 
 #### Random Forest Modeling
 
@@ -288,106 +273,21 @@ Two random forest models were trained to predict if published scientific papers 
 
 Other models such as generalized linear regression (GLM) and boosted trees (XGBoost) were evaluated, but were ultimately rejected in favor of the random forest model due to fit (XX**data not shownXX**). Random forest models were chosen by their high Area Under the Receiver Operator Curve (AUROC) value to aid in this classification problem as the creation of many decision trees helps to improve accuracy and precision.
 
-These model tracings resulted in two different models to answer two different questions. The new sequencing data model used an mtry value of `{r} round(best_models[[1, 3]], n_digits)` had an Area Under the Curve(AUC) of `{r} round(best_models[[3, 3]], n_digits)` and an accuracy of `{r} round(best_models[[5, 3]], n_digits)`. The sensitivity of the new sequencing data model was `{r} round(best_models[[8,3]], n_digits)`, and the specificity of the model was `{r} round(best_models[[9,3]], n_digits)`. The data availability model used an mtry value of `{r} round(best_models[1,2], n_digits)` had an AUC of `{r} round(best_models[[3,2]], n_digits)` and an accuracy of `{r} round(best_models[[5,2]], n_digits)`. The sensitivity of the data availability model was `{r} round(best_models[[8,2]], n_digits)`, and the specificity of the model was `{r} round(best_models[[9,2]], n_digits)` (See Table 4XX for more information on trained machine learning models). This shows that the models fit the data well, and can provide classifications on new data with an expected error rate of less than 10%. We deemed this as acceptable, accounting for variability in papers and data, as well as the large size of the dataset on which we deployed the models.
+These model tracings resulted in two different models to answer two different questions. The new sequencing data model used an mtry value of `{r} round(best_models[[1, 3]], n_digits)` had an Area Under the Curve(AUC) of `{r} round(best_models[[3, 3]], n_digits)` and an accuracy of `{r} round(best_models[[5, 3]], n_digits)`. The sensitivity of the new sequencing data model was `{r} round(best_models[[8,3]], n_digits)`, and the specificity of the model was `{r} round(best_models[[9,3]], n_digits)`. The data availability model used an mtry value of `{r} round(best_models[1,2], n_digits)` had an AUC of `{r} round(best_models[[3,2]], n_digits)` and an accuracy of `{r} round(best_models[[5,2]], n_digits)`. The sensitivity of the data availability model was `{r} round(best_models[[8,2]], n_digits)`, and the specificity of the model was `{r} round(best_models[[9,2]], n_digits)` (See supplement for more information on trained machine learning models). This showed us that the models fit the data well, and could provide classifications on new data with an expected error rate of less than 10%. We deemed this as acceptable, accounting for variability in papers and data, as well as the large size of the dataset on which we deployed the models.
 
-#### De
+#### Deploying on 150K+ Papers
 
-After downloading the HTML content of each paper, we cleaned the HTML content and readied it to apply our machine learning models to classify each paper. Overall, `{r} round(all_per_nsd, n_digits)`% of papers had new sequencing data, and `{r} round(all_per_da, n_digits)`% of papers with new sequencing data, had data availability. See Figure 2XX for percentages of new sequencing data and data availability for each journal. The journal with the highest rate of new sequencing data was `{r} all_j_high_nsd` at `{r} round(all_fract_high_nsd, n_digits)`%, and the lowest was `{r} all_j_low_nsd` at `{r} round(all_fract_low_nsd, n_digits)`%. The journal with the highest rate of data availability was \*`{r} all_j_high_da`\* at `{r} round(all_fract_high_da, n_digits)`%, and the lowest was \*`{r} all_j_low_da`\* at `{r} round(all_fract_low_da, n_digits)`%. This was expected as \*`{r} all_j_high_nsd`\* publishes mainly new genomic sequence data and makes the data available. On average, papers in the dataset had a median of `{r} round(all_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table XXXX for data by journal. The journal with the highest median rate of citations/article was \*`{r} all_j_max_median_cites`\* at `{r} round(all_max_median_cites, n_digits)`%, and the lowest was \*`{r} all_j_min_median_cites`\* at `{r} round(all_min_median_cites, n_digits)`%. The journals in the dataset span years 2000-2024. See table XXXX for the distribution of papers per year in the dataset.
+After downloading the HTML content of each paper, we cleaned the HTML content and readied it to apply our machine learning models to classify each paper , in brief by removing non-meaningful words, followed by counting and filtering tokens, and finishing in model-compatible matrix format. Overall, `{r} round(all_per_nsd, n_digits)`% of papers had new sequencing data. The journal with the highest rate of new sequencing data was `{r} all_j_high_nsd` at `{r} round(all_fract_high_nsd, n_digits)`%, and the lowest was `{r} all_j_low_nsd` at `{r} round(all_fract_low_nsd, n_digits)`%. This was expected as *Genome Announcements* and *Microbiology Resource Announcements* were the primary places for the publication of new sequence data for ASM journals. In 2013, *Genome Announcements* was created to house papers describing new genomic sequencing efforts, and these publications were redirected from the *Journal of Bacteriology*. In 2018, *Genome Announcments* was re-branded to *Microbiology Resource Announcements*, the permanent home of new sequencing efforts. This change in journal scope for the *Journal of Bacteriology* explained the change in percentage of new sequencing data found in the journal over time. The *Journal of Microbiology and Biology Education*, as expected, contained the lowest percentage of new sequencing data. The scope of this journal is mainly resources for educators at the high school and college levels, and we did not expect papers to contain new sequencing data. In many of the ASM journals, the percentages of new sequencing data did not change significantly over time as their scope did not change. See Figure XX for percentages of new sequencing data for each journal, and figure XXX for the trends over time. (XX? Put figures in panel together for nsd overall and nsd over time? ) XX Other questions: XX Why did AEM go up so much in 2013ish? XX Should we discuss the IAI 2012ish blurb? XX
 
-```{r training_data_stats}
-#ok now we need to find the percentages/data that we need 
+![Percentage of papers with new sequencing data](images/fract_nsd.png)
 
-## Training dataset stats
+![Percentage of papers wth new sequencing data over time](images/time_nsd.png)
 
-n_training <- nrow(training_data)
-t_per_nsd <- count(training_data, new_seq_data) %>%
-            mutate(percent = `n`/sum(`n`)*100) %>%
-            .[[2, 3]]
+XXHEREXXX
 
-t_per_da <- count(training_data, new_seq_data, data_availability) %>%
-            filter(new_seq_data == "Yes") %>%
-            mutate(percent = `n`/sum(`n`)*100) %>%
-            .[[2, 4]]
+Of papers with new sequencing data, `{r} round(all_per_da, n_digits)`% of papers had data available. The journal with the highest rate of data availability was \*`{r} all_j_high_da`\* at `{r} round(all_fract_high_da, n_digits)`%, and the lowest was \*`{r} all_j_low_da`\* at `{r} round(all_fract_low_da, n_digits)`%. This was expected as \*`{r} all_j_high_nsd`\* publishes mainly new genomic sequence data and makes the data available.
 
-
-#journal w/ highest and lowest rate of nsd
-t_fract_high_nsd <- max(training_data_table$fract_nsd)
-t_j_high_nsd <- training_data_table[[which.max(training_data_table$fract_nsd), 1]]
-t_fract_low_nsd <- min(training_data_table$fract_nsd)
-t_j_low_nsd <- training_data_table[[which.min(training_data_table$fract_nsd), 1]]
-
-#journals w/ high/low rate da - two journals have 100% data availability
-t_fract_high_da <- max(training_data_table$fract_da, na.rm = TRUE)
-t_j_high_da <- training_data_table[training_data_table$fract_da == t_fract_high_da, 1] %>%
-               stringr::str_flatten(, collapse = " and ", na.rm = TRUE)
-
-t_fract_low_da <- min(training_data_table$fract_da, na.rm = TRUE)
-t_j_low_da <- training_data_table[[which.min(training_data_table$fract_da), 1]]
-
-
-## avg citations/paper
-t_total_avg_cites <- training_data %>% 
-    select(paper, container.title, is.referenced.by.count) %>% 
-    summarize(container.title = "Total",  
-              mean_refs = mean(is.referenced.by.count), 
-               median_refs = median(is.referenced.by.count))
-
-t_avg_cites_j <- training_data %>% 
-    select(paper, container.title, is.referenced.by.count) %>% 
-    summarize(.by = container.title, 
-              mean_refs = mean(is.referenced.by.count), 
-               median_refs = median(is.referenced.by.count))
-t_avg_cites <- rbind(t_avg_cites_j, t_total_avg_cites)
-
-t_max_median_cites <- max(t_avg_cites_j$median_refs, na.rm = TRUE)
-t_j_max_median_cites <- t_avg_cites_j[[which.max(t_avg_cites_j$median_refs), 1]]
-
-t_min_median_cites <- min(t_avg_cites_j$median_refs, na.rm = TRUE)
-t_j_min_median_cites <- t_avg_cites_j[[which.min(t_avg_cites_j$median_refs), 1]]
-
-```
-
-#### Training Dataset
-
-We created a subset of the whole dataset to train our machine learning models. The training dataset initially had N = 500 papers, but was increased over time due to gaps in the dataset, and after subsequent validation of the trained models (see below), a total of N = `{r} round(n_training, n_digits)`. XXSee Figure 1 for the distribution of papers per journal in the training dataset.XX The journals in the dataset also span years 2000-2024. See Figure 5XX for the distribution of papers per year in the whole and training datasets. Overall, `{r} round(t_per_nsd, n_digits)`% of papers had new sequencing data, and `{r} round(t_per_da, n_digits)`% of papers with new sequencing data, had data availability. See Figures 3 and 4 for percentages of new sequencing data and data availability for each journal. The journal with the highest rate of new sequencing data was \*`{r} t_j_high_nsd`\*at `{r} round(t_fract_high_nsd, n_digits)`%, and the lowest was \*`{r} t_j_low_nsd`\* at `{r} round(t_fract_low_nsd, n_digits)`%. The journals with the highest rate of data availability in new sequencing data papers were \*`{r} t_j_high_da`\* at `{r} round(t_fract_high_da, n_digits)`%, and the lowest was \*`{r} t_j_low_da`\* at `{r} round(t_fract_low_da, n_digits)`%. On average, papers in the dataset had median `{r} round(t_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table XXXX for data by journal. The journal with the highest rate of citations/article was \*`{r} t_j_max_median_cites`\* at `{r} round(t_max_median_cites, n_digits)`, and the lowest was \*`{r} t_j_min_median_cites`\*at `{r} round(t_min_median_cites, n_digits)`.
-
-### Year Published Distribution Table
-
-```{r}
-#year distribution - do we want a figure for this or the table? 
-t_years <- 
-    training_data %>% 
-    count(., year.published) %>%
-    rename(., n_training_dataset = `n`)
-
-year_pub_table <-
-full_join(all_years, t_years, by = join_by(year.published)) 
-
-kableExtra::kable(year_pub_table, caption = "Distribution of Year Published for Whole and Training Dataset", 
-                        digits = n_digits)
-
-whole_year_pub_graph <-
-ggplot(year_pub_table, aes(x = year.published, y = n_whole_dataset)) + 
-    geom_point() 
-   # labs(title = "Number of published papers \n per year in whole dataset")
-
-
-
-```
-
-### Descriptive Statisitcs about the Trained Models
-
-```{r trained_model_stats}
-best_models <- read_csv("/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Data/final/best_model_stats.csv")
-
-kableExtra::kable(best_models, caption = "Trained Model Summary Statistics", 
-                    digits = n_digits)
-
-```
-
-#### Figures for trained models
-
-![](../Figures/ml_results/groundtruth/rf/auroc.new_seq_data.png) ![](../Figures/ml_results/groundtruth/rf/auroc.data_availability.png) !["Mtry Performance New Sequencing Data"](../Figures/ml_results/groundtruth/rf/hp_perf.rf.new_seq_data.png) !["Mtry Performance Data Availability"](../Figures/ml_results/groundtruth/rf/hp_perf.rf.data_availability.png)
+See figures XXX and XXX for percentages of new sequencing data papers with data availability for each journal and over time.
 
 ### Regression Model using Negative Binomial Models
 
@@ -401,7 +301,13 @@ neg_bin_table <-
 
 ```
 
-In this study we sought to investigate the effect of new sequencing data and data availability on the number of citations received by a given paper. We focused on new sequencing data papers to determine the effect of having data availability. This led us to the use of a negative binomial regression model to best describe our data. All regression data had new sequencing data (new sequencing data == "Yes"). We focused on the continuous outcome of "number of citations" with predictor variables journal (categorical), age in months (continuous), and data availability status (dichotomous). Due to the number of citations being bell shaped with a long right tail (very few papers at advanced age with many citations, producing a flat but non-zero line), the model that best described our data was a negative binomial regression model. A negative binomial model is appropriate for data that begins at zero and has a long 'tail' of data, as well as has differing means per group. This model also includes a dispersion parameter, $\theta$ to describe the spread of the data. We applied a log transformation to our age variable (age.in.months) to make linear the relationship between time and number of citations received to help better describe the model relationship.
+XXHEREXXX
+
+In this study we sought to investigate the effect of new sequencing data and data availability on the number of citations received by a given paper. We focused on new sequencing data papers to determine the effect of having data availability.
+
+On average, papers in the dataset had a median of `{r} round(all_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table XXXX for data by journal. The journal with the highest median rate of citations/article was \*`{r} all_j_max_median_cites`\* at `{r} round(all_max_median_cites, n_digits)`%, and the lowest was \*`{r} all_j_min_median_cites`\* at `{r} round(all_min_median_cites, n_digits)`%.
+
+This led us to the use of a negative binomial regression model to best describe our data. All regression data had new sequencing data (new sequencing data == "Yes"). We focused on the continuous outcome of "number of citations" with predictor variables journal (categorical), age in months (continuous), and data availability status (dichotomous). Due to the number of citations being bell shaped with a long right tail (very few papers at advanced age with many citations, producing a flat but non-zero line), the model that best described our data was a negative binomial regression model. A negative binomial model is appropriate for data that begins at zero and has a long 'tail' of data, as well as has differing means per group. This model also includes a dispersion parameter, $\theta$ to describe the spread of the data. We applied a log transformation to our age variable (age.in.months) to make linear the relationship between time and number of citations received to help better describe the model relationship.
 
 $$
 N_(refs) = data availability + log(age.in.months) + journal + (journal*data availability) + (log(age.in.months)*data availability) + (journal*log(age.in.months)) + (log(age.in.months)*data availability*journal)

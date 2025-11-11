@@ -219,7 +219,7 @@ machine learning},
 
 \title{Data Accessibility Paper}
 \author{Joanna Colovas \and Adena Collens \and Patrick D. Schloss}
-\date{Nov 4, 2025}
+\date{Nov 11, 2025}
 \begin{document}
 \maketitle
 
@@ -465,71 +465,209 @@ vaccine development ((28)).
 
 \subsection{Results}\label{results}
 
-\subsubsection{General Description of the
-Experiment}\label{general-description-of-the-experiment}
+\begin{verbatim}
+# A tibble: 154,720 x 79
+   file                da    nsd   paper.x doi   doi_no_underscore journal_abrev
+   <chr>               <chr> <chr> <chr>   <chr> <chr>             <chr>        
+ 1 Data/html/10.1128_~ <NA>  <NA>  https:~ 10.1~ 10.1128/aac.      aac          
+ 2 Data/html/10.1128_~ No    No    https:~ 10.1~ 10.1128/aac.0000~ aac          
+ 3 Data/html/10.1128_~ No    No    https:~ 10.1~ 10.1128/aac.0000~ aac          
+ 4 Data/html/10.1128_~ No    Yes   https:~ 10.1~ 10.1128/aac.0000~ aac          
+ 5 Data/html/10.1128_~ No    No    https:~ 10.1~ 10.1128/aac.0000~ aac          
+ 6 Data/html/10.1128_~ No    No    https:~ 10.1~ 10.1128/aac.0000~ aac          
+ 7 Data/html/10.1128_~ No    No    https:~ 10.1~ 10.1128/aac.0000~ aac          
+ 8 Data/html/10.1128_~ No    No    https:~ 10.1~ 10.1128/aac.0000~ aac          
+ 9 Data/html/10.1128_~ No    No    https:~ 10.1~ 10.1128/aac.0000~ aac          
+10 Data/html/10.1128_~ No    No    https:~ 10.1~ 10.1128/aac.0000~ aac          
+# i 154,710 more rows
+# i 72 more variables: container.title <chr>, predicted <chr>,
+#   alternative.id <chr>, created <date>, deposited <date>,
+#   published.print <chr>, indexed <date>, issn <chr>, issue <dbl>,
+#   issued <chr>, member <dbl>, page <chr>, prefix <dbl>, publisher <chr>,
+#   score <dbl>, source <chr>, reference.count <dbl>, references.count <dbl>,
+#   is.referenced.by.count <dbl>, title <chr>, type <chr>, ...
+\end{verbatim}
 
-With microbiologists commonly uploading nucleic acid sequences to public
-databases, the aim of this study was to determine the current state of
-data availability in twelve primary research journals from the ASM
-journal program. We began by acquiring all papers published in the
-journals of interest between 2000 and 2024 using the Crossref database.
-We calculated descriptive statistics, and and then primary research
-articles were classified with using two machine learning models to
-answer two questions; ``Does this paper contain new sequence data?'',
-and ``Are the data available?'' Using our trained models, we were able
-to classify the over 150,000 papers from the whole dataset to determine
-if they were new sequencing data or contained available data. We were
-especially interested in the ways in which new sequencing data and data
-availability impact citation metrics. We performed statistical modeling
-to describe the data and generate summary statistics. This was valuable
-information towards encouraging researchers to make their data
-available, by showing if there was incentive for including raw
-(sequencing) data in a publication.
+\begin{verbatim}
+[1] 12601
+\end{verbatim}
 
-\subsection{Descriptive Statistics}\label{descriptive-statistics}
-
-2 training set graphs followed by 2 whole dataset graphs
-
-\pandocbounded{\includegraphics[keepaspectratio]{asm_manuscript_files/figure-pdf/make_data_tables-1.pdf}}
-
-\pandocbounded{\includegraphics[keepaspectratio]{asm_manuscript_files/figure-pdf/make_data_tables-2.pdf}}
-
-\pandocbounded{\includegraphics[keepaspectratio]{asm_manuscript_files/figure-pdf/make_data_tables-3.pdf}}
-
-\pandocbounded{\includegraphics[keepaspectratio]{asm_manuscript_files/figure-pdf/make_data_tables-4.pdf}}
-
-\paragraph{Whole Dataset}\label{whole-dataset}
+\paragraph{Descriptive Statistics}\label{descriptive-statistics}
 
 Using the Crossref database of DOIs, with validation from the Web of
-Science, NCBI, and Scopus DOI databases, we downloaded N = 154720 unique
-records of papers published in ASM journals between January 1st, 2000
-and December 31st, 2024. These papers came from \emph{Applied and
-Envrionmental Microbiology; Antimicrobial Agents and Chemotherapy;
-Infection and Immunity; Journal of Clinical Biology; Journal of
-Virology; Journal of Bacteriology; Journal of Microbiology and Biology
-Education; Microbiology Resource Announcments} (formerly known as
-\emph{Genome Announcements}); \emph{mSystems; mSphere; mBio; and
-Microbiology Spectrum.} After downloading the HTML content of each
-paper, we cleaned the HTML content and readied it to apply our machine
-learning models to classify each paper. Overall, 26.9429\% of papers had
-new sequencing data, and 58.8615\% of papers with new sequencing data,
-had data availability. See Figure 2XX for percentages of new sequencing
-data and data availability for each journal. The journal with the
-highest rate of new sequencing data was Genome Announcements at
-98.7191\%, and the lowest was Journal of Microbiology \& Biology
-Education at 0.3065\%. The journal with the highest rate of data
-availability was *Microbiology Resource Announcements* at 99.8259\%, and
-the lowest was *Journal of Clinical Microbiology* at 13.4393\%. This was
-expected as *Genome Announcements* publishes mainly new genomic sequence
-data and makes the data available. On average, papers in the dataset had
-a median of 25 citations/article. This number varies by journal, see
-table XXXX for data by journal. The journal with the highest median rate
-of citations/article was *Applied and Environmental Microbiology* at
-38\%, and the lowest was *Microbiology Resource Announcements* at 1\%.
-The journals in the dataset span years 2000-2024. See table XXXX for the
-distribution of papers per year in the dataset.
+Science, NCBI, and Scopus DOI databases, we downloaded 154720 unique
+records of papers published in ASM journals. All papers were published
+between 2000 and 2024. These papers came from \emph{Applied and
+Envrionmental Microbiology (N = 20401), Antimicrobial Agents and
+Chemotherapy (N = 21943), Infection and Immunity (N = 14500), Journal of
+Bacteriology (N = 16821), Journal of Clinical Microbiology (N = 18450),
+Journal of Microbiology and Biology Education (N = 1312), Journal of
+Virology (N = 29797), Microbiology Resource Announcments} (formerly
+known as \emph{Genome Announcements \texttt{\{r\}}}
+\texttt{n\_journal{[}{[}3,2{]}{]}\ +\ n\_journal{[}{[}9,2{]}{]}}),
+\emph{Microbiology Spectrum} \emph{(N = 6120),} \emph{mBio (N = 7732),
+mSphere(N = 2712), and mSystems (N = 2331).}
 
 \paragraph{Training Dataset}\label{training-dataset}
+
+As 154720 is a large number of papers to investigate by hand, we created
+a subset of the whole dataset to train two machine learning models. This
+dataset was representative of the larger dataset in age of paper and
+journal of origin and initially contained 500 papers. During iterative
+model training, a subset of papers were hand validated after each
+completed cycle. These subsets were created using dplyr's slice\_n() to
+obtain papers from each journal. Additional hand selected papers were
+validated to ensure robust model training. Validated papers were added
+to the training set as we identified gaps in the dataset. This provided
+a total of 1045 papers.
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{Trained Model Summary Statistics}\tabularnewline
+\toprule\noalign{}
+key & da\_model & nsd\_model \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+key & da\_model & nsd\_model \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+mtry & 300.00 & 200.00 \\
+logLoss & 0.19 & 0.28 \\
+AUC & 0.99 & 0.96 \\
+prAUC & 0.95 & 0.95 \\
+Accuracy & 0.95 & 0.90 \\
+Kappa & 0.88 & 0.80 \\
+F1 & 0.96 & 0.92 \\
+Sensitivity & 0.96 & 0.94 \\
+Specificity & 0.92 & 0.86 \\
+Pos\_Pred\_Value & 0.96 & 0.90 \\
+Neg\_Pred\_Value & 0.93 & 0.91 \\
+Precision & 0.96 & 0.90 \\
+Recall & 0.96 & 0.94 \\
+Detection\_Rate & 0.62 & 0.53 \\
+Balanced\_Accuracy & 0.94 & 0.90 \\
+logLossSD & 0.02 & 0.02 \\
+AUCSD & 0.01 & 0.01 \\
+prAUCSD & 0.01 & 0.01 \\
+AccuracySD & 0.01 & 0.02 \\
+KappaSD & 0.03 & 0.04 \\
+F1SD & 0.01 & 0.02 \\
+SensitivitySD & 0.02 & 0.02 \\
+SpecificitySD & 0.03 & 0.04 \\
+Pos\_Pred\_ValueSD & 0.02 & 0.02 \\
+Neg\_Pred\_ValueSD & 0.03 & 0.03 \\
+PrecisionSD & 0.02 & 0.02 \\
+RecallSD & 0.02 & 0.02 \\
+Detection\_RateSD & 0.01 & 0.01 \\
+Balanced\_AccuracySD & 0.02 & 0.02 \\
+\end{longtable}
+
+\paragraph{Random Forest Modeling}\label{random-forest-modeling}
+
+Two random forest models were trained to predict if published scientific
+papers ``contained new sequence data'', and if the paper ``had data
+available'', one model for each variable. Each model was trained using
+the same set of data, the normalized number of times a word or set of
+words appears in each paper in the set. Briefly, the HTML content of
+each paper was cleaned to removed non-meaningful words such as ``a, an,
+the'', and separated into tokens, meaningful units of 1 - 3 words. These
+tokens were also modified to eliminate issues with word tense. For
+example ``interest\_importance'' was a two word token that appeared in
+the model. These tokens were summed and normalized to each other and
+were presented to the model as a table with each row as a paper, and
+each column as the frequency of a specific token. See methods for more
+information on this process.
+
+Other models such as generalized linear regression (GLM) and boosted
+trees (XGBoost) were evaluated, but were ultimately rejected in favor of
+the random forest model due to fit (XX\textbf{data not shownXX}). Random
+forest models were chosen by their high Area Under the Receiver Operator
+Curve (AUROC) value to aid in this classification problem as the
+creation of many decision trees helps to improve accuracy and precision.
+
+These model tracings resulted in two different models to answer two
+different questions. The new sequencing data model used an mtry value of
+200 had an Area Under the Curve(AUC) of 0.96 and an accuracy of 0.9. The
+sensitivity of the new sequencing data model was 0.94, and the
+specificity of the model was 0.86. The data availability model used an
+mtry value of 300 had an AUC of 0.99 and an accuracy of 0.95. The
+sensitivity of the data availability model was 0.96, and the specificity
+of the model was 0.92 (See Table 4XX for more information on trained
+machine learning models). This shows that the models fit the data well,
+and can provide classifications on new data with an expected error rate
+of less than 10\%. We deemed this as acceptable, accounting for
+variability in papers and data, as well as the large size of the dataset
+on which we deployed the models.
+
+\paragraph{Deploying on 150K+ Papers}\label{deploying-on-150k-papers}
+
+After downloading the HTML content of each paper, we cleaned the HTML
+content and readied it to apply our machine learning models to classify
+each paper , in brief by removing non-meaningful words, followed by
+counting and filtering tokens, and finishing in model-compatible matrix
+format. Overall, 26.94\% of papers had new sequencing data. The journal
+with the highest rate of new sequencing data was Genome Announcements at
+98.72\%, and the lowest was Journal of Microbiology \& Biology Education
+at 0.31\%. This was expected as \emph{Genome Announcements} and
+\emph{Microbiology Resource Announcements} were the primary places for
+the publication of new sequence data for ASM journals. In 2013,
+\emph{Genome Announcements} was created to house papers describing new
+genomic sequencing efforts, and these publications were redirected from
+the \emph{Journal of Bacteriology}. In 2018, \emph{Genome Announcments}
+was re-branded to \emph{Microbiology Resource Announcements}, the
+permanent home of new sequencing efforts. This change in journal scope
+for the \emph{Journal of Bacteriology} explained the change in
+percentage of new sequencing data found in the journal over time. The
+\emph{Journal of Microbiology and Biology Education}, as expected,
+contained the lowest percentage of new sequencing data. The scope of
+this journal is mainly resources for educators at the high school and
+college levels, and we did not expect papers to contain new sequencing
+data. In many of the ASM journals, the percentages of new sequencing
+data did not change significantly over time as their scope did not
+change. See Figure XX for percentages of new sequencing data for each
+journal, and figure XXX for the trends over time. (XX? Put figures in
+panel together for nsd overall and nsd over time? ) XX Other questions:
+XX Why did AEM go up so much in 2013ish? XX Should we discuss the IAI
+2012ish blurb? XX
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{images/fract_nsd.png}}
+
+}
+
+\caption{Percentage of papers with new sequencing data}
+
+\end{figure}%
+
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{images/time_nsd.png}}
+
+}
+
+\caption{Percentage of papers wth new sequencing data over time}
+
+\end{figure}%
+
+Of papers with new sequencing data, 58.86\% of papers had data
+available.
+
+The journal with the highest rate of data availability was *Microbiology
+Resource Announcements* at 99.83\%, and the lowest was *Journal of
+Clinical Microbiology* at 13.44\%. This was expected as *Genome
+Announcements* publishes mainly new genomic sequence data and makes the
+data available. On average, papers in the dataset had a median of 25
+citations/article. This number varies by journal, see table XXXX for
+data by journal. The journal with the highest median rate of
+citations/article was *Applied and Environmental Microbiology* at 38\%,
+and the lowest was *Microbiology Resource Announcements* at 1\%. See
+figures XXX and XXX for percentages of new sequencing data papers with
+data availability for each journal and over time.
+
+\paragraph{Training Dataset}\label{training-dataset-1}
 
 We created a subset of the whole dataset to train our machine learning
 models. The training dataset initially had N = 500 papers, but was
@@ -538,17 +676,17 @@ validation of the trained models (see below), a total of N = 1045. XXSee
 Figure 1 for the distribution of papers per journal in the training
 dataset.XX The journals in the dataset also span years 2000-2024. See
 Figure 5XX for the distribution of papers per year in the whole and
-training datasets. Overall, 43.7321\% of papers had new sequencing data,
-and 80.9628\% of papers with new sequencing data, had data availability.
+training datasets. Overall, 43.73\% of papers had new sequencing data,
+and 80.96\% of papers with new sequencing data, had data availability.
 See Figures 3 and 4 for percentages of new sequencing data and data
 availability for each journal. The journal with the highest rate of new
-sequencing data was *Genome Announcements*at 96.6667\%, and the lowest
-was *Journal of Microbiology \& Biology Education* at 0\%. The journals
-with the highest rate of data availability in new sequencing data papers
-were *Genome Announcements and mSystems* at 100\%, and the lowest was
-*Journal of Virology* at 28.5714\%. On average, papers in the dataset
-had median 10 citations/article. This number varies by journal, see
-table XXXX for data by journal. The journal with the highest rate of
+sequencing data was *Genome Announcements*at 96.67\%, and the lowest was
+*Journal of Microbiology \& Biology Education* at 0\%. The journals with
+the highest rate of data availability in new sequencing data papers were
+*Genome Announcements and mSystems* at 100\%, and the lowest was
+*Journal of Virology* at 28.57\%. On average, papers in the dataset had
+median 10 citations/article. This number varies by journal, see table
+XXXX for data by journal. The journal with the highest rate of
 citations/article was *Infection and Immunity* at 40, and the lowest was
 *Microbiology Resource Announcements*at 0.
 
@@ -596,53 +734,8 @@ year.published & n\_whole\_dataset & n\_training\_dataset \\
 NA & 429 & 10 \\
 \end{longtable}
 
-\pandocbounded{\includegraphics[keepaspectratio]{asm_manuscript_files/figure-pdf/unnamed-chunk-2-1.pdf}}
-
 \subsubsection{Descriptive Statisitcs about the Trained
 Models}\label{descriptive-statisitcs-about-the-trained-models}
-
-\begin{longtable}[]{@{}lrr@{}}
-\caption{Trained Model Summary Statistics}\tabularnewline
-\toprule\noalign{}
-key & da\_model & nsd\_model \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-key & da\_model & nsd\_model \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-mtry & 300.0000 & 200.0000 \\
-logLoss & 0.1864 & 0.2848 \\
-AUC & 0.9878 & 0.9645 \\
-prAUC & 0.9468 & 0.9465 \\
-Accuracy & 0.9464 & 0.9036 \\
-Kappa & 0.8826 & 0.8029 \\
-F1 & 0.9586 & 0.9160 \\
-Sensitivity & 0.9610 & 0.9350 \\
-Specificity & 0.9199 & 0.8631 \\
-Pos\_Pred\_Value & 0.9565 & 0.8984 \\
-Neg\_Pred\_Value & 0.9290 & 0.9128 \\
-Precision & 0.9565 & 0.8984 \\
-Recall & 0.9610 & 0.9350 \\
-Detection\_Rate & 0.6204 & 0.5257 \\
-Balanced\_Accuracy & 0.9404 & 0.8991 \\
-logLossSD & 0.0153 & 0.0206 \\
-AUCSD & 0.0051 & 0.0107 \\
-prAUCSD & 0.0131 & 0.0127 \\
-AccuracySD & 0.0145 & 0.0189 \\
-KappaSD & 0.0317 & 0.0388 \\
-F1SD & 0.0112 & 0.0162 \\
-SensitivitySD & 0.0163 & 0.0233 \\
-SpecificitySD & 0.0294 & 0.0364 \\
-Pos\_Pred\_ValueSD & 0.0152 & 0.0240 \\
-Neg\_Pred\_ValueSD & 0.0277 & 0.0283 \\
-PrecisionSD & 0.0152 & 0.0240 \\
-RecallSD & 0.0163 & 0.0233 \\
-Detection\_RateSD & 0.0105 & 0.0133 \\
-Balanced\_AccuracySD & 0.0165 & 0.0199 \\
-\end{longtable}
 
 \paragraph{Figures for trained models}\label{figures-for-trained-models}
 
@@ -650,45 +743,6 @@ Balanced\_AccuracySD & 0.0165 & 0.0199 \\
 \pandocbounded{\includegraphics[keepaspectratio]{../Figures/ml_results/groundtruth/rf/auroc.data_availability.png}}
 \pandocbounded{\includegraphics[keepaspectratio]{../Figures/ml_results/groundtruth/rf/hp_perf.rf.new_seq_data.png}}
 \pandocbounded{\includegraphics[keepaspectratio]{../Figures/ml_results/groundtruth/rf/hp_perf.rf.data_availability.png}}
-
-Two random forest (rf) models were trained to predict if published
-scientific papers ``contained new sequence data'', and if the paper
-``had data available'', one model for each variable. Other models such
-as generalized linear regression (GLM) and boosted trees (XGBoost) were
-explored, but were ultimately discarded in favor of the random forest
-model (data not shown). A random forest model takes into account of
-number of predictors, and builds decision trees to vote on the most
-likely dichotomous answer. Random forest models were chosen to aid in
-this classification problem as the creation of many decision trees helps
-to improve accuracy and precision. This type of model has one
-hyperparameter, `mtry' or the number of predictors to be sampled at each
-decision. During iterative model training, a subset of papers were
-validated after each completed training and deployment of each model.
-Papers from each journal, and extras from certain journals were
-hand-validated against model predictions to generate confusion matrices.
-Confusion matrices help generate an additional estimate of how well a
-model fits a set of data. Confusion matrices for the final version of
-each trained model are available in XXXX table(supplement?). To evaluate
-the fit of the model, we used the Area Under the Receiver Operator Curve
-(AUROC) which indicates how well the model classifies the given data. An
-AUROC of 0.5 is a random 50/50 guess, and an AURCO of 1.0 indicates that
-the model always classifies a new item correctly.
-
-Each model was trained using the same set of data, the normalized number
-of times a word or set of words appears in each paper in the set. This
-resulted in two different models to answer two different questions. The
-new sequencing data model used an mtry value of 200 had an Area Under
-the Curve(AUC) of 0.9645 and an accuracy of 0.9036. The sensitivity of
-the new sequencing data model was 0.935, and the specificity of the
-model was 0.8631. The data availability model used an mtry value of 300
-had an AUC of 0.9878 and an accuracy of 0.9464. The sensitivity of the
-data availability model was 0.961, and the specificity of the model was
-0.9199 (See Table 4XX for more information on trained machine learning
-models). This shows that the models fit the data well, and can provide
-classifications on new data with an expected error rate of less than
-10\%. We deemed this as acceptable, accounting for variability in papers
-and data, as well as the large size of the dataset on which we deployed
-the models.
 
 \subsubsection{Regression Model using Negative Binomial
 Models}\label{regression-model-using-negative-binomial-models}
@@ -753,7 +807,7 @@ available increases citation metrics over time, an added benefit to
 authors for the effort of making their data available.
 
 On average, more than half of papers with new sequencing data had data
-availability (58.8615\%), showing that authors of new sequencing data
+availability (58.86\%), showing that authors of new sequencing data
 papers are more often than not, making their data publicly available.
 This is in line with recent NIH policy requiring that data be made
 available using the Data Management and Sharing Plan (DMS plan) outlined
