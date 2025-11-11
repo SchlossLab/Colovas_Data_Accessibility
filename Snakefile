@@ -56,7 +56,8 @@ rule targets:
         # "Data/final/predicted_results.csv.gz"
         # "Data/final/predictions_with_metadata.csv.gz", 
         # "Figures/citationrate_byjournal.png"
-        "Figures/negative_binomial/model_predicted_plot.png"
+        # "Figures/negative_binomial/model_predicted_plot.png"
+        "Figures/summary_stats/fract_nsd.png"
 
         
 
@@ -284,6 +285,22 @@ rule nsdyes_figs:
         """
         {input.rscript} {input.metadata} 
         """
+
+
+rule da_nsd_figs: 
+    input: 
+        rscript = "Code/create_da_nsd_figs.R",
+        metadata = "Data/final/predictions_with_metadata.csv.gz"
+    output: 
+        "Figures/summary_stats/time_da.png"
+        "Figures/summary_stats/time_nsd.png"
+        "Figures/summary_stats/fract_da.png"
+        "Figures/summary_stats/fract_nsd.png"
+    shell: 
+        """
+        {input.rscript} {input.metadata} 
+        """
+
 # ----------- statistical modeling -------------------------------------
 
 rule neg_binomial: 

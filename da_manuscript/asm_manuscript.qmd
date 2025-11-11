@@ -282,7 +282,7 @@ Using the Crossref database of DOIs, with validation from the Web of Science, NC
 
 As `{r} n_total` is a large number of papers to investigate by hand, we created a subset of the whole dataset to train two machine learning models. This dataset was representative of the larger dataset in age of paper and journal of origin and initially contained 500 papers. During iterative model training, a subset of papers were hand validated after each completed cycle. These subsets were created using dplyr's slice_n() to obtain papers from each journal. Additional hand selected papers were validated to ensure robust model training. Validated papers were added to the training set as we identified gaps in the dataset. This provided a total of `{r} t_total` papers.
 
-#### Random Forest Modeling 
+#### Random Forest Modeling
 
 Two random forest models were trained to predict if published scientific papers "contained new sequence data", and if the paper "had data available", one model for each variable. Each model was trained using the same set of data, the normalized number of times a word or set of words appears in each paper in the set. Briefly, the HTML content of each paper was cleaned to removed non-meaningful words such as "a, an, the", and separated into tokens, meaningful units of 1 - 3 words. These tokens were also modified to eliminate issues with word tense. For example "interest_importance" was a two word token that appeared in the model. These tokens were summed and normalized to each other and were presented to the model as a table with each row as a paper, and each column as the frequency of a specific token. See methods for more information on this process.
 
