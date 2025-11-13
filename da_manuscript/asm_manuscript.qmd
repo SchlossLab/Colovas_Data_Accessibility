@@ -183,6 +183,7 @@ all_data %>%
 
 t_total <- nrow(training_data)
 
+
 ```
 
 ```{r whole_dataset_stats}
@@ -281,13 +282,13 @@ After downloading the HTML content of each paper, we cleaned the HTML content an
 
 ![Percentage of papers with new sequencing data](images/fract_nsd.png)
 
-![Percentage of papers wth new sequencing data over time](images/time_nsd.png)
+![Percentage of papers with new sequencing data over time](images/time_nsd.png)
 
-XXHEREXXX
+Of all papers with new sequencing data, `{r} round(all_per_da, n_digits)`% of papers had data available. The journal with the highest rate of data availability was \*`{r} all_j_high_da`\* at `{r} round(all_fract_high_da, n_digits)`%, and the lowest was \*`{r} all_j_low_da`\* at `{r} round(all_fract_low_da, n_digits)`%. Similarly to the new sequencing data, this was expected as \*`{r} all_j_high_da`\* publishes new genomic sequence data for ASM and makes the data available per journal requirements. While overall data availability rates appeared low, these values took into account all papers published over the entire time period of interest. When plotted over time, data availability rates trended upwards over time, with a greater fraction of papers with new sequencing data having made their data available. As before, the *Journal of Bacteriology* had an upward trajectory until the redirection of papers to *Genome Announcements* and *Microbiology Resource Announcements* in 2013 and beyond. In 2023, the NIH policy requiring a data management and sharing plan (DMS) went into effect. All of the ASM journals show an upward trend in data availability in 2023 and 2024 to comply with funding agency policy. The *Journal of Microbiology and Biology Education* published so few papers during this period with new sequencing data, that they did not publish any papers with data available. See figures XXX and XXX for percentages of new sequencing data papers with data availability for each journal and over time. XX??Want to investigate some of the weirdly high years for major disease outbreaks/policy changes/editor changesXXX
 
-Of papers with new sequencing data, `{r} round(all_per_da, n_digits)`% of papers had data available. The journal with the highest rate of data availability was \*`{r} all_j_high_da`\* at `{r} round(all_fract_high_da, n_digits)`%, and the lowest was \*`{r} all_j_low_da`\* at `{r} round(all_fract_low_da, n_digits)`%. This was expected as \*`{r} all_j_high_nsd`\* publishes mainly new genomic sequence data and makes the data available.
+![Percentage of new sequencing papers with data available](images/fract_da.png)
 
-See figures XXX and XXX for percentages of new sequencing data papers with data availability for each journal and over time.
+![Percentage of new sequencing papers with data available over time](images/time_da.png)
 
 ### Regression Model using Negative Binomial Models
 
@@ -373,7 +374,7 @@ To train our random forest machine learning model, we first created an appropria
 
 ### Adding Additional Training Set Papers
 
-After initial training of our random forest models, a random sampling of papers was collected for each journal using dplyr's slice_n() to audit the efficacy of the models (@dplyr). To audit the efficacy of the models, we hand identified the status of both variables of interest, new sequencing data and data availability. We looked for weaknesses in the models, and updated methodology to reflect important areas of interest. For example, in 2023 the ASM journals changed their formatting to include the data availability statement of a paper in a sidebar of the webpage. We identified this by noticing that all papers from journal *Microbiology Resource Announcements* from 2023-2024 were incorrectly characterized by the model as data availability = No. The sidebar of the webpage was not included in the text the model was considering, and code had to be updated to include all sidebar data for all papers. These improvements to the model created a larger and more comprehensive training set of N = `r n_training`. These validations allowed us to create confusion matrices for each model. Confusion matrices for the final version of each trained model are available in XXX table(XXsupplement?).
+After initial training of our random forest models, a random sampling of papers was collected for each journal using dplyr's slice_n() to audit the efficacy of the models (@dplyr). To audit the efficacy of the models, we hand identified the status of both variables of interest, new sequencing data and data availability. We looked for weaknesses in the models, and updated methodology to reflect important areas of interest. For example, in 2023 the ASM journals changed their formatting to include the data availability statement of a paper in a sidebar of the webpage. We identified this by noticing that all papers from journal *Microbiology Resource Announcements* from 2023-2024 were incorrectly characterized by the model as data availability = No. The sidebar of the webpage was not included in the text the model was considering, and code had to be updated to include all sidebar data for all papers. These improvements to the model created a larger and more comprehensive training set of N = `r t_total`. These validations allowed us to create confusion matrices for each model. Confusion matrices for the final version of each trained model are available in XXX table(XXsupplement?).
 
 ### Creation of the Training Data from Training dataset
 
