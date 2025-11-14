@@ -56,7 +56,7 @@ rule targets:
         # "Data/final/predicted_results.csv.gz"
         # "Data/final/predictions_with_metadata.csv.gz", 
         # "Figures/citationrate_byjournal.png"
-        # "Figures/negative_binomial/model_predicted_plot.png"
+        "Figures/negative_binomial/model_predicted_plot.png",
         "Figures/summary_stats/fract_nsd.png"
 
         
