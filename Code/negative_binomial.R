@@ -175,7 +175,7 @@ predicted_plot <-
         y = "Predicted Number Citations", 
         color = "Data availability\nwith 95% CI", 
         fill = "Data availability\nwith 95% CI") + 
-    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    # scale_x_discrete(breaks = seq(12, 120, 12)) + 
     theme_classic() + 
     theme(legend.position = "bottom" ) 
 
