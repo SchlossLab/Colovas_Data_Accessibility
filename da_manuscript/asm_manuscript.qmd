@@ -302,29 +302,13 @@ neg_bin_table <-
 
 ```
 
-XXHEREXXX
+In this study we sought to investigate the effect of new sequencing data and data availability on the number of citations received by a given paper. We focused on new sequencing data papers to determine the effect of having data available. On average, papers in the dataset had a median of `{r} round(all_total_avg_cites$median_refs, n_digits)` citations/article. The journal with the highest median rate of citations/article was \*`{r} all_j_max_median_cites`\* at `{r} round(all_max_median_cites, n_digits)`, and the lowest was \*`{r} all_j_min_median_cites`\* at `{r} round(all_min_median_cites, n_digits)`. To further investigate the effects of time (age in months), the journal that a given paper was published in, and the data availability status, a negative binomial regression model was used to best describe our data (see methods). We also limited our analysis to the last ten years of data (age in months \<=120) to exclude the change in scope for *Journal of Bacteriology* and removed papers from before the re-brand of *Microbiology Spectrum*. Our model has shown that over time, new sequencing papers with data available have a greater number of citations than those that do not have their data available(fig XXX). This relationship holds true in each journal publishing primary research articles. In journals *mSystems and Infection and Immunity*, the confidence intervals overlap, but that phenomenon was attributed to the low number of papers from these two journals with no data available.
 
-In this study we sought to investigate the effect of new sequencing data and data availability on the number of citations received by a given paper. We focused on new sequencing data papers to determine the effect of having data availability.
+In figure XX, we calculated the ratio of number of citations for papers of similar age containing data vs those that did not contain data by journal. Over time, papers with data available received more citations than those without up to well over 2 times more citations in the *Journal of Clinical Microbiology*. In all journals, papers with data availability had a greater number of citations at time point 60 months after publication, if not sooner. During the time interval this ratio grew, demonstrating increased citations for papers with data available available over time compared to those without, and the difference grew over the time interval.
 
-On average, papers in the dataset had a median of `{r} round(all_total_avg_cites$median_refs, n_digits)` citations/article. This number varies by journal, see table XXXX for data by journal. The journal with the highest median rate of citations/article was \*`{r} all_j_max_median_cites`\* at `{r} round(all_max_median_cites, n_digits)`%, and the lowest was \*`{r} all_j_min_median_cites`\* at `{r} round(all_min_median_cites, n_digits)`%.
+![Predicted Number of Citations via Negative Binomial Model](images/model_predicted_plot.png)
 
-This led us to the use of a negative binomial regression model to best describe our data. All regression data had new sequencing data (new sequencing data == "Yes"). We focused on the continuous outcome of "number of citations" with predictor variables journal (categorical), age in months (continuous), and data availability status (dichotomous). Due to the number of citations being bell shaped with a long right tail (very few papers at advanced age with many citations, producing a flat but non-zero line), the model that best described our data was a negative binomial regression model. A negative binomial model is appropriate for data that begins at zero and has a long 'tail' of data, as well as has differing means per group. This model also includes a dispersion parameter, $\theta$ to describe the spread of the data. We applied a log transformation to our age variable (age.in.months) to make linear the relationship between time and number of citations received to help better describe the model relationship.
-
-$$
-N_(refs) = data availability + log(age.in.months) + journal + (journal*data availability) + (log(age.in.months)*data availability) + (journal*log(age.in.months)) + (log(age.in.months)*data availability*journal)
-$$
-
-See above for model formula, and supplemental table XXX6 for model coefficients. In general, we found that new sequencing data papers that made data availability received more citations over time than those that did not. See figure XXXX for trends in each major journal. ??XX In Figure 7XX, we have calculated the ratio of number of citations for papers of similar age containing data vs those that do not.
-
-$$
-(Citations[data availability=Yes])/(Citations[data availability=No]) 
-$$
-
-Over time, papers with data availability receive more citations than those without up to well over 1.5x in some journals (*Journal of Clinical Microbiology*). In all journals excepting the *Journal of Bacteriology*, papers with data availability have a greater number of citations at time point 60 months after publication, if not sooner via ratio plot. Over time this ratio increases further, demonstrating increased citations for papers with data availability available over time. Figure 8XX shows that the gap between predicted number of citations for papers with data availability vs those without widens over time, even beyond the width of the 95% confidence interval.
-
-#### Figures for Negative Binomial
-
-!["Ratio of DA Yes to DA No"](../Figures/negative_binomial/emmeans_contrast_plot.png) ![](../Figures/negative_binomial/model_predicted_plot.png)
+![](images/emmeans_contrast_plot.png)
 
 ## Discussion
 
@@ -391,6 +375,14 @@ We trained two random forest machine learning models using mikropml's "run_ml" f
 Once our RF models were ready we applied the same steps to ready papers for application of machine learning models as the model training dataset. See above for descriptions of web scraping HTML, cleaning HTML, removing unnecessary text, and creation of token count table for application in each of the machine learning models to determine the new sequencing data and data availability statuses for each paper. Once the frequency count tables were prepared for each paper, a z-score was applied using the saved data from each model appropriately, using the formula XX $((Observed token frequency - Model token frequency \mu)/(model token frequency sd))$. This z-scoring formula was applied to standardize the frequency of each token. Only tokens included in the machine learning models were retained in experimental datasets. Finally, each model was deployed on each paper to determine its new sequencing data and data availability status.
 
 ### Statistical Methodology
+
+All papers included in the regression data had new sequencing data. We focused on the continuous outcome of "number of citations" with predictor variables journal (categorical), age in months (continuous), and data availability status (dichotomous). Due to the number of citations being bell shaped with a long right tail (very few papers at advanced age with many citations, producing a flat but non-zero line), the model that best described our data was a negative binomial regression model. A negative binomial model is appropriate for data that begins at zero and has a long 'tail' of data, as well as has differing means per group. This model also includes a dispersion parameter, $\theta$ to describe the spread of the data. We applied a log transformation to our age variable (age.in.months) to make linear the relationship between time and number of citations received to help better describe the model relationship.
+
+$$
+N_(refs) = data availability + log(age.in.months) + journal + (journal*data availability) + (log(age.in.months)*data availability) + (journal*log(age.in.months)) + (log(age.in.months)*data availability*journal)
+$$
+
+In general, we found that new sequencing data papers that made data availability received more citations over time than those that did not. See figure XXXX for trends in each major journal.
 
 After each random forest model was deployed on our experimental dataset, we used a negative binomial regression model using the R package MASS (@MASS). A negative binomial regression model allows us to investigate data where group means are different than the overall dataset mean. A log transformation of the time variable(age.in.months) was applied prior to estimating the statistical regression model to correct for the nature of time as compared to other variables in the dataset. After applying the negative binomial model, we calculated ratios of the estimated number of citations per paper over time by data availability status using R package emmeans (@emmeans). We also used R package sjPlot to estimate the 95% CI for estimated citations over time for each journal by data availability status (@sjPlot).
 
