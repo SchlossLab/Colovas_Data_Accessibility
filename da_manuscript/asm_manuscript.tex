@@ -352,11 +352,11 @@ the ``minimum information about a marker gene sequence'' (MIMARKS) or
 are checklists usable by data generators and uploaders towards inclusion
 of relevant data with sequence uploads in the International Nucleotide
 Sequence Database Collaboration (INSDC). Some checklist items include if
-the data were published to an \textbf{INSDC} database and metadata about
-the study systems, data collected, and authors. An important factor was
-the ability to link the data to the results and to the data generators.
-The Findable, Accessible, Interoperable, and Reuseable (FAIR) data
-science guiding principles that were put forth in 2016 in \emph{Nature
+the data were published to an INSDC database and metadata about the
+study systems, data collected, and authors. An important factor was the
+ability to link the data to the results and to the data generators. The
+Findable, Accessible, Interoperable, and Reuseable (FAIR) data science
+guiding principles that were put forth in 2016 in \emph{Nature
 Scientific Data} urges readers to ``improve the infrastructure
 supporting the reuse of scholarly data'' ((14)). The FAIR principles
 were often cited by NIH in funding calls for strong data science
@@ -462,10 +462,8 @@ Chemotherapy (N = 21943), Infection and Immunity (N = 14500), Journal of
 Bacteriology (N = 16821), Journal of Clinical Microbiology (N = 18450),
 Journal of Microbiology and Biology Education (N = 1312), Journal of
 Virology (N = 29797), Microbiology Resource Announcments} (formerly
-known as \emph{Genome Announcements \texttt{\{r\}}}
-\texttt{n\_journal{[}{[}3,2{]}{]}\ +\ n\_journal{[}{[}9,2{]}} ),
-\emph{Microbiology Spectrum} \emph{(N = 6120),} \emph{mBio (N = 7732),
-mSphere(N = 2712), and mSystems (N = 2331).}
+known as \emph{Genome Announcements 12601 ), }Microbiology Spectrum (N =
+6120), mBio (N = 7732), mSphere(N = 2712), and mSystems (N = 2331).*
 
 \paragraph{Training Dataset}\label{training-dataset}
 
@@ -498,10 +496,10 @@ information on this process.
 
 Other models such as generalized linear regression (GLM) and boosted
 trees (XGBoost) were evaluated, but were ultimately rejected in favor of
-the random forest model due to fit (XX\textbf{data not shownXX}). Random
-forest models were chosen by their high Area Under the Receiver Operator
-Curve (AUROC) value to aid in this classification problem as the
-creation of many decision trees helps to improve accuracy and precision.
+the random forest model due to fit (XXdata not shownXX). Random forest
+models were chosen by their high Area Under the Receiver Operator Curve
+(AUROC) value to aid in this classification problem as the creation of
+many decision trees helps to improve accuracy and precision.
 
 These model tracings resulted in two different models to answer two
 different questions. The new sequencing data model used an mtry value of
@@ -521,36 +519,36 @@ dataset on which we deployed the models.
 
 After downloading the HTML content of each paper, we cleaned the HTML
 content and readied it to apply our machine learning models to classify
-each paper , in brief by removing non-meaningful words, followed by
+each paper, in brief, by removing non-meaningful words, followed by
 counting and filtering tokens, and finishing in model-compatible matrix
 format. Overall, 26.94\% of papers had new sequencing data. The journal
-with the highest rate of new sequencing data was Genome Announcements at
-98.72\%, and the lowest was Journal of Microbiology \& Biology Education
-at 0.31\%. This was expected as \emph{Genome Announcements} and
-\emph{Microbiology Resource Announcements} were the primary places for
-the publication of new sequence data for ASM journals. In 2013,
-\emph{Genome Announcements} was created to house papers describing new
-genomic sequencing efforts, and these publications were redirected from
-the \emph{Journal of Bacteriology}. In 2018, \emph{Genome Announcments}
-was re-branded to \emph{Microbiology Resource Announcements}, the
-permanent home of new sequencing efforts. This change in journal scope
-for the \emph{Journal of Bacteriology} explained the change in
-percentage of new sequencing data found in the journal over time. The
-\emph{Journal of Microbiology and Biology Education}, as expected,
-contained the lowest percentage of new sequencing data. The scope of
-this journal is mainly resources for educators at the high school and
-college levels, and we did not expect papers to contain new sequencing
-data. In many of the ASM journals, the percentages of new sequencing
-data did not change significantly over time as their scope did not
-change. See Figure XX for percentages of new sequencing data for each
-journal, and figure XXX for the trends over time. (XX? Put figures in
-panel together for nsd overall and nsd over time? ) XX Other questions:
-XX Why did AEM go up so much in 2013ish? XX Should we discuss the IAI
-2012ish blurb? XX
+with the highest rate of new sequencing data was \emph{Genome
+Announcements} at 98.72\%, and the lowest was \emph{Journal of
+Microbiology \& Biology Education} at 0.31\%. This was expected as
+\emph{Genome Announcements} and \emph{Microbiology Resource
+Announcements} were the primary places for the publication of new
+sequence data for ASM journals. In 2013, \emph{Genome Announcements} was
+created to house papers describing new genomic sequencing efforts, and
+these publications were redirected from the \emph{Journal of
+Bacteriology}. In 2018, \emph{Genome Announcments} was re-branded to
+\emph{Microbiology Resource Announcements}, the permanent home of new
+sequencing efforts. This change in journal scope for the \emph{Journal
+of Bacteriology} explained the change in percentage of new sequencing
+data found in the journal over time. The \emph{Journal of Microbiology
+and Biology Education}, as expected, contained the lowest percentage of
+new sequencing data. The scope of this journal is mainly resources for
+educators at the high school and college levels, and we did not expect
+papers to contain new sequencing data. In many of the ASM journals, the
+percentages of new sequencing data did not change significantly over
+time as their scope did not change. See Figure XX for percentages of new
+sequencing data for each journal, and figure XXX for the trends over
+time. (XX? Put figures in panel together for nsd overall and nsd over
+time? ) XX Other questions: XX Why did AEM go up so much in 2013ish? XX
+Should we discuss the IAI 2012ish blurb? XX
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{images/fract_nsd.png}}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{../Figures/summary_stats/fract_nsd.png}}
 
 }
 
@@ -560,7 +558,7 @@ XX Why did AEM go up so much in 2013ish? XX Should we discuss the IAI
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{images/time_nsd.png}}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{../Figures/summary_stats/time_nsd.png}}
 
 }
 
@@ -570,10 +568,10 @@ XX Why did AEM go up so much in 2013ish? XX Should we discuss the IAI
 
 Of all papers with new sequencing data, 58.86\% of papers had data
 available. The journal with the highest rate of data availability was
-*Microbiology Resource Announcements* at 99.83\%, and the lowest was
-*Journal of Clinical Microbiology* at 13.44\%. Similarly to the new
-sequencing data, this was expected as *Microbiology Resource
-Announcements* publishes new genomic sequence data for ASM and makes the
+\emph{Microbiology Resource Announcements} at 99.83\%, and the lowest
+was \emph{Journal of Clinical Microbiology} at 13.44\%. Similarly to the
+new sequencing data, this was expected as \emph{Microbiology Resource
+Announcements} publishes new genomic sequence data for ASM and makes the
 data available per journal requirements. While overall data availability
 rates appeared low, these values took into account all papers published
 over the entire time period of interest. When plotted over time, data
@@ -594,7 +592,7 @@ high years for major disease outbreaks/policy changes/editor changesXXX
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{images/fract_da.png}}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{../Figures/summary_stats/fract_da.png}}
 
 }
 
@@ -604,7 +602,7 @@ high years for major disease outbreaks/policy changes/editor changesXXX
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{images/time_da.png}}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{../Figures/summary_stats/time_da.png}}
 
 }
 
@@ -621,9 +619,9 @@ and data availability on the number of citations received by a given
 paper. We focused on new sequencing data papers to determine the effect
 of having data available. On average, papers in the dataset had a median
 of 25 citations/article. The journal with the highest median rate of
-citations/article was *Applied and Environmental Microbiology* at 38\%,
-and the lowest was *Microbiology Resource Announcements* at 1\%. To
-further investigate the effects of time (age in months), the journal
+citations/article was \emph{Applied and Environmental Microbiology} at
+38, and the lowest was \emph{Microbiology Resource Announcements} at 1.
+To further investigate the effects of time (age in months), the journal
 that a given paper was published in, and the data availability status, a
 negative binomial regression model was used to best describe our data
 (see methods). We also limited our analysis to the last ten years of
@@ -648,19 +646,30 @@ ratio grew, demonstrating increased citations for papers with data
 available available over time compared to those without, and the
 difference grew over the time interval.
 
-\begin{figure}[H]
+\pandocbounded{\includegraphics[keepaspectratio]{../Figures/negative_binomial/model_predicted_plot.png}}
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{images/model_predicted_plot.png}}
-
-}
-
-\caption{Predicted Number of Citations via Negative Binomial Model}
-
-\end{figure}%
-
-\pandocbounded{\includegraphics[keepaspectratio]{images/emmeans_contrast_plot.png}}
+\pandocbounded{\includegraphics[keepaspectratio]{../Figures/negative_binomial/emmeans_contrast_plot.png}}
 
 \subsection{Discussion}\label{discussion}
+
+Our study sought to investigate the compliance and impact of data
+availability and associated policies on the ASM journal program. We
+found that on average, more than half of papers with new sequencing data
+had data availability (58.86\%), showing that authors of new sequencing
+data papers were more often than not, making their data publicly
+available. This was in line with 2023 NIH policy requiring that data be
+made available using a Data Management and Sharing Plan (DMS plan)
+outlined in the NIH's NOT-OD-21-013 ((16)). XXDo we want percent for
+2024?XX Expectledly, \emph{Microbiology Resource Announcements} had the
+highest rates of data availability in new sequencing papers. These
+journals publish new genomic sequences and were required by ASM to make
+data available. Journals such as the \emph{Journal of Microbiology and
+Biology Education} and \emph{Infection and Immunity} which published
+fewer new sequencing data papers due to their specific subject matters,
+had lower rates of new sequencing data and data availability in their
+journals.
+
+XXHEREXX
 
 We investigated the impact of data availability on citation metrics in
 new sequencing papers by deploying machine learning models on over
@@ -668,21 +677,16 @@ new sequencing papers by deploying machine learning models on over
 available increases citation metrics over time, an added benefit to
 authors for the effort of making their data available.
 
-On average, more than half of papers with new sequencing data had data
-availability (58.86\%), showing that authors of new sequencing data
-papers are more often than not, making their data publicly available.
-This is in line with recent NIH policy requiring that data be made
-available using the Data Management and Sharing Plan (DMS plan) outlined
-in the NIH's NOT-OD-21-013 ((16)). This NIH policy went into effect in
-2023. XXDo we want percent for 2024?XX Expectledly, journals
-\emph{Genome Announcements} and \emph{Microbiology Resource
-Announcements} had the highest rates of data availability in new
-sequencing data papers. These journals publish primarily new genomic
-sequences and are required by ASM to make data available. Journals such
-as the \emph{Journal of Microbiology and Biology Education} and
-\emph{Infection and Immunity} which publish fewer new sequencing data
-papers due to their specific subject matters, have lower rates of new
-sequencing data and therefore data availability in their journals.
+Once these questions were answered, we moved to statistical analyses to
+answer these and further questions, such as ``How does making my data
+available impact my citation metrics over time?'' We were interested in
+citation metrics as a concrete metric to examine how making data
+availability benefits researchers and as a possible incentive towards
+making data availability. Our hypotheses were that microbiologists would
+have fairy high rates of data availability given the field's reliance on
+comparative research, and that other fields such as immunology would
+have lowered rates of data availability, as well as the hope that papers
+with data availability would have a greater number of citations.
 
 Next, we looked further into the impact of data availability on citation
 metrics using a negative binomial regression model. Using this model we
@@ -732,17 +736,6 @@ down dead ends.
 \item
   need to put this stuff somewhere
 \end{itemize}
-
-Once these questions were answered, we moved to statistical analyses to
-answer these and further questions, such as ``How does making my data
-available impact my citation metrics over time?'' We were interested in
-citation metrics as a concrete metric to examine how making data
-availability benefits researchers and as a possible incentive towards
-making data availability. Our hypotheses were that microbiologists would
-have fairy high rates of data availability given the field's reliance on
-comparative research, and that other fields such as immunology would
-have lowered rates of data availability, as well as the hope that papers
-with data availability would have a greater number of citations.
 
 To avoid overfitting the models, we trained each model multiple times,
 performing validations on a subset of data after each iteration. This
