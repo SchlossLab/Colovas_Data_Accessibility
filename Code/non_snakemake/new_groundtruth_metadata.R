@@ -26,6 +26,10 @@ new_metadata <-new_metadata[-dupes,]
 #save new metadata
 write_csv(new_metadata, file = "Data/new_groundtruth_metadata.csv.gz")
 
+#20250828 - save as new_groundtruth.csv too 
+
+
+
 
 #20250307 - apparently this table has more duplicates than i knew about 
 #and i am deeply annoyed that i got the same papers multiple times
@@ -96,3 +100,38 @@ write_csv(new_gt_dois, file = "Data/new_groundtruth_dois.csv.gz")
 
 #ok this is just doi_underscore and the webscrape url (paper)
 groundtruth<-read_csv("Data/new_groundtruth.csv")
+
+#20250827 
+# trying to find out who classified all these papers
+# and also seeing that new_groundtruth and
+# new_groundtruth_metadata have different numbers of papers in them??
+# so why is this happening 
+# if i have to train these models again i'll scream 
+
+library(tidyverse)
+
+new_groundtruth <- read_csv("Data/new_groundtruth.csv")
+new_groundtruth_metadata <- read_csv("Data/new_groundtruth_metadata.csv.gz")
+gt_dois <-read_csv("Data/new_groundtruth_dois.csv.gz")
+
+
+# there are 144 missing from new_groundtruth... how did this happen 
+anti_join(new_groundtruth_metadata, new_groundtruth, by = join_by("scrape_url" == "paper")) %>% 
+view()
+
+anti_join(new_groundtruth_metadata, gt_dois, by = join_by("scrape_url" == "url"))
+
+
+
+any(duplicated(new_groundtruth_metadata$scrape_url))
+
+#let me see what the models were trained on
+final_da <-readRDS("Data/ml_results/groundtruth/rf/data_availability/final/final.rf.data_availability.102899.allfinalModel.RDS")
+final_nsd<-readRDS("Data/ml_results/groundtruth/rf/new_seq_data/final/final.rf.new_seq_data.102899.allfinalModel.RDS")
+
+final_da$trained_model
+final_nsd$trained_model
+
+#models trained on 761 samples and not 903 samples...
+#ok guess it's time to submit this all back to the drawing board
+# i hate it here.. this is a post lunch problem 

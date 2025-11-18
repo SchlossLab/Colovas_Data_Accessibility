@@ -13,8 +13,8 @@ rot_dir <- input[1]
 output_file <- input[2]
 
 #local testing
-rot_dir <- "Data/linkrot"
-local_output<-"Data/final/linkrot_results.csv.gz"
+# rot_dir <- "Data/linkrot"
+# local_output<-"Data/final/linkrot_results.csv.gz"
 
 
 #local work first, then snakemake work

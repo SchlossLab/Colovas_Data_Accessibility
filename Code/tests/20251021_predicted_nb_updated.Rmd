@@ -1,0 +1,688 @@
+---
+title: "20251021_predicted_nb_updated"
+output: pdf_document
+date: "2025-10-21"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#library statements 
+library(tidyverse)
+library(MASS)
+library(jtools)
+library(emmeans)
+library(sjPlot)
+
+#load metadata
+metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
+
+```
+
+```{r}
+#setup dataset and model
+nsd_yes_metadata <- 
+  metadata %>% 
+  filter(nsd == "Yes") %>%
+  filter(., age.in.months != "NA" & da != "NA" & container.title != "NA") %>% 
+  mutate(da_factor = factor(da), 
+         container.title = factor(container.title))
+
+
+nsd_yes_model <-
+  glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+  + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+  log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
+```
+
+## Validation of fit
+
+-   How many citations did a paper published in 2021 receive in each
+    journal?
+
+```{r cites_2021}
+
+nsd_yes_metadata %>%  
+  filter(year.published == 2021) %>% 
+  summarize(mean_cites_2021 = mean(is.referenced.by.count), 
+            median_cites_2021 = median(is.referenced.by.count), 
+            .by = container.title)
+
+
+```
+
+## Using the existing model
+
+-   Remove JMBE, MRA, GA from modeling
+-   Train on papers \<= 10 years old (age.in.months \<= 120)
+-   Re-create figure with and without a common axis
+-   Previously N = 41,271, now N = 13,911
+
+```{r re_model}
+
+#filter to remove jmbe, mra, ga and for age.in.months <= 120 
+ten_metadata <-
+  nsd_yes_metadata %>%  
+  filter(journal_abrev != "jmbe" & journal_abrev != "mra" & journal_abrev != "genomea" & age.in.months <= 120) 
+
+
+#sanity check 
+ten_metadata %>%  
+  count(journal_abrev) 
+
+ten_metadata %>% 
+  count(age.in.months) %>% 
+  tail()
+
+
+#retrain model 
+ten_model <-
+  glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+  + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+  log(age.in.months)*da_factor*container.title, data = ten_metadata, link = log)
+
+#get data out of model 
+
+age_values <- seq(5, 120, 5)
+  p_10 <-  get_model_data(model = ten_model, type = "pred", 
+                    terms = c("da_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet) 
+
+
+#re-create figure with free axes
+  
+predicted_plot <-
+    ggplot(data = p_10, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free_y") +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA", 
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+
+predicted_plot_fixed <-
+    ggplot(data = p_10, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18)) +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA, 
+        fixed axes", 
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+predicted_plot
+predicted_plot_fixed
+
+```
+
+## For each journal separately, overlay citations by paper on model output for DA yes and DA no
+
+```{r}
+
+#lol i just add the data in each geom 
+journals <- ten_metadata %>%  
+  count(container.title) %>% 
+  mutate(container.title = as.character(container.title)) %>%  
+  dplyr::select(container.title)
+  
+# j<- 6
+
+for(j in 1:nrow(journals)) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
+  
+  #make plot 
+  plot <- 
+  ggplot() +
+    # mapping = aes(x = age.in.months, y = predicted_citations,
+    #                             color = da_factor)) +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.3) +
+    geom_point(data = j_metadata, aes(x = age.in.months, 
+                                      y = is.referenced.by.count, color = da_factor),  
+                                      position = position_jitter(width =0.5), size = 0.6) + 
+   labs(title = paste0("Model vs True Number of Citations from GLM.NB for\n", journals$container.title[[j]]),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+   # scale_x_discrete(breaks = seq(12, 120, 12)) +
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+print(plot) 
+}
+
+
+
+
+```
+
+## Create a new model for sequence data vs no new sequence data
+
+```{r}
+#setup dataset and model
+
+#filter dataset for no nas, filter out jmbe, mra, ga, age in months <= 120
+nsd_model_metadata <- 
+  metadata %>% 
+  filter(., age.in.months != "NA" & nsd != "NA" & container.title != "NA") %>% 
+  filter(journal_abrev != "jmbe" & journal_abrev != "mra" & journal_abrev != "genomea" & age.in.months <= 120) %>% 
+  mutate(nsd_factor = factor(nsd), 
+         container.title = factor(container.title))
+
+
+nsd_model <-
+  glm.nb(is.referenced.by.count~ nsd_factor + log(age.in.months) + container.title + 
+  + container.title*nsd_factor + log(age.in.months)*nsd_factor + container.title*log(age.in.months) + 
+  log(age.in.months)*nsd_factor*container.title, data = nsd_model_metadata, link = log)
+
+
+# make plots for each journal 
+
+  p_nsd <-  get_model_data(model = nsd_model, type = "pred", 
+                    terms = c("nsd_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(nsd_factor = ifelse(.$x == 1, "Contains New Seq Data", "No New Seq Data"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet) 
+        
+  
+  
+    
+  predicted_plot_nsd <-
+    ggplot(data = p_nsd, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = nsd_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = nsd_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = nsd_factor, fill = nsd_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free_y") +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "NSD Model", 
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "New Seq Data\nwith 95% CI", 
+        fill = "New Seq Data\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+  
+  
+  predicted_plot_nsd <-
+    ggplot(data = p_nsd, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = nsd_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = nsd_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = nsd_factor, fill = nsd_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+              ) +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "NSD Model",
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "New Seq Data\nwith 95% CI", 
+        fill = "New Seq Data\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+predicted_plot_nsd
+
+```
+
+## Grab top 6 papers in spectrum for Pat (manually)
+
+```{r}
+
+#get spectrum data
+
+#i did this by hand - filtered and then viewed and sorted by citations
+
+ # j_metadata <-
+  ten_metadata %>%  
+      filter(container.title == "Microbiology Spectrum") 
+# %>% 
+#   view()
+      
+```
+
+## Trying binned data by month to evaluate model fit
+
+```{r}
+
+
+#let's try this for one month and then for the rest of them 
+
+# j<- 6
+
+for(j in 1:nrow(journals)) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+  
+  j_monthly <-
+    j_metadata %>%  
+      summarize(monthly_median = median(is.referenced.by.count), 
+             .by = c("da_factor", "age.in.months"))
+    
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
+  
+  #make plot 
+  plot <- 
+  ggplot() +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.3) +
+    geom_point(data = j_monthly, aes(x = age.in.months, 
+                                      y = monthly_median, color = da_factor),  
+                                      position = position_jitter(width =0.5), size = 0.6) + 
+   labs(title = paste0("Model vs True Median Number of Citations from GLM.NB for\n", journals$container.title[[j]], " binned by month and da status median"),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+   # scale_x_discrete(breaks = seq(12, 120, 12)) +
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+print(plot) 
+}
+
+
+
+
+```
+
+## Bin the data by the month and whether the data are available. Then calculate the median and the 25th and 75th quantile. Plot the median as a line plot and the 25th and 75th percentiles as the boundary as a ribbon. Might do it by the year if the viz looks too clunky because there aren't enough points to get a smooth curve.
+
+```{r warning=FALSE}
+
+#let's try this for one month and then for the rest of them 
+
+j<- 6
+
+for(j in 1:nrow(journals)) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+  
+  j_yearly <-
+    j_metadata %>%  
+      summarize(yearly_median = median(is.referenced.by.count),
+                yearly_25 = quantile(is.referenced.by.count, probs = 0.25),
+                yearly_75 = quantile(is.referenced.by.count, probs = 0.75),
+                age.in.months = (2025-year.published)*12, 
+             .by = c("da_factor", "year.published"))
+    
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
+  
+  #make plot 
+  plot <- 
+  ggplot() +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.3) +
+    geom_line(data = j_yearly, aes(x = age.in.months, 
+                                   y = yearly_median, 
+                                   color = da_factor, 
+                                   ), size = 1.0) + 
+    geom_ribbon(data = j_yearly, mapping = aes(x = age.in.months, y = yearly_median,
+                                               ymin = yearly_25, ymax = yearly_75,
+                             group = da_factor, fill = da_factor), alpha = 0.1) + 
+    
+   labs(title = paste0("Model vs True Median Number of Citations from GLM.NB for\n", journals$container.title[[j]], " binned by year,\nda status median, 25% & 75%"),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA\nLighter values = median and quartile data",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+    theme_classic() + 
+    theme(legend.position = "bottom") 
+
+print(plot) 
+}
+
+
+
+```
+
+## Using geom_smooth to fit a smoothed curve through the monthly data after taking the median on the data
+
+```{r}
+
+#let's try this for one month and then for the rest of them 
+
+# j<- 6
+
+for(j in 1:nrow(journals)) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+  
+  j_monthly <-
+    j_metadata %>%  
+      summarize(monthly_median = median(is.referenced.by.count), 
+             .by = c("da_factor", "age.in.months"))
+    
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
+  
+  #make plot 
+  plot <- 
+  ggplot() +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.3) +
+    geom_point(data = j_monthly, aes(x = age.in.months, 
+                                      y = monthly_median, color = da_factor),  
+                                      position = position_jitter(width =0.5), size = 0.6) +
+    geom_smooth(data = j_monthly, aes(x = age.in.months, 
+                                      y = monthly_median, color = da_factor), size = 0.5)+
+   labs(title = paste0("Model vs True Median Number of Citations from GLM.NB for\n", journals$container.title[[j]], " binned by month and da status median"),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA\ngrey geom_smooth through the median",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+   # scale_x_discrete(breaks = seq(12, 120, 12)) +
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+print(plot) 
+}
+
+
+
+
+```
+
+## Using geom_smooth to fit a smoothed curve through the monthly data without taking the median on the dat
+
+```{r}
+
+
+#let's try this for one month and then for the rest of them 
+
+j<- 6
+
+for(j in 1:nrow(journals)) { 
+  #filter metadata for that journal 
+  j_metadata <- ten_metadata %>%  
+      filter(container.title == journals$container.title[[j]])
+    
+  
+  #filter p_10 
+  model_data <- p_10 %>%  
+    filter(container.title == journals$container.title[[j]]) %>% 
+    mutate(da_factor = ifelse(da_factor == "Data available", "Yes", "No"), 
+           age.in.months = as.numeric(as.character(age.in.months)))
+  
+  #make plot 
+  plot <- 
+  ggplot() +
+    geom_point(data = j_metadata, aes(x = age.in.months, 
+                                      y = is.referenced.by.count, color = da_factor),  
+                                      position = position_jitter(width =0.5), size = 0.6) +
+   geom_line(data = model_data, aes(x = age.in.months, y = predicted_citations, group = da_factor, color = da_factor)) +
+   geom_ribbon(data = model_data, mapping = aes(x = age.in.months, y = predicted_citations,    ymin = conf.low, ymax = conf.high,
+                             group = da_factor, fill = da_factor), alpha = 0.5) +
+    
+    geom_smooth(data = j_metadata, aes(x = age.in.months, 
+                                      y = is.referenced.by.count, color = da_factor), size = 0.5, alpha = 0.4)+
+   labs(title = paste0("Model vs True Median Number of Citations from GLM.NB for\n", journals$container.title[[j]], " binned by month and da status"),
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA\ngrey geom_smooth through the data",
+        x = "Age in Months",
+        y = "Number Citations",
+        color = "Data availability\nwith 95% CI",
+        fill = "Data availability\nwith 95% CI") +
+   # scale_x_discrete(breaks = seq(12, 120, 12)) +
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+print(plot) 
+}
+
+```
+
+## Updating the NB prediction for Microbiology Spectrum to only show predictions for 4 years
+
+-   I used free_x and free_y axes so that Spectrum more closely
+    resembled the graphs for the others, but let me know if you want
+    them fixed instead.
+
+```{r}
+
+#get data from model
+age_values <- seq(5, 120, 5)
+  p_10 <-  get_model_data(model = ten_model, type = "pred", 
+                    terms = c("da_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet)  %>%  
+     mutate(age.in.months = as.numeric(as.character(age.in.months)))
+
+#filter data from model to spectrum for 4 years (age.in.months <= 48)
+ spec_remove <-  
+   p_10 %>%  
+    mutate(age.in.months = as.numeric(as.character(age.in.months))) %>%  
+    filter(container.title == "Microbiology Spectrum" & age.in.months >= 48)
+ 
+ p_10_spec_trunc <- anti_join(p_10, spec_remove)
+
+#re-create figure with free axes
+  
+predicted_plot_spec <-
+    ggplot(data =  p_10_spec_trunc , 
+           mapping = aes(x = as.numeric(age.in.months), 
+                         y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free" ) +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA,\nSpectrum data <=48 months", 
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    # scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+predicted_plot_spec
+
+
+```
+
+## Checking on how much data we have from other journals to make sure we truncate all of them correctly
+
+-   msphere and msystems we have data from 2016
+    -   (2025-2016)\*12 = 108 months
+-   spectrum we have data from 2021
+    -   (2025-2021)\*12 = 48 months
+
+```{r eval=FALSE, include=FALSE}
+
+ten_metadata %>%  
+  count(year.published, .by = container.title)
+
+#msphere and msystems we have data from 2016
+#(2025-2016)*12 = 108 months
+#spectrum we have data from 2021 
+#(2025-2021)*12 = 48 months
+
+```
+
+## Truncating msystems, msphere, and spectrum to 9, 9,  and 4 years respectively 
+```{r}
+
+
+#get data from model
+age_values <- seq(5, 120, 5)
+  p_10 <-  get_model_data(model = ten_model, type = "pred", 
+                    terms = c("da_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet)  %>%  
+     mutate(age.in.months = as.numeric(as.character(age.in.months)))
+
+#filter data from model to spectrum for 4 years (age.in.months <= 48)
+ spec_remove <-  
+   p_10 %>%  
+    mutate(age.in.months = as.numeric(as.character(age.in.months))) %>%  
+    filter(container.title == "Microbiology Spectrum" & age.in.months >= 48)
+ 
+ #filter data from model to msystems and msphere to 9 years (age.in.months <=108)
+m_remove <- 
+ p_10 %>%  
+    mutate(age.in.months = as.numeric(as.character(age.in.months))) %>%  
+    filter((container.title == "mSystems" | container.title == "mSphere") & age.in.months >= 108)
+  
+to_remove <- full_join(spec_remove, m_remove)
+   
+p_10_trunc <- anti_join(p_10, to_remove)
+
+#re-create figure with free axes
+  
+predicted_plot_spec <-
+    ggplot(data =  p_10_trunc , 
+           mapping = aes(x = as.numeric(age.in.months), 
+                         y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free_y" ) +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        subtitle = "Data age.in.months <= 120, removal of JMBE, GA, MRA,\nSpectrum data <=48 months, mSystems and mSphere <= 108 months", 
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    # scale_x_discrete(breaks = seq(12, 120, 12)) +
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
+
+predicted_plot_spec
+
+
+
+
+
+```
+## Truncating for ratio plot 
+```{r}
+# Define the age values you want to examine (in months)
+age_values <- seq(5, 120, 5) 
+
+# Get emmeans on the link scale for all combinations
+emm <- emmeans(ten_model,  ~ da_factor + age.in.months | container.title,
+        at = list(age.in.months = age_values), CIs = TRUE,
+        type = "response")
+
+# Get pairwise comparisons (differences) between da_factor levels
+differences <- contrast(
+    emm, by = c("age.in.months", "container.title"),
+    method = "revpairwise",
+    ratios = TRUE, CIs = TRUE
+)
+# See the contrasts
+# summary(differences)
+# Plot the contrasts
+# plot(differences, ratios = TRUE)
+
+# Plot the contrasts
+ratios_df <- as.data.frame(plot(differences, ratios = TRUE)$data) %>%  
+  mutate(age.in.months = as.numeric(as.character(age.in.months))) %>%  
+  filter(container.title != "Journal of Microbiology &amp; Biology Education" &
+        container.title != "Genome Announcements" &
+        container.title != "Microbiology Resource Announcements")
+
+m_remove <-  
+ratios_df %>%  
+  filter((container.title == "mSystems" | container.title == "mSphere") & age.in.months >= 108) 
+
+spec_remove <- 
+ratios_df %>% 
+    filter((container.title == "Microbiology Spectrum" & age.in.months >= 48))
+
+to_remove <- 
+  full_join(m_remove, spec_remove)
+
+ratios_df_trunc <- 
+  anti_join(ratios_df, to_remove)
+
+contrast_plot <-
+ggplot(
+    data = ratios_df_trunc,
+    mapping = aes(x = age.in.months, y = the.emmean)
+) +
+   geom_hline(yintercept = 1.0, linetype = 2, linewidth = 0.25) + 
+    geom_line() +
+    geom_ribbon(
+        mapping = aes(ymin = lcl, ymax = ucl),
+        alpha = 0.3 # transparency of confidence intervals
+    ) +
+    facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 20)) +
+    labs(x = 'Age in months', y = 'Ratio of daYes/daNo') +
+    coord_cartesian(ylim = c(0.25, 2.5)) + 
+    theme_classic() + 
+    scale_x_continuous(breaks = seq(12, 120, 24))
+
+contrast_plot
+
+```
+

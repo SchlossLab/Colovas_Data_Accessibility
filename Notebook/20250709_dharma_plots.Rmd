@@ -71,11 +71,17 @@ plot_model(total_model, type = "pred", terms = c("da_factor", "age.in.months[12,
 
 ```{r}
 simulationOutput <- simulateResiduals(fittedModel = total_model, plot = F)
-residuals(simulationOutput) %>% str()
 
 #there is no alpha parameter in base R plot 
 residuals(simulationOutput)  %>% 
   plot(main = "Residuals plotted by numerical index", pch = ".")
+
+residuals_hist <-
+   residuals(simulationOutput) %>%  tibble(residual = .) %>%  
+     ggplot(aes(x = residual)) + 
+     geom_histogram(linewidth = 0.25, color = "white", binwidth = 1/100) + 
+     ggtitle("Residuals Plotted for all journals together")
+  print(residuals_hist)
 
 # residuals(simulationOutput)[25000:30000] %>% 
 #   plot(main = "Residuals for observation indices 25000 - 3000")
@@ -124,6 +130,8 @@ plot(simulationOutput, sub = "All data glm(fixed)")
 plotQQunif(simulationOutput)
 plotResiduals(simulationOutput)
 DHARMa::testOutliers(simulationOutput, type = "bootstrap")
+
+
 ```
 
 ## Looking at each model by journal
@@ -200,25 +208,7 @@ print(actual_citations)
     pivot_wider(names_from = da, values_from = predicted) %>%  
     mutate(ratio = `2`/`1`) %>%  
     ggplot(., aes(x = age.in.months, y = ratio)) + 
-    #  ratio_plot <- 
-    #   tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group)), low = p$conf.low, high = p$conf.high) %>%  
-    # pivot_wider(names_from = da, values_from = c(predicted, low, high)) %>%  
-    # mutate(high_high_ratio = `high_2`/`high_1`,
-    #        high_mid_ratio = `high_2`/`predicted_1`,
-    #        high_low_ratio = `high_2`/`low_1`,
-    #        high_high_ratio = `high_2`/`high_1`,
-    #        mid_high_ratio = `predicted_2`/`high_1`,
-    #        mid_mid_ratio = `predicted_2`/`predicted_1`,
-    #        mid_low_ratio = `predicted_2`/`low_1`, 
-    #        low_high_ratio = `low_2`/`high_1`, 
-    #        low_mid_ratio = `low_2`/`predicted_1`,
-    #        low_low_ratio = `low_2`/`low_1`,
-    #        ) %>%  
-    #     dplyr::select(., age.in.months, ends_with("ratio")) %>% 
-    #     pivot_longer(., cols = ends_with("ratio"), names_to = "ratio_name", 
-    #                  values_to = "ratio_value") %>% 
-    # ggplot(., aes(x = age.in.months, y = ratio_value)) + 
-    # geom_boxplot(aes(group = age.in.months)) +
+
     geom_point() + 
      labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
           y = "Ratio number of citations da=Yes/da=No")
@@ -228,15 +218,13 @@ print(actual_citations)
  
   simulation <- simulateResiduals(fittedModel = model, plot = F)
   
-  # residuals(simulation)  %>% 
-  # plot(main = paste0("Residuals plotted for journal ", journals[[j,1]]), pch = ".")
-  residuals <- 
-   residuals(simulation) %>%  tibble(residual = .) %>%  
-     ggplot(aes(y = residual, x = seq_along(residual) )) + 
-     geom_point(size = 1) + 
-     geom_smooth() +
-     ggtitle(paste0("Residuals with geom_smooth line' \nPlotted for journal ", journals[[j,1]]))
-  print(residuals)
+  # residuals <- 
+  #  residuals(simulation) %>%  tibble(residual = .) %>%  
+  #    ggplot(aes(y = residual, x = seq_along(residual) )) + 
+  #    geom_point(size = 1) + 
+  #    geom_smooth() +
+  #    ggtitle(paste0("Residuals with geom_smooth line' \nPlotted for journal ", journals[[j,1]]))
+  # print(residuals)
   
    residuals_hist <-
    residuals(simulation) %>%  tibble(residual = .) %>%  
@@ -286,25 +274,6 @@ print(actual_citations)
     pivot_wider(names_from = da, values_from = predicted) %>%  
     mutate(ratio = `2`/`1`) %>%  
     ggplot(., aes(x = age.in.months, y = ratio)) + 
- # ratio_plot <- 
- #      tibble(da = p$x, predicted = p$predicted, age.in.months = as.numeric(as.character(p$group)), low = p$conf.low, high = p$conf.high) %>%  
- #    pivot_wider(names_from = da, values_from = c(predicted, low, high)) %>%  
- #    mutate(high_high_ratio = `high_2`/`high_1`,
- #           high_mid_ratio = `high_2`/`predicted_1`,
- #           high_low_ratio = `high_2`/`low_1`,
- #           high_high_ratio = `high_2`/`high_1`,
- #           mid_high_ratio = `predicted_2`/`high_1`,
- #           mid_mid_ratio = `predicted_2`/`predicted_1`,
- #           mid_low_ratio = `predicted_2`/`low_1`, 
- #           low_high_ratio = `low_2`/`high_1`, 
- #           low_mid_ratio = `low_2`/`predicted_1`,
- #           low_low_ratio = `low_2`/`low_1`,
- #           ) %>%  
- #        dplyr::select(., age.in.months, ends_with("ratio")) %>% 
- #        pivot_longer(., cols = ends_with("ratio"), names_to = "ratio_name", 
- #                     values_to = "ratio_value") %>% 
- #    ggplot(., aes(x = age.in.months, y = ratio_value)) + 
- #    geom_boxplot(aes(group = age.in.months)) +
     geom_point() + 
      labs(title = paste0("Ratio of predicted citations for da = Yes to da = No \nPlotted for journal ", journals[[j,1]]), 
           y = "Ratio number of citations da=Yes/da=No")

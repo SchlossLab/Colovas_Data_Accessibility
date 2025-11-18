@@ -5,49 +5,59 @@
 library(tidyverse)
 library(MASS)
 library(jtools)
+library(emmeans)
+library(sjPlot)
 
 
+#load files with snakemake
+# get file input from snakemake
+input <- commandArgs(trailingOnly = TRUE)
+metadata <- read_csv(input[1])
+out_coeftable <- input[2]
+out_model <- input[3]
+out_contrast_plot <-input[4]
+out_predicted_plot <- input[5]
 
-#load metadata
-nsd_yes_metadata <- read_csv("Data/final/nsd_yes_metadata.csv.gz")
 
-#20250624 - when does the first citation appear in these data? 
-first_citation <-
-nsd_yes_metadata %>% 
-  filter(is.referenced.by.count == 1) %>% 
-  count(container.title, journal_abrev, age.in.months) %>% 
-  summarize(first_citation = min(age.in.months, na.rm = TRUE), 
-            .by = c(container.title, journal_abrev)) 
+#load metadata (local)
+# metadata <- read_csv("Data/final/predictions_with_metadata.csv.gz") 
+# metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/predictions_with_metadata.csv.gz")
+# out_contrast_plot <-"Figures/negative_binomial/emmeans_contrast_plot.png"
+# out_predicted_plot <-"Figures/negative_binomial/model_predicted_plot.png"
 
-write_csv(first_citation, file = "Data/negative_binomial/first_citation_date.csv")
+#filter metadata 
+#nsd == yes, no NAs, get rid of mra, jmbe, ga, want age.in.months <=120
+nsd_yes_metadata <- 
+  metadata %>% 
+  filter(nsd == "Yes") %>%
+  filter(., age.in.months != "NA" & da != "NA" & container.title != "NA") %>% 
+  filter(., journal_abrev != "jmbe" & journal_abrev != "mra" & journal_abrev != "genomea" & age.in.months <= 120) %>%
+  mutate(da_factor = factor(da), 
+         container.title = factor(container.title))
 
-first_citation_noga <-
-first_citation %>% 
-  filter(journal_abrev != "genomea")
-first_citation_mean <- mean(first_citation_noga$first_citation)
 
-# model_data <-nsd_yes_metadata
-# model_name <-"full_model"
+#create nb model
+nsd_yes_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
+        + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
+        log(age.in.months)*da_factor*container.title, data = nsd_yes_metadata, link = log)
+
+
 
 #20250627 - making a function for large model with all 3 terms 
-three_term_glmnb <-function(model_data, model_name) {
+three_term_glmnb_table <-function(model, model_name) {
 
-  total_model <-glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + container.title + 
-        + container.title*da_factor + log(age.in.months)*da_factor + container.title*log(age.in.months) + 
-        log(age.in.months)*da_factor*container.title, data = model_data, link = log)
+  coefficients <-jtools::summ(model)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
 
-  coefficients <-jtools::summ(total_model)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
-
-  model_value <- jtools::summ(total_model)$model$coefficients %>% unname() %>% 
+  model_value <- jtools::summ(model)$model$coefficients %>% unname() %>% 
       tibble("{model_name}" := `.`) %>% 
       dplyr::select(!`.`)
     
-  pvalue <-jtools::summ(total_model)$coeftable[,4]
+  pvalue <-jtools::summ(model)$coeftable[,4]
 
   model_table <- tibble(coefficients, model_value, "{model_name}_pvalue" := pvalue)
 
   rsquared <-tibble(coefficients = "rsquared", 
-                    "{model_name}" := (jtools::summ(total_model) %>% attr(., "rsq")), 
+                    "{model_name}" := (jtools::summ(model) %>% attr(., "rsq")), 
                     "{model_name}_pvalue" := NA) 
 
   model_table <-rbind(rsquared, model_table)
@@ -57,210 +67,120 @@ three_term_glmnb <-function(model_data, model_name) {
 
 }
 
-# # making a function for smaller model with 2 terms
-# model_data <-at_one_year_data
-# model_name <- "at_one_year_test"
+#all three interaction terms and return model table
+full_table <- three_term_glmnb_table(nsd_yes_model, "full_nsd_yes")
 
-# model_data <-journal_data
-# model_name <- "fit_test"
-# two_term_glmnb(journal_data, "fit_test")
+#save model table and model
+write_csv(full_table, file = out_coeftable)
 
-#smaller model with 2 terms
-two_term_glmnb <-function(model_data, model_name) {
+saveRDS(nsd_yes_model, file = out_model)
 
-  if(nrow(model_data) > 10 & nrow(count(model_data, da_factor)) > 1) {
 
-  total_model <-MASS::glm.nb(is.referenced.by.count~ da_factor + log(age.in.months) + 
-       + log(age.in.months)*da_factor + log(age.in.months)*da_factor, data = model_data, link = log)
+#do the emmeans contrasts - must do in same file as model
 
-  coefficients <-jtools::summ(total_model)$model$coefficients %>% names() %>% tibble(coefficients = `.`)
+# Define the age values you want to examine (in months)
+age_values <- seq(5, 120, 5) #c(12, 36, 60, 120)  # Adjust these as needed
+# Get emmeans on the link scale for all combinations
+emm <- emmeans(nsd_yes_model,  ~ da_factor + age.in.months | container.title,
+        at = list(age.in.months = age_values), CIs = TRUE,
+        type = "response")
+# Get pairwise comparisons (differences) between da_factor levels
+differences <- contrast(
+    emm, by = c("age.in.months", "container.title"),
+    method = "revpairwise",
+    ratios = TRUE, CIs = TRUE
+)
+# See the contrasts
+# summary(differences)
+# Plot the contrasts
+# plot(differences, ratios = TRUE)
 
-  model_value <- jtools::summ(total_model)$model$coefficients %>% unname() %>% 
-      tibble("{model_name}" := `.`) %>% 
-      dplyr::select(!`.`)
+# Plot the contrasts
+ratios_df <- as.data.frame(plot(differences, ratios = TRUE)$data)  %>% 
+mutate(age.in.months = as.numeric(as.character(age.in.months)))
 
-  pvalue <-jtools::summ(total_model)$coeftable[,4]
+#truncate for msys, msph, spec
+m_remove <-  
+ratios_df %>%  
+  filter((container.title == "mSystems" | container.title == "mSphere") & age.in.months >= 108) 
 
-  model_table <- tibble(coefficients, model_value, "{model_name}_pvalue" := pvalue)
+spec_remove <- 
+ratios_df %>% 
+    filter((container.title == "Microbiology Spectrum" & age.in.months >= 48))
 
-  rsquared <-tibble(coefficients = "rsquared", 
-                    "{model_name}" := (jtools::summ(total_model) %>% attr(., "rsq")), 
-                    "{model_name}_pvalue" := NA) 
+to_remove <- 
+  full_join(m_remove, spec_remove)
 
-  model_table <-rbind(rsquared, model_table)
+ratios_df_trunc <- 
+  anti_join(ratios_df, to_remove)
 
+contrast_plot <-
+ggplot(
+    data = ratios_df_trunc,
+    mapping = aes(x = age.in.months, y = the.emmean)
+) +
+   geom_hline(yintercept = 1.0, linetype = 2, linewidth = 0.25) + 
+    geom_line() +
+    geom_ribbon(
+        mapping = aes(ymin = lcl, ymax = ucl),
+        alpha = 0.3 # transparency of confidence intervals
+    ) +
+    facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 20)) +
+    labs(x = 'Age in months', y = 'Ratio of daYes/daNo') +
+    coord_cartesian(ylim = c(0.25, 2.5)) + 
+    theme_classic() + 
+    scale_x_continuous(breaks = seq(12, 120, 24))
+
+    ggsave(contrast_plot, file = out_contrast_plot)
+
+
+## predicted number of citations for each journal 
+# make plots for each journal 
+  p <-  get_model_data(model = nsd_yes_model, type = "pred", 
+                    terms = c("da_factor", "age.in.months[age_values]", "container.title"), 
+                    colors = "bw") %>%  
+      tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, 
+          age.in.months = .$group, container.title = .$facet) %>%   
+          mutate(age.in.months = as.numeric(as.character(age.in.months)))
+
+        
+ spec_remove <-  
+   p %>%  
+    mutate(age.in.months = as.numeric(as.character(age.in.months))) %>%  
+    filter(container.title == "Microbiology Spectrum" & age.in.months >= 48)
+ 
+ #filter data from model to msystems and msphere to 9 years (age.in.months <=108)
+m_remove <- 
+ p %>%  
+    mutate(age.in.months = as.numeric(as.character(age.in.months))) %>%  
+    filter((container.title == "mSystems" | container.title == "mSphere") & age.in.months >= 108)
   
-    } else {
-      model_table <- tibble(coefficients = NA, 
-                    "{model_name}" := NA, 
-                    "{model_name}_pvalue" := NA)
-    }
-
-  return(model_table)
-
-}
-
-#models
-
-
-#all three interaction terms 
-full <- three_term_glmnb(nsd_yes_metadata, "full")
-
-
-#what happens if you create a whole model with an adjustment of the months
-citation_adjustment <- 
-  nsd_yes_metadata %>% 
-  mutate(time_adj_all = (age.in.months - 5), 
-        time_adj_all_no_negs = ifelse(time_adj_all <= 0, 1, time_adj_all), 
-        age.in.months = time_adj_all_no_negs)
-
-time_adj <- three_term_glmnb(citation_adjustment, "time_adj")
-
-
-time_adj_comparison <- full_join(full, time_adj)
-  write_csv(time_adj_comparison, file = "Data/negative_binomial/time_adjusted_model_comparison.csv")
-
-
-#graphing with jtools 
-
-# plot_1<-jtools::effect_plot(interaction, da_factor, plot.points = TRUE)
-# jtools::effect_plot(interaction, age.in.months, plot.points = TRUE)
-# plot_2<-effect_plot(three_terms_int_all, age.in.months, interval = TRUE, int.type = "confidence", 
-#                     int.width = 0.8, plot.points = TRUE, data = nsd_yes_metadata, line.colors = "blue", 
-#                     outcome.scale = "link")
-
-# plot_2_no_points<-effect_plot(three_terms_0, age.in.months, interval = TRUE, int.type = "confidence", 
-#                     int.width = 0.8, data = nsd_yes_metadata, line.colors = "blue", 
-#                     outcome.scale = "link")
-
-# plot_3<-effect_plot(three_terms_int_all, da_factor, interval = TRUE, int.type = "confidence", 
-#                     int.width = 0.8, plot.points = TRUE, data = nsd_yes_metadata, line.colors = "blue", 
-#                     outcome.scale = "link")
-# ggsave(plot_2, file = "Figures/test_2.png")
-# ggsave(plot_2_no_points, file = "Figures/test_nopoints_2.png")
-# ggsave(plot_3, file = "Figures/test_3.png")
-
-
-
-# ok now let's look exactly 1 year of data (12 months)----------------------------------------------------
-at_one_year_data <- 
-  nsd_yes_metadata %>% 
-    filter(age.in.months == 12)
-
-at_one_year <- three_term_glmnb(at_one_year_data, "at_one_year")
-
-
-# ok now let's look at cutting it off at 10 years (120 months)
-ten_years_data <- 
-  nsd_yes_metadata %>% 
-    filter(age.in.months <= 120)
-
-ten_years <- three_term_glmnb(ten_years_data, "ten_years")
-
-
-# ok now let's look exactly 10 years of data (120 months)
-at_ten_years_data <- 
-  nsd_yes_metadata %>% 
-    filter(age.in.months == 120)
-
-at_ten_years <- three_term_glmnb(at_ten_years_data, "at_ten_years")
-
-
-#how about 5 years (60 months )
-five_years_data <- 
-  nsd_yes_metadata %>% 
-    filter(age.in.months <= 60)
-
-five_years <- three_term_glmnb(five_years_data, "five_years")
-
-
-# ok now let's look exactly 5 years of data (6- months)
-at_five_years_data <- 
-  nsd_yes_metadata %>% 
-    filter(age.in.months == 60)
-
-at_five_years <- three_term_glmnb(at_five_years_data, "at_five_years")
-
-#let's combine all the coefficients 
-all_data_models <- full_join(full, time_adj) %>%
-  full_join(., at_one_year) %>%
-  full_join(., at_five_years) %>% 
-  full_join(., five_years) %>% 
-  full_join(., at_ten_years) %>% 
-  full_join(., ten_years)
-
-
-#save all data model coefficients table 
-write_csv(all_data_models, file = "Data/negative_binomial/all_data_glmnb_models.csv")
-
-
-#ok let's look at this by journal 
-
-journals <-nsd_yes_metadata %>%
-  count(journal_abrev) %>% 
-  filter(journal_abrev != "jmbe") %>%
-  mutate(values = NA)
-
-
-each_journal_model <- as.vector(1:12, mode = "list") 
-names(each_journal_model) <-journals$journal_abrev
-
-
-i<-4
-for(i in 1:nrow(journals)) { 
-  journal_data <- 
-  nsd_yes_metadata %>% 
-    filter(journal_abrev == journals[[i,1]])
-
-# #20250627 - i don't think the names work either? 
-#   names(journals)[[i]] <- journals[[i,1]]
-
-  journal_fit <- two_term_glmnb(journal_data, "journal")
-
-# at one year
-  at_one_year_data <- journal_data %>% 
-    filter(age.in.months == 12)
-  at_one_year <- two_term_glmnb(at_one_year_data, "at_one_year")
- 
-
-# at five years
-  at_five_years_data <-journal_data %>% 
-    filter(age.in.months == 60)
-  at_five_years <- two_term_glmnb(at_five_years_data, "at_five_years")
-
-
-# 0 to five years
-  five_years_data <-journal_data %>% 
-    filter(age.in.months <= 60)
-  five_years <- two_term_glmnb(five_years_data, "five_years")
-
-#0 to 10 years 
-  ten_years_data <-journal_data %>% 
-      filter(age.in.months <= 120)
-  ten_years <- two_term_glmnb(ten_years_data, "ten_years")
+to_remove <- full_join(spec_remove, m_remove)
+   
+p_trunc <- anti_join(p, to_remove)
+  
     
+predicted_plot <-
+    ggplot(data = p_trunc, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free_y") +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    # scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" ) 
 
-#at ten years
- at_ten_years_data <-journal_data %>% 
-      filter(age.in.months == 120)
-  at_ten_years <- two_term_glmnb(at_ten_years_data, "at_ten_years")
- 
-
-#concatenate and save
-  each_journal_model[[i]] <- full_join(journal_fit, at_one_year, by = join_by(coefficients)) %>%
-  full_join(., at_five_years, by = join_by(coefficients)) %>% 
-  full_join(., five_years, by = join_by(coefficients)) %>% 
-  full_join(., at_ten_years, by = join_by(coefficients)) %>% 
-  full_join(., ten_years, by = join_by(coefficients))
-
-
-  print(i)
-}
-
-each_journal_model %>% tibble(names = names(each_journal_model)) %>% 
-  unnest(., cols = `.`) %>% relocate(names) %>%
-  write_csv(., file = "Data/negative_binomial/negative_binomial_models_each_journal.csv")
-
-
-
-
+ggsave(predicted_plot, file = out_predicted_plot)
+  
+  
+  
+  

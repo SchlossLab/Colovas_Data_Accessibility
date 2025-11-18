@@ -35,8 +35,8 @@ method = [
 
 
 mtry_dict = {
-    "new_seq_data" : 300, 
-    "data_availability" : 400
+    "new_seq_data" : 200, 
+    "data_availability" : 300
 }
 
 #import list of dois with their url 
@@ -50,13 +50,15 @@ seeds = list(range(1, 101))
 
 rule targets:
     input:
-        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys())
-        # expand("Data/linkrot/{doi}.csv", doi = doi_lookup.keys())
-        # "Data/final/linkrot_combined.csv.gz"
-        # "Figures/linkrot/longlasting_byhostname.png"
-        "Figures/citationrate_byjournal.png"
-      
-    
+        # expand("Data/ml_prep/groundtruth.{ml_variables}.zscoretable_filtered.csv", 
+        # # ml_variables = ml_variables)
+        # expand("Data/predicted/{doi}.csv", doi = doi_lookup.keys()), 
+        # "Data/final/predicted_results.csv.gz"
+        # "Data/final/predictions_with_metadata.csv.gz", 
+        # "Figures/citationrate_byjournal.png"
+        "Figures/negative_binomial/model_predicted_plot.png",
+        "Figures/summary_stats/fract_nsd.png"
+
         
 
 
@@ -117,6 +119,21 @@ rule combine_predictions:
         """
         {input.rscript} {params.p_dir} {output}
         """
+
+rule predictions_with_metadata: 
+    input: 
+        rscript = "Code/make_all_metadata.R",
+        predicted = "Data/final/predicted_results.csv.gz", 
+        lookup_table = "Data/all_dois_lookup_table.csv.gz"
+    output: 
+        "Data/final/predictions_with_metadata.csv.gz"
+    resources: 
+        mem_mb = 40000
+    shell: 
+        """
+        {input.rscript} {input.predicted} {input.lookup_table} {output}
+        """
+
 #20250220 - this rule replaces webscrape, cleanHTML, tokenize
 rule train_tokens: 
     input: 
@@ -174,7 +191,8 @@ rule rf:
         "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.performance.csv", 
         "Data/ml_results/groundtruth/rf/{ml_variables}/rf.{ml_variables}.{seeds}.hp_performance.csv"
     resources: 
-        mem_mb = 40000
+        mem_mb = 40000, 
+        time = "72:00:00"
     shell:
         """
         {input.rscript} {input.rds} {wildcards.seeds} {wildcards.ml_variables} {input.rdir}
@@ -223,8 +241,22 @@ rule best_mtry:
         """
         {input.rscript} {input.rds} {wildcards.ml_variables} {input.rdir}
         """
+    
+rule combine_best_models: 
+    input: 
+        rscript = "Code/combine_best_models.R",
+        rds = expand("Data/ml_results/groundtruth/rf/{ml_variables}/best/best.rf.{ml_variables}.102899.model.RDS", 
+        ml_variables = ml_variables)
+        
+    output: 
+        "Data/final/best_model_stats.csv"
+    shell:
+        """
+         {input.rscript} {input.rds} {output}
+        """
 
-rule final_model: 
+
+rule final_ml_model: 
     input:
         rds = "Data/preprocessed/groundtruth.{ml_variables}.preprocessed.RDS", 
         rscript = "Code/trainML_rf_finalmodel.R",
@@ -255,6 +287,39 @@ rule nsdyes_figs:
         """
 
 
+rule da_nsd_figs: 
+    input: 
+        rscript = "Code/create_da_nsd_figs.R",
+        metadata = "Data/final/predictions_with_metadata.csv.gz"
+    output: 
+        "Figures/summary_stats/time_da.png"
+        "Figures/summary_stats/time_nsd.png"
+        "Figures/summary_stats/fract_da.png"
+        "Figures/summary_stats/fract_nsd.png"
+    shell: 
+        """
+        {input.rscript} {input.metadata} 
+        """
+
+# ----------- statistical modeling -------------------------------------
+
+rule neg_binomial: 
+    input: 
+        rscript = "Code/negative_binomial.R",
+        metadata = "Data/final/predictions_with_metadata.csv.gz"
+    output: 
+        coeftable = "Data/negative_binomial/nsd_yes_glmnb_coeftable.csv", 
+        model = "Data/negative_binomial/nsd_yes_glmnb_model.RDS", 
+        contrast_plot = "Figures/negative_binomial/emmeans_contrast_plot.png", 
+        predicted_plot = "Figures/negative_binomial/model_predicted_plot.png"
+    resources: 
+        mem_mb = 40000
+    shell: 
+        """
+        {input.rscript} {input.metadata} {output.coeftable} {output.model} {output.contrast_plot} {output.predicted_plot}
+        """
+
+
 
 ###---------------geting dois from multiple apis---------------------------------
 rule lookup_table: 
@@ -273,43 +338,43 @@ rule scopus:
     input: 
         rscript = "Code/doi_gathering_scopus_via_httr.R"
     output: 
-        "Data/scopus/scopus_{datasets}.csv.gz"
+        "Data/scopus/scopus_{new_datasets}.csv.gz"
     shell: 
         """
-        {input.rscript} {wildcards.datasets} 
+        {input.rscript} {wildcards.new_datasets} 
         """
 
 rule wos: 
     input: 
         rscript = "Code/doi_gathering_wos_via_httr.R"
     output: 
-        "Data/wos/wos_{datasets}.csv.gz"
+        "Data/wos/wos_{new_datasets}.csv.gz"
     group: 
         "wos"
     shell: 
         """
-        {input.rscript} {wildcards.datasets} 
+        {input.rscript} {wildcards.new_datasets} 
         """
 
 
 rule ncbi: 
     output: 
-        "Data/ncbi/ncbi_{datasets}.csv.gz"
+        "Data/ncbi/ncbi_{new_datasets}.csv.gz"
     shell: 
         """
-        esearch -db pubmed -query "{wildcards.datasets}" | efetch -format csv > "{output}"
+        esearch -db pubmed -query "{wildcards.new_datasets}" | efetch -format csv > "{output}"
         """
 
 rule crossref: 
     input: 
         rscript = "Code/doi_gathering_crossref.R"
     output: 
-        "Data/crossref/crossref_{datasets}.csv.gz"
+        "Data/crossref/crossref_{new_datasets}.csv.gz"
     group:
         "crossref"
     shell: 
         """
-        {input.rscript} {wildcards.datasets} 
+        {input.rscript} {wildcards.new_datasets} 
         """
 
 #-------------------LINK-------ROT-----------------------------------------------------------

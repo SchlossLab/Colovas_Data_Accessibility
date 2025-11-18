@@ -67,9 +67,20 @@ new_groundtruth <-read_csv("Data/new_groundtruth.csv")
 colnames(new_groundtruth)
 to_add_1 <- read_csv("Data/spot_check/20250324_mra_spec_nsd_yes_da_no.csv")
 to_add_2<-read_csv("Data/spot_check/20250328_2024_no_mra_spec.csv")
+colnames_1 <-colnames(to_add_1)
+colnames_2 <-colnames(to_add_2)
 
 to_add<- full_join(to_add_1, to_add_2) %>%
 mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+
+crossref<- 
+    crossref %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+new_groundtruth <-
+    new_groundtruth %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
 
 add_metadata <-inner_join(to_add, crossref) %>% 
     rename(new_seq_data = actual_nsd, data_availability = actual_da) %>%
@@ -99,3 +110,87 @@ new_groundtruth <-read_csv("Data/new_groundtruth.csv") %>%
 
 write_csv(new_groundtruth, "Data/new_groundtruth.csv")
 #this means we don't need new_groundtruth_metadata anymore
+
+#20250828 - update training set AGAIN -----------------------------------------------------------------------------------
+
+library(tidyverse)
+
+new_groundtruth <-read_csv("Data/new_groundtruth.csv") %>% 
+        mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>% 
+        mutate_if(is.logical, as.character, .vars = vars("published.online", "page")) %>%
+        select(paper:notes)
+
+to_add_3 <-read_csv("Data/spot_check/20250424_spot_check.csv")  %>%
+    select(paper, doi_no_underscore, actual_da, actual_nsd, file, da, nsd, predicted, notes) %>%
+    rename(new_seq_data = actual_nsd, data_availability = actual_da, 
+    doi = doi_no_underscore)
+
+to_add_4 <- read_csv("Data/spot_check/20250429_genome_announcements.csv") %>%
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>% 
+    mutate_if(is.logical, as.character, .vars = vars("published.online", "page")) %>% 
+    select(!assertion:funder & !doi_underscore, published.online) 
+
+
+to_add_5 <-read_csv("Data/spot_check/20250507_spot_check.csv") %>%
+    select(paper, doi_no_underscore, actual_da, actual_nsd, file, da, nsd, predicted, notes) %>%
+    rename(new_seq_data = actual_nsd, data_availability = actual_da, doi = doi_no_underscore)
+
+colnames_3 <-colnames(to_add_3)
+colnames_4 <-colnames(to_add_4)
+colnames_5 <-colnames(to_add_5)
+
+
+crossref<-read_csv("Data/crossref/crossref_all_papers.csv.gz") %>%
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate(paper = paste0("https://journals.asm.org/doi/", doi)) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+metadata_3 <- inner_join(to_add_3, crossref) %>%
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>%
+    select(!author:funder)
+
+# metadata_4 <-
+# left_join(to_add_4, crossref) %>%  view()#i cannot figure out why this one is so funky and the variable data doesn't match
+#     mutate_if(lubridate::is.Date, as.character) %>% 
+#     mutate_if(is.double, as.character, .vars = vars("issue", "year.published"))
+
+metadata_5 <-inner_join(to_add_5, crossref) %>% 
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>%
+    select(!author:funder)
+
+
+to_add_345 <- full_join(metadata_3, metadata_5) %>%
+            full_join(., to_add_4) %>% 
+            mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>% 
+            mutate_if(is.logical, as.character, .vars = vars("published.online", "page")) 
+        
+
+
+
+#combine new_gt with the newest spot check data
+newest_gt <- full_join(new_groundtruth, to_add_345)  %>% 
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) %>%
+    mutate(doi_underscore = str_replace_all(doi, "/", "_"),
+        file = paste0("Data/html", doi_underscore, ".html"),
+        predicted = paste0("Data/predicted", doi_underscore, ".csv"))
+
+write_csv(newest_gt, "Data/new_groundtruth.csv")
+
+#20250829 - making sure that the metadata and dois lists are updated
+library(tidyverse)
+
+new_groundtruth <-read_csv("Data/new_groundtruth.csv") %>% 
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
+ngt <-colnames(new_groundtruth)
+
+new_groundtruth_metadata <- read_csv("Data/new_groundtruth_metadata.csv.gz")  %>% 
+    mutate_if(lubridate::is.Date, as.character) %>% 
+    mutate_if(is.double, as.character, .vars = vars("issue", "year.published")) 
+ngtm <-colnames(new_groundtruth_metadata)
+
+#i don't think i need the metatdata or the gt dois file???
+

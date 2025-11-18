@@ -9,18 +9,33 @@ knitr::opts_chunk$set(echo = TRUE)
 library(MASS)
 library(emmeans)
 library(tidyverse)
+library(sjPlot)
+
+
 
 #load local metadata
 nsd_yes_metadata <- read_csv("~/Documents/Schloss/Colovas_Data_Accessibility/Data/final/nsd_yes_metadata.csv.gz")
 
-#filter out NAs (important later)
+#filter out NAs (important later) and filter for age.in.months <=120 
 my_data <- nsd_yes_metadata %>%
   filter(., age.in.months != "NA" & da_factor != "NA" & container.title != "NA") %>% 
   mutate(da_factor = factor(da_factor), 
-         container.title = factor(container.title))
+         container.title = factor(container.title)) %>%  
+  filter(., age.in.months <= 120)
 ```
 
-```{r}
+## Protocol for all data and then data by journal
+
+1.  Fit model and store it
+2.  Define the age values you want to examine
+    -   more continuous using seq(1, 120, 4)
+3.  Get emmeans on the link scale for all combinations
+4.  Get pairwise comparisons between da factor levels (ratios)
+5.  Plot the contrasts using geom_ribbon
+6.  Create the Marginal Predictive Checks
+    -   These should resemble the observed outcome
+
+```{r echo=FALSE}
 
 # First, fit your model and store it
 model <- glm.nb(
@@ -32,7 +47,7 @@ model <- glm.nb(
     link = "log"
 )
 # Define the age values you want to examine (in months)
-age_values <- c(12, 36, 60, 120)  # Adjust these as needed
+age_values <- seq(5, 120, 5) #c(12, 36, 60, 120)  # Adjust these as needed
 # Get emmeans on the link scale for all combinations
 emm <- emmeans(model,  ~ da_factor + age.in.months | container.title,
         at = list(age.in.months = age_values), CIs = TRUE,
@@ -40,14 +55,90 @@ emm <- emmeans(model,  ~ da_factor + age.in.months | container.title,
 # Get pairwise comparisons (differences) between da_factor levels
 differences <- contrast(
     emm, by = c("age.in.months", "container.title"),
-    method = "pairwise",
+    method = "revpairwise",
     ratios = TRUE, CIs = TRUE
 )
 # See the contrasts
-summary(differences)
+# summary(differences)
 # Plot the contrasts
-plot(differences, ratios = TRUE)
+# plot(differences, ratios = TRUE)
 
+# Plot the contrasts
+ratios_df <- as.data.frame(plot(differences, ratios = TRUE)$data)  %>% 
+ filter(container.title != "Journal of Microbiology &amp; Biology Education" &
+        container.title != "Genome Announcements" & 
+        container.title != "Microbiology Resource Announcements")
+
+
+ggplot(
+    data = ratios_df,
+    mapping = aes(x = age.in.months, y = the.emmean)
+) +
+   geom_hline(yintercept = 1.0, linetype = 2, linewidth = 0.25) + 
+    geom_line() +
+    geom_ribbon(
+        mapping = aes(ymin = lcl, ymax = ucl),
+        alpha = 0.3 # transparency of confidence intervals
+    ) +
+    facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 20)) +
+    labs(x = 'Age in months', y = 'Ratio of daYes/daNo') +
+    coord_cartesian(ylim = c(0.25, 2.5)) + 
+    theme_classic() + 
+    scale_x_continuous(breaks = seq(12, 120, 24))  
+
+
+
+
+# Marginal predictive checks ##
+# Simulate outcomes based on your model and observed explanatory variables
+model_sims <- simulate(model, nsim = 5, seed = 123)
+# Reshape data frame for easier plotting
+model_sims <- model_sims %>%
+    mutate(observed_outcome = my_data$is.referenced.by.count) %>%
+    pivot_longer(
+        cols = everything(),
+        names_to = 'sim_number',
+        values_to = 'outcome'
+    ) %>%
+    mutate(sim_number = relevel(as.factor(sim_number), ref = 'observed_outcome'))
+# Compare distributions of observed outcome to simulated outcomes
+ggplot(data = model_sims, mapping = aes(x = outcome)) +
+    geom_histogram(binwidth = 2) +
+    facet_wrap(~ sim_number, nrow = 4) + 
+    coord_cartesian(xlim = c(0,200)) +
+    theme_bw()
+
+
+## make plots for each journal 
+  p <-  get_model_data(model = model, type = "pred", terms = c("da_factor", "age.in.months[age_values]", "container.title")) %>%  
+   tibble(da_factor = ifelse(.$x == 1, "Data not available", "Data available"), predicted_citations = .$predicted, age.in.months = .$group, container.title = .$facet) %>%   filter(container.title != "Journal of Microbiology &amp; Biology Education" &
+        container.title != "Genome Announcements" & 
+        container.title != "Microbiology Resource Announcements")
+        
+  
+  
+    
+  ggplot(data = p, mapping = aes(x = as.numeric(age.in.months), y = predicted_citations,
+                                color = da_factor)) + 
+   geom_line(aes(x = age.in.months, y = predicted_citations, group = da_factor)) +
+   geom_ribbon(mapping = aes(ymin = conf.low, ymax = conf.high, 
+                             group = da_factor, fill = da_factor), alpha = 0.2) +
+  facet_wrap(~ container.title, nrow = 2, 
+               labeller = label_wrap_gen(width = 18), 
+               scale = "free_y") +
+   labs(title = "Predicted Number of Citations from GLM.NB",
+        x = "Age in Months", 
+        y = "Predicted Number Citations", 
+        color = "Data availability\nwith 95% CI", 
+        fill = "Data availability\nwith 95% CI") + 
+    scale_x_discrete(breaks = seq(12, 120, 12)) + 
+    theme_classic() + 
+    theme(legend.position = "bottom" )
+  
+  
+  
+  
 
 # # working on plotting better
 # emmip(model, ~ age.in.months | container.title, CIs = TRUE, type = "response",  at = list(age.in.months = age_values)) +
@@ -129,3 +220,24 @@ tibble(da = model_data$x, predicted = model_data$predicted, age.in.months = as.n
   
 ```
 
+## 20250818
+
+-   Do we like these figures?
+
+-   Additional changes to make?
+
+### Create Newer Plots from Abner (20250813)
+
+-   " Use more different values for age in months and treat them as
+    numbers instead of factors so you can make a smoother plot. This
+    visualization would be more consistent with your model because it
+    uses age as a continuous variable. " - AHB
+
+### Previously (20250801)
+
+-   "Also, I think this result would be even clearer if you made a plot
+    with "age" in the horizontal axis, "predicted citations" in the
+    vertical axis, and lines colored by "da_factor"." - AHB
+-   These plots are each made with a different glm.nb model (one for
+    each journal), which is why they are not combined into a faceted
+    plot.
