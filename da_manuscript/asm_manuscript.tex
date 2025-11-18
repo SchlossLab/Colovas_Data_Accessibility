@@ -465,7 +465,7 @@ Chemotherapy (N = 21943), Infection and Immunity (N = 14500), Journal of
 Bacteriology (N = 16821), Journal of Clinical Microbiology (N = 18450),
 Journal of Microbiology and Biology Education (N = 1312), Journal of
 Virology (N = 29797), Microbiology Resource Announcments} (formerly
-known as \emph{Genome Announcements 12601), }Microbiology Spectrum (N =
+known as \emph{Genome Announcements 12601),} Microbiology Spectrum (N =
 6120), mBio (N = 7732), mSphere(N = 2712), and mSystems (N = 2331).*
 
 \paragraph{Training Dataset}\label{training-dataset}
@@ -828,17 +828,14 @@ and how each of these cases were identified for the purpose of this
 study.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4722}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2639}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.2639}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.6296}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.3704}}@{}}
 \caption{Possible Data Scenarios}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Scenario
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-new sequencing data status
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-data availability status
+New Sequencing Data Status
 \end{minipage} \\
 \midrule\noalign{}
 \endfirsthead
@@ -846,30 +843,18 @@ data availability status
 \begin{minipage}[b]{\linewidth}\raggedright
 Scenario
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-new sequencing data status
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-data availability status
+New Sequencing Data Status
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Paper is not about generating new sequencing data & No & No \\
-Paper is about generating new sequencing data but has no data available
-& Yes & No \\
-Paper is about generating new sequencing data and has data available &
-Yes & Yes \\
+Paper is about generating new sequencing data & Yes \\
 Paper uses sequencing as a confirmation of experimental technique
-(i.e.~confirmation of plasmid insertion) & No & No \\
-Paper discusses new computational or experimental tools & No & No \\
-Paper has microarray data & No & No \\
-Papers using MLST ONLY & No & No \\
-Papers using qPCR ONLY & No & No \\
-Papers about protein sequencing that have nucleotide sequencing & Yes &
-Yes/No depending on data availability \\
-Papers using iRNA techniques & No & No \\
-Papers using pyrosequencing/454 techniques & Yes & Yes/No depending on
-data availability \\
+(i.e.~confirmation of plasmid insertion) & No \\
+Paper discusses new computational or experimental tools & No \\
+Papers using MLST ONLY & No \\
+Papers about protein sequencing ONLY & No \\
 \end{longtable}
 
 \subsubsection{Training of the data availability and new sequencing data

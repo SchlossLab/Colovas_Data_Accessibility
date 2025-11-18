@@ -257,7 +257,7 @@ n_journal <-
 
 #### Descriptive Statistics
 
-Using the Crossref database of DOIs, with validation from the Web of Science, NCBI, and Scopus DOI databases, we downloaded `{r} n_total` unique records of papers published in ASM journals. All papers were published between 2000 and 2024. These papers came from *Applied and Envrionmental Microbiology (N = `{r} n_journal[[1,2]]`), Antimicrobial Agents and Chemotherapy (N = `{r} n_journal[[2,2]]`), Infection and Immunity (N = `{r} n_journal[[4,2]]`), Journal of Bacteriology (N = `{r} n_journal[[5,2]]`), Journal of Clinical Microbiology (N = `{r} n_journal[[6,2]]`), Journal of Microbiology and Biology Education (N = `{r} n_journal[[7,2]]`), Journal of Virology (N = `{r} n_journal[[8,2]]`), Microbiology Resource Announcments* (formerly known as *Genome Announcements `{r} n_journal[[3,2]] + n_journal[[9,2]]`), *Microbiology Spectrum (N = `{r} n_journal[[10,2]]`), mBio (N = `{r} n_journal[[11,2]]`), mSphere(N = `{r} n_journal[[12,2]]`), and mSystems (N = `{r} n_journal[[13,2]]`).*
+Using the Crossref database of DOIs, with validation from the Web of Science, NCBI, and Scopus DOI databases, we downloaded `{r} n_total` unique records of papers published in ASM journals. All papers were published between 2000 and 2024. These papers came from *Applied and Envrionmental Microbiology (N = `{r} n_journal[[1,2]]`), Antimicrobial Agents and Chemotherapy (N = `{r} n_journal[[2,2]]`), Infection and Immunity (N = `{r} n_journal[[4,2]]`), Journal of Bacteriology (N = `{r} n_journal[[5,2]]`), Journal of Clinical Microbiology (N = `{r} n_journal[[6,2]]`), Journal of Microbiology and Biology Education (N = `{r} n_journal[[7,2]]`), Journal of Virology (N = `{r} n_journal[[8,2]]`), Microbiology Resource Announcments* (formerly known as *Genome Announcements `{r} n_journal[[3,2]] + n_journal[[9,2]]`),* Microbiology Spectrum (N = `{r} n_journal[[10,2]]`), mBio (N = `{r} n_journal[[11,2]]`), mSphere(N = `{r} n_journal[[12,2]]`), and mSystems (N = `{r} n_journal[[13,2]]`).\*
 
 #### Training Dataset
 
@@ -312,14 +312,13 @@ In figure XX, we calculated the ratio of number of citations for papers of simil
 
 ## Discussion
 
-Our study sought to investigate the compliance and impact of data availability and associated policies on the ASM journal program.
-After training machine learning models to classify papers to determine if they contained new sequencing data and if each new sequencing paper had data available, we found that on average, more than half of papers with new sequencing data had data availability (`{r} round(all_per_da, n_digits)`%). More often than not, authors of new sequencing data papers were making their data publicly available. This was in line with 2023 NIH policy requiring that data be made available using a Data Management and Sharing Plan (DMS plan) outlined in the NIH's NOT-OD-21-013 (@NIH_not-od-21-013_dms). XXDo we want percent for 2024?XX 
+Our study sought to investigate the compliance and impact of data availability and associated policies on the ASM journal program. After training machine learning models to classify papers to determine if they contained new sequencing data and if each new sequencing paper had data available, we found that on average, more than half of papers with new sequencing data had data availability (`{r} round(all_per_da, n_digits)`%). More often than not, authors of new sequencing data papers were making their data publicly available. This was in line with 2023 NIH policy requiring that data be made available using a Data Management and Sharing Plan (DMS plan) outlined in the NIH's NOT-OD-21-013 (@NIH_not-od-21-013_dms). XXDo we want percent for 2024?XX
 
 Expectledly, *Microbiology Resource Announcements* had the highest rates of data availability in new sequencing papers. This journal published new genomic sequences and was required by ASM to make data available. Journals such as the *Journal of Microbiology and Biology Education* and *Infection and Immunity* which published fewer new sequencing data papers due to their specific subject matters, had lower rates of new sequencing data and data availability in their journals.
 
 Once these questions were answered and papers were classified, we moved to statistical analyses to answer the further question, "how does making data available impact citation metrics over time?" We were interested in citation metrics as a concrete metric to examine how making data availability benefits researchers and as a possible incentive towards making data availability. Our hypotheses were that microbiologists would have fairy high rates of data availability given the field's reliance on comparative research, and that other fields such as immunology would have lowered rates of data availability, as well as the hope that papers with data available would provide a greater number of citations over time compared to those without data available.
 
-Using a negative binomial model we found that over time, papers with data available received more citations than those without. For each journal, this pattern held true. The difference in citations between those with and without data available climbed to well over 1.5x the amount of citations in some journals (Fig XXXX. *Journal of Clinical Microbiology*). These differences in ratio of papers by journal may have been due to the scope of papers found in each journal.  
+Using a negative binomial model we found that over time, papers with data available received more citations than those without. For each journal, this pattern held true. The difference in citations between those with and without data available climbed to well over 1.5x the amount of citations in some journals (Fig XXXX. *Journal of Clinical Microbiology*). These differences in ratio of papers by journal may have been due to the scope of papers found in each journal.
 
 We found that the effect of data availability providing greater citations intensifies over time, with the greatest differences in citations occurring at the 108 months since publication time point. This was great news to us and to other manuscript authors, that simply making their data available could provide as much as 50% increase in citations over time. We hope that these data will help to incentivize authors to make data available.
 
@@ -343,24 +342,17 @@ To perform the computational steps required for these experiments, we used the p
 
 Once the tokens in each paper were counted, we transformed the data into a sparse matrix format useable by the R package mikropml (@mikropml), using R packages caret and dplyr (@caret, @dplyr, @tidyverse). Tokens were filtered to those which appear in greater than one paper. This allows comparison between papers by the model. We removed near zero variants (tokens with frequency very close to zero) as well as collapsing perfectly correlated tokens (tokens that always appear together) using R packages caret and mikropml to reduce model complexity. The data was then simplified to keep only the following variables; tokens, frequency, journal information, and hand identified new sequencing data and data availability variables. This simiplified sparse matrix data had the mean and standard deviation calculcated and saved for the frequency of each token to later apply a z-scoring method to future data to be predicted by the model.
 
-
 ### Creation of the Training set
 
 To train our random forest machine learning models, we first created an appropriate training data set. For our initial training set, we chose a set of papers from across each journal and the time period of interest, adding special emphasis to include papers that were part of our desired set of interest (i.e. contained published data) to ensure that our two models could adequately characterize each paper as a new sequencing paper and if it published raw sequencing data or not. These papers were chosen with dplyr's slice_n(). After creating our initial dataset, it was necessary for us to to identify the status of both variables by hand and determined if each paper contained "new sequencing data", and if each one had "data available". This was completed by opening each paper in an internet browser window, and searching for a "data availability" or similar statement. See Table 1XXX for specific cases and how each of these cases were identified for the purpose of this study.
 
-| Scenario | new sequencing data status | data availability status |
-|----------------------------------|-------------------|-------------------|
-| Paper is not about generating new sequencing data | No | No |
-| Paper is about generating new sequencing data but has no data available | Yes | No |
-| Paper is about generating new sequencing data and has data available | Yes | Yes |
-| Paper uses sequencing as a confirmation of experimental technique (i.e. confirmation of plasmid insertion) | No | No |
-| Paper discusses new computational or experimental tools | No | No |
-| Paper has microarray data | No | No |
-| Papers using MLST ONLY | No | No |
-| Papers using qPCR ONLY | No | No |
-| Papers about protein sequencing that have nucleotide sequencing | Yes | Yes/No depending on data availability |
-| Papers using iRNA techniques | No | No |
-| Papers using pyrosequencing/454 techniques | Yes | Yes/No depending on data availability |
+| Scenario | New Sequencing Data Status |
+|----------------------------------|--------------------|
+| Paper is about generating new sequencing data | Yes |
+| Paper uses sequencing as a confirmation of experimental technique (i.e. confirmation of plasmid insertion) | No |
+| Paper discusses new computational or experimental tools | No |
+| Papers using MLST ONLY | No |
+| Papers about protein sequencing ONLY | No |
 
 : Possible Data Scenarios
 
@@ -368,12 +360,9 @@ To train our random forest machine learning models, we first created an appropri
 
 We trained two random forest machine learning models using mikropml's "run_ml" function, one to determine if a paper contained new sequence data, and another to determine if the paper had data available. The mikropml "run_ml" function uses methodology described by \*Topcuoglu et al.\*(@topcuoglu_mikropml_2021) to split data for model training. Random forest models have one hyperparameter to tune, the mtry value. We began with mtry values of 100, 200, 300, 400, 500, and 600, to find peak hyperparameter performance given *N tokens*. We trained the models multiple times in accordance with existing methodologies, first to find the optimal Area Under the Receiver-Operator Curve (AUROC) value for each model with 100 seeds. Then to find the best mtry performance for each model, with 1 seed. Finally, the models were trained with 1 seed each and generated each final model for use on experimental data.
 
-
 ### Adding Additional Training Set Papers
 
-After initial training of our random forest models, a random sampling of papers was collected for each journal using dplyr's slice_n() to audit the efficacy of the models (@dplyr). When auditing the efficacy of the models, we hand identified the status of both variables of interest, new sequencing data and data availability. We looked for weaknesses in the models, and updated methodology to reflect important areas of interest. For example, in 2023 the ASM journals changed their formatting to include the data availability statement of a paper in a sidebar of the webpage. We identified this by noticing that all papers from journal *Microbiology Resource Announcements* from 2023-2024 were incorrectly characterized by the model as data availability = No. The sidebar of the webpage was not included in the text the model was considering, and code had to be updated to include all sidebar data for all papers. These improvements to the model created a larger and more comprehensive training set of N = `r t_total`. These validations allowed us to create confusion matrices for each model. 
-
-
+After initial training of our random forest models, a random sampling of papers was collected for each journal using dplyr's slice_n() to audit the efficacy of the models (@dplyr). When auditing the efficacy of the models, we hand identified the status of both variables of interest, new sequencing data and data availability. We looked for weaknesses in the models, and updated methodology to reflect important areas of interest. For example, in 2023 the ASM journals changed their formatting to include the data availability statement of a paper in a sidebar of the webpage. We identified this by noticing that all papers from journal *Microbiology Resource Announcements* from 2023-2024 were incorrectly characterized by the model as data availability = No. The sidebar of the webpage was not included in the text the model was considering, and code had to be updated to include all sidebar data for all papers. These improvements to the model created a larger and more comprehensive training set of N = `r t_total`. These validations allowed us to create confusion matrices for each model.
 
 ### Deploying the RF Models
 
@@ -383,10 +372,7 @@ Once our RF models were ready we applied the same steps to ready papers for appl
 
 To investigate how data availability impacts citation metrics, we utilized a negative binomial regression model using the R package MASS (@MASS). All papers included in the regression data had new sequencing data and were filtered to only those papers less than or equal to 120 months of age. We focused on the continuous outcome of "number of citations" with predictor variables journal (categorical), age in months (continuous), and data availability status (dichotomous). Due to the number of citations being bell shaped with a long right tail (very few papers at advanced age with many citations, producing a flat but non-zero line), the model that best described our data was a negative binomial regression model. A negative binomial model is appropriate for data that begins at zero and has a long 'tail' of data, as well as has differing means per group. This model also includes a dispersion parameter, $\theta$ to describe the spread of the data. We applied a log transformation to our age variable (age.in.months) to make linear the relationship between time and number of citations received to help better describe the model relationship. After applying the negative binomial model, we calculated ratios of the estimated number of citations per paper over time by data availability status using R package emmeans (@emmeans). We also used R package sjPlot to estimate the 95% CI for estimated citations over time for each journal by data availability status (@sjPlot).
 
-
-
 -   Supplemental Material file list (where applicable)
 -   Acknowledgments
     -   The authors acknowledge lab members C. Armour, A. Mason, M. Coden, S. Lucas, and K. Sovacool for help hand-classifying papers.
     -   ***“This research was supported in part through computational resources and services provided by Advanced Research Computing at the University of Michigan, Ann Arbor.”*** [ARC's RRID is: SCR_027337](https://rrid.site/data/record/nlx_144509-1/SCR_027337/resolver?q=SCR_027337%2A&l=SCR_027337%2A&i=rrid:scr_027337)
-
