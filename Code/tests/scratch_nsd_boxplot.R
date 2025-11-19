@@ -29,7 +29,9 @@ twenty20 %>%
     stat_compare_means(method = "wilcox.test", label = "p.signif", 
                        label.y = -10)
 
+
 ggsave(sig, filename = "/Users/jocolova/Documents/Schloss/Colovas_Data_Accessibility/Figures/2020_nsd_boxplot_sig.png")
+
 
 
 twenty20 %>% 
